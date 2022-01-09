@@ -4,11 +4,30 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Outtake extends SubsystemBase {
   /** Creates a new Outtake. */
-  public Outtake() {}
+
+  private final TalonFX[] outtakeMotors = {
+    new TalonFX(Constants.Outtake.flywheelMotorA),
+    new TalonFX(Constants.Outtake.flywheelMotorB)
+  };
+  public Outtake() {
+      // Setup shooter motors (Falcons)
+      for(TalonFX outtakeMotor : outtakeMotors) {
+          outtakeMotor.configFactoryDefault();
+          outtakeMotor.setNeutralMode(NeutralMode.Coast);
+          outtakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+          outtakeMotor.configVoltageCompSaturation(10);
+          outtakeMotor.enableVoltageCompensation(true);
+      }
+  }
 
   @Override
   public void periodic() {
