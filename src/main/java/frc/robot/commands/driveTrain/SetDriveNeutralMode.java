@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
@@ -14,7 +14,7 @@ import frc.robot.subsystems.DriveTrain;
  * An example command that uses an example subsystem.
  */
 public class SetDriveNeutralMode extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
     private final int m_mode;
 

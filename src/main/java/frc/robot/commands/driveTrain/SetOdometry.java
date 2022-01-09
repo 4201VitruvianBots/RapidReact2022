@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -17,7 +17,7 @@ import frc.robot.subsystems.DriveTrain;
  * Sets the robot's position
  */
 public class SetOdometry extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
     private final FieldSim m_fieldSim;
     private Pose2d m_pose2d;
@@ -26,7 +26,7 @@ public class SetOdometry extends CommandBase {
      * Sets the robot's position
      * 
      * @param driveTrain Drivetrain's odometry is set
-     * @param pose2d position to set odometry to
+     * @param pose2d     position to set odometry to
      */
     public SetOdometry(DriveTrain driveTrain, Pose2d pose2d) {
         this(driveTrain, null, pose2d);
@@ -36,12 +36,14 @@ public class SetOdometry extends CommandBase {
      * Sets the robot's position
      * 
      * @param driveTrain Drivetrain's odometry is set
-     * @param fieldSim fieldSim to set robot's position if we're simulating the robot
-     * @param pose2d position to set odometry to
+     * @param fieldSim   fieldSim to set robot's position if we're simulating the
+     *                   robot
+     * @param pose2d     position to set odometry to
      */
     public SetOdometry(DriveTrain driveTrain, FieldSim fieldSim, Pose2d pose2d) {
         if (RobotBase.isSimulation() && fieldSim == null)
-            System.out.println("SetOdometry Command Error: Robot is in Simulation, but you did not add FieldSim to the argument");
+            System.out.println(
+                    "SetOdometry Command Error: Robot is in Simulation, but you did not add FieldSim to the argument");
 
         m_driveTrain = driveTrain;
         m_fieldSim = fieldSim;
@@ -54,7 +56,7 @@ public class SetOdometry extends CommandBase {
     @Override
     public void initialize() {
         m_driveTrain.resetOdometry(m_pose2d, m_pose2d.getRotation());
-        //m_driveTrain.setNavXOffset(m_pose2d.getRotation().getDegrees());
+        // m_driveTrain.setNavXOffset(m_pose2d.getRotation().getDegrees());
         if (RobotBase.isSimulation())
             m_fieldSim.resetRobotPose(m_pose2d);
     }
@@ -62,7 +64,6 @@ public class SetOdometry extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-
 
     }
 

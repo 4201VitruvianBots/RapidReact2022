@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
@@ -16,7 +16,7 @@ import java.util.function.DoubleSupplier;
  * Sets the drivetrain based on joystick inputs for forward and turning
  */
 public class SetArcadeDrive extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
     private final DoubleSupplier m_throttle, m_turn;
 
@@ -24,8 +24,9 @@ public class SetArcadeDrive extends CommandBase {
      * Sets the drivetrain based on joystick inputs for forward and turning
      *
      * @param driveTrain drivetrain to set
-     * @param throttle Percent output to drive forward.
-     * @param turn Percent output to turn (positive = turn right, negative = turn left)
+     * @param throttle   Percent output to drive forward.
+     * @param turn       Percent output to turn (positive = turn right, negative =
+     *                   turn left)
      */
     public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
         m_driveTrain = driveTrain;
@@ -48,7 +49,7 @@ public class SetArcadeDrive extends CommandBase {
         double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
         double throttle = joystickY;
-        throttle = throttle < 0 ? Math.max(- 0.7, throttle) : throttle;
+        throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle;
         double turn = joystickX;
 
         m_driveTrain.setMotorArcadeDrive(throttle, turn);

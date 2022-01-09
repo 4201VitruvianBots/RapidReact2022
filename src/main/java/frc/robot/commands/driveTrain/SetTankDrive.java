@@ -5,7 +5,7 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.drivetrain;
+package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
@@ -13,18 +13,20 @@ import frc.robot.subsystems.DriveTrain;
 import java.util.function.DoubleSupplier;
 
 /**
- * Sets the left and right sides of the drivetrain separately based on joystick inputs
+ * Sets the left and right sides of the drivetrain separately based on joystick
+ * inputs
  */
 public class SetTankDrive extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
     private final DoubleSupplier m_leftOutput, m_rightOutput;
 
     /**
-     * Sets the left and right sides of the drivetrain separately based on joystick inputs
+     * Sets the left and right sides of the drivetrain separately based on joystick
+     * inputs
      * 
-     * @param driveTrain drivetrain to set
-     * @param leftOutput percent output for left side of drivetrain
+     * @param driveTrain  drivetrain to set
+     * @param leftOutput  percent output for left side of drivetrain
      * @param rightOutput percent output for right side of drivetrain
      */
     public SetTankDrive(DriveTrain driveTrain, DoubleSupplier leftOutput, DoubleSupplier rightOutput) {
