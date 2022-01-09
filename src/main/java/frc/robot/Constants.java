@@ -12,4 +12,34 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+
+    public final class Climber {
+
+    }
+
+    public final class DriveTrain {
+
+    }
+
+    public final class Indexer {
+
+    }
+
+    public final class Intake {
+
+    }
+
+    public final class LED {
+
+    }
+
+    public final class Outtake {
+
+    }
+
+    public final class Vision {
+
+    }
+
+}
