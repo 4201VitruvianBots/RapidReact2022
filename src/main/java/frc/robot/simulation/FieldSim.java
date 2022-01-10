@@ -246,7 +246,7 @@ public class FieldSim {
 
                 double deltaX = powercell.getBallXYVel().getX() * deltaT;
                 double deltaY = powercell.getBallXYVel().getY() * deltaT;
-                powercell.setBallZVel(powercell.getBallZVel() - Constants.g * deltaT); // Update vertical velocity by gravity
+                // powercell.setBallZVel(powercell.getBallZVel() - Constants.g * deltaT); // Update vertical velocity by gravity
                 double deltaZ = powercell.getBallZVel() * deltaT;
                 //System.out.println("Delta X: " + deltaX + "\tDelta Y: " + deltaY + "\tDelta T: " + deltaT);
                 SmartDashboardTab.putNumber("Shoot on the Move", "Ball height", powercell.getBallZPos());

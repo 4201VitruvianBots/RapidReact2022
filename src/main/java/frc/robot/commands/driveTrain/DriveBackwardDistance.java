@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.driveTrain.SetDriveNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
+import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
