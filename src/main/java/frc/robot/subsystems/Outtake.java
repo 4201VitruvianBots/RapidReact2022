@@ -29,32 +29,28 @@ public class Outtake extends SubsystemBase {
     private final Vision m_vision;
     private final int encoderUnitsPerRotation = 4096;
     private final Timer timeout = new Timer();
-    public int kI_Zone = 400;
-    public int kAllowableError = 50;
     public double rpmOutput;
     public double rpmTolerance = 50.0;
-    private boolean timerStart;
-    private double timestamp;
-    private boolean canShoot;
-    private double idealRPM;
-    private double setpoint = 0; //angle
-    private int controlMode = 1;
-    private boolean initialHome;
-    
+    private double flywheelSetpoint;
+    private double turretSetpoint; 
+    private int controlMode; 
+    private boolean initialHome; 
+    private boolean canShoot; 
+    private double idealRPM; 
 
     
-        public Outtake(PowerDistribution powerdistribution, Vision vision, DriveTrain driveTrain ) {
-        // Setup shooter motors (Falcons)
-        for(TalonFX outtakeMotor : outtakeMotors) {
+    public Outtake(PowerDistribution powerdistribution, Vision vision, DriveTrain driveTrain ) {
+    // Setup shooter motors (Falcons)
+    for(TalonFX outtakeMotor : outtakeMotors) {
         outtakeMotor.configFactoryDefault();
         outtakeMotor.setNeutralMode(NeutralMode.Coast);
         outtakeMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
         outtakeMotor.configVoltageCompSaturation(10);
         outtakeMotor.enableVoltageCompensation(true);
-        }
-        m_vision = vision;
-        m_driveTrain = driveTrain;
-        m_pdp = powerdistribution;
+    }
+    m_vision = vision;
+    m_driveTrain = driveTrain;
+    m_pdp = powerdistribution;
     }
     /**
      * 
@@ -68,20 +64,20 @@ public class Outtake extends SubsystemBase {
      * @param setpoint
      * set to setpoint
      */
-    public void setRPM(double setpoint) {
+    public void setRPM(double flywheelSetpoint) {
    
     }
 
     public double getSetpoint() {
-        return setpoint;
+        return  flywheelSetpoint;
     }
 
     public boolean canShoot() {
         return canShoot;
     } 
 
-    /**
-     * updateRPMSetpoint else setPower to 0
+    /** flywheelSetpoint
+     *  if setpoint else setPower to 0
      */
     private void updateRPMSetpoint() {
         
@@ -115,7 +111,7 @@ public class Outtake extends SubsystemBase {
         
     } 
     public void setIdealRPM() {
-        setpoint = idealRPM;
+        flywheelSetpoint = idealRPM;
     }
 
     public int getControlMode() {
@@ -169,10 +165,11 @@ public class Outtake extends SubsystemBase {
     public void setPercentOutput(double output) {}
 
     /**
+     * TurretSetpoint specifically 
      * sets the setpoint to turret angle
      */
     public void stopTurret() {}  
-    
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
