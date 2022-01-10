@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** intakes one cargo and intakes two cargo into the high goal */
 public class TwoBallAuto extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final DriveTrain m_driveTrain;
 
   /**
@@ -25,15 +25,23 @@ public class TwoBallAuto extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+  }
+
+  // Drive backward maximum distance to ball
+  // While dirivng backward, intake is running
+  // Stop (now with 2 cargo) and aim for high goal
+  // Shoot 2 cargo into high goal
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
