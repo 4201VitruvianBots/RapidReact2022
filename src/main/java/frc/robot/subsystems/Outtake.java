@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Outtake extends SubsystemBase {
@@ -18,5 +19,9 @@ public class Outtake extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+  }
+
+  public Pose2d getTurretSimPose() {
+      return null;
   }
 }
