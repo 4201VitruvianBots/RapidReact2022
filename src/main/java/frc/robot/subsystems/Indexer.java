@@ -43,7 +43,8 @@
         }
 
         /**
-         *  Senses if there is a ball in the indexer
+         *  Senses if there is a ball in the indexer"
+         *  don't know if we need it
          * @return if there is a ball in the indexer
          */
         public boolean newBall(){
