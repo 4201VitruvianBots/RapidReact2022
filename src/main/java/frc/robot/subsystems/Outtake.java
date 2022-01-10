@@ -12,28 +12,37 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Outtake extends SubsystemBase {
   /** Creates a new Outtake. */
 
-        private final TalonFX[] outtakeMotors = {
-        new TalonFX(Constants.Outtake.flywheelMotorA),
-        new TalonFX(Constants.Outtake.flywheelMotorB)
-        };
+      private final TalonFX[] outtakeMotors = {
+      new TalonFX(Constants.Outtake.flywheelMotorA),
+      new TalonFX(Constants.Outtake.flywheelMotorB)
+      };
+
     private final PowerDistribution m_pdp;
     private final DriveTrain m_driveTrain;
     private final Vision m_vision;
+    private final int encoderUnitsPerRotation = 4096;
+    private final Timer timeout = new Timer();
     public int kI_Zone = 400;
     public int kAllowableError = 50;
     public double rpmOutput;
     public double rpmTolerance = 50.0;
-    private double setpoint;
     private boolean timerStart;
     private double timestamp;
     private boolean canShoot;
     private double idealRPM;
+    private double setpoint = 0; //angle
+    private int controlMode = 1;
+    private boolean initialHome;
+    
+
+    
         public Outtake(PowerDistribution powerdistribution, Vision vision, DriveTrain driveTrain ) {
         // Setup shooter motors (Falcons)
         for(TalonFX outtakeMotor : outtakeMotors) {
@@ -80,9 +89,7 @@ public class Outtake extends SubsystemBase {
     /**
      * set to test RPM
      */
-    public void setTestRPM() {
-        
-    }
+    public void setTestRPM() {}
 
     public double getTestRPM() {
         return rpmOutput;
@@ -94,7 +101,7 @@ public class Outtake extends SubsystemBase {
     /**
      * boolean
      * @param motorIndex
-     * return the absolute value of closed loop error < 100
+     * @return the absolute value of closed loop error < 100
      */
     public void encoderAtSetpoint() {   
     }
@@ -102,7 +109,7 @@ public class Outtake extends SubsystemBase {
     /**
      * double
      * @param motorIndex
-     * returns falcon units to RPM with outtake velocity
+     * @return falcon units to RPM with outtake velocity
      */
     public void getRPM(int motorIndex) {
         
@@ -111,6 +118,61 @@ public class Outtake extends SubsystemBase {
         setpoint = idealRPM;
     }
 
+    public int getControlMode() {
+      return controlMode;
+    }
+
+    public void setControlMode(int mode) {
+      controlMode = mode;
+    }
+
+    /**
+     * double
+     * returns encoder units of turret into degrees
+     */
+    public void getTurretAngle() {}
+
+    /**
+     * double
+     * @return turret angle - drivetrain angle
+     */
+    public void getFieldRelativeAngle() {}
+
+    /**
+     * double
+     * @return max angle
+     */
+    public void getMaxAngle() {}
+
+    /** 
+     * 
+     * @return minimum angle
+     * 
+    */
+    public void getMinAngle() {}
+
+    /**
+     * boolean
+     * @return ! turrethomesensor.get
+     */
+    public void getTurretHome() {}
+
+    public boolean getInitialHome() { 
+      return initialHome;
+    }
+  
+    /**
+     * 
+     * @param output
+     * sets the percentoutput for the turretmotor
+     */
+    public void setPercentOutput(double output) {}
+
+    /**
+     * sets the setpoint to turret angle
+     */
+    public void stopTurret() {}  
+    
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
