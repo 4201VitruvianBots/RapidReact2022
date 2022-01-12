@@ -3,7 +3,7 @@ import edu.wpi.first.gradlerio.deploy.roborio.RoboRIO
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.1.1"
-    id 'com.diffplug.spotless' version '6.1.2' apply false
+    id 'com.diffplug.spotless' version '6.1.0'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
