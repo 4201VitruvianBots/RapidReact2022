@@ -154,6 +154,8 @@ public class Vision extends SubsystemBase {
     goal_camera.getEntry("ledMode").setNumber(ledMode);
   }
 
+  /** Sends values to SmartDashboard
+   */
   private void updateSmartDashboard() {
     SmartDashboard.putBoolean("Has Goal Target", getGoalValidTarget());
     SmartDashboard.putNumber("Goal Angle", getGoalTargetXAngle());
