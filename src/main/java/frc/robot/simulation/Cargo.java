@@ -11,9 +11,7 @@ import frc.robot.subsystems.Outtake;
 public class Cargo {
     boolean wasShot;
     Pose2d ballPose = new Pose2d();
-    private double ballZPos = 0; // Height of the center of the ball above the ground
-    private double ballZVel = 0; // Vertical velocity of the ball
-    private Pose2d ballXYVel = new Pose2d(); // X and Y velocity of the ball while in the air
+    private Pose2d ballVel = new Pose2d();
     double m_lastTimestamp;
     private int ballState = 0;
 
@@ -52,28 +50,12 @@ public class Cargo {
         return ballPose;
     }
 
-    public void moveBallZPos(double deltaZ) {
-        ballZPos += deltaZ;
+    public void setBallVel(Pose2d m_ballVel) {
+        ballVel = m_ballVel;
     }
 
-    public double getBallZPos() {
-        return ballZPos;
-    }
-
-    public void setBallZVel(double m_ballZVel) {
-        ballZVel = m_ballZVel;
-    }
-
-    public double getBallZVel() {
-        return ballZVel;
-    }
-
-    public void setBallXYVel(Pose2d m_ballXYVel) {
-        ballXYVel = m_ballXYVel;
-    }
-
-    public Pose2d getBallXYVel() {
-        return ballXYVel;
+    public Pose2d getBallVel() {
+        return ballVel;
     }
 
     public void setLastTimestamp(double timestamp) {

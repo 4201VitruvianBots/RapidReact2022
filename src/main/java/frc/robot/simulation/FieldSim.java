@@ -204,7 +204,7 @@ public class FieldSim {
 //         return Math.toDegrees(targetRadians);
 //     }
 
-    public Cargo[] getPowerCells() {
+    public Cargo[] getCargo() {
         return m_cargo;
     }
 
@@ -217,53 +217,51 @@ public class FieldSim {
         m_driveTrain.resetOdometry(pose, pose.getRotation());
     }
 
-    private void updateBallState(Cargo powercell) {
-        Pose2d ballPose = powercell.getBallPose();
-        if(powercell.getBallState() != 1) {
+    private void updateBallState(Cargo cargo) {
+        Pose2d ballPose = cargo.getBallPose();
+        if(cargo.getBallState() != 1) {
             if (ballPose.getX() < 0 || ballPose.getX() > Constants.Sim.fieldWidthMeters || ballPose.getY() < 0 || ballPose.getY() > Constants.Sim.fieldHieghtMeters)
-                powercell.setBallState(3);
+                cargo.setBallState(3);
         }
 
 //        System.out.println("Ball Shot: " + wasShot + "\tBall State: " + ballState);
 //        System.out.println("Ball State: " + ballState + "\tCos: " + ballPose.getRotation().getCos() + "\tX Pos: " + ballPose.getX());
-        switch (powercell.getBallState()) {
+        switch (cargo.getBallState()) {
             case 3:
                 // Ball is out of bounds
                 if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
-                    powercell.setBallPose(Constants.Sim.redLoadingStation);
+                    cargo.setBallPose(Constants.Sim.redLoadingStation);
                 else
-                    powercell.setBallPose(Constants.Sim.blueLoadingStation);
+                    cargo.setBallPose(Constants.Sim.blueLoadingStation);
 
-                powercell.setBallState(0);
+                    cargo.setBallState(0);
                 break;
             case 2:
                 // Ball is traveling in the air
                 double currentTime = RobotController.getFPGATime();
                 // FPGA time is in microseonds, need to convert it into seconds
-                double deltaT = (currentTime - powercell.getLastTimestamp()) / 1e6;
+                double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
                 //double distanceTraveled = Constants.Sim.shotSpeed * deltaT;
 
-                double deltaX = powercell.getBallXYVel().getX() * deltaT;
-                double deltaY = powercell.getBallXYVel().getY() * deltaT;
-                // powercell.setBallZVel(powercell.getBallZVel() - Constants.g * deltaT); // Update vertical velocity by gravity
-                double deltaZ = powercell.getBallZVel() * deltaT;
+                double deltaX = cargo.getBallVel().getX() * deltaT;
+                double deltaY = cargo.getBallVel().getY() * deltaT;
+                
                 //System.out.println("Delta X: " + deltaX + "\tDelta Y: " + deltaY + "\tDelta T: " + deltaT);
-                SmartDashboardTab.putNumber("Shoot on the Move", "Ball height", powercell.getBallZPos());
-                powercell.setBallPose(new Pose2d(deltaX + ballPose.getX(),
+                cargo.setBallPose(new Pose2d(deltaX + ballPose.getX(),
                         deltaY + ballPose.getY(),
                         ballPose.getRotation()));
 
-                powercell.setLastTimestamp(currentTime);
+                    cargo.setLastTimestamp(currentTime);
                 break;
             case 1:
                 // Ball has been picked up by the robot
-                powercell.setBallPose(m_field2d.getObject("Outtake").getPose());
+                cargo.setBallPose(m_field2d.getObject("Outtake").getPose());
 
                 // Ball has been shot;
-                if(powercell.getBallShotState()) {
-                    powercell.setBallShotState(false);
-                    powercell.setLastTimestamp(RobotController.getFPGATime());
-                    powercell.setBallState(2);
+                if(cargo.getBallShotState()) {
+                    cargo.setBallShotState(false);
+                    cargo.setLastTimestamp(RobotController.getFPGATime());
+                    cargo.setBallState(2);
                     ballCount--;
                 }
                 break;
@@ -271,7 +269,7 @@ public class FieldSim {
             default:
                 if(isBallInIntakeZone(ballPose) && ballCount < 6) {
                     ballCount++;
-                    powercell.setBallState(1);
+                    cargo.setBallState(1);
                 }
                 break;
         }
