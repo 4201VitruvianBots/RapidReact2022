@@ -18,11 +18,13 @@ jobs:
         git fetch --prune --unshallow
         git checkout -b pr
         git branch -f main origin/main
+
     - name: Install clang-format
       run: |
         sudo sh -c "echo 'deb http://archive.ubuntu.com/ubuntu/ $(lsb_release -cs)-proposed restricted main multiverse universe' >> /etc/apt/sources.list.d/proposed-repositories.list"
         sudo apt-get update -q
         sudo apt-get install -y clang-format-12
+
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
