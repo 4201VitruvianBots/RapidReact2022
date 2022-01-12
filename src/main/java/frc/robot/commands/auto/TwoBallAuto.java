@@ -1,15 +1,9 @@
 package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.math.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
@@ -17,26 +11,12 @@ import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstrain
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.RobotContainer;
-// import frc.robot.commands.auto.SmartdashboardCommand;
-// import frc.robot.commands.auto.TurnInPlace;
 import frc.robot.commands.driveTrain.SetDriveNeutralMode;
-//import frc.robot.commands.driveTrain.SetDriveShifters;
 import frc.robot.commands.driveTrain.SetOdometry;
-// import frc.robot.commands.intake.SetIntakeSpeed;
-// import frc.robot.commands.intake.SetIntakePiston;
-// import frc.robot.commands.intake.SetIntakeStates;
-import frc.robot.Constants;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimulationShoot;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
-import java.util.ArrayList;
-import java.util.List;
 
 /** intakes one cargo and intakes two cargo into the high goal */
 public class TwoBallAuto extends SequentialCommandGroup {
@@ -54,7 +34,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         int[][] waypointsRaw = { // x, y, and z coordinates of the robot (x and y in inches, z is degrees of
                                  // rotation)
                 { 0, 0, 0 },
-                { -120, 0, 0 },
+                { -120, 0, 0 }
 
         };
 
@@ -102,29 +82,10 @@ public class TwoBallAuto extends SequentialCommandGroup {
         double[] startVelocities = {
                 0, // starting velocity from point 0 to point 1
                 2 * configA.getMaxVelocity() / 3, // starting velocity from point 1 to point 2
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4 };
+        };
         double[] endVelocities = {
                 2 * configA.getMaxVelocity() / 3, // ending velocity at point 1 from point 0
-                2 * configA.getMaxVelocity() / 3, // ending velocity at point 2 from point 1
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                2 * configA.getMaxVelocity() / 3 };
+        };
 
         for (int i = 0; i < waypoints.length - 1; i++) {
             configA.setStartVelocity(startVelocities[i]);
@@ -137,5 +98,6 @@ public class TwoBallAuto extends SequentialCommandGroup {
             var command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
             addCommands(command);
         }
+
     }
 }
