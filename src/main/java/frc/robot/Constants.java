@@ -43,10 +43,7 @@ public final class Constants {
     }
 
     public final class Outtake {
-    public static final int flywheelMotorA = 40;
-     public static final int flywheelMotorB = 41;
-     public static final int turretMotor = 60;
-     public static final int turretEncoder = 61;
+
     }
 
     public final class Vision {
