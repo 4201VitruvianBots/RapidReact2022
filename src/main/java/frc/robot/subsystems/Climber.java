@@ -27,10 +27,10 @@ public class Climber extends SubsystemBase {
      */
     public Climber() {
         // Set up climber motor
-        climbMotor.configFactoryDefault();
-        climbMotor.setSelectedSensorPosition(0);
-        climbMotor.setNeutralMode(NeutralMode.Brake);
-        climbMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+        this.climbMotor.configFactoryDefault();
+        this.climbMotor.setSelectedSensorPosition(0);
+        this.climbMotor.setNeutralMode(NeutralMode.Brake);
+        this.climbMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
     }
 
@@ -40,7 +40,7 @@ public class Climber extends SubsystemBase {
      * @return the climber state the piston (true is extended)
      */
     public boolean getClimbPistonExtendStatus() {
-        return climbPiston.get() == DoubleSolenoid.Value.kForward;
+        return this.climbPiston.get() == DoubleSolenoid.Value.kForward;
     }
 
     /**
@@ -48,8 +48,8 @@ public class Climber extends SubsystemBase {
      *
      * @param state true sets' climber to go up. false sets climber to go down
      */
-    public void setClimbPiston(boolean state) {
-        climbPiston.set(state ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
+    public void setClimbPiston(final boolean state) {
+        this.climbPiston.set(state ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
     }
 
     /**
@@ -58,7 +58,7 @@ public class Climber extends SubsystemBase {
      * @return up is true. down is false
      */
     public boolean getClimbState() {
-        return climbState;
+        return this.climbState;
     }
 
     /**
@@ -66,7 +66,7 @@ public class Climber extends SubsystemBase {
      *
      * @param state up is true. down is false
      */
-    public void setClimbState(boolean state) {
+    public void setClimbState(final boolean state) {
         this.climbState = state;
     }
 
@@ -75,8 +75,8 @@ public class Climber extends SubsystemBase {
      *
      * @param value output value
      */
-    public void setClimberPercentOutput(double value) {
-        climbMotor.set(ControlMode.PercentOutput, value);
+    public void setClimberPercentOutput(final double value) {
+        this.climbMotor.set(ControlMode.PercentOutput, value);
     }
 
     /**
@@ -85,7 +85,7 @@ public class Climber extends SubsystemBase {
      * @return the climber position (in raw sensor units)
      */
     public double getClimberPosition() {
-        return climbMotor.getSelectedSensorPosition();
+        return this.climbMotor.getSelectedSensorPosition();
     }
 
     @Override
