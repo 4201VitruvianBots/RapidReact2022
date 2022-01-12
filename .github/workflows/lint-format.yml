@@ -18,16 +18,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Fetch all history and metadata
-      run: |
-        git fetch --prune --unshallow
-        git checkout -b pr
-        git branch -f main origin/main
-
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
     # Runs a single command using the runners shell
-    - name: Compile and run tests on robot code
+    - name: Apply code format with Spotless
       run: ./gradlew spotlessApply
