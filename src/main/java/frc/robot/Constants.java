@@ -83,16 +83,13 @@ public final class Constants {
         public static final double fieldHieghtMeters = Units.feetToMeters(27);
         public static final double ballDiameterMeters = Units.inchesToMeters(9.5);
     
-        public static final double robotWidth = 0.673;
-        public static final double robotLength = 0.838;
-        public static final double intakeLength = 0.3048;
-        public static final double shotSpeed = 10; // in meters/second;
+        public static final double robotWidthMeters = 0.673;
+        public static final double robotLengthMeters = 0.838;
+        public static final double intakeLengthMeters = 0.3048;
+        public static final double shotSpeedMetersPerSecond = 10;
     
-        public static final Pose2d redLoadingStation = new Pose2d(0.238258, 2.554548, new Rotation2d());
-        public static final Pose2d blueLoadingStation = new Pose2d(15.732665, 5.646024, new Rotation2d());
-    
-        public static final Pose2d blueGoalPose = new Pose2d(0, 5.831, new Rotation2d());
-        public static final Pose2d redGoalPose = new Pose2d(15.960367,2.373122, new Rotation2d());
+        public static final Pose2d hubPoseMeters = new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0)));
+        public static final Pose2d startPositionMeters = new Pose2d();
     }
 
     public final class Indexer {

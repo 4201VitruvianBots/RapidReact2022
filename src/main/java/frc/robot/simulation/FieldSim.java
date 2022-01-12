@@ -38,10 +38,9 @@ public class FieldSim {
     public FieldSim(DriveTrain driveTrain/*, Outtake outtake*/) {
         m_driveTrain = driveTrain;
         // m_outtake = outtake;
-        // m_shooter = outtake;
 
         for(int i = 0; i < m_cargo.length; i++)
-            m_cargo[i] = new Cargo(String.format("PowerCell_" + String.format("%02d", i) ));
+            m_cargo[i] = new Cargo(String.format("Cargo_" + String.format("%02d", i) ));
 
         m_field2d = new Field2d();
     }
@@ -75,9 +74,8 @@ public class FieldSim {
         m_powercells[15].setBallPose(Constants.Sim.redCenterBalls[3]);
         m_powercells[16].setBallPose(Constants.Sim.redCenterBalls[4]);*/
 
-        Pose2d startPosition = new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0)));
-        m_field2d.setRobotPose(startPosition);
-        m_driveTrain.resetOdometry(startPosition, startPosition.getRotation());
+        m_field2d.setRobotPose(Constants.Sim.startPositionMeters);
+        m_driveTrain.resetOdometry(Constants.Sim.startPositionMeters, Constants.Sim.startPositionMeters.getRotation());
         m_autoStartTime = Timer.getFPGATimestamp();
     }
 
@@ -99,10 +97,10 @@ public class FieldSim {
         double cos = robotPose.getRotation().getCos();
         double sin = robotPose.getRotation().getSin();
 
-        double deltaXa = (robotX - Constants.Sim.robotLength / 2.0 - Constants.Sim.intakeLength) - robotX;
-        double deltaXb = (robotX - Constants.Sim.robotLength / 2.0) - robotX;
-        double deltaYa = (robotY + Constants.Sim.robotWidth / 2.0 ) - robotY;
-        double deltaYb = (robotY - Constants.Sim.robotWidth / 2.0 ) - robotY;
+        double deltaXa = (robotX - Constants.Sim.robotLengthMeters / 2.0 - Constants.Sim.intakeLengthMeters) - robotX;
+        double deltaXb = (robotX - Constants.Sim.robotLengthMeters / 2.0) - robotX;
+        double deltaYa = (robotY + Constants.Sim.robotWidthMeters / 2.0 ) - robotY;
+        double deltaYb = (robotY - Constants.Sim.robotWidthMeters / 2.0 ) - robotY;
 
         intakePose[0] = new Pose2d(cos * deltaXa - sin * deltaYa + robotX,
                 sin * deltaXa + cos * deltaYa + robotY,
@@ -229,10 +227,10 @@ public class FieldSim {
         switch (cargo.getBallState()) {
             case 3:
                 // Ball is out of bounds
-                if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
-                    cargo.setBallPose(Constants.Sim.redLoadingStation);
-                else
-                    cargo.setBallPose(Constants.Sim.blueLoadingStation);
+                // if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
+                    // powercell.setBallPose(Constants.Sim.redLoadingStation);
+                // else
+                    // powercell.setBallPose(Constants.Sim.blueLoadingStation);
 
                     cargo.setBallState(0);
                 break;

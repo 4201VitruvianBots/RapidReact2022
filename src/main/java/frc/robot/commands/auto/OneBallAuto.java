@@ -34,8 +34,8 @@ public class OneBallAuto extends SequentialCommandGroup {
 
         int[][] waypointsRaw = { // x, y, and z coordinates of the robot (x and y in inches, z is degrees of
                                  // rotation)
-                { 120, 0, 0 },
-                { 0, 0, 0 }
+                { 250, 170, 0 },
+                { 130, 170, 0 }
 
         };
 
