@@ -21,7 +21,9 @@ public final class Constants {
     }
 
     public final class Climber {
-
+        public static final int climbMotorA = 50;
+        public static final int climbPistonForward = 4;
+        public static final int climbPistonReverse = 5;
     }
 
     public final class DriveTrain {
