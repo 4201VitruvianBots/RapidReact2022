@@ -1,60 +1,41 @@
-package frc.robot.commands.autonomous.routines;
+package frc.robot.commands.auto;
 
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Transform2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.constraint.CentripetalAccelerationConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveKinematicsConstraint;
-import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
-import edu.wpi.first.wpilibj.util.Units;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.RobotContainer;
-import frc.robot.commands.autonomous.SmartdashboardCommand;
-import frc.robot.commands.autonomous.TurnInPlace;
-import frc.robot.commands.drivetrain.SetDriveNeutralMode;
-import frc.robot.commands.drivetrain.SetDriveShifters;
-import frc.robot.commands.drivetrain.SetOdometry;
-import frc.robot.commands.intake.SetIntakeSpeed;
-import frc.robot.commands.intake.SetIntakePiston;
-import frc.robot.commands.intake.SetIntakeStates;
-import frc.robot.constants.Constants;
-import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimulationShoot;
-import frc.robot.subsystems.*;
-import frc.vitruvianlib.utils.TrajectoryUtils;
-import java.util.ArrayList;
 import java.util.List;
 
-public class AutoNavBarrel extends SequentialCommandGroup {
-    public AutoNavBarrel(DriveTrain driveTrain, FieldSim fieldSim) {
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.constraint.CentripetalAccelerationConstraint;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConstraint;
+import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.driveTrain.SetDriveNeutralMode;
+import frc.robot.commands.driveTrain.SetOdometry;
+import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.DriveTrain;
+import frc.vitruvianlib.utils.TrajectoryUtils;
+
+/** intakes one cargo and intakes two cargo into the high goal */
+public class OneBallAuto extends SequentialCommandGroup {
+    /**
+     * Creates a new TwoBallAuto.
+     *
+     * @param driveTrain The driveTrain used by this command.
+     */
+    public OneBallAuto(DriveTrain driveTrain, FieldSim fieldSim) {
+        // Drive backward maximum distance to ball
+        // While dirivng backward, intake is running
+        // Stop (now with 2 cargo) and aim for high goal
+        // Shoot 2 cargo into high goal
+
         int[][] waypointsRaw = { // x, y, and z coordinates of the robot (x and y in inches, z is degrees of
                                  // rotation)
-                { 40, 90, 0 },
-                { 150, 90, 0 },
-                { 176, 45, -120 },
-                { 135, 45, 120 },
-                { 150, 90, 0 },
-                { 250, 96, 30 },
-                { 270, 141, 135 },
-                { 210, 120, -80 },
-                { 290, 45, -45 },
-                { 330, 45, 45 },
-                { 300, 92, 175 },
-                { 180, 102, 180 },
-                { 30, 102, 180 }
+                { 0, 0, 0 },
+                { -120, 0, 0 }
+
         };
 
         /*
@@ -94,36 +75,17 @@ public class AutoNavBarrel extends SequentialCommandGroup {
                                                                            // we're actually testing (turning
                                                                            // speed)
 
-        addCommands(new SetDriveShifters(driveTrain, Constants.DriveConstants.inSlowGear),
+        addCommands(
                 new SetOdometry(driveTrain, fieldSim, startPosition),
                 new SetDriveNeutralMode(driveTrain, 0));
 
         double[] startVelocities = {
                 0, // starting velocity from point 0 to point 1
                 2 * configA.getMaxVelocity() / 3, // starting velocity from point 1 to point 2
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4 };
+        };
         double[] endVelocities = {
                 2 * configA.getMaxVelocity() / 3, // ending velocity at point 1 from point 0
-                2 * configA.getMaxVelocity() / 3, // ending velocity at point 2 from point 1
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                2 * configA.getMaxVelocity() / 3,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                3 * configA.getMaxVelocity() / 4,
-                2 * configA.getMaxVelocity() / 3 };
+        };
 
         for (int i = 0; i < waypoints.length - 1; i++) {
             configA.setStartVelocity(startVelocities[i]);
@@ -136,5 +98,6 @@ public class AutoNavBarrel extends SequentialCommandGroup {
             var command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
             addCommands(command);
         }
+
     }
 }
