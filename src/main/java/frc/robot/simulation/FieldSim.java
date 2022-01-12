@@ -12,7 +12,6 @@ import frc.robot.RobotContainer;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Outtake;
-import frc.robot.subsystems.Outtake;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,9 +21,9 @@ import java.util.Random;
 public class FieldSim {
     private Field2d m_field2d;
     private final DriveTrain m_driveTrain;
-    private final Outtake m_outtake;
-    private final Outtake m_shooter;
-    private final Powercell[] m_powercells = new Powercell[17];
+    // private final Outtake m_outtake;
+    // private final Outtake m_shooter;
+    private final Cargo[] m_cargo = new Cargo[17];
 
     private int ballCount;
     private Pose2d[] intakePose = {
@@ -36,13 +35,13 @@ public class FieldSim {
 
     private double m_autoStartTime;
 
-    public FieldSim(DriveTrain driveTrain, Outtake outtake) {
+    public FieldSim(DriveTrain driveTrain/*, Outtake outtake*/) {
         m_driveTrain = driveTrain;
-        m_outtake = outtake;
-        m_shooter = outtake;
+        // m_outtake = outtake;
+        // m_shooter = outtake;
 
-        for(int i = 0; i < m_powercells.length; i++)
-            m_powercells[i] = new Powercell(String.format("PowerCell_" + String.format("%02d", i) ));
+        for(int i = 0; i < m_cargo.length; i++)
+            m_cargo[i] = new Cargo(String.format("PowerCell_" + String.format("%02d", i) ));
 
         m_field2d = new Field2d();
     }
@@ -51,30 +50,30 @@ public class FieldSim {
         // Load 3 powercells into the robot
         // for(int i = 0; i < 3; i++)
         //     m_powercells[i].setBallState(1);
-        for(int i = 3; i < m_powercells.length; i++)
-            m_powercells[i].setBallState(0);
+        // for(int i = 3; i < m_cargo.length; i++)
+        //     m_cargo[i].setBallState(0);
 
         //ballCount = 3;
 
 
         // Put 3 powercells in the trench;
-        /*m_powercells[3].setBallPose(SimConstants.blueTrenchBallPos[0]);
-        m_powercells[4].setBallPose(SimConstants.blueTrenchBallPos[1]);
-        m_powercells[5].setBallPose(SimConstants.blueTrenchBallPos[2]);
-        m_powercells[6].setBallPose(SimConstants.blueTrenchBallPos[3]);
-        m_powercells[7].setBallPose(SimConstants.blueTrenchBallPos[4]);
+        /*m_powercells[3].setBallPose(Constants.Sim.blueTrenchBallPos[0]);
+        m_powercells[4].setBallPose(Constants.Sim.blueTrenchBallPos[1]);
+        m_powercells[5].setBallPose(Constants.Sim.blueTrenchBallPos[2]);
+        m_powercells[6].setBallPose(Constants.Sim.blueTrenchBallPos[3]);
+        m_powercells[7].setBallPose(Constants.Sim.blueTrenchBallPos[4]);
 
-        m_powercells[8].setBallPose(SimConstants.blueCenterBalls[3]);
-        m_powercells[9].setBallPose(SimConstants.blueCenterBalls[4]);
+        m_powercells[8].setBallPose(Constants.Sim.blueCenterBalls[3]);
+        m_powercells[9].setBallPose(Constants.Sim.blueCenterBalls[4]);
 
-        m_powercells[10].setBallPose(SimConstants.redTrenchBallPos[0]);
-        m_powercells[11].setBallPose(SimConstants.redTrenchBallPos[1]);
-        m_powercells[12].setBallPose(SimConstants.redTrenchBallPos[2]);
-        m_powercells[13].setBallPose(SimConstants.redTrenchBallPos[3]);
-        m_powercells[14].setBallPose(SimConstants.redTrenchBallPos[4]);
+        m_powercells[10].setBallPose(Constants.Sim.redTrenchBallPos[0]);
+        m_powercells[11].setBallPose(Constants.Sim.redTrenchBallPos[1]);
+        m_powercells[12].setBallPose(Constants.Sim.redTrenchBallPos[2]);
+        m_powercells[13].setBallPose(Constants.Sim.redTrenchBallPos[3]);
+        m_powercells[14].setBallPose(Constants.Sim.redTrenchBallPos[4]);
 
-        m_powercells[15].setBallPose(SimConstants.redCenterBalls[3]);
-        m_powercells[16].setBallPose(SimConstants.redCenterBalls[4]);*/
+        m_powercells[15].setBallPose(Constants.Sim.redCenterBalls[3]);
+        m_powercells[16].setBallPose(Constants.Sim.redCenterBalls[4]);*/
 
         Pose2d startPosition = new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0)));
         m_field2d.setRobotPose(startPosition);
@@ -100,10 +99,10 @@ public class FieldSim {
         double cos = robotPose.getRotation().getCos();
         double sin = robotPose.getRotation().getSin();
 
-        double deltaXa = (robotX - SimConstants.robotLength / 2.0 - SimConstants.intakeLength) - robotX;
-        double deltaXb = (robotX - SimConstants.robotLength / 2.0) - robotX;
-        double deltaYa = (robotY + SimConstants.robotWidth / 2.0 ) - robotY;
-        double deltaYb = (robotY - SimConstants.robotWidth / 2.0 ) - robotY;
+        double deltaXa = (robotX - Constants.Sim.robotLength / 2.0 - Constants.Sim.intakeLength) - robotX;
+        double deltaXb = (robotX - Constants.Sim.robotLength / 2.0) - robotX;
+        double deltaYa = (robotY + Constants.Sim.robotWidth / 2.0 ) - robotY;
+        double deltaYb = (robotY - Constants.Sim.robotWidth / 2.0 ) - robotY;
 
         intakePose[0] = new Pose2d(cos * deltaXa - sin * deltaYa + robotX,
                 sin * deltaXa + cos * deltaYa + robotY,
@@ -167,14 +166,14 @@ public class FieldSim {
     public void simulationPeriodic() {
 //        var robotPose = m_field2d.getRobotPose();
 
-//        if(robotPose.getX() < 0 || robotPose.getX() > SimConstants.fieldWidth ||
-//                robotPose.getY() < 0 || robotPose.getY() > SimConstants.fieldHieght)
-//            resetRobotPose(new Pose2d(SimConstants.fieldWidth / 2.0 ,SimConstants.fieldHieght / 2.0 , new Rotation2d(0)));
+//        if(robotPose.getX() < 0 || robotPose.getX() > Constants.Sim.fieldWidth ||
+//                robotPose.getY() < 0 || robotPose.getY() > Constants.Sim.fieldHieght)
+//            resetRobotPose(new Pose2d(Constants.Sim.fieldWidth / 2.0 ,Constants.Sim.fieldHieght / 2.0 , new Rotation2d(0)));
 
         m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
 
-        m_field2d.getObject("Outtake").setPose(new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(),
-                new Rotation2d(Math.toRadians(getIdealTurretAngle()))));
+        // m_field2d.getObject("Outtake").setPose(new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(),
+        //         new Rotation2d(Math.toRadians(getIdealTurretAngle()))));
 
         updateIntakePoses();
 
@@ -183,7 +182,7 @@ public class FieldSim {
         m_field2d.getObject("Intake C").setPose(intakePose[2]);
         m_field2d.getObject("Intake D").setPose(intakePose[3]);
 
-        for(Powercell p:m_powercells) {
+        for(Cargo p:m_cargo) {
             updateBallState(p);
             m_field2d.getObject(p.getName()).setPose(p.getBallPose());
         }
@@ -194,19 +193,19 @@ public class FieldSim {
     public double getAutoStartTime(){
         return m_autoStartTime;
     }
-    public double getIdealTargetDistance() {
-        return Math.sqrt(Math.pow(SimConstants.blueGoalPose.getY() - m_outtake.getTurretSimPose().getY(), 2) + Math.pow(SimConstants.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX(), 2));
-    }
+//     public double getIdealTargetDistance() {
+//         return Math.sqrt(Math.pow(Constants.Sim.blueGoalPose.getY() - m_outtake.getTurretSimPose().getY(), 2) + Math.pow(Constants.Sim.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX(), 2));
+//     }
 
-    public double getIdealTurretAngle() {
+//     public double getIdealTurretAngle() {
 
-//        double targetRadians = Math.atan2(SimConstants.blueGoalPose.getY() -m_outtake.getTurretSimPose().getY(), SimConstants.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX());
-        double targetRadians = Math.atan2(SimConstants.redGoalPose.getY() -m_outtake.getTurretSimPose().getY(), SimConstants.redGoalPose.getX() - m_outtake.getTurretSimPose().getX());
-        return Math.toDegrees(targetRadians);
-    }
+// //        double targetRadians = Math.atan2(Constants.Sim.blueGoalPose.getY() -m_outtake.getTurretSimPose().getY(), Constants.Sim.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX());
+//         double targetRadians = Math.atan2(Constants.Sim.redGoalPose.getY() -m_outtake.getTurretSimPose().getY(), Constants.Sim.redGoalPose.getX() - m_outtake.getTurretSimPose().getX());
+//         return Math.toDegrees(targetRadians);
+//     }
 
-    public Powercell[] getPowerCells() {
-        return m_powercells;
+    public Cargo[] getPowerCells() {
+        return m_cargo;
     }
 
     public Pose2d getRobotPose() {
@@ -218,10 +217,10 @@ public class FieldSim {
         m_driveTrain.resetOdometry(pose, pose.getRotation());
     }
 
-    private void updateBallState(Powercell powercell) {
+    private void updateBallState(Cargo powercell) {
         Pose2d ballPose = powercell.getBallPose();
         if(powercell.getBallState() != 1) {
-            if (ballPose.getX() < 0 || ballPose.getX() > SimConstants.fieldWidth || ballPose.getY() < 0 || ballPose.getY() > SimConstants.fieldHieght)
+            if (ballPose.getX() < 0 || ballPose.getX() > Constants.Sim.fieldWidthMeters || ballPose.getY() < 0 || ballPose.getY() > Constants.Sim.fieldHieghtMeters)
                 powercell.setBallState(3);
         }
 
@@ -230,10 +229,10 @@ public class FieldSim {
         switch (powercell.getBallState()) {
             case 3:
                 // Ball is out of bounds
-                if(ballPose.getX() < SimConstants.fieldWidth / 2.0)
-                    powercell.setBallPose(SimConstants.redLoadingStation);
+                if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
+                    powercell.setBallPose(Constants.Sim.redLoadingStation);
                 else
-                    powercell.setBallPose(SimConstants.blueLoadingStation);
+                    powercell.setBallPose(Constants.Sim.blueLoadingStation);
 
                 powercell.setBallState(0);
                 break;
@@ -242,7 +241,7 @@ public class FieldSim {
                 double currentTime = RobotController.getFPGATime();
                 // FPGA time is in microseonds, need to convert it into seconds
                 double deltaT = (currentTime - powercell.getLastTimestamp()) / 1e6;
-                //double distanceTraveled = SimConstants.shotSpeed * deltaT;
+                //double distanceTraveled = Constants.Sim.shotSpeed * deltaT;
 
                 double deltaX = powercell.getBallXYVel().getX() * deltaT;
                 double deltaY = powercell.getBallXYVel().getY() * deltaT;

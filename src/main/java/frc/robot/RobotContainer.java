@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.simulation.FieldSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -23,6 +25,7 @@ import frc.robot.commands.driveTrain.SetArcadeDrive;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final DriveTrain m_driveTrain = new DriveTrain();
+    private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
 
     static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
     static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -72,7 +75,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null;
+        return new TwoBallAuto(m_driveTrain, m_fieldSim);
     }
 
     public void robotPeriodic() {
@@ -104,10 +107,10 @@ public class RobotContainer {
     }
 
     public void simulationInit() {
-
+        m_fieldSim.initSim();
     }
 
     public void simulationPeriodic() {
-
+        m_fieldSim.simulationPeriodic();
     }
 }

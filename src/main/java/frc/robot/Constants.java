@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -74,6 +76,23 @@ public final class Constants {
         public static final int leftRearDriveMotor = 21;
         public static final int rightFrontDriveMotor = 22;
         public static final int rightRearDriveMotor = 23;
+    }
+
+    public static final class Sim {
+        public static final double fieldWidthMeters = Units.feetToMeters(54);
+        public static final double fieldHieghtMeters = Units.feetToMeters(27);
+        public static final double ballDiameterMeters = Units.inchesToMeters(9.5);
+    
+        public static final double robotWidth = 0.673;
+        public static final double robotLength = 0.838;
+        public static final double intakeLength = 0.3048;
+        public static final double shotSpeed = 10; // in meters/second;
+    
+        public static final Pose2d redLoadingStation = new Pose2d(0.238258, 2.554548, new Rotation2d());
+        public static final Pose2d blueLoadingStation = new Pose2d(15.732665, 5.646024, new Rotation2d());
+    
+        public static final Pose2d blueGoalPose = new Pose2d(0, 5.831, new Rotation2d());
+        public static final Pose2d redGoalPose = new Pose2d(15.960367,2.373122, new Rotation2d());
     }
 
     public final class Indexer {

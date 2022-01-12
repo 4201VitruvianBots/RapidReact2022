@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Outtake;
 
-public class Powercell {
+public class Cargo {
     boolean wasShot;
     Pose2d ballPose = new Pose2d();
     private double ballZPos = 0; // Height of the center of the ball above the ground
@@ -20,7 +20,7 @@ public class Powercell {
 
     String m_name;
 
-    public Powercell(String name) {
+    public Cargo(String name) {
         m_name = name;
     }
 
