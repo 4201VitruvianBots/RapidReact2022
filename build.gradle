@@ -89,6 +89,8 @@ deployArtifact.jarTask = jar
 wpi.java.configureExecutableTasks(jar)
 wpi.java.configureTestTasks(test)
 
+apply plugin: 'com.diffplug.spotless'
+    
 spotless {
    java {
       target fileTree('.') {
