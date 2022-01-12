@@ -18,12 +18,13 @@ import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** intakes one cargo and intakes two cargo into the high goal */
+/** Drives off the tarmac and shoots two cargo into the high goal. */
 public class OneBallAuto extends SequentialCommandGroup {
     /**
-     * Creates a new TwoBallAuto.
+     * Drives off the tarmac and shoots two cargo into the high goal.
      *
      * @param driveTrain The driveTrain used by this command.
+     * @param fieldSim The fieldSim used by this command.
      */
     public OneBallAuto(DriveTrain driveTrain, FieldSim fieldSim) {
         // Drive backward maximum distance to ball
@@ -33,8 +34,8 @@ public class OneBallAuto extends SequentialCommandGroup {
 
         int[][] waypointsRaw = { // x, y, and z coordinates of the robot (x and y in inches, z is degrees of
                                  // rotation)
-                { 0, 0, 0 },
-                { -120, 0, 0 }
+                { 120, 0, 0 },
+                { 0, 0, 0 }
 
         };
 
@@ -65,7 +66,7 @@ public class OneBallAuto extends SequentialCommandGroup {
                                                                                                         // (m/s
                                                                                                         // and
                                                                                                         // m/s/s)
-        configA.setReversed(false); // 'true' would make it go the opposite direction
+        configA.setReversed(true); // 'true' would make it go the opposite direction
         // configA.setEndVelocity(configA.getMaxVelocity());
         configA.addConstraint(new DifferentialDriveKinematicsConstraint(driveTrain.getDriveTrainKinematics(),
                 configA.getMaxVelocity()));

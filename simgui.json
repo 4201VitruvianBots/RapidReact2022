@@ -13,6 +13,7 @@
     },
     "windows": {
       "/SmartDashboard/Field2d": {
+        "image": "C:\\Users\\Josiah Fu\\Documents\\Robotics\\Repositories\\RapidReact2022\\resources\\Images\\RapidReactField.PNG",
         "window": {
           "visible": true
         }
