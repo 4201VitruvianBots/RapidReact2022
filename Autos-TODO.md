@@ -11,7 +11,9 @@
   - [x] Write waypoints
   - [x] Test in sim
 - [ ] Three Ball auto
-  - [ ] 
+  - [x] Decide Path
+  - [ ] Write waypoints
+  - [x] Test in sim
 
 ## When jango is ready
 - [ ] Test drivetrain code on jango

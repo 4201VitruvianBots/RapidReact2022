@@ -198,8 +198,8 @@ public class DriveTrain extends SubsystemBase {
         // Normalization
         double magnitude = Math.max(Math.abs(leftPWM), Math.abs(rightPWM));
         if (magnitude > 1.0) {
-            leftPWM *= 1.0 / magnitude;
-            rightPWM *= 1.0 / magnitude;
+            leftPWM /= magnitude;
+            rightPWM /= magnitude;
         }
 
         setMotorVelocityMetersPerSecond(leftPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond, rightPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
