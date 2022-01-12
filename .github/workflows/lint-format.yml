@@ -8,10 +8,10 @@ jobs:
   # This workflow contains a single job called "format"
   format:
     # The type of runner that the job will run on
-    runs-on: wpilib/ubuntu-base:18.04
+    runs-on: ubuntu-latest
 
     # This grabs the WPILib docker container
-    container: wpilib/roborio-cross-ubuntu:2022-18.04
+    container: wpilib/ubuntu-base:18.04
     
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
