@@ -41,10 +41,24 @@ public final class Constants {
     }
 
     public final class Outtake {
-    public static final int flywheelMotorA = 40;
-     public static final int flywheelMotorB = 41;
-     public static final int turretMotor = 60;
-     public static final int turretEncoder = 61;
+        public static final int encoderUnitsPerRotation = 2048;
+
+        // Volts per (radian per second)
+        public static final double kFlywheelKv = 0.111;
+
+        // Volts per (radian per second squared)
+        public static final double kFlywheelKa = 0.02;
+
+        public static final double rpmTolerance = 50.0;
+
+        public static final int flywheelMotorA = 40;
+        public static final int flywheelMotorB = 41;
+    }
+
+    public final class Turret {
+        public static final int turretMotor = 60;
+        public static final int turretEncoder = 61;
+
     }
 
     public final class Vision {
