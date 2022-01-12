@@ -8,7 +8,7 @@ jobs:
   # This workflow contains a single job called "format"
   format:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: wpilib/ubuntu-base:18.04
 
     # This grabs the WPILib docker container
     container: wpilib/roborio-cross-ubuntu:2022-18.04
@@ -17,7 +17,9 @@ jobs:
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-
+      with:
+        fetch-depth: 0
+        
     # Grant execute permission for gradlew
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -25,3 +27,6 @@ jobs:
     # Runs a single command using the runners shell
     - name: Apply code format with Spotless
       run: ./gradlew spotlessApply
+      
+    - name: Check output
+      run: git --no-pager diff --exit-code HEAD
