@@ -47,7 +47,7 @@ public class DriveTrain extends SubsystemBase {
     private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
     private final double kA = Constants.DriveTrain.kaVoltSecondsSquaredPerMeter;
 
-    public double kP = 2; //3.6294;
+    public double kP = 1.2532;
     public double kI = 0;
     public double kD = 0;
     public int controlMode = 0;
