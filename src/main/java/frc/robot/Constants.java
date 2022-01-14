@@ -14,38 +14,23 @@ package frc.robot;
  */
 public final class Constants {
 
-    public final class USB {
-        public static final int leftJoystick = 0;
-        public static final int rightJoystick = 1;
-        public static final int xBoxController = 2;
-    }
+  public final class USB {
+    public static final int leftJoystick = 0;
+    public static final int rightJoystick = 1;
+    public static final int xBoxController = 2;
+  }
 
-    public final class Climber {
+  public final class Climber {}
 
-    }
+  public final class DriveTrain {}
 
-    public final class DriveTrain {
+  public final class Indexer {}
 
-    }
+  public final class Intake {}
 
-    public final class Indexer {
+  public final class LED {}
 
-    }
+  public final class Outtake {}
 
-    public final class Intake {
-
-    }
-
-    public final class LED {
-
-    }
-
-    public final class Outtake {
-
-    }
-
-    public final class Vision {
-
-    }
-
+  public final class Vision {}
 }
