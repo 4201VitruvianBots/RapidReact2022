@@ -8,6 +8,7 @@
 package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.DriveTrain.BrakeMode;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -16,14 +17,14 @@ import frc.robot.subsystems.DriveTrain;
 public class SetDriveNeutralMode extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
-    private final int m_mode;
+    private final BrakeMode m_mode;
 
     /**
      * Creates a new ExampleCommand.
      *
      * @param subsystem The subsystem used by this command.
      */
-    public SetDriveNeutralMode(DriveTrain subsystem, int mode) {
+    public SetDriveNeutralMode(DriveTrain subsystem, BrakeMode mode) {
         m_driveTrain = subsystem;
         m_mode = mode;
         // Use addRequirements() here to declare subsystem dependencies.

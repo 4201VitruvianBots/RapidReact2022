@@ -35,6 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.DriveTrain.BrakeMode;
 
 /**
  * A differential drivetrain with two falcon motors on each side
@@ -47,10 +48,9 @@ public class DriveTrain extends SubsystemBase {
     private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
     private final double kA = Constants.DriveTrain.kaVoltSecondsSquaredPerMeter;
 
-    public double kP = 1.2532;
-    public double kI = 0;
-    public double kD = 0;
-    public int controlMode = 0;
+    private final double kP = 1.2532;
+    private final double kI = 0;
+    private final double kD = 0;
 
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Units.inchesToMeters(21.5));
     DifferentialDriveOdometry odometry;
@@ -247,21 +247,21 @@ public class DriveTrain extends SubsystemBase {
      *
      * @param mode 2 = all coast, 1 = all brake, 0 = half and half
      */
-    public void setDriveTrainNeutralMode(int mode) {
+    public void setDriveTrainNeutralMode(BrakeMode mode) {
         switch (mode) {
-            case 2:
-                for (var motor : driveMotors)
+            case ALL_COAST:
+                for (TalonFX motor : driveMotors)
                     motor.setNeutralMode(NeutralMode.Coast);
-                for (var brakeMode : brakeMode)
-                    brakeMode = false;
+                for (int i = 0; i < brakeMode.length; i++)
+                    brakeMode[i] = false;
                 break;
-            case 1:
+            case ALL_BRAKE:
                 for (var motor : driveMotors)
                     motor.setNeutralMode(NeutralMode.Brake);
-                for (var brakeMode : brakeMode)
-                    brakeMode = true;
+                for (int i = 0; i < brakeMode.length; i++)
+                    brakeMode[i] = true;
                 break;
-            case 0:
+            case FOLLOWER_COAST:
             default:
                 driveMotors[0].setNeutralMode(NeutralMode.Brake);
                 driveMotors[1].setNeutralMode(NeutralMode.Coast);
@@ -332,25 +332,6 @@ public class DriveTrain extends SubsystemBase {
         resetEncoderCounts();
     }
 
-    private void initShuffleboardValues() {
-        // Need to verify that this works again
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("Left Encoder", () -> getEncoderCount(0));
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("Right Encoder", () -> getEncoderCount(2));
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("xCoordinate", () ->
-                Units.metersToFeet(getRobotPoseMeters().getTranslation().getX()));
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("yCoordinate", () ->
-                Units.metersToFeet(getRobotPoseMeters().getTranslation().getY()));
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("Angle", () ->
-                getRobotPoseMeters().getRotation().getDegrees());
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("leftSpeed", () ->
-                Units.metersToFeet(getSpeedsMetersPerSecond().leftMetersPerSecond));
-        Shuffleboard.getTab("Constants.DriveTrain Train").addNumber("rightSpeed", () ->
-                Units.metersToFeet(getSpeedsMetersPerSecond().rightMetersPerSecond));
-
-
-        Shuffleboard.getTab("Turret").addNumber("Robot Angle", navX::getAngle);
-    }
-
     private void updateSmartDashboard() {
         if (RobotBase.isReal()) {
             SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(0));
@@ -377,10 +358,19 @@ public class DriveTrain extends SubsystemBase {
             SmartDashboardTab.putNumber("DriveTrain", "leftSpeed",
                     Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
             SmartDashboardTab.putNumber("DriveTrain", "rightSpeed",
-                    Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
+                    Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));    
+            SmartDashboardTab.putNumber("DriveTrain", "L Encoder Count", simMotors[0].getSelectedSensorPosition());
+            SmartDashboardTab.putNumber("DriveTrain", "R Encoder Count", simMotors[2].getSelectedSensorPosition());
+            SmartDashboardTab.putNumber("DriveTrain", "L Encoder Rate", simMotors[0].getSelectedSensorVelocity());
+            SmartDashboardTab.putNumber("DriveTrain", "R Encoder Rate", simMotors[2].getSelectedSensorVelocity());
 
             SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
         }
+
+        SmartDashboardTab.putNumber("DriveTrain", "Robot Angle", getHeadingDegrees());
+        SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
+        SmartDashboardTab.putNumber("DriveTrain", "L Output", m_leftOutput);
+        SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     }
 
     @Override
@@ -413,21 +403,5 @@ public class DriveTrain extends SubsystemBase {
         simMotors[2].getSimCollection().setQuadratureVelocity((int) (m_drivetrainSimulator.getRightVelocityMetersPerSecond() / (Constants.DriveTrain.kEncoderDistancePerPulseMetersSim * 10.0)));
         m_gyroAngleSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
 
-        SmartDashboard.putNumber("Robot Angle", getHeadingDegrees());
-        SmartDashboard.putNumber("L Encoder Count", simMotors[0].getSelectedSensorPosition());
-        SmartDashboard.putNumber("R Encoder Count", simMotors[2].getSelectedSensorPosition());
-        SmartDashboard.putNumber("L Encoder Rate", simMotors[0].getSelectedSensorVelocity());
-        SmartDashboard.putNumber("R Encoder Rate", simMotors[2].getSelectedSensorVelocity());
-
-        SmartDashboard.putNumber("L Output", m_leftOutput);
-        SmartDashboard.putNumber("R Output", m_rightOutput);
-        SmartDashboard.putNumber("L Encoder Distance", getWheelDistanceMeters(0));
-        SmartDashboard.putNumber("R Encoder Distance", getWheelDistanceMeters(2));
-//        SmartDashboard.putNumber("L Encoder Count", m_leftEncoder.get());
-//        SmartDashboard.putNumber("R Encoder Count", m_rightEncoder.get());
-//        SmartDashboard.putNumber("L Encoder Rate", m_leftEncoder.getRate());
-//        SmartDashboard.putNumber("R Encoder Rate", m_rightEncoder.getRate());
-
-        SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
     }
 }

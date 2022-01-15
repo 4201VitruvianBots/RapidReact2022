@@ -76,6 +76,10 @@ public final class Constants {
         public static final int leftRearDriveMotor = 21;
         public static final int rightFrontDriveMotor = 22;
         public static final int rightRearDriveMotor = 23;
+
+        public static enum BrakeMode {
+            ALL_BRAKE, ALL_COAST, FOLLOWER_COAST
+        }
     }
 
     public static final class Sim {

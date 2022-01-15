@@ -1,12 +1,6 @@
 package frc.robot.simulation;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Outtake;
 
 public class Cargo {
     boolean wasShot;
