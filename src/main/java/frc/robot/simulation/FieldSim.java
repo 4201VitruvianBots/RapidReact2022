@@ -19,14 +19,14 @@ import java.util.List;
 import java.util.Random;
 
 public class FieldSim {
-    private Field2d m_field2d;
+    private final Field2d m_field2d;
     private final DriveTrain m_driveTrain;
     // private final Outtake m_outtake;
     // private final Outtake m_shooter;
     private final Cargo[] m_cargo = new Cargo[17];
 
     private int ballCount;
-    private Pose2d[] intakePose = {
+    private final Pose2d[] intakePose = {
             new Pose2d(),
             new Pose2d(),
             new Pose2d(),

@@ -39,7 +39,9 @@ public class RobotContainer {
     public Button[] xBoxPOVButtons = new Button[8];
     public Button xBoxLeftTrigger, xBoxRightTrigger;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
         initializeSubsystems();
 
@@ -48,7 +50,7 @@ public class RobotContainer {
     }
 
     public void initializeSubsystems() {
-        m_driveTrain.setDefaultCommand(new SetArcadeDrive(m_driveTrain, () -> leftJoystick.getRawAxis(1), () -> rightJoystick.getRawAxis(0)));
+        m_driveTrain.setDefaultCommand(new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
     }
 
     /**
@@ -101,7 +103,7 @@ public class RobotContainer {
     }
 
     public void autonomousInit() {
-        
+
     }
 
     public void autonomousPeriodic() {
