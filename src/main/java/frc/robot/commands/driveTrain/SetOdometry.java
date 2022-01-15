@@ -20,7 +20,7 @@ public class SetOdometry extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
     private final FieldSim m_fieldSim;
-    private Pose2d m_pose2d;
+    private final Pose2d m_pose2d;
 
     /**
      * Sets the robot's position

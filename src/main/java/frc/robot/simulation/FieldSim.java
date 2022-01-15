@@ -13,12 +13,12 @@ import frc.robot.Constants.Sim.BallState;
 import frc.robot.subsystems.DriveTrain;
 
 public class FieldSim {
-    private Field2d m_field2d;
+    private final Field2d m_field2d;
     private final DriveTrain m_driveTrain;
     private final Cargo[] m_cargo = new Cargo[9]; // 2 of the balls will be in other robots
 
     private int ballCount;
-    private Pose2d[] intakePose = {
+    private final Pose2d[] intakePose = {
             new Pose2d(),
             new Pose2d(),
             new Pose2d(),
