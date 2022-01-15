@@ -4,7 +4,14 @@
 
     package frc.robot.subsystems;
 
-    import edu.wpi.first.wpilibj.DigitalInput;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.drive.RobotDriveBase.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,14 +25,15 @@ import frc.robot.Constants;
         
         // Setup indexer motor controller (SparkMax)
         CANSparkMax master = new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless);
-        CANEncoder encoder = master.getEncoder();
-        CANPIDController pidController = master.getPIDController();
+        RelativeEncoder encoder = master.getEncoder();
+        SparkMaxPIDController  pidController = master.getPIDController();
 
         // PID terms/other constants
         private double kF = 0.0001;
         private double kP = 0.000001;
         private double kI = 80;
         private double kD = 0.0001;
+        private int controlMode = 1;
 
         // Indexer sensors setup
         DigitalInput intakeSensor = new DigitalInput(Constants.Intake.intakeSensor);
@@ -50,7 +58,7 @@ import frc.robot.Constants;
             pidController.setSmartMotionAllowedClosedLoopError(1, 0);
             pidController.setIZone(kI_Zone);
 
-            initShuffleboard();
+            //initShuffleboard();
         }
 
         /**
@@ -75,7 +83,7 @@ import frc.robot.Constants;
          * @param output value for the power of the kicker motor
          */
         public void setKickerOutput(double output){
-            kicker.set(ControlMode.PercentOutput, output);
+            //kicker.set(ControlMode.PercentOutput, output);
         }
 
         /**
@@ -110,14 +118,14 @@ import frc.robot.Constants;
         public void setRPM(double rpm) {
             double setpoint = rpm / gearRatio;
             SmartDashboard.putNumber("Indexer Setpoint", setpoint);
-            pidController.setReference(setpoint, ControlType.kSmartVelocity);
+            pidController.setReference(setpoint, CANSparkMax.ControlType.kSmartVelocity) ;
         }
-
+    
         /**
          * updates the SmartDashboard with Indexer values
          */
         private void updateSmartDashboard(){
-            SmartDashboardTab.putNumber("Indexer", "Carousel RPM", this.getRPM());
+            //SmartDashboardTab.putNumber("Indexer", "Carousel RPM", this.getRPM());
             SmartDashboard.putNumber("kF", kF);
             SmartDashboard.putNumber("kP", kP);
             SmartDashboard.putNumber("kI", kI);

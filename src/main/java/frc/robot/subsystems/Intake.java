@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -67,8 +71,8 @@ public class Intake extends SubsystemBase {
      * updates intake data on to the dashboard
      */
     public void updateSmartDashboard(){
-        SmartDashboardTab.putBoolean("Intake", "Intake State", getIntakingState());
-        SmartDashboardTab.putBoolean("Intake", "Pistons", getIntakePistonExtendStatus());
+        //SmartDashboardTab.putBoolean("Intake", "Intake State", getIntakeState());
+        //SmartDashboardTab.putBoolean("Intake", "Pistons", getIntakePistonExtendStatus());
     }
 
     @Override
