@@ -33,6 +33,11 @@ public class Turret extends SubsystemBase {
     encoder.setPositionToAbsolute();
     encoder.configSensorDirection(true);
   }
+  public void resetEncoder() {
+    turretMotor.setSelectedSensorPosition(0);
+    //encoder.setPosition(0);
+  }
+
   public int getControlMode() {
     return controlMode;
   }
