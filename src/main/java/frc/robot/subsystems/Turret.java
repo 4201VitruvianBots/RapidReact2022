@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 
@@ -50,32 +51,42 @@ public class Turret extends SubsystemBase {
    * double
    * returns encoder units of turret into degrees
    */
-  public void getTurretAngle() {}
+  public double getTurretAngle() {
+    return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition());
+  }
 
   /**
    * double
    * @return turret angle - drivetrain angle
    */
-  public void getFieldRelativeAngle() {}
+  public double getFieldRelativeAngle() {
+    return getTurretAngle(); //- m_driveTrain.getAngle()
+  }
 
   /**
    * double
    * @return max angle
    */
-  public void getMaxAngle() {}
+  public double getMaxAngle() {
+    return maxAngle;
+  }
 
   /** 
    * 
    * @return minimum angle
    * 
   */
-  public void getMinAngle() {}
+  public double getMinAngle() {
+    return minAngle;
+  }
 
   /**
    * boolean
    * @return ! turrethomesensor.get
    */
-  public void getTurretHome() {}
+  public boolean getTurretHome() {
+    return ! turretHomeSensor.get();
+  }
 
   public boolean getInitialHome() { 
     return initialHome;
@@ -86,7 +97,9 @@ public class Turret extends SubsystemBase {
    * @param output
    * sets the percentoutput for the turretmotor
    */
-  public void setPercentOutput(double output) {}
+  public void setPercentOutput(double output) {
+    turretMotor.set(ControlMode.PercentOutput, output);
+  }
 
   public void setRobotCentricSetpoint(double setpoint){
     this.setpoint = setpoint;
@@ -95,7 +108,21 @@ public class Turret extends SubsystemBase {
    * TurretSetpoint specifically 
    * sets the setpoint to turret angle
    */
-  public void stopTurret() {}
+  public void stopTurret() {
+    setpoint = getTurretAngle();
+  }
+  public int degreestoEncoderunits(double degrees) {
+    return (int) (degrees * (1.0 / gearRatio) * (encoderUnitsPerRotation / 360.0));
+
+  }
+public double encoderUnitsToDegrees(double encoderUnits) {
+  return encoderUnits * gearRatio * (360.0 / encoderUnitsPerRotation);
+
+}
+  public boolean getTurretLatch() {
+    return turretHomeSensorLatch;
+  }
+  
 
   @Override
   public void periodic() {
