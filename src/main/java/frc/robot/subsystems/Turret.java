@@ -83,6 +83,9 @@ public class Turret extends SubsystemBase {
    */
   public void setPercentOutput(double output) {}
 
+  public void setRobotCentricSetpoint(double setpoint){
+    this.setpoint = setpoint;
+  }
   /**
    * TurretSetpoint specifically 
    * sets the setpoint to turret angle
