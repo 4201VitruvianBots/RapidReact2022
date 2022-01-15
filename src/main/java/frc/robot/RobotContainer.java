@@ -77,7 +77,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return new OneBallAuto(m_driveTrain, m_fieldSim);
+        return new TwoBallAuto(m_driveTrain, m_fieldSim);
     }
 
     public void robotPeriodic() {
