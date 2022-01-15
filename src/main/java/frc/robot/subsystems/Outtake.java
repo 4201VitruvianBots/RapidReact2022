@@ -19,7 +19,9 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -129,6 +131,9 @@ public class Outtake extends SubsystemBase {
 
          setPower(nextVoltage / 12.0);
        }
+       else {
+         setPower(0);
+       }
     }
 
     /**
@@ -219,6 +224,17 @@ public class Outtake extends SubsystemBase {
      */
     public void stopTurret() {}  
 
+    private void updateShuffleboard() {
+        if (RobotBase.isReal()) {
+            SmartDashboard.putNumber("RPM", outtakeMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
+
+        SmartDashboard.putNumber("RPMPrimary", getRPM(0));
+        SmartDashboard.putNumber("RPMSecondary", getRPM(1));
+        SmartDashboard.putNumber("RPMOutput", rpmOutput);
+        SmartDashboard.putNumber("Power", outtakeMotors[0].getMotorOutputPercent());
+        SmartDashboard.putNumber("Setpoint", flywheelSetpointRPM);
+        }
+    }
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
