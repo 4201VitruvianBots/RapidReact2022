@@ -44,23 +44,23 @@ public final class Constants {
                 new DifferentialDriveKinematics(kTrackWidthMeters);
 
         public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-        public static final double kDriveGearing = 5.0;
+        public static final double kDriveGearing = 8.0;
 
         public static final int kMagEncoderCPR = 4096;
         public static final int kFalconEncoderCPR = 2048;
         public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
         public static final double kEncoderDistancePerPulseMeters =
                 // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
-                (kWheelDiameterMeters * Math.PI) / (double) kFalconEncoderCPR * kDriveGearing;
+                (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
         public static final double kEncoderDistancePerPulseMetersSim =
                 // Assumes the encoders are directly mounted on the wheel shafts
                 (kWheelDiameterMeters * Math.PI) / (double) kMagEncoderCPR * kDriveGearing;
 
         public static final boolean kGyroReversed = true;
 
-        public static final double ksVolts = 0.73456;
-        public static final double kvVoltSecondsPerMeter = 0.11862;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.02863;
+        public static final double ksVolts = 0.75514;
+        public static final double kvVoltSecondsPerMeter = 2.1851;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.57574;
 
         // These two values are "angular" kV and kA
         public static final double kvVoltSecondsPerRadian = 3.34;
