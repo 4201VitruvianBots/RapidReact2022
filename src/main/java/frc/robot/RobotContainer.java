@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-import frc.robot.subsystems.ExampleSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,8 +20,6 @@ import frc.robot.subsystems.ExampleSubsystem;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
     static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
     static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
     static Joystick xBoxController = new Joystick(Constants.USB.xBoxController);

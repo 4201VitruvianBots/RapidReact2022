@@ -4,17 +4,18 @@
 
     package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+    import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+    import com.revrobotics.RelativeEncoder;
+    import com.revrobotics.SparkMaxPIDController;
+    import com.revrobotics.CANSparkMax.IdleMode;
+    import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+    import edu.wpi.first.wpilibj.DigitalInput;
+    import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+    import edu.wpi.first.wpilibj2.command.SubsystemBase;
+    import frc.robot.Constants;
 
     public class Indexer extends SubsystemBase {
         private final double kI_Zone = 1;
@@ -27,6 +28,7 @@ import frc.robot.Constants;
         CANSparkMax master = new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless);
         RelativeEncoder encoder = master.getEncoder();
         SparkMaxPIDController  pidController = master.getPIDController();
+        VictorSPX kicker = new VictorSPX(Constants.Indexer.kickerMotor);
 
         // PID terms/other constants
         private double kF = 0.0001;
@@ -57,8 +59,9 @@ import frc.robot.Constants;
             pidController.setSmartMotionMaxAccel(maxAccel, 0); // Formerly 1e6
             pidController.setSmartMotionAllowedClosedLoopError(1, 0);
             pidController.setIZone(kI_Zone);
-
-            //initShuffleboard();
+            
+            kicker.configFactoryDefault();
+            kicker.setInverted(true);
         }
 
         /**
@@ -77,13 +80,20 @@ import frc.robot.Constants;
         public int getControlMode(){
             return controlMode;
         }
+        
+        /**
+         * @return Intake sensor activation status
+         */
+        public boolean getIntakeSensor() {
+            return (! intakeSensor.get());
+        }
 
         /**
          * sets the power for the kicker motor 
          * @param output value for the power of the kicker motor
          */
         public void setKickerOutput(double output){
-            //kicker.set(ControlMode.PercentOutput, output);
+            kicker.set(ControlMode.PercentOutput, output);
         }
 
         /**
@@ -104,8 +114,7 @@ import frc.robot.Constants;
         }
 
         /**
-         * 
-         * @return
+         * @return Indexer Sensor activation status
          */
         public boolean getIndexerTopSensor() {
             return ! indexerTopSensor.get();
@@ -125,7 +134,6 @@ import frc.robot.Constants;
          * updates the SmartDashboard with Indexer values
          */
         private void updateSmartDashboard(){
-            //SmartDashboardTab.putNumber("Indexer", "Carousel RPM", this.getRPM());
             SmartDashboard.putNumber("kF", kF);
             SmartDashboard.putNumber("kP", kP);
             SmartDashboard.putNumber("kI", kI);
@@ -136,7 +144,6 @@ import frc.robot.Constants;
          * updates PID values onto the controllers and smartdashboard
          */
         private void updatePIDValues() {
-            // Allow PID values to be set through SmartDashboard
             kF = SmartDashboard.getNumber("kF", 0);
             kP = SmartDashboard.getNumber("kP", 0);
             kI = SmartDashboard.getNumber("kI", 0);
@@ -146,6 +153,7 @@ import frc.robot.Constants;
             pidController.setI(kI);
             pidController.setD(kD);
         }
+        
         @Override
         public void periodic() {
             // This method will be called once per scheduler run
