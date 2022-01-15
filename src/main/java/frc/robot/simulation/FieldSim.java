@@ -1,5 +1,7 @@
 package frc.robot.simulation;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
@@ -7,6 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.Sim.BallState;
 import frc.robot.subsystems.DriveTrain;
 
 public class FieldSim {
@@ -36,9 +39,9 @@ public class FieldSim {
 
     public void initSim() {
         // Load 3 powercells into the robot
-        m_cargo[0].setBallState(1);
+        m_cargo[0].setBallState(BallState.IN_ROBOT);
         for(int i = 3; i < m_cargo.length; i++)
-            m_cargo[i].setBallState(0);
+            m_cargo[i].setBallState(BallState.ON_FIELD);
 
         //ballCount = 3;
 
@@ -205,24 +208,24 @@ public class FieldSim {
 
     private void updateBallState(Cargo cargo) {
         Pose2d ballPose = cargo.getBallPose();
-        if(cargo.getBallState() != 1) {
+        if(cargo.getBallState() != BallState.IN_ROBOT) {
             if (ballPose.getX() < 0 || ballPose.getX() > Constants.Sim.fieldWidthMeters || ballPose.getY() < 0 || ballPose.getY() > Constants.Sim.fieldHieghtMeters)
-                cargo.setBallState(3);
+                cargo.setBallState(BallState.OUT_OF_BOUNDS);
         }
 
 //        System.out.println("Ball Shot: " + wasShot + "\tBall State: " + ballState);
 //        System.out.println("Ball State: " + ballState + "\tCos: " + ballPose.getRotation().getCos() + "\tX Pos: " + ballPose.getX());
         switch (cargo.getBallState()) {
-            case 3:
+            case OUT_OF_BOUNDS:
                 // Ball is out of bounds
                 // if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
                     // powercell.setBallPose(Constants.Sim.redLoadingStation);
                 // else
                     // powercell.setBallPose(Constants.Sim.blueLoadingStation);
 
-                    cargo.setBallState(0);
+                    cargo.setBallState(BallState.ON_FIELD);
                 break;
-            case 2:
+            case IN_AIR:
                 // Ball is traveling in the air
                 double currentTime = RobotController.getFPGATime();
                 // FPGA time is in microseonds, need to convert it into seconds
@@ -239,7 +242,7 @@ public class FieldSim {
 
                     cargo.setLastTimestamp(currentTime);
                 break;
-            case 1:
+            case IN_ROBOT:
                 // Ball has been picked up by the robot
                 cargo.setBallPose(m_field2d.getObject("Outtake").getPose());
 
@@ -247,15 +250,15 @@ public class FieldSim {
                 if(cargo.getBallShotState()) {
                     cargo.setBallShotState(false);
                     cargo.setLastTimestamp(RobotController.getFPGATime());
-                    cargo.setBallState(2);
+                    cargo.setBallState(BallState.IN_ROBOT);
                     ballCount--;
                 }
                 break;
-            case 0:
+            case ON_FIELD:
             default:
                 if(isBallInIntakeZone(ballPose) && ballCount < 6) {
                     ballCount++;
-                    cargo.setBallState(1);
+                    cargo.setBallState(BallState.IN_ROBOT);
                 }
                 break;
         }
