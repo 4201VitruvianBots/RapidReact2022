@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.sql.Driver;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
@@ -47,7 +48,10 @@ public class Shooter extends SubsystemBase {
         outtakeMotor.configVoltageCompSaturation(10);
         outtakeMotor.enableVoltageCompensation(true);
     }
-    m_vision = vision;
+        shooterMotors[0].setInverted(true);
+        shooterMotors[1].follow(shooterMotors[0], FollowerType.PercentOutput);
+
+        m_vision = vision;
     }
     /**
      * 
@@ -55,14 +59,15 @@ public class Shooter extends SubsystemBase {
      * sets the controlmode percentoutput of outtakemotor0
      */
         public void setPower(double output) {
+            shooterMotors[0].set(ControlMode.PercentOutput, output);
     }
     /**
      * 
      * @param setpoint
      * set to setpoint
      */
-    public void setRPM(double flywheelSetpoint) {
-   
+    public void setRPM(double flywheelSetpointRPM) {
+    this.flywheelSetpointRPM = flywheelSetpointRPM;
     }
 
     public double getSetpoint() {
@@ -73,16 +78,21 @@ public class Shooter extends SubsystemBase {
         return canShoot;
     } 
 
-    /** flywheelSetpoint
+    /** flywheelSetpointRPM
      *  if setpoint else setPower to 0
      */
     private void updateRPMSetpoint() {
-        
+        if(flywheelSetpointRPM >= 0)
+        shooterMotors[0].set(ControlMode.Velocity, RPMtoFalconUnits(flywheelSetpointRPM));
+    else
+        setPower(0);   
     }
     /**
      * set to test RPM
      */
-    public void setTestRPM() {}
+    public void setTestRPM() {
+        shooterMotors[0].set(ControlMode.Velocity, RPMtoFalconUnits(rpmOutput));
+    }
 
     public double getTestRPM() {
         return rpmOutput;
@@ -91,22 +101,18 @@ public class Shooter extends SubsystemBase {
     public double getRPMTolerance() {
         return rpmTolerance;
     }
-    /**
-     * boolean
-     * @param motorIndex
-     * @return the absolute value of closed loop error < 100
-     */
-    public void encoderAtSetpoint() {   
+    
+    public double getRPM(int motorIndex) {
+        return FalconUnitstoRPM(shooterMotors[motorIndex].getSelectedSensorVelocity());
+    } 
+
+    public double FalconUnitstoRPM(double SensorUnits){
+        return(SensorUnits / 2048.0)*600.0;
     }
 
-    /**
-     * double
-     * @param motorIndex
-     * @return falcon units to RPM with outtake velocity
-     */
-    public void getRPM(int motorIndex) {
-        
-    } 
+    public double RPMtoFalconUnits(double RPM){
+        return(RPM / 600.0)*2048.0;
+    }
     public void setIdealRPM() {
         flywheelSetpointRPM = idealRPM;
     }
