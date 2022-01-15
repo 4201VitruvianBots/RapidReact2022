@@ -1,29 +1,18 @@
 package frc.robot.simulation;
 
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.math.util.Units;
-import frc.robot.RobotContainer;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Outtake;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 public class FieldSim {
     private Field2d m_field2d;
     private final DriveTrain m_driveTrain;
-    // private final Outtake m_outtake;
-    // private final Outtake m_shooter;
-    private final Cargo[] m_cargo = new Cargo[17];
+    private final Cargo[] m_cargo = new Cargo[9]; // 2 of the balls will be in other robots
 
     private int ballCount;
     private Pose2d[] intakePose = {
@@ -47,10 +36,9 @@ public class FieldSim {
 
     public void initSim() {
         // Load 3 powercells into the robot
-        // for(int i = 0; i < 3; i++)
-        //     m_powercells[i].setBallState(1);
-        // for(int i = 3; i < m_cargo.length; i++)
-        //     m_cargo[i].setBallState(0);
+        m_cargo[0].setBallState(1);
+        for(int i = 3; i < m_cargo.length; i++)
+            m_cargo[i].setBallState(0);
 
         //ballCount = 3;
 
