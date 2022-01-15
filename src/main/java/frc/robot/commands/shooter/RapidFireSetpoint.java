@@ -8,6 +8,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -16,6 +17,8 @@ public class RapidFireSetpoint extends CommandBase {
     private final Shooter m_shooter;
     private final Indexer m_indexer;
     private final Intake m_intake;
+    private double startTime, timestamp; 
+    private double timerStart; 
     /**
      * Creates a new ExampleCommand.
      *
@@ -24,16 +27,24 @@ public class RapidFireSetpoint extends CommandBase {
     public RapidFireSetpoint(Shooter shooter, Indexer indexer, Intake intake) {
         
         // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(shooter;
+        m_shooter = shooter; 
+        m_indexer = indexer; 
+        m_intake = intake; 
+        addRequirements(shooter);
+        addRequirements(indexer);
+        addRequirements(intake);
     }
 
     // Called when the command is initially scheduled.
     @Override
-    public void initialize() {}
+    public void initialize() {
+        startTime = Timer.getFPGATimestamp(); 
+    }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {}
+    public void execute() { 
+    }
 
     // Called once the command ends or is interrupted.
     @Override

@@ -9,6 +9,7 @@ import java.sql.Driver;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -24,14 +25,12 @@ public class Shooter extends SubsystemBase {
       new TalonFX(Constants.Shooter.flywheelMotorB)
       };
 
-    private final PowerDistribution m_pdp;
-    private final DriveTrain m_driveTrain;
     private final Vision m_vision;
     private final int encoderUnitsPerRotation = 4096;
     private final Timer timeout = new Timer();
     public double rpmOutput;
     public double rpmTolerance = 50.0;
-    private double flywheelSetpoint;
+    private double flywheelSetpointRPM;
     private double turretSetpoint; 
     private int controlMode; 
     private boolean initialHome; 
@@ -49,8 +48,6 @@ public class Shooter extends SubsystemBase {
         outtakeMotor.enableVoltageCompensation(true);
     }
     m_vision = vision;
-    m_driveTrain = driveTrain;
-    m_pdp = powerdistribution;
     }
     /**
      * 
@@ -69,7 +66,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getSetpoint() {
-        return  flywheelSetpoint;
+        return  flywheelSetpointRPM;
     }
 
     public boolean canShoot() {
@@ -111,7 +108,7 @@ public class Shooter extends SubsystemBase {
         
     } 
     public void setIdealRPM() {
-        flywheelSetpoint = idealRPM;
+        flywheelSetpointRPM = idealRPM;
     }
 
       
