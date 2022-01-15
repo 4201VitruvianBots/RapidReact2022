@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class SetIntakePiston extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
+  boolean extend;
 
   /**
    * @param intake The intake used by this command.
@@ -20,11 +21,14 @@ public class SetIntakePiston extends CommandBase {
         m_intake = intake;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(intake);
+        this.extend = extend;
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        if (m_intake.getIntakePistonExtendStatus() != extend)
+        m_intake.setIntakePiston(extend);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -40,6 +44,6 @@ public class SetIntakePiston extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
     }

@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import frc.robot.Constants;
+// import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
@@ -14,13 +16,16 @@ public class Intake extends SubsystemBase {
     private boolean intaking = false; //is robot intaking
     
     //Intake motor setup
-    private TalonFX intakeMotor =  new TalonFX(Constants.intakeMotor);
+    private TalonFX intakeMotor =  new TalonFX(Constants.Intake.intakeMotor);
     
     //Intake piston setup
-    DoubleSolenoid intakePiston = new DoubleSolenoid(Constants.pcmOne, Constants.intakePistonForward, Constants.intakePistonReverse);
+    DoubleSolenoid intakePiston = new DoubleSolenoid(Constants.Intake.pcmOne, PneumaticsModuleType.CTREPCM, Constants.Intake.intakePistonForward, Constants.Intake.intakePistonReverse);
 
     public Intake() {
         //Motor configuration
+        intakeMotor.configFactoryDefault();
+        intakeMotor.setNeutralMode(NeutralMode.Brake);
+        intakeMotor.setInverted(false);
     }
 
     /**

@@ -17,6 +17,8 @@ public class ResetIndexerEncoder extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
+    boolean tripped = false;
+
     public ResetIndexerEncoder(Indexer indexer) {
         m_indexer = indexer;
         // Use addRequirements() here to declare subsystem dependencies.
@@ -38,6 +40,6 @@ public class ResetIndexerEncoder extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
     }

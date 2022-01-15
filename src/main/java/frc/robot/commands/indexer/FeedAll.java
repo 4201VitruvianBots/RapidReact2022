@@ -5,6 +5,7 @@
 package frc.robot.commands.indexer;
 
 import frc.robot.subsystems.Indexer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
@@ -29,15 +30,25 @@ public class FeedAll extends CommandBase {
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
-    public void execute() {}
-
+    public void execute() {
+        m_indexer.setIndexerOutput(0.6);
+        m_indexer.setKickerOutput(0.5);
+    }
+       
     // Called once the command ends or is interrupted.
     @Override
-    public void end(boolean interrupted) {}
+    public void end(boolean interrupted) {
+        m_indexer.setKickerOutput(0);
+        m_indexer.setIndexerOutput(0);
+    }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        double time = Timer.getFPGATimestamp();
+        if(m_indexer.getIndexerTopSensor()) {
+            time = Timer.getFPGATimestamp();
+        }
+        return time >= 2;
     }
-    }
+}
