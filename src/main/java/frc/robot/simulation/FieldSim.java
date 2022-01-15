@@ -46,24 +46,24 @@ public class FieldSim {
         //ballCount = 3;
 
 
-        // Put 3 powercells in the trench;
-        /*m_powercells[3].setBallPose(Constants.Sim.blueTrenchBallPos[0]);
-        m_powercells[4].setBallPose(Constants.Sim.blueTrenchBallPos[1]);
-        m_powercells[5].setBallPose(Constants.Sim.blueTrenchBallPos[2]);
-        m_powercells[6].setBallPose(Constants.Sim.blueTrenchBallPos[3]);
-        m_powercells[7].setBallPose(Constants.Sim.blueTrenchBallPos[4]);
+        // Put 3 powercells in the Hub;
+        m_cargo[3].setBallPose(Constants.Sim.blueHubBallPos[0]);
+        m_cargo[4].setBallPose(Constants.Sim.blueHubBallPos[1]);
+        m_cargo[5].setBallPose(Constants.Sim.blueHubBallPos[2]);
+        m_cargo[6].setBallPose(Constants.Sim.blueHubBallPos[3]);
+        m_cargo[7].setBallPose(Constants.Sim.blueHubBallPos[4]);
 
-        m_powercells[8].setBallPose(Constants.Sim.blueCenterBalls[3]);
-        m_powercells[9].setBallPose(Constants.Sim.blueCenterBalls[4]);
+        // m_cargo[8].setBallPose(Constants.Sim.blueCenterBalls[3]);
+        // m_cargo[9].setBallPose(Constants.Sim.blueCenterBalls[4]);
 
-        m_powercells[10].setBallPose(Constants.Sim.redTrenchBallPos[0]);
-        m_powercells[11].setBallPose(Constants.Sim.redTrenchBallPos[1]);
-        m_powercells[12].setBallPose(Constants.Sim.redTrenchBallPos[2]);
-        m_powercells[13].setBallPose(Constants.Sim.redTrenchBallPos[3]);
-        m_powercells[14].setBallPose(Constants.Sim.redTrenchBallPos[4]);
+        m_cargo[10].setBallPose(Constants.Sim.redHubBallPos[0]);
+        m_cargo[11].setBallPose(Constants.Sim.redHubBallPos[1]);
+        m_cargo[12].setBallPose(Constants.Sim.redHubBallPos[2]);
+        m_cargo[13].setBallPose(Constants.Sim.redHubBallPos[3]);
+        m_cargo[14].setBallPose(Constants.Sim.redHubBallPos[4]);
 
-        m_powercells[15].setBallPose(Constants.Sim.redCenterBalls[3]);
-        m_powercells[16].setBallPose(Constants.Sim.redCenterBalls[4]);*/
+        // m_cargo[15].setBallPose(Constants.Sim.redCenterBalls[3]);
+        // m_cargo[16].setBallPose(Constants.Sim.redCenterBalls[4]);
 
         m_field2d.setRobotPose(Constants.Sim.startPositionMeters);
         m_driveTrain.resetOdometry(Constants.Sim.startPositionMeters, Constants.Sim.startPositionMeters.getRotation());
