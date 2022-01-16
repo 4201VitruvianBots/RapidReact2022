@@ -1,7 +1,7 @@
 package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.DriveTrain.BrakeMode;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -10,7 +10,7 @@ import frc.robot.subsystems.DriveTrain;
 public class SetDriveTrainNeutralMode extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final DriveTrain m_driveTrain;
-    private final BrakeMode m_mode;
+    private final DriveTrainNeutralMode m_mode;
 
     /**
      * Sets the drivetrain to neutral (coast/brake)
@@ -18,7 +18,7 @@ public class SetDriveTrainNeutralMode extends CommandBase {
      * @param driveTrain drivetrain to set
      * @param mode       2 = all coast, 1 = all brake, 0 = half and half
      */
-    public SetDriveTrainNeutralMode(DriveTrain driveTrain, BrakeMode mode) {
+    public SetDriveTrainNeutralMode(DriveTrain driveTrain, DriveTrainNeutralMode mode) {
         m_driveTrain = driveTrain;
         m_mode = mode;
         // Use addRequirements() here to declare subsystem dependencies.

@@ -5,7 +5,7 @@ import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.DriveTrain.BrakeMode;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.simulation.FieldSim;
@@ -32,7 +32,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-            new SetDriveNeutralMode(driveTrain, BrakeMode.FOLLOWER_COAST),
+            new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
             command);
         
     }

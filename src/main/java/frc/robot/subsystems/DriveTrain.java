@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DriveTrain.BrakeMode;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveNeutralMode;
 
 /**
@@ -78,7 +78,7 @@ public class DriveTrain extends SubsystemBase {
 
     private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
-    private BrakeMode brakeMode = BrakeMode.ALL_COAST;
+    private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.ALL_COAST;
 
     // Temporary until CTRE supports FalconFX in WPILib Sim
     private final TalonSRX[] simMotors = new TalonSRX[4];
@@ -250,8 +250,8 @@ public class DriveTrain extends SubsystemBase {
      *
      * @param mode 2 = all coast, 1 = all brake, 0 = half and half
      */
-    public void setDriveTrainNeutralMode(BrakeMode mode) {
-        brakeMode = mode;
+    public void setDriveTrainNeutralMode(DriveTrainNeutralMode mode) {
+        neutralMode = mode;
         switch (mode) {
             case ALL_COAST:
                 for (TalonFX motor : driveMotors)
@@ -337,7 +337,7 @@ public class DriveTrain extends SubsystemBase {
                     Units.metersToFeet(getRobotPoseMeters().getTranslation().getX()));
             SmartDashboardTab.putNumber("DriveTrain", "yCoordinate",
                     Units.metersToFeet(getRobotPoseMeters().getTranslation().getY()));
-            SmartDashboardTab.putNumber("DriveTrain", "Angle", navX.getAngle());
+            SmartDashboardTab.putNumber("DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
             SmartDashboardTab.putNumber("DriveTrain", "leftSpeed",
                     Units.metersToFeet(getSpeedsMetersPerSecond().leftMetersPerSecond));
             SmartDashboardTab.putNumber("DriveTrain", "rightSpeed",
@@ -368,9 +368,9 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
         SmartDashboardTab.putNumber("DriveTrain", "L Output", m_leftOutput);
         SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
-        SmartDashboardTab.putString("DriveTrain", "BrakeMode", brakeMode.toString());
+        SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
-        SmartDashboard.putData("NeutralMode", new SetDriveNeutralMode(this, BrakeMode.ALL_COAST));
+        SmartDashboard.putData("NeutralMode", new SetDriveNeutralMode(this, DriveTrainNeutralMode.ALL_COAST));
     }
 
     @Override
