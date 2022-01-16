@@ -9,7 +9,7 @@ import frc.robot.subsystems.Turret;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
-public class ZeroTurretEncodert extends CommandBase {
+public class ZeroTurretEncoder extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Turret m_turret;
 
@@ -18,7 +18,7 @@ public class ZeroTurretEncodert extends CommandBase {
      *
      * @param subsystem The subsystem used by this command.
      */
-    public ZeroTurretEncodert(Turret turret) {
+    public ZeroTurretEncoder(Turret turret) {
         m_turret = turret;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(turret);
