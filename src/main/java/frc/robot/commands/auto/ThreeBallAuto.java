@@ -27,13 +27,24 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         // Shoot 2 cargo into high goal
 
 
-        Trajectory trajectory = PathPlanner.loadPath("ThreeBallAuto", Units.feetToMeters(10), Units.feetToMeters(6), true);
+        Trajectory trajectory1 = PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(10), Units.feetToMeters(6), true);
+        VitruvianRamseteCommand command1 = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
 
-        VitruvianRamseteCommand command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
+        
+        Trajectory trajectory2 = PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(10), Units.feetToMeters(6), true);
+        VitruvianRamseteCommand command2 = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
             new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
-            command);
+            // Turn on intake
+            command1, // Pick up ball 1
+            // Turn off intake
+            // Shoot
+            // Turn on intake
+            command2 //Pick up ball 2
+            // Turn off intkae
+            // Shoot again
+        ); 
     }
 }
