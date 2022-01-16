@@ -26,7 +26,7 @@ public class TestPath extends SequentialCommandGroup {
         // Stop (now with 2 cargo) and aim for high goal
         // Shoot 2 cargo into high goal
 
-        Trajectory trajectory = PathPlanner.loadPath("Testpath", Units.feetToMeters(4), Units.feetToMeters(4), false);
+        Trajectory trajectory = PathPlanner.loadPath("Testpath", Units.feetToMeters(1), Units.feetToMeters(1), false);
 
         VitruvianRamseteCommand command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
         
