@@ -51,6 +51,8 @@ public final class Constants {
             PHOTONVISION
         }
 
+        public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+
         /* Co-Processor IP Addresses
            10.42.1.100: Goal Camera
            10.42.1.101: Intake Camera

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
@@ -14,14 +15,15 @@ import static frc.robot.Constants.Vision.*;
 
 public class Vision extends SubsystemBase {
 
+  private final Controls m_controls;
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
 
   private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK_D;
 
-
   /** Creates a new Vision Subsystem. */
-  public Vision() {
+  public Vision(Controls controls) {
+    m_controls = controls;
     goal_camera = NetworkTableInstance.getDefault().getTable(goal_camera_type.toString().toLowerCase());
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
@@ -31,20 +33,7 @@ public class Vision extends SubsystemBase {
     PortForwarder.add(5803, intakeCameraIP, 5801);
   }
 
-  /** Returns the robot's current alliance color
-   *
-   *  @return Returns the current alliance color.
-   */
-  public DriverStation.Alliance getAllianceColor() {
-    var alliance = DriverStation.getAlliance();
-    if(alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
-      System.out.println("Vision Subsystem Error: Invalid Alliance Color");
-    }
-
-    return DriverStation.getAlliance();
-  }
-
-  /** Returns a boolean value for the goal target state
+  /** Returns a boolean value to determine if the goal camera has a visible target.
    *
    *  @return
    *  true: Goal Camera has a target.
@@ -54,22 +43,46 @@ public class Vision extends SubsystemBase {
     return goal_camera.getEntry("tv").getBoolean(false);
   }
 
-  /** Returns the angle of the goal target in degrees.
+  /** Returns a boolean value to determine if the goal target can be used for distance calculations.
    *
    *  @return
-   *  Range: +/- 20 degrees
+   *  true: Goal target can be used for distance calculations.
+   *  false: Goal target cannot be used for distance calculations.
+   */
+  public boolean getGoalGoodTarget() {
+    return goal_camera.getEntry("tv").getBoolean(false);
+  }
+
+  /** Returns the vertical angle of the goal target in degrees.
+   *
+   *  @return Vertical angle (+/- 20 degrees)
    */
   public double getGoalTargetXAngle() {
     return goal_camera.getEntry("tx").getDouble(0);
   }
 
+  /** Returns the horizontal angle of the goal target in degrees.
+   *
+   *  @return Horizontal angle (+/- 20 degrees)
+   */
+  public double getGoalTargetYAngle() {
+    return goal_camera.getEntry("ty").getDouble(0);
+  }
+
   /** Returns the distance of the goal target in meters
    *
-   *  @return
-   *  Range: 0-30 meters
+   *  @return Direct Distance to goal target (0-30 meters)
    */
-  public double getGoalTargetDistance() {
+  public double getGoalTargetDirectDistance() {
     return goal_camera.getEntry("tz").getDouble(0);
+  }
+
+  /** Calculates the horizontal distance to the goal target using the Upper Hub.
+   *
+   *  @return Horizontal Distance to goal target (0-30 meters)
+   */
+  public double getGoalTargetHorizontalDistance() {
+    return Math.cos(Units.degreesToRadians(CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle())) * getGoalTargetDirectDistance();
   }
 
   /** Returns a boolean value for the intake target state
@@ -97,24 +110,6 @@ public class Vision extends SubsystemBase {
        System.out.println("Vision Subsystem Error: getIntakeTargetAngle() illegal array access");
        return 0;
      }
-  }
-
-  /** Returns the distance of the intake target in meters
-   *
-   *  @param targetIndex int value of the target index in descending order, with 0 being the most valid target.
-   *
-   *  @return
-   *  Range: 0-30 meters
-   */
-  public double getIntakeTargetDistance(int targetIndex) {
-    double[] nullValue = {-99};
-    var intakeDistances = goal_camera.getEntry("tz").getDoubleArray(nullValue);
-    try {
-      return intakeDistances[0] == -99 ? 0 : intakeDistances[targetIndex];
-    } catch (Exception e) {
-      System.out.println("Vision Subsystem Error: getIntakeTargetDistance() illegal array access");
-      return 0;
-    }
   }
 
   /** Set the state of the Goal Camera LEDs. Does not do anything if the goal camera is an OAK device.
@@ -159,13 +154,11 @@ public class Vision extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboard.putBoolean("Has Goal Target", getGoalValidTarget());
     SmartDashboard.putNumber("Goal Angle", getGoalTargetXAngle());
-    SmartDashboard.putNumber("Goal Distance", getGoalTargetDistance());
+    SmartDashboard.putNumber("Goal Direct Distance", getGoalTargetDirectDistance());
+    SmartDashboard.putNumber("Goal Horizontal Distance", getGoalTargetHorizontalDistance());
 
     SmartDashboard.putBoolean("Has Intake Target", getIntakeTargetsValid() > 0);
     SmartDashboard.putNumber("Intake Angle", getIntakeTargetAngle(0));
-    SmartDashboard.putNumber("Intake Distance", getIntakeTargetDistance(0));
-
-    SmartDashboard.putString("Alliance", getAllianceColor().toString());
   }
 
   @Override
