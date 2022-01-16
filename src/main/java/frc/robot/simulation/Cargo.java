@@ -1,13 +1,14 @@
 package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import frc.robot.Constants.Sim.BallState;
 
 public class Cargo {
     boolean wasShot;
     Pose2d ballPose = new Pose2d();
     private Pose2d ballVel = new Pose2d();
     double m_lastTimestamp;
-    private int ballState = 0;
+    private BallState ballState = BallState.ON_FIELD;
 
 
     String m_name;
@@ -20,7 +21,7 @@ public class Cargo {
         return m_name;
     }
 
-    public int getBallState() {
+    public BallState getBallState() {
         return ballState;
     }
 
@@ -28,7 +29,7 @@ public class Cargo {
         return wasShot;
     }
 
-    public void setBallState(int state) {
+    public void setBallState(BallState state) {
         ballState = state;
     }
 

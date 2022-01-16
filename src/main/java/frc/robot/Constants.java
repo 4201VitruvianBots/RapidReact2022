@@ -82,7 +82,27 @@ public final class Constants {
         }
     }
 
-    public static final class Sim {
+    public static final class Sim { 
+        public static final Pose2d[] redHubBallPos = {
+            new Pose2d(Units.inchesToMeters(438), Units.inchesToMeters(240), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(348), Units.inchesToMeters(297), new Rotation2d()), 
+            new Pose2d(Units.inchesToMeters(245), Units.inchesToMeters(274), new Rotation2d()), 
+            new Pose2d(Units.inchesToMeters(188), Units.inchesToMeters(132), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(355), Units.inchesToMeters(29), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(442), Units.inchesToMeters(89), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(580), Units.inchesToMeters(270), new Rotation2d())
+        };
+
+        public static final Pose2d[] blueHubBallPos = {
+            new Pose2d(Units.inchesToMeters(460), Units.inchesToMeters(192), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(296), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(206), Units.inchesToMeters(235), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(83), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(301), Units.inchesToMeters(27), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(405), Units.inchesToMeters(50), new Rotation2d()),
+            new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
+        };
+        
         public static final double fieldWidthMeters = Units.feetToMeters(54);
         public static final double fieldHieghtMeters = Units.feetToMeters(27);
         public static final double ballDiameterMeters = Units.inchesToMeters(9.5);
@@ -94,6 +114,9 @@ public final class Constants {
     
         public static final Pose2d hubPoseMeters = new Pose2d(12.557047,7.275692, new Rotation2d(Units.degreesToRadians(0)));
         public static final Pose2d startPositionMeters = new Pose2d();
+        public enum BallState {
+            ON_FIELD,  IN_ROBOT, IN_AIR, OUT_OF_BOUNDS
+        }
     }
 
     public final class Indexer {

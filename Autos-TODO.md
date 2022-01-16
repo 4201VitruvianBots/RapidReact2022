@@ -10,15 +10,19 @@
   - [x] Decide path
   - [x] Write waypoints
   - [x] Test in sim
-- [ ] Three Ball auto
+- [x] Three Ball auto
   - [x] Decide Path
-  - [ ] Write waypoints
+  - [x] Write waypoints
   - [x] Test in sim
 
 ## When jango is ready
-- [ ] Test drivetrain code on jango
-- [ ] Test paths on jango
+- [x] Test drivetrain code on jango
+- [x] Test paths on jango
   - [ ] Fix errors
+- [ ] Remake autos in PathPlanner
+  - [ ] One ball
+  - [ ] Two ball
+  - [ ] Three ball
 
 ## When declaration are merged
 - [ ] Integrate subsystems into autos
@@ -36,5 +40,4 @@
 
 ## When comp robot is ready
 - [ ] Test drivetrain code on new robot
-
 - [ ] Test on field
