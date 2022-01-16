@@ -13,27 +13,28 @@ import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class TwoBallAuto extends SequentialCommandGroup {
+public class TestPath extends SequentialCommandGroup {
     /**
      * Intakes one cargo and shoots two cargo into the high goal.
      *
      * @param driveTrain The driveTrain used by this command.
      * @param fieldSim The fieldSim used by this command.
      */
-    public TwoBallAuto(DriveTrain driveTrain, FieldSim fieldSim) {
+    public TestPath(DriveTrain driveTrain, FieldSim fieldSim) {
         // Drive backward maximum distance to ball
         // While dirivng backward, intake is running
         // Stop (now with 2 cargo) and aim for high goal
         // Shoot 2 cargo into high goal
 
-        Trajectory trajectory = PathPlanner.loadPath("TwoBallAuto", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        Trajectory trajectory = PathPlanner.loadPath("Testpath", Units.feetToMeters(4), Units.feetToMeters(4), false);
 
         VitruvianRamseteCommand command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
             new SetDriveNeutralMode(driveTrain, BrakeMode.FOLLOWER_COAST),
-            command);
+            command,
+            new SetDriveNeutralMode(driveTrain, BrakeMode.ALL_BRAKE));
         
     }
 }
