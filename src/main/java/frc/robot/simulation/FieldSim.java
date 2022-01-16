@@ -27,7 +27,6 @@ public class FieldSim {
 
     public FieldSim(DriveTrain driveTrain/*, Outtake outtake*/) {
         m_driveTrain = driveTrain;
-        // m_outtake = outtake;
 
         for(int i = 0; i < m_cargo.length; i++)
             m_cargo[i] = new Cargo(String.format("Cargo_" + String.format("%02d", i) ));
@@ -41,7 +40,7 @@ public class FieldSim {
         for(int i = 1; i < m_cargo.length; i++)
             m_cargo[i].setBallState(BallState.ON_FIELD);
 
-        //ballCount = 3;
+       
 
 
         // Put 3 powercells in the Hub;
@@ -124,42 +123,18 @@ public class FieldSim {
                         (ballPose.getY() <= slope1to2 * (ballPose.getX() - intakePose[1].getX()) + intakePose[1].getY())
         );
 
-        /*List<Double> xValues = new ArrayList<>();
-        List<Double> yValues = new ArrayList<>();
 
-        for (Pose2d p:intakePose) {
-            xValues.add(p.getX());
-            yValues.add(p.getY());
-        }
 
-        // This is technically cheating, need a more accurate comparison
-        double minX = Collections.min(xValues, null);
-        double maxX = Collections.max(xValues, null);
-        double minY = Collections.min(yValues, null);
-        double maxY = Collections.max(yValues, null);
 
-        if (maxX > ballPose.getX() && ballPose.getX() > minX &&
-            maxY > ballPose.getY() && ballPose.getY() > minY)
-            return true;
-        else
-            return false;*/
-    }
 
     /*  Sometimes, the auto paths ran will eject the robot out of bounds. This will reset the robot state so you can
         re-run the auto without restarting the sim
      */
 
     public void simulationPeriodic() {
-//        var robotPose = m_field2d.getRobotPose();
-
-//        if(robotPose.getX() < 0 || robotPose.getX() > Constants.Sim.fieldWidth ||
-//                robotPose.getY() < 0 || robotPose.getY() > Constants.Sim.fieldHieght)
-//            resetRobotPose(new Pose2d(Constants.Sim.fieldWidth / 2.0 ,Constants.Sim.fieldHieght / 2.0 , new Rotation2d(0)));
 
         m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
 
-        // m_field2d.getObject("Outtake").setPose(new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(),
-        //         new Rotation2d(Math.toRadians(getIdealTurretAngle()))));
 
         updateIntakePoses();
 
@@ -179,16 +154,8 @@ public class FieldSim {
     public double getAutoStartTime(){
         return m_autoStartTime;
     }
-//     public double getIdealTargetDistance() {
-//         return Math.sqrt(Math.pow(Constants.Sim.blueGoalPose.getY() - m_outtake.getTurretSimPose().getY(), 2) + Math.pow(Constants.Sim.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX(), 2));
-//     }
 
-//     public double getIdealTurretAngle() {
 
-// //        double targetRadians = Math.atan2(Constants.Sim.blueGoalPose.getY() -m_outtake.getTurretSimPose().getY(), Constants.Sim.blueGoalPose.getX() - m_outtake.getTurretSimPose().getX());
-//         double targetRadians = Math.atan2(Constants.Sim.redGoalPose.getY() -m_outtake.getTurretSimPose().getY(), Constants.Sim.redGoalPose.getX() - m_outtake.getTurretSimPose().getX());
-//         return Math.toDegrees(targetRadians);
-//     }
 
     public Cargo[] getCargo() {
         return m_cargo;
@@ -210,15 +177,8 @@ public class FieldSim {
                 cargo.setBallState(BallState.OUT_OF_BOUNDS);
         }
 
-//        System.out.println("Ball Shot: " + wasShot + "\tBall State: " + ballState);
-//        System.out.println("Ball State: " + ballState + "\tCos: " + ballPose.getRotation().getCos() + "\tX Pos: " + ballPose.getX());
         switch (cargo.getBallState()) {
             case OUT_OF_BOUNDS:
-                // Ball is out of bounds
-                // if(ballPose.getX() < Constants.Sim.fieldWidthMeters / 2.0)
-                    // powercell.setBallPose(Constants.Sim.redLoadingStation);
-                // else
-                    // powercell.setBallPose(Constants.Sim.blueLoadingStation);
 
                     cargo.setBallState(BallState.ON_FIELD);
                 break;
@@ -232,7 +192,6 @@ public class FieldSim {
                 double deltaX = cargo.getBallVel().getX() * deltaT;
                 double deltaY = cargo.getBallVel().getY() * deltaT;
                 
-                //System.out.println("Delta X: " + deltaX + "\tDelta Y: " + deltaY + "\tDelta T: " + deltaT);
                 cargo.setBallPose(new Pose2d(deltaX + ballPose.getX(),
                         deltaY + ballPose.getY(),
                         ballPose.getRotation()));
