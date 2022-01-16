@@ -1,7 +1,5 @@
 package frc.robot.simulation;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
@@ -15,7 +13,7 @@ import frc.robot.subsystems.DriveTrain;
 public class FieldSim {
     private final Field2d m_field2d;
     private final DriveTrain m_driveTrain;
-    private final Cargo[] m_cargo = new Cargo[9]; // 2 of the balls will be in other robots
+    private final Cargo[] m_cargo = new Cargo[15]; // 5 of the balls will be in other robots
 
     private int ballCount;
     private final Pose2d[] intakePose = {
@@ -40,30 +38,29 @@ public class FieldSim {
     public void initSim() {
         // Load 3 powercells into the robot
         m_cargo[0].setBallState(BallState.IN_ROBOT);
-        for(int i = 3; i < m_cargo.length; i++)
+        for(int i = 1; i < m_cargo.length; i++)
             m_cargo[i].setBallState(BallState.ON_FIELD);
 
         //ballCount = 3;
 
 
         // Put 3 powercells in the Hub;
-        m_cargo[3].setBallPose(Constants.Sim.blueHubBallPos[0]);
-        m_cargo[4].setBallPose(Constants.Sim.blueHubBallPos[1]);
-        m_cargo[5].setBallPose(Constants.Sim.blueHubBallPos[2]);
-        m_cargo[6].setBallPose(Constants.Sim.blueHubBallPos[3]);
-        m_cargo[7].setBallPose(Constants.Sim.blueHubBallPos[4]);
+        m_cargo[1].setBallPose(Constants.Sim.blueHubBallPos[0]);
+        m_cargo[2].setBallPose(Constants.Sim.blueHubBallPos[1]);
+        m_cargo[3].setBallPose(Constants.Sim.blueHubBallPos[2]);
+        m_cargo[4].setBallPose(Constants.Sim.blueHubBallPos[3]);
+        m_cargo[5].setBallPose(Constants.Sim.blueHubBallPos[4]);
+        m_cargo[6].setBallPose(Constants.Sim.blueHubBallPos[5]);
+        m_cargo[7].setBallPose(Constants.Sim.blueHubBallPos[6]);
 
-        // m_cargo[8].setBallPose(Constants.Sim.blueCenterBalls[3]);
-        // m_cargo[9].setBallPose(Constants.Sim.blueCenterBalls[4]);
+        m_cargo[8].setBallPose(Constants.Sim.redHubBallPos[0]);
+        m_cargo[9].setBallPose(Constants.Sim.redHubBallPos[1]);
+        m_cargo[10].setBallPose(Constants.Sim.redHubBallPos[2]);
+        m_cargo[11].setBallPose(Constants.Sim.redHubBallPos[3]);
+        m_cargo[12].setBallPose(Constants.Sim.redHubBallPos[4]);
+        m_cargo[13].setBallPose(Constants.Sim.redHubBallPos[5]);
+        m_cargo[14].setBallPose(Constants.Sim.redHubBallPos[6]);
 
-        m_cargo[10].setBallPose(Constants.Sim.redHubBallPos[0]);
-        m_cargo[11].setBallPose(Constants.Sim.redHubBallPos[1]);
-        m_cargo[12].setBallPose(Constants.Sim.redHubBallPos[2]);
-        m_cargo[13].setBallPose(Constants.Sim.redHubBallPos[3]);
-        m_cargo[14].setBallPose(Constants.Sim.redHubBallPos[4]);
-
-        // m_cargo[15].setBallPose(Constants.Sim.redCenterBalls[3]);
-        // m_cargo[16].setBallPose(Constants.Sim.redCenterBalls[4]);
 
         m_field2d.setRobotPose(Constants.Sim.startPositionMeters);
         m_driveTrain.resetOdometry(Constants.Sim.startPositionMeters, Constants.Sim.startPositionMeters.getRotation());
