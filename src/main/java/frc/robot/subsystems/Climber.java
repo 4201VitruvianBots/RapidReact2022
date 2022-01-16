@@ -16,9 +16,12 @@ import static frc.robot.Constants.Climber.*;
 
 /**
  * climber will only be making for a mid-climb as of 1/11/22
+ * in the future I hope that the climber will use some more advanced capability to get a traversal run climb in the
+ * future.
  */
 public class Climber extends SubsystemBase {
     private final DoubleSolenoid climbPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
+    //TODO: Ask the design team about how the climber functions will work and if they will work similarly or different than what the climber did on jango
     private final TalonFX climbMotor = new TalonFX(climbMotorA);
     private boolean climbState;
 

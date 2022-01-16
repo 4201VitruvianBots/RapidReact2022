@@ -42,10 +42,10 @@ public class ExtendClimber extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if((Timer.getFPGATimestamp() - this.timestamp) < 0.2) {
+        if ((Timer.getFPGATimestamp() - this.timestamp) < 0.2) {
             //rotate the motor counterclockwise to nick the ratchet
-            this.m_climber.setClimberPercentOutput(- 0.25);
-        } else if((Timer.getFPGATimestamp() - this.timestamp) < 0.5)
+            this.m_climber.setClimberPercentOutput(-0.25);
+        } else if ((Timer.getFPGATimestamp() - this.timestamp) < 0.5)
             this.m_climber.setClimberPercentOutput(0.5);
         else
             this.m_climber.setClimberPercentOutput(0);

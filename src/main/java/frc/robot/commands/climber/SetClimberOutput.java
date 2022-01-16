@@ -29,7 +29,7 @@ public class SetClimberOutput extends CommandBase {
     /**
      * Creates a new SetClimberOutput.
      *
-     * @param climber The climber used by this command.
+     * @param climber    The climber used by this command.
      * @param controller The joystick controller used by this command.
      */
     public SetClimberOutput(final Climber climber, final Joystick controller) {
@@ -47,25 +47,21 @@ public class SetClimberOutput extends CommandBase {
     @Override
     public void execute() {
         final double input = Math.abs(this.m_controller.getRawAxis(5)) > 0.2 ? this.m_controller.getRawAxis(5) : 0;
-        
-        final int direction = input > 0 ? 1 : input < 0 ? - 1 : 0;
+
+        final int direction = input > 0 ? 1 : input < 0 ? -1 : 0;
         // might be better
-        if(this.m_climber.getClimbState()) {
-            if(direction != this.lastDirection) {
+        if (this.m_climber.getClimbState()) {
+            if (direction != this.lastDirection) {
                 this.timestamp = Timer.getFPGATimestamp();
                 this.movable = false;
-                if(direction == 1 ) {
-                    this.switchDirection = true;
-                } else {
-                    this.switchDirection = false;
-                }
+                this.switchDirection = direction == 1;
             }
 
-            if(this.movable) {
+            if (this.movable) {
                 final double output = input;
                 this.m_climber.setClimberPercentOutput(output);
             } else {
-                if(this.switchDirection)
+                if (this.switchDirection)
                     this.climberReleaseSequence();
                 else {
                     this.m_climber.setClimbPiston(false);
@@ -81,9 +77,9 @@ public class SetClimberOutput extends CommandBase {
         this.m_climber.setClimbPiston(true);
         this.m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
         this.m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
-        if(Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
-            this.m_climber.setClimberPercentOutput(- 0.35);
-        else if(Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.4)
+        if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
+            this.m_climber.setClimberPercentOutput(-0.35);
+        else if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.4)
             this.m_climber.setClimberPercentOutput(0.25);
         else {
             this.m_climber.setClimberPercentOutput(0);

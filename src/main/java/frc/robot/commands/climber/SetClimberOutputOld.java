@@ -29,7 +29,7 @@ public class SetClimberOutputOld extends CommandBase {
      * Raises/lowers the climber based on joystick input
      *
      * @param climber The climber used by this command.
-     * @param input Supplier for controlling the motor
+     * @param input   Supplier for controlling the motor
      */
     public SetClimberOutputOld(final Climber climber, final DoubleSupplier input) {
         this.m_climber = climber;
@@ -47,23 +47,23 @@ public class SetClimberOutputOld extends CommandBase {
     public void execute() {
         final double input = Math.abs(this.m_input.getAsDouble()) > 0.2 ? this.m_input.getAsDouble() : 0;
         final int direction = input > 0 ? 1 : input < 0 ? -1 : 0;
-        if(this.m_climber.getClimbState()) {
-            if(direction != 0) {
+        if (this.m_climber.getClimbState()) {
+            if (direction != 0) {
                 this.timestamp = Timer.getFPGATimestamp();
-                if(direction == 1 && !this.currentDirection) {
+                if (direction == 1 && !this.currentDirection) {
                     this.movable = false;
                     this.switchDirection = true;
-                } else if(direction <= 0 && this.currentDirection) {
+                } else if (direction <= 0 && this.currentDirection) {
                     this.movable = false;
                     this.switchDirection = false;
                 }
             }
 
-            if(this.movable) {
-                final double output = (this.m_climber.getClimberPosition() < - 512) && (input < 0) ? 0 : input;
+            if (this.movable) {
+                final double output = (this.m_climber.getClimberPosition() < -512) && (input < 0) ? 0 : input;
                 this.m_climber.setClimberPercentOutput(output);
             } else {
-                if(this.switchDirection) {
+                if (this.switchDirection) {
                     this.climberReleaseSequence();
                 } else
                     this.climberRetractSequence();
@@ -74,9 +74,9 @@ public class SetClimberOutputOld extends CommandBase {
     private void climberReleaseSequence() {
         this.m_climber.setClimbPiston(true);
 
-        if(Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
-            this.m_climber.setClimberPercentOutput(- 0.25);
-        else if(Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.4)
+        if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
+            this.m_climber.setClimberPercentOutput(-0.25);
+        else if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.4)
             this.m_climber.setClimberPercentOutput(0.25);
         else {
             this.m_climber.setClimberPercentOutput(0);
@@ -87,8 +87,8 @@ public class SetClimberOutputOld extends CommandBase {
 
     private void climberRetractSequence() {
         this.m_climber.setClimbPiston(false);
-        if(Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
-            this.m_climber.setClimberPercentOutput(- 0.25);
+        if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
+            this.m_climber.setClimberPercentOutput(-0.25);
         else {
             this.m_climber.setClimberPercentOutput(0);
             this.movable = true;

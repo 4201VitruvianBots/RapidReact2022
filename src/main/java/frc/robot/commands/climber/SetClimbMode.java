@@ -13,6 +13,7 @@ import frc.robot.subsystems.Climber;
 /**
  * Sets climber mode
  */
+//TODO: reconviene and decide if climbing should be done with a climb mode or done as one fluid command, one for going up motion and one for going down motion
 public class SetClimbMode extends CommandBase {
     private final Climber m_climber;
     private final boolean m_mode;
@@ -21,7 +22,7 @@ public class SetClimbMode extends CommandBase {
      * Sets climber mode
      *
      * @param climber The subsystem used by this command.
-     * @param mode true is up, false is down.
+     * @param mode    true is up, false is down.
      */
     public SetClimbMode(final Climber climber, final boolean mode) {
         this.m_climber = climber;
