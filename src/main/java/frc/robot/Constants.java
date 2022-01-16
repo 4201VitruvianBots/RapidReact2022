@@ -37,7 +37,7 @@ public final class Constants {
     }
 
     public final class LED {
-
+        public static final int ledPort = 0;
     }
 
     public final class Outtake {
