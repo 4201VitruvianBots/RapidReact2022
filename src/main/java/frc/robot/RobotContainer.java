@@ -84,6 +84,8 @@ public class RobotContainer {
         return new TestPath(m_driveTrain, m_fieldSim);
     }
 
+    public void robotPeriodic() {}
+
     public void disabledInit() {}
 
     public void disabledPeriodic() {}
