@@ -32,7 +32,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-            new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+            new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
             command);
         
     }

@@ -36,7 +36,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-            new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+            new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
             // Turn on intake
             command1, // Pick up ball 1
             // Turn off intake

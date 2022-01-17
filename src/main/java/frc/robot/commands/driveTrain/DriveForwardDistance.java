@@ -34,7 +34,7 @@ public class DriveForwardDistance extends SequentialCommandGroup {
 
         addCommands(
                 new SetOdometry(driveTrain, fieldSim, startPosition),
-                new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+                new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
                 driveForwardCommand
             );
     }

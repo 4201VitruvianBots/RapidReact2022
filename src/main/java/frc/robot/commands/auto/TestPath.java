@@ -6,7 +6,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.SetDriveNeutralMode;
+import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -32,9 +32,9 @@ public class TestPath extends SequentialCommandGroup {
         
         addCommands(
             new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-            new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+            new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
             command,
-            new SetDriveNeutralMode(driveTrain, DriveTrainNeutralMode.ALL_BRAKE));
+            new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.ALL_BRAKE));
         
     }
 }

@@ -38,7 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.SetDriveNeutralMode;
+import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 
 /**
  * A differential drivetrain with two falcon motors on each side
@@ -370,7 +370,7 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
         SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
-        SmartDashboard.putData("NeutralMode", new SetDriveNeutralMode(this, DriveTrainNeutralMode.ALL_COAST));
+        SmartDashboard.putData("NeutralMode", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.ALL_COAST));
     }
 
     @Override
