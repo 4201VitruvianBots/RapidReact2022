@@ -68,6 +68,16 @@ public class Intake extends SubsystemBase {
     }
 
     /**
+     * 
+     * @param intaking is used in this method
+     * @param intakePiston is used in this method
+     * @return Returns the state of the Intake and the intakePiston
+     */
+    public boolean getIntakeStatus(boolean intaking, boolean intakePiston){
+        return intaking && intakePiston;
+    }
+
+    /**
      * updates intake data on to the dashboard
      */
     public void updateSmartDashboard(){

@@ -26,19 +26,29 @@ public class SetIntakeOutput extends CommandBase {
         addRequirements(intake);
     }
 
-    // Called when the command is initially scheduled.
+    /**
+     *  Called when the command is initially scheduled.
+     *  Sets the Intake state to true
+     */
+    
     @Override
     public void initialize() {
         m_intake.setIntakeState(true);
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     *  Called every time the scheduler runs while the command is scheduled.
+     *  Sets the Intake speed
+     */
     @Override
     public void execute() {
         m_intake.setIntakePercentOutput(m_output);
     }
 
-    // Called once the command ends or is interrupted.
+    /**
+     *  Called once the command ends or is interrupted.
+     *  Sets the speed of the Intake to 0 and sets the intake state to false
+     */
     @Override
     public void end(boolean interrupted) {
         m_intake.setIntakePercentOutput(0);

@@ -24,7 +24,10 @@ public class SetIntakePiston extends CommandBase {
         this.extend = extend;
     }
 
-    // Called when the command is initially scheduled.
+    /**
+     *  Called when the command is initially scheduled.
+     *  sets the intake piston to either extend or retract
+     */
     @Override
     public void initialize() {
         if (m_intake.getIntakePistonExtendStatus() != extend)

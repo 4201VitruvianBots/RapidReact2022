@@ -29,18 +29,29 @@ public class IncrementIndexer extends CommandBase {
     }
 
     // Called when the command is initially scheduled.
+    /**
+     * Sets startTime to the Timer's value at the start
+     */
     @Override
     public void initialize() {
         startTime = Timer.getFPGATimestamp();
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /** 
+     *  Called every time the scheduler runs while the command is scheduled.
+     *  Makes the Kicker spin backwards
+     */
     @Override
     public void execute() {
-        m_indexer.setKickerOutput(- 0.2);
+        m_indexer.setKickerOutput(-0.2);
     }
 
-    // Called once the command ends or is interrupted.
+    /**
+     *  Called once the command ends or is interrupted.
+     *  Sets the Kicker speed to 0
+     *  Gets the value of how long the command has ran for
+     */
+    
     @Override
     public void end(boolean interrupted) {
         m_indexer.setKickerOutput(0);

@@ -11,6 +11,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.indexer.FeedAll;
+import frc.robot.commands.intake.ControlledIntake;
+import frc.robot.commands.intake.ToggleIntakePistons;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -20,11 +25,18 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
+
+    private final Indexer m_indexer = new Indexer();
+    private final Intake m_intake = new Intake();
+
+
     static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
     static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
     static Joystick xBoxController = new Joystick(Constants.USB.xBoxController);
+    static Joystick testController = new Joystick(3);
 
     public Button[] leftButtons = new Button[2];
+    public Button[] testButtons = new Button[10];
     public Button[] rightButtons = new Button[2];
     public Button[] xBoxButtons = new Button[10];
     public Button[] xBoxPOVButtons = new Button[8];
@@ -59,6 +71,14 @@ public class RobotContainer {
             xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
         xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
         xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+
+        for (int i = 0; i < testButtons.length; i++) {
+            testButtons[i] = new JoystickButton(testController, (i + 1));
+        }
+            
+        testButtons[1].whileHeld(new FeedAll(m_indexer));
+        testButtons[9].whenPressed(new ToggleIntakePistons(m_intake));
+        testButtons[6].whileHeld(new ControlledIntake(m_intake, m_indexer, xBoxController));
     }
 
     /**

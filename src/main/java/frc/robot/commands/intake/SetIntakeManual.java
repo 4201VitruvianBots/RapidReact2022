@@ -31,14 +31,20 @@ public class SetIntakeManual extends CommandBase {
     public void initialize() {
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /** 
+     *  Called every time the scheduler runs while the command is scheduled.
+     *  Spins the Intake and Indexer forward
+     */
     @Override
     public void execute() {
         m_indexer.setIndexerOutput(1);
         m_intake.setIntakePercentOutput(0.5);
     }
 
-    // Called once the command ends or is interrupted.
+    /**
+     *  Called once the command ends or is interrupted.
+     *  Sets the speed of the Intake and Indexer to 0
+     */
     @Override
     public void end(boolean interrupted) {
         m_indexer.setIndexerOutput(0);

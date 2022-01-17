@@ -23,8 +23,9 @@ import com.revrobotics.CANSparkMax;
         private final double maxAccel = 1e6;
         private final double gearRatio = 1.0 / 27.0;
 
+        // TODO: Switch Motors to TalonFX
         
-        // Setup indexer motor controller (SparkMax)
+        // Setup indexer motor controller (SparkMaxs)
         CANSparkMax master = new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless);
         RelativeEncoder encoder = master.getEncoder();
         SparkMaxPIDController  pidController = master.getPIDController();

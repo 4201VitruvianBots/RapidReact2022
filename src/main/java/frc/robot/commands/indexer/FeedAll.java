@@ -28,14 +28,20 @@ public class FeedAll extends CommandBase {
     @Override
     public void initialize() {}
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /** 
+     *  Called every time the scheduler runs while the command is scheduled.
+     *  Spins the Indexer and the Kicker forward
+     */
     @Override
     public void execute() {
         m_indexer.setIndexerOutput(0.6);
         m_indexer.setKickerOutput(0.5);
     }
        
-    // Called once the command ends or is interrupted.
+    /** 
+     *  Called once the command ends or is interrupted.
+     *  Sets the Indexer and Kicker to a speed of 0
+     */
     @Override
     public void end(boolean interrupted) {
         m_indexer.setKickerOutput(0);

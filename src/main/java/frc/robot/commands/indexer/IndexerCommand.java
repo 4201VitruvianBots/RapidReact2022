@@ -36,10 +36,12 @@ public class IndexerCommand extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-//    setpoint = m_indexer.getPosition() * 7 / (1.25 * Math.PI) * 20;
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
+    /**
+     *  Called every time the scheduler runs while the command is scheduled.
+     *  creates an instance of IncrementIndexer
+     */
     @Override
     public void execute() {
         if(m_indexer.getIntakeSensor() && tripped == 0) {
