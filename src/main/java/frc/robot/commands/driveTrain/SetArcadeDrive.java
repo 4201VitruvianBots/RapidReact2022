@@ -9,60 +9,55 @@ package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
-
 import java.util.function.DoubleSupplier;
 
-/**
- * Sets the drivetrain based on joystick inputs for forward and turning
- */
+/** Sets the drivetrain based on joystick inputs for forward and turning */
 public class SetArcadeDrive extends CommandBase {
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-    private final DriveTrain m_driveTrain;
-    private final DoubleSupplier m_throttle, m_turn;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final DriveTrain m_driveTrain;
 
-    /**
-     * Sets the drivetrain based on joystick inputs for forward and turning
-     *
-     * @param driveTrain drivetrain to set
-     * @param throttle   Percent output to drive forward.
-     * @param turn       Percent output to turn (positive = turn right, negative =
-     *                   turn left)
-     */
-    public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
-        m_driveTrain = driveTrain;
-        m_throttle = throttle;
-        m_turn = turn;
+  private final DoubleSupplier m_throttle, m_turn;
 
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(driveTrain);
-    }
+  /**
+   * Sets the drivetrain based on joystick inputs for forward and turning
+   *
+   * @param driveTrain drivetrain to set
+   * @param throttle Percent output to drive forward.
+   * @param turn Percent output to turn (positive = turn right, negative = turn left)
+   */
+  public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
+    m_driveTrain = driveTrain;
+    m_throttle = throttle;
+    m_turn = turn;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(driveTrain);
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
-        double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-        double throttle = joystickY;
-        throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle;
-        double turn = joystickX;
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
+    double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
-        m_driveTrain.setMotorArcadeDrive(throttle, turn);
-    }
+    double throttle = joystickY;
+    throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle;
+    double turn = joystickX;
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-    }
+    m_driveTrain.setMotorArcadeDrive(throttle, turn);
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
