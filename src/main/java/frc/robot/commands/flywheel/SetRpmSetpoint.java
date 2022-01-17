@@ -11,49 +11,46 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
 
-/**
- * An example command that uses an example subsystem.
- */
+/** An example command that uses an example subsystem. */
 public class SetRpmSetpoint extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    private final Flywheel m_flywheel;
-    private final Vision m_vision;
-    private final double m_RPM;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Flywheel m_flywheel;
 
-    /**
-     * Creates a new ExampleCommand.
-     */
-    public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
-        // Use addRequirements() here to declare subsystem dependencies.
-        m_flywheel = flywheel;
-        m_RPM = RPM;
-        m_vision = vision;
-        addRequirements(flywheel);
-    }
+  private final Vision m_vision;
+  private final double m_RPM;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-        System.out.print("RpmSetpoint is running");
-    }
+  /** Creates a new ExampleCommand. */
+  public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_flywheel = flywheel;
+    m_RPM = RPM;
+    m_vision = vision;
+    addRequirements(flywheel);
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        // m_vision.ledsOn();
-        // m_vision.setLastValidTargetTime();
-        m_flywheel.setRPM(m_RPM);
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    System.out.print("RpmSetpoint is running");
+  }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-        m_flywheel.setRPM(- 1);
-    }
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    // m_vision.ledsOn();
+    // m_vision.setLastValidTargetTime();
+    m_flywheel.setRPM(m_RPM);
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    m_flywheel.setRPM(-1);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

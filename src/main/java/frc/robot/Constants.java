@@ -133,7 +133,7 @@ public final class Constants {
 
   public final class LED {}
 
-    public final class Flywheel {
+  public final class Flywheel {
     public static final int flywheelMotorA = 40;
     public static final int flywheelMotorB = 41;
 
@@ -146,16 +146,15 @@ public final class Constants {
     public static final double kFlywheelKa = 0.0083035;
 
     public static final double kFlywheelKs = 0.53456;
-    
+
     public static final double rpmTolerance = 25.0;
-    }
+  }
 
-    public final class Turret {
-     public static final int turretMotor = 60;
-     public static final int turretEncoder = 61;
-     public static final int turretHomeSensor = 3;
-
-    }
+  public final class Turret {
+    public static final int turretMotor = 60;
+    public static final int turretEncoder = 61;
+    public static final int turretHomeSensor = 3;
+  }
 
   public final class Vision {}
 }
