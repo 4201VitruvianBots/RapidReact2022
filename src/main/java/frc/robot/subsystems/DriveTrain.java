@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.driveTrain.SetDriveNeutralMode;
 
 /**
  * A differential drivetrain with two falcon motors on each side
@@ -73,17 +74,11 @@ public class DriveTrain extends SubsystemBase {
     };
     double m_leftOutput, m_rightOutput;
 
-    private final boolean[] brakeMode = {
-            true,
-            false,
-            true,
-            false
-    };
-
     private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
 
     private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
+    private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.ALL_COAST;
 
     // Temporary until CTRE supports FalconFX in WPILib Sim
     private final TalonSRX[] simMotors = new TalonSRX[4];
@@ -209,7 +204,8 @@ public class DriveTrain extends SubsystemBase {
             rightPWM /= magnitude;
         }
 
-        setMotorVelocityMetersPerSecond(leftPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond, rightPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+        setMotorPercentOutput(leftPWM, rightPWM);
+        // setMotorVelocityMetersPerSecond(leftPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond, rightPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
     }
 
     public void setMotorTankDrive(double leftOutput, double rightOutput) {
@@ -255,18 +251,15 @@ public class DriveTrain extends SubsystemBase {
      * @param mode 2 = all coast, 1 = all brake, 0 = half and half
      */
     public void setDriveTrainNeutralMode(DriveTrainNeutralMode mode) {
+        neutralMode = mode;
         switch (mode) {
             case ALL_COAST:
                 for (TalonFX motor : driveMotors)
                     motor.setNeutralMode(NeutralMode.Coast);
-                for (int i = 0; i < brakeMode.length; i++)
-                    brakeMode[i] = false;
                 break;
             case ALL_BRAKE:
                 for (var motor : driveMotors)
                     motor.setNeutralMode(NeutralMode.Brake);
-                for (int i = 0; i < brakeMode.length; i++)
-                    brakeMode[i] = true;
                 break;
             case FOLLOWER_COAST:
             default:
@@ -274,10 +267,6 @@ public class DriveTrain extends SubsystemBase {
                 driveMotors[1].setNeutralMode(NeutralMode.Coast);
                 driveMotors[2].setNeutralMode(NeutralMode.Brake);
                 driveMotors[3].setNeutralMode(NeutralMode.Coast);
-                brakeMode[0] = true;
-                brakeMode[1] = false;
-                brakeMode[2] = true;
-                brakeMode[3] = false;
                 break;
         }
     }
@@ -379,6 +368,9 @@ public class DriveTrain extends SubsystemBase {
         SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
         SmartDashboardTab.putNumber("DriveTrain", "L Output", m_leftOutput);
         SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
+        SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
+
+        SmartDashboard.putData("NeutralMode", new SetDriveNeutralMode(this, DriveTrainNeutralMode.ALL_COAST));
     }
 
     @Override
