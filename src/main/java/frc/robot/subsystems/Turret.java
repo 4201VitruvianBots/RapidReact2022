@@ -5,7 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
@@ -14,18 +14,19 @@ import frc.robot.Constants;
 
 public class Turret extends SubsystemBase {
   private final int encoderUnitsPerRotation = 4096;
-  private final DriveTrain m_driveTrain;
-  private final Timer timeout = new Timer();
-  private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
-  private final VictorSPX turretMotor = new VictorSPX(Constants.Turret.turretMotor);
-  private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
-  double minAngle = -90; // -135;
-  double maxAngle = 90; // 195;
-  double gearRatio = 18.0 / 120.0;
-  private double setpoint = 0; // angle
-  private int controlMode = 1;
-  private boolean initialHome;
-  private boolean turretHomeSensorLatch = false;
+    private final DriveTrain m_driveTrain;
+    private final Timer timeout = new Timer();
+    private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
+    private final TalonFX turretMotor = new TalonFX(Constants.Turret.turretMotor);
+    private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
+    double minAngle = - 90;  // -135;
+    double maxAngle = 90;   // 195;
+    double gearRatio = 18.0 / 120.0;
+    private double setpoint = 0; //angle
+    // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback) 
+    private int controlMode = 1;
+    private boolean initialHome;
+    private boolean turretHomeSensorLatch = false;
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
