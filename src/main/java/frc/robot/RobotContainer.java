@@ -16,12 +16,9 @@ import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
-import frc.robot.subsystems.Vision;
-import frc.robot.commands.indexer.FeedAll;
-import frc.robot.commands.intake.ControlledIntake;
-import frc.robot.commands.intake.ToggleIntakePistons;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a

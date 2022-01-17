@@ -4,56 +4,55 @@
 
 package frc.robot.commands.intake;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 
 /** An example command that uses an example subsystem. */
 public class SetIntakeManual extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    private final Intake m_intake;
-    private final Indexer m_indexer;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Intake m_intake;
 
-    /**
-     * @param intake The intake used by this command
-     * @param indexer The indexer used by this command
-     */
-    public SetIntakeManual(Intake intake, Indexer indexer) {
-        m_intake = intake;
-        m_indexer = indexer;
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(intake);
-        addRequirements(intake);
-    }
+  private final Indexer m_indexer;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+  /**
+   * @param intake The intake used by this command
+   * @param indexer The indexer used by this command
+   */
+  public SetIntakeManual(Intake intake, Indexer indexer) {
+    m_intake = intake;
+    m_indexer = indexer;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intake);
+    addRequirements(intake);
+  }
 
-    /** 
-     *  Called every time the scheduler runs while the command is scheduled.
-     *  Spins the Intake and Indexer forward
-     */
-    @Override
-    public void execute() {
-        m_indexer.setIndexerOutput(1);
-        m_intake.setIntakePercentOutput(0.5);
-    }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-    /**
-     *  Called once the command ends or is interrupted.
-     *  Sets the speed of the Intake and Indexer to 0
-     */
-    @Override
-    public void end(boolean interrupted) {
-        m_indexer.setIndexerOutput(0);
-        m_intake.setIntakePercentOutput(0);
-    }
+  /**
+   * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
+   * Indexer forward
+   */
+  @Override
+  public void execute() {
+    m_indexer.setIndexerOutput(1);
+    m_intake.setIntakePercentOutput(0.5);
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  /**
+   * Called once the command ends or is interrupted. Sets the speed of the Intake and Indexer to 0
+   */
+  @Override
+  public void end(boolean interrupted) {
+    m_indexer.setIndexerOutput(0);
+    m_intake.setIntakePercentOutput(0);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }
