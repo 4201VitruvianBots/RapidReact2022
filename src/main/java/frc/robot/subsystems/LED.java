@@ -39,7 +39,7 @@ public class LED extends SubsystemBase {
      */
     public void setLED(int red, int green, int blue, LEDMode mode) {
         switch (mode) {
-            case BLINK -> {
+            case BLINK:
                 double time = (int) (5 * Timer.getFPGATimestamp());
                 if (time / 2 == Math.floor(time / 2)) {
                     for (int i = 0; i < stripLength; i++) {
@@ -47,40 +47,40 @@ public class LED extends SubsystemBase {
                         LEDBuffer.setRGB(stripLength + i, red, green, blue);
                     }
                 } else setLED(LEDMode.OFF);
-            }
-            case TWINKLE -> {
+                break;
+            case TWINKLE:
                 setLED(LEDMode.OFF);
                 for (int i = head; i < LEDBuffer.getLength(); i += 2) {
                     LEDBuffer.setRGB(i % LEDBuffer.getLength(), red, green, blue);
                 }
                 Timer.delay(0.2);
                 head = ++head % 2;
-            }
-            case OFF -> {
+                break;
+            case OFF:
                 for (int i = 0; i < LEDBuffer.getLength(); i++) {
                     LEDBuffer.setRGB(i, 0, 0, 0);
                 }
-            }
-            case RAINBOW -> {
+                break;
+            case RAINBOW:
                 for (int i = 0; i < stripLength; i++) {
                     LEDBuffer.setHSV(i, (int) (900 * i / stripLength + hueOffset) % 180, 255, 255);
                     LEDBuffer.setHSV(stripLength + i, (int) (900 * i / stripLength + hueOffset) % 180, 255, 255);
                 }
                 hueOffset = (hueOffset + 120) % 180;
                 Timer.delay(0.05);
-            }
-            case SOLID -> {
+                break;
+            case SOLID:
                 for (int i = 0; i < LEDBuffer.getLength(); i++) {
                     LEDBuffer.setRGB(i, (int) (red * 0.5), (int) (blue * 0.5), (int) (green * 0.5));
                 }
-            }
-            case TRAILING -> {
+                break;
+            case TRAILING:
                 for (int i = head; i < LEDBuffer.getLength(); i += 5) {
                     LEDBuffer.setRGB(i % LEDBuffer.getLength(), (int) (red * 0.5), (int) (blue * 0.5), (int) (green * 0.5));
                 }
                 Timer.delay(0.03);
                 head = ++head % 5;
-            }
+                break;
         }
     }
 
@@ -99,11 +99,23 @@ public class LED extends SubsystemBase {
      * @param state the dominant robot state that the LEDs will express
      */
     public void expressState(robotState state) {
+        // Rainbow
+        // Blinking dirty-yellow
+        // Solid red
+        // Blinking purple
         switch (state) {
-            case READY -> setLED(LED.LEDMode.RAINBOW); // Rainbow
-            case SET -> setLED(255, 200, 0, LED.LEDMode.TWINKLE); // Blinking dirty-yellow
-            case GO -> setLED(255, 0, 0, LED.LEDMode.SOLID); // Solid red
-            default -> setLED(106, 90, 205, LED.LEDMode.TWINKLE); // Blinking purple
+            case READY:
+                setLED(LEDMode.RAINBOW);
+                break;
+            case SET:
+                setLED(255, 200, 0, LEDMode.TWINKLE);
+                break;
+            case GO:
+                setLED(255, 0, 0, LEDMode.SOLID);
+                break;
+            default:
+                setLED(106, 90, 205, LEDMode.TWINKLE);
+                break;
         }
     }
 
