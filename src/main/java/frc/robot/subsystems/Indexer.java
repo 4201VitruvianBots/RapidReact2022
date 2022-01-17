@@ -1,17 +1,12 @@
-    // Copyright (c) FIRST and other WPILib contributors.
-    // Open Source Software; you can modify and/or share it under the terms of
-    // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-    package frc.robot.subsystems;
+package frc.robot.subsystems;
 
     import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkMax;
-    import com.revrobotics.RelativeEncoder;
-    import com.revrobotics.SparkMaxPIDController;
-    import com.revrobotics.CANSparkMax.IdleMode;
-    import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+    import com.ctre.phoenix.motorcontrol.NeutralMode;
+    import com.ctre.phoenix.motorcontrol.can.TalonFX;
     import edu.wpi.first.wpilibj.DigitalInput;
     import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,13 +18,11 @@ import com.revrobotics.CANSparkMax;
         private final double maxAccel = 1e6;
         private final double gearRatio = 1.0 / 27.0;
 
-        // TODO: Switch Motors to TalonFX
-        
         // Setup indexer motor controller (SparkMaxs)
-        CANSparkMax master = new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless);
-        RelativeEncoder encoder = master.getEncoder();
-        SparkMaxPIDController  pidController = master.getPIDController();
-        VictorSPX kicker = new VictorSPX(Constants.Indexer.kickerMotor);
+        TalonFX master = new TalonFX(Constants.Indexer.indexerMotor);
+        // RelativeEncoder encoder = master.getEncoder();
+        // SparkMaxPIDController  pidController = master.getPIDController();
+        TalonFX kicker = new TalonFX(Constants.Indexer.kickerMotor);
 
         // PID terms/other constants
         private double kF = 0.0001;
@@ -46,20 +39,20 @@ import com.revrobotics.CANSparkMax;
         /** Creates a new Indexer. */
         public Indexer() {
             // Motor and PID controller setup
-            master.restoreFactoryDefaults();
+            master.configFactoryDefault();
             master.setInverted(true);
-            master.setSmartCurrentLimit(10, 10);
 
-            master.setIdleMode(IdleMode.kCoast);
+            master.setNeutralMode(NeutralMode.Coast);
 
-            pidController.setFF(kF);
-            pidController.setP(kP);
-            pidController.setI(kI);
-            pidController.setD(kD);
-            pidController.setSmartMotionMaxVelocity(maxVel, 0); // Formerly 1.1e4
-            pidController.setSmartMotionMaxAccel(maxAccel, 0); // Formerly 1e6
-            pidController.setSmartMotionAllowedClosedLoopError(1, 0);
-            pidController.setIZone(kI_Zone);
+            //TODO: What is a Slot ID
+            master.config_kF(0, kF);
+            master.config_kP(0, kP);
+            master.config_kI(0, kI);
+            master.config_kD(0, kD);
+            //master.setSmartMotionMaxVelocity(maxVel, 0); // Formerly 1.1e4  TODO: What is a SmartMotionVelocity
+            //master.setSmartMotionMaxAccel(maxAccel, 0); // Formerly 1e6   TODO: What is a SmartMotionVelocity
+            //master.setSmartMotionAllowedClosedLoopError(1, 0);    TODO: What is a SmartMotionVelocity
+            // master.config(kI_Zone);  TODO: What is an I_Zone
             
             kicker.configFactoryDefault();
             kicker.setInverted(true);
@@ -102,7 +95,7 @@ import com.revrobotics.CANSparkMax;
          * @param output value for the power of the indexer motor
          */
         public void setIndexerOutput(double output){
-            master.set(output);
+            master.set(ControlMode.PercentOutput, output);
         }
 
         /**
@@ -128,7 +121,8 @@ import com.revrobotics.CANSparkMax;
         public void setRPM(double rpm) {
             double setpoint = rpm / gearRatio;
             SmartDashboard.putNumber("Indexer Setpoint", setpoint);
-            pidController.setReference(setpoint, CANSparkMax.ControlType.kSmartVelocity) ;
+            //master.setReference(setpoint, TalonFX.ControlType.kSmartVelocity);
+            master.set(ControlMode.PercentOutput, setpoint); //TODO: What is the TalonFX equivilent of SmartVelocity
         }
     
         /**
@@ -149,10 +143,10 @@ import com.revrobotics.CANSparkMax;
             kP = SmartDashboard.getNumber("kP", 0);
             kI = SmartDashboard.getNumber("kI", 0);
             kD = SmartDashboard.getNumber("kD", 0);
-            pidController.setFF(kF);
-            pidController.setP(kP);
-            pidController.setI(kI);
-            pidController.setD(kD);
+            master.config_kF(0, kF);
+            master.config_kP(0, kP);
+            master.config_kI(0, kI);
+            master.config_kD(0, kD);
         }
         
         @Override
