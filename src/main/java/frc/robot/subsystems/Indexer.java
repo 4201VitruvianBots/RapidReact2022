@@ -7,6 +7,7 @@ package frc.robot.subsystems;
     import com.ctre.phoenix.motorcontrol.ControlMode;
     import com.ctre.phoenix.motorcontrol.NeutralMode;
     import com.ctre.phoenix.motorcontrol.can.TalonFX;
+    import com.revrobotics.RelativeEncoder;
     import edu.wpi.first.wpilibj.DigitalInput;
     import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
     import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,8 +21,7 @@ package frc.robot.subsystems;
 
         // Setup indexer motor controller (SparkMaxs)
         TalonFX master = new TalonFX(Constants.Indexer.indexerMotor);
-        // RelativeEncoder encoder = master.getEncoder();
-        // SparkMaxPIDController  pidController = master.getPIDController();
+        double encoder = master.getSelectedSensorVelocity();
         TalonFX kicker = new TalonFX(Constants.Indexer.kickerMotor);
 
         // PID terms/other constants
@@ -52,7 +52,6 @@ package frc.robot.subsystems;
             //master.setSmartMotionMaxVelocity(maxVel, 0); // Formerly 1.1e4  TODO: What is a SmartMotionVelocity
             //master.setSmartMotionMaxAccel(maxAccel, 0); // Formerly 1e6   TODO: What is a SmartMotionVelocity
             //master.setSmartMotionAllowedClosedLoopError(1, 0);    TODO: What is a SmartMotionVelocity
-            // master.config(kI_Zone);  TODO: What is an I_Zone
             
             kicker.configFactoryDefault();
             kicker.setInverted(true);
