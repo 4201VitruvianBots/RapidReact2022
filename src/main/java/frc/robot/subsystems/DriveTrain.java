@@ -25,6 +25,8 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -42,7 +44,7 @@ import frc.robot.Constants.DriveTrain.BrakeMode;
  */
 public class DriveTrain extends SubsystemBase {
 
-    private final double gearRatio = 1.0 / 5.0;
+    private final double gearRatio = 1.0 / 8.0;
 
     private final double kS = Constants.DriveTrain.ksVolts;
     private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
@@ -56,6 +58,9 @@ public class DriveTrain extends SubsystemBase {
     DifferentialDriveOdometry odometry;
     DifferentialDrivePoseEstimator m_poseEstimator;
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+
+    // Temporary, just to keep the intake piston up
+    DoubleSolenoid intakePiston = new DoubleSolenoid(11, PneumaticsModuleType.CTREPCM, 2, 3);
 
     PIDController leftPIDController = new PIDController(kP, kI, kD);
     PIDController rightPIDController = new PIDController(kP, kI, kD);
@@ -89,6 +94,8 @@ public class DriveTrain extends SubsystemBase {
     public DriveTrain() {
         // Set up DriveTrain motors
         configureCtreMotors(driveMotors);
+
+        navX.reset();
 
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
@@ -330,6 +337,7 @@ public class DriveTrain extends SubsystemBase {
 
         odometry.resetPosition(pose, rotation);
         resetEncoderCounts();
+        navX.setAngleAdjustment(rotation.getDegrees());
     }
 
     private void updateSmartDashboard() {
