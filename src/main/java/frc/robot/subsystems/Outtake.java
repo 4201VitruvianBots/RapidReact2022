@@ -28,8 +28,8 @@ import frc.robot.Conversions;
 
 import static frc.robot.Constants.Outtake.*;
 
-public class Outtake extends SubsystemBase {
   /** Creates a new Outtake. */
+public class Outtake extends SubsystemBase {
 
     private final TalonFX[] outtakeMotors = {
       new TalonFX(Constants.Outtake.flywheelMotorA),
@@ -99,8 +99,8 @@ public class Outtake extends SubsystemBase {
      * @param setpoint
      * set to setpoint
      */
-    public void setRPM(double flywheelSetpoint) {
-   
+    public void setRPM(double flywheelSetpointRPM) {
+      this.flywheelSetpointRPM = flywheelSetpointRPM; 
     }
 
     /**
@@ -228,17 +228,19 @@ public class Outtake extends SubsystemBase {
         if (RobotBase.isReal()) {
             SmartDashboard.putNumber("RPM", outtakeMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
 
-        SmartDashboard.putNumber("RPMPrimary", getRPM(0));
-        SmartDashboard.putNumber("RPMSecondary", getRPM(1));
-        SmartDashboard.putNumber("RPMOutput", rpmOutput);
-        SmartDashboard.putNumber("Power", outtakeMotors[0].getMotorOutputPercent());
-        SmartDashboard.putNumber("Setpoint", flywheelSetpointRPM);
+            SmartDashboard.putNumber("RPMPrimary", getRPM(0));
+            SmartDashboard.putNumber("RPMSecondary", getRPM(1));
+            SmartDashboard.putNumber("RPMOutput", rpmOutput);
+            SmartDashboard.putNumber("Power", outtakeMotors[0].getMotorOutputPercent());
+            SmartDashboard.putNumber("Setpoint", flywheelSetpointRPM);
         }
     }
+
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
       updateRPMSetpoint();
+      updateShuffleboard();
     }
 
     @Override

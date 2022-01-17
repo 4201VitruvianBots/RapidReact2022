@@ -11,7 +11,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.commands.outtake.SetRpmSetpoint;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Outtake;
+import frc.robot.subsystems.Vision;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -22,6 +26,9 @@ import frc.robot.subsystems.ExampleSubsystem;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+    private final Vision m_vision = new Vision();
+    private final Outtake m_shooter = new Outtake(m_vision);
+    private final DriveTrain m_driveTrain = new DriveTrain();
 
     static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
     static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -36,10 +43,10 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         initializeSubsystems();
-
-        // Configure the button bindings
-        configureButtonBindings();
     }
+    
+        // Configure the button bindings
+    
 
     public void initializeSubsystems() {
 
@@ -62,6 +69,8 @@ public class RobotContainer {
             xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
         xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
         xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+
+        xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 500)); 
     }
 
     /**
@@ -91,6 +100,7 @@ public class RobotContainer {
     }
 
     public void teleopPeriodic() {
+        
 
     }
 
