@@ -13,7 +13,7 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.BrakeMode;
-import frc.robot.commands.driveTrain.SetDriveNeutralMode;
+import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.*;
@@ -81,7 +81,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
 
         addCommands(
                 new SetOdometry(driveTrain, fieldSim, startPosition),
-                new SetDriveNeutralMode(driveTrain, BrakeMode.FOLLOWER_COAST));
+                new SetDriveTrainNeutralMode(driveTrain, BrakeMode.FOLLOWER_COAST));
 
         double[] startVelocities = {
                 0, // starting velocity from point 0 to point 1

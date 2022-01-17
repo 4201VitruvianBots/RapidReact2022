@@ -20,8 +20,4 @@ public class Outtake extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
-
-  public Pose2d getTurretSimPose() {
-      return null;
-  }
 }
