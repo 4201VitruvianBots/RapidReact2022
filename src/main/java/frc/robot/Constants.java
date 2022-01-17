@@ -131,7 +131,9 @@ public final class Constants {
     }
   }
 
-  public final class LED {}
+  public final class LED {
+    public static final int ledPort = 0;
+  }
 
   public final class Flywheel {
     public static final int flywheelMotorA = 40;
