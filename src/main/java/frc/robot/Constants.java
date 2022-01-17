@@ -44,12 +44,14 @@ public final class Constants {
         public static final int encoderUnitsPerRotation = 2048;
 
         // Volts per (radian per second)
-        public static final double kFlywheelKv = 0.111;
+        public static final double kFlywheelKv = 0.017092;
 
         // Volts per (radian per second squared)
-        public static final double kFlywheelKa = 0.02;
+        public static final double kFlywheelKa = 0.0083035;
 
-        public static final double rpmTolerance = 50.0;
+        public static final double kFlywheelKs = 0.53456;
+        
+        public static final double rpmTolerance = 25.0;
 
         public static final int flywheelMotorA = 40;
         public static final int flywheelMotorB = 41;

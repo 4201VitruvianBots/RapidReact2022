@@ -43,6 +43,8 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         initializeSubsystems();
+
+        configureButtonBindings();
     }
     
         // Configure the button bindings
@@ -70,7 +72,8 @@ public class RobotContainer {
         xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
         xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
 
-        xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 500)); 
+        xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 1500)); 
+        xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_shooter, m_vision, 2000)); 
     }
 
     /**

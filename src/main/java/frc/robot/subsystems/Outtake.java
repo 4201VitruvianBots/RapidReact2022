@@ -85,6 +85,7 @@ public class Outtake extends SubsystemBase {
       outtakeMotors[1].follow(outtakeMotors[0], FollowerType.PercentOutput);
 
       m_vision = vision;
+      m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
     }
     /**
      * 
