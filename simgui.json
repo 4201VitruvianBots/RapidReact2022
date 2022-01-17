@@ -14,77 +14,77 @@
     "windows": {
       "/SmartDashboard/Field2d": {
         "Cargo_00": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_01": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_02": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_03": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_04": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_05": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_06": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_07": {
-          "image": "resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_08": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_09": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_10": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_11": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_12": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_13": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Cargo_14": {
-          "image": "resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
@@ -104,7 +104,7 @@
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
-        "image": "resources\\Images\\RapidReactField.PNG",
+        "image": "resources/Images/RapidReactField.PNG",
         "window": {
           "visible": true
         }
