@@ -18,11 +18,11 @@
 ## When jango is ready
 - [x] Test drivetrain code on jango
 - [x] Test paths on jango
-  - [ ] Fix errors
-- [ ] Remake autos in PathPlanner
-  - [ ] One ball
-  - [ ] Two ball
-  - [ ] Three ball
+  - [x] Fix errors
+- [x] Remake autos in PathPlanner
+  - [x] One ball
+  - [x] Two ball
+  - [x] Three ball
 
 ## When declaration are merged
 - [ ] Integrate subsystems into autos
