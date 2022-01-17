@@ -37,7 +37,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.DriveTrain.BrakeMode;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 
 /**
  * A differential drivetrain with two falcon motors on each side
@@ -254,7 +254,7 @@ public class DriveTrain extends SubsystemBase {
      *
      * @param mode 2 = all coast, 1 = all brake, 0 = half and half
      */
-    public void setDriveTrainNeutralMode(BrakeMode mode) {
+    public void setDriveTrainNeutralMode(DriveTrainNeutralMode mode) {
         switch (mode) {
             case ALL_COAST:
                 for (TalonFX motor : driveMotors)

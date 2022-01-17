@@ -77,7 +77,7 @@ public final class Constants {
         public static final int rightFrontDriveMotor = 22;
         public static final int rightRearDriveMotor = 23;
 
-        public static enum BrakeMode {
+        public static enum DriveTrainNeutralMode {
             ALL_BRAKE, ALL_COAST, FOLLOWER_COAST
         }
     }

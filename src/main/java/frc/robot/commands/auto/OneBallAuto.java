@@ -12,7 +12,7 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveKinematicsConst
 import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.DriveTrain.BrakeMode;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.simulation.FieldSim;
@@ -79,7 +79,7 @@ public class OneBallAuto extends SequentialCommandGroup {
 
         addCommands(
                 new SetOdometry(driveTrain, fieldSim, startPosition),
-                new SetDriveTrainNeutralMode(driveTrain, BrakeMode.FOLLOWER_COAST));
+                new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST));
 
         double[] startVelocities = {
                 0, // starting velocity from point 0 to point 1
