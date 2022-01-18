@@ -94,7 +94,16 @@ public class RobotContainer {
 
   public void teleopPeriodic() {}
 
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    if (RobotBase.isReal()) {
+      m_driveTrain.resetEncoderCounts();
+      m_driveTrain.resetOdometry(m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
+  } else {
+      m_fieldSim.initSim();
+      m_driveTrain.resetEncoderCounts();
+      m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
+  }
+  }
 
   public void autonomousPeriodic() {}
 

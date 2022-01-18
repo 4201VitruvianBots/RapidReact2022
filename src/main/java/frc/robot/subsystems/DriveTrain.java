@@ -41,7 +41,7 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
 
-  private final double gearRatio = 1.0 / 8.0;
+  private final double gearRatio = 15.0 / 128.0;
 
   private final double kS = Constants.DriveTrain.ksVolts;
   private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
