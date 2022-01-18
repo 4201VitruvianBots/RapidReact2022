@@ -41,8 +41,6 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
 
-  private final double gearRatio = 15.0 / 128.0;
-
   private final double kS = Constants.DriveTrain.ksVolts;
   private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
   private final double kA = Constants.DriveTrain.kaVoltSecondsSquaredPerMeter;
@@ -52,7 +50,7 @@ public class DriveTrain extends SubsystemBase {
   private final double kD = 0;
 
   DifferentialDriveKinematics kinematics =
-      new DifferentialDriveKinematics(Units.inchesToMeters(21.5));
+      new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
   DifferentialDriveOdometry odometry;
   DifferentialDrivePoseEstimator m_poseEstimator;
   SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
@@ -255,7 +253,7 @@ public class DriveTrain extends SubsystemBase {
   /**
    * Sets drivetrain motors to coast/brake
    *
-   * @param mode 2 = all coast, 1 = all brake, 0 = half and half
+   * @param mode Which mode (all brake, all coast, or half coast and half brake)
    */
   public void setDriveTrainNeutralMode(DriveTrainNeutralMode mode) {
     neutralMode = mode;
@@ -301,33 +299,6 @@ public class DriveTrain extends SubsystemBase {
               * 10.0;
     }
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
-  }
-
-  public double getTravelDistanceMeters() {
-    double leftMeters, rightMeters;
-
-    if (RobotBase.isReal()) {
-      leftMeters =
-          (driveMotors[0].getSelectedSensorPosition() * 10.0 / 2048)
-              * gearRatio
-              * Math.PI
-              * Constants.DriveTrain.kWheelDiameterMeters;
-      rightMeters =
-          (driveMotors[2].getSelectedSensorPosition() * 10.0 / 2048)
-              * gearRatio
-              * Math.PI
-              * Constants.DriveTrain.kWheelDiameterMeters;
-    } else {
-      leftMeters =
-          (simMotors[0].getSelectedSensorPosition() * 10.0 / 4096)
-              * Math.PI
-              * Constants.DriveTrain.kWheelDiameterMeters;
-      rightMeters =
-          (simMotors[2].getSelectedSensorPosition() * 10.0 / 4096)
-              * Math.PI
-              * Constants.DriveTrain.kWheelDiameterMeters;
-    }
-    return (leftMeters + rightMeters) / 2.0;
   }
 
   public SimpleMotorFeedforward getFeedforward() {
