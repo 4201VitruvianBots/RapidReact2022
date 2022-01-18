@@ -34,7 +34,6 @@ public class Climber extends SubsystemBase {
         this.climbMotor.setSelectedSensorPosition(0);
         this.climbMotor.setNeutralMode(NeutralMode.Brake);
         this.climbMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
     }
 
     /**
