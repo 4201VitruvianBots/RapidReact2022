@@ -107,10 +107,12 @@ public class RobotContainer {
     if (RobotBase.isReal()) {
       m_driveTrain.resetEncoderCounts();
       m_driveTrain.resetOdometry(m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetAngle();
   } else {
       m_fieldSim.initSim();
       m_driveTrain.resetEncoderCounts();
       m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetAngle();
   }
   }
 
