@@ -351,14 +351,13 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
+    resetEncoderCounts();
+    navX.reset();
+    odometry.resetPosition(pose, rotation);
     if (RobotBase.isSimulation()) {
-      resetEncoderCounts();
+      // resetEncoderCounts();
       m_drivetrainSimulator.setPose(pose);
     }
-
-    odometry.resetPosition(pose, rotation);
-    resetEncoderCounts();
-    navX.setAngleAdjustment(rotation.getDegrees());
   }
 
   private void updateSmartDashboard() {
