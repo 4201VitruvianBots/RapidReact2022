@@ -29,7 +29,11 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Climber {}
+  public final class Climber {
+    public static final int climbMotorA = 50;
+    public static final int climbPistonForward = 4;
+    public static final int climbPistonReverse = 8;
+  }
 
   public final class Indexer {
     public static final int indexerMotor = 35;
