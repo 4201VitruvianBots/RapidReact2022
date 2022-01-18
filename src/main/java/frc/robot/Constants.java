@@ -156,6 +156,13 @@ public final class Constants {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
+
+    public static final double kTurretKv = 0;
+
+  // Volts per (radian per second squared)
+    public static final double kTurretKa = 0;
+
+    public static final double kTurretKs = 0;
   }
 
   public final class Vision {}

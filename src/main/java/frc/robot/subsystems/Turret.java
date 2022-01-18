@@ -7,10 +7,22 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.CANCoder;
+
+import static frc.robot.Constants.Turret.*;
+
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+import edu.wpi.first.math.estimator.KalmanFilter;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Conversions;
 
 public class Turret extends SubsystemBase {
   private final int encoderUnitsPerRotation = 4096;
@@ -22,17 +34,61 @@ public class Turret extends SubsystemBase {
     double minAngle = - 90;  // -135;
     double maxAngle = 90;   // 195;
     double gearRatio = 18.0 / 120.0;
-    private double setpoint = 0; //angle
+    private double turretSetpointDegrees = 0; //angle
     // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback) 
     private int controlMode = 1;
     private boolean initialHome;
     private boolean turretHomeSensorLatch = false;
+
+    private final LinearSystem<N1, N1, N1> m_turretPlant =
+    LinearSystemId.identifyVelocitySystem(kTurretKv, kTurretKa);
+
+    // The observer fuses our encoder data and voltage inputs to reject noise.
+  private final KalmanFilter<N1, N1, N1> m_observer =
+  new KalmanFilter<>(
+      Nat.N1(),
+      Nat.N1(),
+      m_turretPlant,
+      VecBuilder.fill(3.0), // How accurate we think our model is
+      VecBuilder.fill(0.01), // How accurate we think our encoder
+      // data is
+      0.020);
+
+    // A LQR uses feedback to create voltage commands.
+  private final LinearQuadraticRegulator<N1, N1, N1> m_controller =
+  new LinearQuadraticRegulator<>(
+      m_turretPlant,
+      //TODO: change rpm tolerance to something else for turret
+      VecBuilder.fill(Conversions.RpmToRadPerSec(rpmTolerance)), // Velocity error tolerance
+      VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+      0.020);
+
+// The state-space loop combines a controller, observer, feedforward and plant for easy control.
+private final LinearSystemLoop<N1, N1, N1> m_loop =
+  new LinearSystemLoop<>(m_turretPlant, m_controller, m_observer, 12.0, 0.020);
+    
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
     encoder.configFactoryDefault();
     encoder.setPositionToAbsolute();
     encoder.configSensorDirection(true);
+  }
+
+  private void UpdateDegreesSetpoint(){
+    if (getTurretSetpointDegrees() > 0) {
+      m_loop.setNextR(VecBuilder.fill((turretSetpointDegrees)));
+
+      m_loop.correct(VecBuilder.fill(getTurretAngle()));
+
+      m_loop.predict(0.020);
+
+      double nextVoltage = m_loop.getU(0);
+
+      setPercentOutput(nextVoltage / 12.0);
+    } else {
+      setPercentOutput(0);
+    }
   }
 
   public void resetEncoder() {
@@ -85,6 +141,10 @@ public class Turret extends SubsystemBase {
     return !turretHomeSensor.get();
   }
 
+  public double getTurretSetpointDegrees(){
+    return turretSetpointDegrees; 
+  }
+
   public boolean getInitialHome() {
     return initialHome;
   }
@@ -94,12 +154,13 @@ public class Turret extends SubsystemBase {
     turretMotor.set(ControlMode.PercentOutput, output);
   }
 
-  public void setRobotCentricSetpoint(double setpoint) {
-    this.setpoint = setpoint;
+  public void setRobotCentricSetpoint(double turretSetpointDegrees) {
+    this.turretSetpointDegrees = turretSetpointDegrees;
   }
+
   /** TurretSetpoint specifically sets the setpoint to turret angle */
   public void stopTurret() {
-    setpoint = getTurretAngle();
+    turretSetpointDegrees = getTurretAngle();
   }
 
   public int degreestoEncoderunits(double degrees) {
@@ -116,6 +177,6 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    UpdateDegreesSetpoint();
   }
 }
