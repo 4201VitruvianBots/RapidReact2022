@@ -6,12 +6,16 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.auto.ThreeBallAuto;
+import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -81,16 +85,21 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new TestPath(m_driveTrain, m_fieldSim);
+    return new ThreeBallAuto(m_driveTrain, m_fieldSim);
   }
 
   public void robotPeriodic() {}
 
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.ALL_COAST);
+    m_driveTrain.setMotorTankDrive(0, 0);
+  }
 
   public void disabledPeriodic() {}
 
-  public void teleopInit() {}
+  public void teleopInit() {
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.ALL_COAST);
+  }
 
   public void teleopPeriodic() {}
 
