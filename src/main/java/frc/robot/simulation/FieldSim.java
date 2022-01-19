@@ -140,7 +140,12 @@ public class FieldSim {
   public void simulationPeriodic() {
 
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
-    m_field2d.getObject("Outtake").setPose(m_driveTrain.getRobotPoseMeters());
+    m_field2d
+        .getObject("Turret")
+        .setPose(
+            new Pose2d(
+                m_driveTrain.getRobotPoseMeters().getTranslation(),
+                Rotation2d.fromDegrees(getIdealAngleToHub())));
 
     updateIntakePoses();
 
@@ -159,6 +164,13 @@ public class FieldSim {
 
   public double getAutoStartTime() {
     return m_autoStartTime;
+  }
+
+  public double getIdealAngleToHub() {
+    return Math.toDegrees(
+        Math.atan2(
+            Constants.Sim.hubPoseMeters.getY() - m_driveTrain.getRobotPoseMeters().getY(),
+            Constants.Sim.hubPoseMeters.getX() - m_driveTrain.getRobotPoseMeters().getX()));
   }
 
   public Cargo[] getCargo() {
@@ -193,10 +205,10 @@ public class FieldSim {
         double currentTime = RobotController.getFPGATime();
         // FPGA time is in microseonds, need to convert it into seconds
         double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
-        // double distanceTraveled = Constants.Sim.shotSpeed * deltaT;
+        double distanceTraveled = Constants.Sim.shotSpeedMetersPerSecond * deltaT;
 
-        double deltaX = cargo.getBallVel().getX() * deltaT;
-        double deltaY = cargo.getBallVel().getY() * deltaT;
+        double deltaX = distanceTraveled * Math.cos(Math.toRadians(getIdealAngleToHub()));
+        double deltaY = distanceTraveled * Math.sin(Math.toRadians(getIdealAngleToHub()));
 
         cargo.setBallPose(
             new Pose2d(deltaX + ballPose.getX(), deltaY + ballPose.getY(), ballPose.getRotation()));
@@ -205,7 +217,7 @@ public class FieldSim {
         break;
       case IN_ROBOT:
         // Ball has been picked up by the robot
-        cargo.setBallPose(m_field2d.getObject("Outtake").getPose());
+        cargo.setBallPose(m_field2d.getObject("Turret").getPose());
 
         // Ball has been shot;
         if (cargo.getBallShotState()) {

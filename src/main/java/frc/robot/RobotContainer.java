@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -91,8 +90,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new OneBallAuto(
-        m_driveTrain, m_fieldSim,  m_indexer, m_flywheel, m_vision);
+    return new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision);
   }
 
   public void robotPeriodic() {}
