@@ -13,15 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.ThreeBallAuto;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -34,6 +33,7 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
+  private final Turret m_turret = new Turret(m_driveTrain);
   private final Vision m_vision = new Vision();
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
@@ -90,7 +90,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new ThreeBallAuto(m_driveTrain, m_fieldSim);
+    return new ThreeBallAuto(
+        m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision);
   }
 
   public void robotPeriodic() {}
@@ -111,14 +112,16 @@ public class RobotContainer {
   public void autonomousInit() {
     if (RobotBase.isReal()) {
       m_driveTrain.resetEncoderCounts();
-      m_driveTrain.resetOdometry(m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetOdometry(
+          m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
-  } else {
+    } else {
       m_fieldSim.initSim();
       m_driveTrain.resetEncoderCounts();
-      m_driveTrain.resetOdometry(m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetOdometry(
+          m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
-  }
+    }
   }
 
   public void autonomousPeriodic() {}
