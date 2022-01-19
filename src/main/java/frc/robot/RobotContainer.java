@@ -74,11 +74,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     for (CommandSelector command : CommandSelector.values()) {
-      m_autoChooser.addOption(command.toString(), command);
+      if (command == CommandSelector.ONE_BALL_AUTO)
+        m_autoChooser.setDefaultOption(command.toString(), command);
+      else
+        m_autoChooser.addOption(command.toString(), command);
     }
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-
+    
     m_autoCommand = new SelectCommand(
       Map.ofEntries(
         entry(CommandSelector.ONE_BALL_AUTO, new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
@@ -125,7 +128,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision);
+    return m_autoCommand;
   }
 
   public void robotPeriodic() {}
