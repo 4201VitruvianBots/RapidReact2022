@@ -32,8 +32,7 @@ public class Indexer extends SubsystemBase {
 
   // Indexer sensors setup
   DigitalInput intakeSensor = new DigitalInput(Constants.Intake.intakeSensor);
-  DigitalInput indexerTopSensor = new DigitalInput(Constants.Indexer.indexerTopSensor);
-  DigitalInput indexerBottomSensor = new DigitalInput(Constants.Indexer.indexerBottomSensor);
+  DigitalInput indexerSensor = new DigitalInput(Constants.Indexer.indexerSensor);
 
   /** Creates a new Indexer. */
   public Indexer() {
@@ -102,8 +101,8 @@ public class Indexer extends SubsystemBase {
   }
 
   /** @return Indexer Sensor activation status */
-  public boolean getIndexerTopSensor() {
-    return !indexerTopSensor.get();
+  public boolean getIndexerSensor() {
+    return !indexerSensor.get();
   }
 
   /**
