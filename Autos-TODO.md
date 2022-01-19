@@ -23,6 +23,13 @@
   - [x] One ball
   - [x] Two ball
   - [x] Three ball
+- [x] More testing of Jango
+  - [x] Distance consistency
+  - [x] Turning consistency
+  - [ ] Timing consistency
+  - [ ] Solve teleop breaking
+- [x] Fix weird issues with sim (?)
+
 
 ## When declaration are merged
 - [x] Integrate subsystems into autos
