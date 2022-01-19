@@ -13,6 +13,7 @@ public class AutoControlledIntake extends CommandBase {
   /** Creates a new AutoControlledIntake. */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Indexer m_indexer;
+
   private final Intake m_intake;
 
   private final double intakeRPM = 5000;
@@ -21,7 +22,7 @@ public class AutoControlledIntake extends CommandBase {
   private boolean intaking;
 
   public AutoControlledIntake(Intake intake, Indexer indexer) {
-   
+
     m_intake = intake;
     m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -42,27 +43,25 @@ public class AutoControlledIntake extends CommandBase {
     m_intake.setIntakePercentOutput(1);
     m_indexer.setKickerOutput(0);
     m_indexer.setIndexerOutput(0);
-
   }
 
-private void updateTimedRollers() {
-  if(indexerTimestamp != 0)
-    if(timestamp - indexerTimestamp < 0.1)
-      m_indexer.setRPM(indexRPM);
-    else {
-      m_indexer.setRPM(0);
-      intaking = false;
-    }
-}
+  private void updateTimedRollers() {
+    if (indexerTimestamp != 0)
+      if (timestamp - indexerTimestamp < 0.1) m_indexer.setRPM(indexRPM);
+      else {
+        m_indexer.setRPM(0);
+        intaking = false;
+      }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_intake.setIntakeState(false);
-        m_intake.setIntakePercentOutput(0);
-        m_indexer.setIndexerOutput(0);
-        m_indexer.setKickerOutput(0);
-        m_intake.setIntakePiston(false);
+    m_intake.setIntakePercentOutput(0);
+    m_indexer.setIndexerOutput(0);
+    m_indexer.setKickerOutput(0);
+    m_intake.setIntakePiston(false);
   }
 
   // Returns true when the command should end.

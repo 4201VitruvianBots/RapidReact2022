@@ -76,19 +76,33 @@ public class RobotContainer {
     for (CommandSelector command : CommandSelector.values()) {
       if (command == CommandSelector.ONE_BALL_AUTO)
         m_autoChooser.setDefaultOption(command.toString(), command);
-      else
-        m_autoChooser.addOption(command.toString(), command);
+      else m_autoChooser.addOption(command.toString(), command);
     }
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    
-    m_autoCommand = new SelectCommand(
-      Map.ofEntries(
-        entry(CommandSelector.ONE_BALL_AUTO, new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
-        entry(CommandSelector.TWO_BALL_AUTO, new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_flywheel, m_indexer, m_vision)),
-        entry(CommandSelector.THREE_BALL_AUTO, new ThreeBallAuto(m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision)),
-        entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim))
-      ), m_autoChooser::getSelected);
+
+    m_autoCommand =
+        new SelectCommand(
+            Map.ofEntries(
+                entry(
+                    CommandSelector.ONE_BALL_AUTO,
+                    new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
+                entry(
+                    CommandSelector.TWO_BALL_AUTO,
+                    new TwoBallAuto(
+                        m_driveTrain, m_fieldSim, m_intake, m_flywheel, m_indexer, m_vision)),
+                entry(
+                    CommandSelector.THREE_BALL_AUTO,
+                    new ThreeBallAuto(
+                        m_driveTrain,
+                        m_fieldSim,
+                        m_intake,
+                        m_indexer,
+                        m_flywheel,
+                        m_turret,
+                        m_vision)),
+                entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim))),
+            m_autoChooser::getSelected);
 
     initializeSubsystems();
 

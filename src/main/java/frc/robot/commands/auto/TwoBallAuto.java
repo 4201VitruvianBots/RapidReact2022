@@ -3,6 +3,8 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -14,6 +16,7 @@ import frc.robot.commands.indexer.FeedAll;
 import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
@@ -56,7 +59,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
         new SetIntakePiston(intake, true),
         new ParallelDeadlineGroup(
-            command, new AutoControlledIntake(intake, indexer)
+            command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoControlledIntake(intake, indexer)
             // TODO vision turret adjustment
             // TODO implement indexer
 
@@ -66,7 +70,10 @@ public class TwoBallAuto extends SequentialCommandGroup {
                 new WaitCommand(0.5),
                 // TODO how long does flywheel take to rev up? (should the flywheel run while
                 // driving?)
-                new FeedAll(indexer)
+                new ConditionalCommand(
+                    new FeedAll(indexer),
+                    new SimulationShoot(fieldSim, true).withTimeout(2),
+                    RobotBase::isReal)
                 // TODO: check if the shooter can shoot, maybe a wait command
                 ),
             new SetRpmSetpoint(flywheel, vision, 3000)),

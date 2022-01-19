@@ -7,6 +7,7 @@
 
 package frc.robot.simulation;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Sim.BallState;
 
@@ -38,16 +39,16 @@ public class SimulationShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // double currentTime = RobotController.getFPGATime();
+    double currentTime = RobotController.getFPGATime();
     // Shoot only every 80ms
-    // if(((currentTime - lastShotTime) / 1e6) > 0.080) {
-    for (Cargo p : m_fieldSim.getCargo()) {
-      if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
-        p.setBallShotState(true);
-        // lastShotTime = currentTime;
-        break;
+    if (((currentTime - lastShotTime) / 1e6) > 0.080) {
+      for (Cargo p : m_fieldSim.getCargo()) {
+        if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
+          p.setBallShotState(true);
+          lastShotTime = currentTime;
+          break;
+        }
       }
-      // }
     }
   }
 

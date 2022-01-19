@@ -3,6 +3,8 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
@@ -13,6 +15,7 @@ import frc.robot.commands.indexer.FeedAll;
 import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
@@ -64,20 +67,22 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
-                    command1,
-                    new AutoControlledIntake(intake, indexer)
-                    ),
-                new FeedAll(indexer)),
+                    command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                    new AutoControlledIntake(intake, indexer)),
+                new ConditionalCommand(
+                    new FeedAll(indexer),
+                    new SimulationShoot(fieldSim, true).withTimeout(2),
+                    RobotBase::isReal)),
             new SetRpmSetpoint(flywheel, vision, 3000)
             // TODO: Add vision aimings
             ),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
-                    command2,
-                    new AutoControlledIntake(intake, indexer)
-                    ),
-                new FeedAll(indexer),
+                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                    new AutoControlledIntake(intake, indexer)),
+                new ConditionalCommand(
+                    new FeedAll(indexer), new SimulationShoot(fieldSim, false), RobotBase::isReal),
                 new SetIntakePiston(intake, false)),
             new SetRpmSetpoint(flywheel, vision, 3000)
             // TODO: Add vision aimings

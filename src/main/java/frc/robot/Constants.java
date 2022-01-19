@@ -136,7 +136,8 @@ public final class Constants {
     public static final double shotSpeedMetersPerSecond = 10;
 
     public static final Pose2d hubPoseMeters =
-        new Pose2d(12.557047, 7.275692, new Rotation2d(Units.degreesToRadians(0)));
+        new Pose2d(
+            fieldWidthMeters / 2, fieldHieghtMeters / 2, new Rotation2d(Units.degreesToRadians(0)));
     public static final Pose2d startPositionMeters = new Pose2d();
 
     public enum BallState {

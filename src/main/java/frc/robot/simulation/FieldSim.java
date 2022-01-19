@@ -13,7 +13,9 @@ import frc.robot.subsystems.DriveTrain;
 public class FieldSim {
   private final Field2d m_field2d;
   private final DriveTrain m_driveTrain;
-  private final Cargo[] m_cargo = new Cargo[15]; // Do not include the 5 cargo that will be in other robots or 2 with the human players
+  private final Cargo[] m_cargo =
+      new Cargo[15]; // Do not include the 5 cargo that will be in other robots or 2 with the human
+  // players
 
   private int ballCount;
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
@@ -202,6 +204,13 @@ public class FieldSim {
         break;
       case IN_AIR:
         // Ball is traveling in the air
+
+        if (Math.pow(ballPose.getX() - Constants.Sim.hubPoseMeters.getX(), 2)
+                + Math.pow(ballPose.getY() - Constants.Sim.hubPoseMeters.getY(), 2)
+            < 0.25) { /// If the ball has gone into the hub
+          cargo.setBallState(BallState.ON_FIELD);
+          break;
+        }
         double currentTime = RobotController.getFPGATime();
         // FPGA time is in microseonds, need to convert it into seconds
         double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;

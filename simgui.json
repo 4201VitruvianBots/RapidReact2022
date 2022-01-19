@@ -104,6 +104,12 @@
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
+        "Robot": {
+          "image": "resources/Images/robot.png"
+        },
+        "Turret": {
+          "image": "resources/Images/turret.png"
+        },
         "image": "resources/Images/RapidReactField.PNG",
         "window": {
           "visible": true

@@ -3,17 +3,12 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
-import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.FeedAll;
 import frc.robot.simulation.FieldSim;
-import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
@@ -49,13 +44,12 @@ public class OneBallAuto extends SequentialCommandGroup {
         // Once finish driving, feed indexer
         // After that, stop indexer and flywheel
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                command,
-                new ConditionalCommand(
-                    new FeedAll(indexer), new SimulationShoot(fieldSim, false), RobotBase::isReal)
-                // new FeedAll(indexer)
-                ),
-            new SetRpmSetpoint(flywheel, vision, 1000)
+            new SequentialCommandGroup(command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)))
+            //     new ConditionalCommand(
+            //         new FeedAll(indexer), new SimulationShoot(fieldSim, false),
+            // RobotBase::isReal)
+            //     ),
+            // new SetRpmSetpoint(flywheel, vision, 1000)
             // TODO: Add vision aiming
             ));
   }
