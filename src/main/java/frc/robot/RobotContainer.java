@@ -4,16 +4,24 @@
 
 package frc.robot;
 
+import static java.util.Map.entry;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.OneBallAuto;
+import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.auto.ThreeBallAuto;
+import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -22,6 +30,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
+import java.util.Map;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,8 +59,34 @@ public class RobotContainer {
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
 
+  public static enum CommandSelector {
+    ONE_BALL_AUTO,
+    TWO_BALL_AUTO,
+    THREE_BALL_AUTO,
+    TEST_PATH
+  }
+
+  private final SendableChooser<CommandSelector> m_autoChooser =
+      new SendableChooser<CommandSelector>();
+  private final SelectCommand m_autoCommand;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Setup auto chooser
+    for (CommandSelector command : CommandSelector.values()) {
+      m_autoChooser.addOption(command.toString(), command);
+    }
+
+    SmartDashboard.putData("Selected Auto", m_autoChooser);
+
+    m_autoCommand = new SelectCommand(
+      Map.ofEntries(
+        entry(CommandSelector.ONE_BALL_AUTO, new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
+        entry(CommandSelector.TWO_BALL_AUTO, new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_flywheel, m_indexer, m_vision)),
+        entry(CommandSelector.THREE_BALL_AUTO, new ThreeBallAuto(m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision)),
+        entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim))
+      ), m_autoChooser::getSelected);
+
     initializeSubsystems();
 
     // Configure the button bindings
