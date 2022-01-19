@@ -11,7 +11,7 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
-import frc.robot.commands.intake.ControlledIntake;
+import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -56,7 +56,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
         new SetIntakePiston(intake, true),
         new ParallelDeadlineGroup(
-            command, new ControlledIntake(intake, indexer, null)
+            command, new AutoControlledIntake(intake, indexer)
             // TODO vision turret adjustment
             // TODO implement indexer
 

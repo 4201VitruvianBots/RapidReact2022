@@ -10,7 +10,7 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
-import frc.robot.commands.intake.ControlledIntake;
+import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -65,8 +65,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
                     command1,
-                    new ControlledIntake(
-                        intake, indexer, null) // TODO: change to AutoControlledIntake
+                    new AutoControlledIntake(intake, indexer)
                     ),
                 new FeedAll(indexer)),
             new SetRpmSetpoint(flywheel, vision, 3000)
@@ -76,8 +75,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
             new SequentialCommandGroup(
                 new ParallelDeadlineGroup(
                     command2,
-                    new ControlledIntake(
-                        intake, indexer, null) // TODO: change to AutoControlledIntake
+                    new AutoControlledIntake(intake, indexer)
                     ),
                 new FeedAll(indexer),
                 new SetIntakePiston(intake, false)),
