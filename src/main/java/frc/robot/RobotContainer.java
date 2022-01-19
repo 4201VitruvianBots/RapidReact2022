@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.climber.ExtendClimber;
+import frc.robot.commands.climber.RetractClimber;
+import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -19,11 +22,15 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Climber;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -34,6 +41,7 @@ public class RobotContainer {
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
+  private final Climber m_climber = new Climber();
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -46,7 +54,9 @@ public class RobotContainer {
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     initializeSubsystems();
 
@@ -55,9 +65,11 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+   * it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -72,11 +84,15 @@ public class RobotContainer {
 
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+
+    xBoxButtons[1].whileHeld(new ExtendClimber(m_climber));
+    xBoxButtons[0].whileHeld(new RetractClimber(m_climber));
   }
 
   public void initializeSubsystems() {
-    m_driveTrain.setDefaultCommand(
-        new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    // m_driveTrain.setDefaultCommand(
+    // new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    m_climber.setDefaultCommand(new SetClimberOutput(m_climber, xBoxController));
   }
 
   /**
@@ -89,19 +105,26 @@ public class RobotContainer {
     return new TestPath(m_driveTrain, m_fieldSim);
   }
 
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+  }
 
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
-  public void teleopInit() {}
+  public void teleopInit() {
+  }
 
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+  }
 
-  public void autonomousInit() {}
+  public void autonomousInit() {
+  }
 
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   public void simulationInit() {
     m_fieldSim.initSim();

@@ -12,7 +12,7 @@ import frc.robot.subsystems.Climber;
 
 /** Retracts the climb motor */
 public class RetractClimber extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Climber m_climber;
 
   /**
@@ -28,12 +28,14 @@ public class RetractClimber extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   @Override
   public void execute() {
-    this.m_climber.setClimbPiston(false);
-    if (!this.m_climber.getClimbPistonExtendStatus()) this.m_climber.setClimberPercentOutput(0.5);
+    // this.m_climber.setClimbPiston(false);
+    // if (!this.m_climber.getClimbPistonExtendStatus())
+    this.m_climber.setClimberPercentOutput(-0.5);
   }
 
   // Called once the command ends or is interrupted.

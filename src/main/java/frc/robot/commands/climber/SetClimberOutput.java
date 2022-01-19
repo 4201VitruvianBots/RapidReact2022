@@ -15,7 +15,7 @@ import frc.robot.subsystems.Climber;
 
 /** Raises/lowers the climber based on joystick input */
 public class SetClimberOutput extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Climber m_climber;
 
   private final Joystick m_controller;
@@ -28,7 +28,7 @@ public class SetClimberOutput extends CommandBase {
   /**
    * Creates a new SetClimberOutput.
    *
-   * @param climber The climber used by this command.
+   * @param climber    The climber used by this command.
    * @param controller The joystick controller used by this command.
    */
   public SetClimberOutput(final Climber climber, final Joystick controller) {
@@ -40,41 +40,40 @@ public class SetClimberOutput extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   @Override
   public void execute() {
-    final double input =
-        Math.abs(this.m_controller.getRawAxis(5)) > 0.2 ? this.m_controller.getRawAxis(5) : 0;
+    final double input = Math.abs(this.m_controller.getRawAxis(5)) > 0.2 ? this.m_controller.getRawAxis(5) : 0;
 
     final int direction = input > 0 ? 1 : input < 0 ? -1 : 0;
     // might be better
-    if (this.m_climber.getClimbState()) {
-      if (direction != this.lastDirection) {
-        this.timestamp = Timer.getFPGATimestamp();
-        this.movable = false;
-        this.switchDirection = direction == 1;
-      }
-
-      if (this.movable) {
-        final double output = input;
-        this.m_climber.setClimberPercentOutput(output);
-      } else {
-        if (this.switchDirection) this.climberReleaseSequence();
-        else {
-          this.m_climber.setClimbPiston(false);
-          this.movable = true;
-          this.currentDirection = true;
-        }
-      }
-      this.lastDirection = direction;
+    // if (this.m_climber.getClimbState()) {
+    if (direction != this.lastDirection) {
+      this.timestamp = Timer.getFPGATimestamp();
+      this.movable = false;
+      this.switchDirection = direction == 1;
     }
+
+    if (this.movable) {
+      final double output = input;
+      this.m_climber.setClimberPercentOutput(output);
+    } else {
+      if (this.switchDirection)
+        this.climberReleaseSequence();
+      else {
+        this.m_climber.setClimbPiston(false);
+        this.movable = true;
+        this.currentDirection = true;
+      }
+    }
+    this.lastDirection = direction;
+    // }
   }
 
   private void climberReleaseSequence() {
     this.m_climber.setClimbPiston(true);
-    this.m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
-    this.m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
     if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.2)
       this.m_climber.setClimberPercentOutput(-0.35);
     else if (Math.abs(Timer.getFPGATimestamp() - this.timestamp) < 0.4)
@@ -83,8 +82,6 @@ public class SetClimberOutput extends CommandBase {
       this.m_climber.setClimberPercentOutput(0);
       this.movable = true;
       this.currentDirection = true;
-      this.m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
-      this.m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0);
     }
   }
 
