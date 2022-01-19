@@ -20,6 +20,8 @@ import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -34,10 +36,13 @@ public class RobotContainer {
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
   private final Vision m_vision = new Vision();
   private final Flywheel m_flywheel = new Flywheel(m_vision);
+  private final Indexer m_indexer = new Indexer();
+  private final Intake m_intake = new Intake();
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
   static Joystick xBoxController = new Joystick(Constants.USB.xBoxController);
+  static Joystick testController = new Joystick(3);
 
   public Button[] leftButtons = new Button[2];
   public Button[] rightButtons = new Button[2];
