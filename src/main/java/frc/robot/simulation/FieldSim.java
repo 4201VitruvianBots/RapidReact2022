@@ -13,7 +13,7 @@ import frc.robot.subsystems.DriveTrain;
 public class FieldSim {
   private final Field2d m_field2d;
   private final DriveTrain m_driveTrain;
-  private final Cargo[] m_cargo = new Cargo[15]; // 5 of the balls will be in other robots
+  private final Cargo[] m_cargo = new Cargo[15]; // Do not include the 5 cargo that will be in other robots or 2 with the human players
 
   private int ballCount;
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
@@ -30,11 +30,13 @@ public class FieldSim {
   }
 
   public void initSim() {
-    // Load 3 powercells into the robot
+    // Loads 1 cargo into the robot
     m_cargo[0].setBallState(BallState.IN_ROBOT);
+
+    // Places all other cargo onto the field
     for (int i = 1; i < m_cargo.length; i++) m_cargo[i].setBallState(BallState.ON_FIELD);
 
-    // Put 3 powercells in the Hub;
+    // Sets the position of all the cargo on the field
     m_cargo[1].setBallPose(Constants.Sim.blueHubBallPos[0]);
     m_cargo[2].setBallPose(Constants.Sim.blueHubBallPos[1]);
     m_cargo[3].setBallPose(Constants.Sim.blueHubBallPos[2]);
@@ -214,7 +216,7 @@ public class FieldSim {
         break;
       case ON_FIELD:
       default:
-        if (isBallInIntakeZone(ballPose) && ballCount < 6) {
+        if (isBallInIntakeZone(ballPose) && ballCount < 2) {
           ballCount++;
           cargo.setBallState(BallState.IN_ROBOT);
         }
