@@ -25,10 +25,10 @@
   - [x] Three ball
 
 ## When declaration are merged
-- [ ] Integrate subsystems into autos
-  - [ ] One ball
-  - [ ] Two ball
-  - [ ] Three ball
+- [x] Integrate subsystems into autos
+  - [x] One ball
+  - [x] Two ball
+  - [x] Three ball
 
 ## When field is ready
 - [ ] Test a robot on the field
