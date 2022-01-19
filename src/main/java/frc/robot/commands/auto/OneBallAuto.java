@@ -3,6 +3,8 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -13,6 +15,7 @@ import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
 import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
@@ -48,7 +51,8 @@ public class OneBallAuto extends SequentialCommandGroup {
       new ParallelDeadlineGroup(
         new SequentialCommandGroup(
           command,
-          new FeedAll(indexer)
+          new ConditionalCommand(new FeedAll(indexer), new SimulationShoot(fieldSim, false), RobotBase::isReal)
+          // new FeedAll(indexer)
         ),
         new SetRpmSetpoint(flywheel, vision, 1000)
         // TODO: Add vision aiming

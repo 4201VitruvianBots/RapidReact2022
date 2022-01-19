@@ -140,6 +140,7 @@ public class FieldSim {
   public void simulationPeriodic() {
 
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
+    m_field2d.getObject("Outtake").setPose(m_driveTrain.getRobotPoseMeters());
 
     updateIntakePoses();
 
@@ -210,7 +211,7 @@ public class FieldSim {
         if (cargo.getBallShotState()) {
           cargo.setBallShotState(false);
           cargo.setLastTimestamp(RobotController.getFPGATime());
-          cargo.setBallState(BallState.IN_ROBOT);
+          cargo.setBallState(BallState.IN_AIR);
           ballCount--;
         }
         break;
