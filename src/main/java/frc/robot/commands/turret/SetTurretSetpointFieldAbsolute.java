@@ -7,54 +7,54 @@
 
 package frc.robot.commands.turret;
 
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
 
-/**
- * An example command that uses an example subsystem.
- */
+/** An example command that uses an example subsystem. */
 public class SetTurretSetpointFieldAbsolute extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    private final Turret m_turret;
-    private final DriveTrain m_driveTrain;
-    private final Vision m_vision;
-    private final Flywheel m_flywheel;
-    private final Climber m_climber;
-    private final Joystick m_controller;
-    private final double deadZone = 0.5;
-    double setpoint;
-    boolean timeout = false;
-    boolean turning, usingVisionSetpoint;
-    private boolean direction, directionTripped, joystickMoved;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Turret m_turret;
 
-    /**
-     * Creates a new ExampleCommand.
-     */
-    public SetTurretSetpointFieldAbsolute(Turret turretSubsystem, DriveTrain driveTrainSubsystem, Vision visionSubsystem,
-                                          Flywheel flywheel, Climber climber, Joystick controller) {
-        m_turret = turretSubsystem;
-        m_driveTrain = driveTrainSubsystem;
-        m_vision = visionSubsystem;
-        m_flywheel = flywheel; 
-        m_climber = climber;
-        m_controller = controller;
-        // Use addRequirements() here to declare subsystem dependencies.
-        addRequirements(turretSubsystem);
-    }
+  private final DriveTrain m_driveTrain;
+  private final Vision m_vision;
+  private final Flywheel m_flywheel;
+  private final Climber m_climber;
+  private final Joystick m_controller;
+  private final double deadZone = 0.5;
+  double setpoint;
+  boolean timeout = false;
+  boolean turning, usingVisionSetpoint;
+  private boolean direction, directionTripped, joystickMoved;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+  /** Creates a new ExampleCommand. */
+  public SetTurretSetpointFieldAbsolute(
+      Turret turretSubsystem,
+      DriveTrain driveTrainSubsystem,
+      Vision visionSubsystem,
+      Flywheel flywheel,
+      Climber climber,
+      Joystick controller) {
+    m_turret = turretSubsystem;
+    m_driveTrain = driveTrainSubsystem;
+    m_vision = visionSubsystem;
+    m_flywheel = flywheel;
+    m_climber = climber;
+    m_controller = controller;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(turretSubsystem);
+  }
 
-    // Called every time the scheduler runs while the command is scheduled.
-    @Override
-    public void execute() {
-        
- //TODO: uncomment once climber/vision are made, probably need to do in other commands as well
-/*
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+
+    // TODO: uncomment once climber/vision are made, probably need to do in other commands as well
+    /*
         //If we are not climbing
         if(! m_climber.getClimbState()) {
             //If the turret is not using sensor feedback
@@ -81,7 +81,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                         m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
                         m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
                     }
-                } 
+                }
                 //if vision has a target and the joystick has not moved, set visionsetpoint to true and run the if statements below
                 else if(m_vision.hasTarget() && ! joystickMoved) {
                     usingVisionSetpoint = true;
@@ -98,7 +98,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                          else if(setpoint < m_turret.getMinAngle()) {
                             setpoint = m_turret.getMinAngle();
                         }
-                    } 
+                    }
                     //if we are turning, set the led off and if the turret is on target, set turning (variable) to false
                     else {
                         m_vision.ledsOff();
@@ -106,12 +106,12 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                             turning = false;
                     }
                 }
-                //else if vision doesn't have a target and the joysticks have not moved, 
+                //else if vision doesn't have a target and the joysticks have not moved,
                 //set usingvisionsetpoint to false and make the turret angle the setpoint
                  else if(! m_vision.hasTarget() && ! joystickMoved) {
                     usingVisionSetpoint = false;
                     setpoint = m_turret.getTurretAngle();
-                } 
+                }
                 //else if we are not moving the joysticks at all, set directionTripped to false and set the rumble of the controllers to zero
                 else {
                     directionTripped = false;
@@ -127,23 +127,22 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                     m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
                     m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0);
                 }
-                //if the controlmode is 1, set the current setpoint as the turret setpoint 
+                //if the controlmode is 1, set the current setpoint as the turret setpoint
                 //else set the percent output of the turret to the movement of the left joystick * 0.2
                 m_turret.setRobotCentricSetpoint(setpoint);
             } else {
                 m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.2);
             }
         }
-    */}
+    */ }
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
 }

@@ -159,10 +159,12 @@ public final class Constants {
 
     public static final double kTurretKv = 0;
 
-  // Volts per (radian per second squared)
+    // Volts per (radian per second squared)
     public static final double kTurretKa = 0;
 
     public static final double kTurretKs = 0;
+
+    public static final double degreeTolerance = 1.0;
   }
 
   public final class Vision {}
