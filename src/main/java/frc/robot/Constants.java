@@ -33,12 +33,15 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Climber {
-    public static final int climbMotorA = 50;
-    public static final int climbMotorB = 51;
-    public static final int climbPistonForward = 5;
-    public static final int climbPistonReverse = 4;
-  }
+    public final class Climber {
+        public static final int climbMotorA = 50;
+        public static final int climbMotorB = 51;
+        public static final int climbPistonForward = 5;
+        public static final int climbPistonReverse = 4;
+
+        public static final double climberBottomOutValue = 0;
+        public static final double climberTopOutValue = 1;
+    }
 
   public final class Indexer {
     public static final int indexerMotor = 35;

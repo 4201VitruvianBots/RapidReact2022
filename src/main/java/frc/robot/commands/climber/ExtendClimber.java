@@ -7,28 +7,24 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /**
  * Raises/lowers the climber based on joystick input
  */
-public class SetClimberOutput extends CommandBase {
+public class ExtendClimber extends CommandBase {
     @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
     private final Climber m_climber;
-
-    private final Joystick m_controller;
 
     /**
      * Creates a new SetClimberOutput.
      *
-     * @param climber    The climber used by this command.
-     * @param controller The joystick controller used by this command.
+     * @param climber The climber used by this command.
      */
-    public SetClimberOutput(final Climber climber, final Joystick controller) {
+    public ExtendClimber(final Climber climber) {
         this.m_climber = climber;
-        this.m_controller = controller;
         // Use addRequirements() here to declare subsystem dependencies.
         this.addRequirements(climber);
     }
@@ -36,24 +32,13 @@ public class SetClimberOutput extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        this.m_climber.disengagePistonBrake();
     }
 
     @Override
     public void execute() {
-        final double input = Math.abs(this.m_controller.getRawAxis(5)) > 0.2 ? this.m_controller.getRawAxis(5) : 0;
-
-        final climberState desiredDirection = input == 0 ? climberState.STILL : climberState.MOVING;
-
-        switch (desiredDirection) {
-            case MOVING:
-                this.m_climber.disengagePistonBrake();
-                this.m_climber.setClimberPercentOutput(input);
-                break;
-            case STILL:
-                this.m_climber.engagePistonBrake();
-                break;
-            default:
-                break;
+        while (this.m_climber.getClimberPosition() < Constants.Climber.climberTopOutValue) {
+            this.m_climber.setClimberPercentOutput(0.5);
         }
     }
 
@@ -68,10 +53,5 @@ public class SetClimberOutput extends CommandBase {
     @Override
     public boolean isFinished() {
         return false;
-    }
-
-    private enum climberState {
-        MOVING,
-        STILL
     }
 }
