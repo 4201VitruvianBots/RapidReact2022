@@ -12,6 +12,7 @@ import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
 import frc.robot.commands.intake.ControlledIntake;
+import frc.robot.commands.intake.SetIntakePiston;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Intake;
@@ -50,6 +51,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+        new SetIntakePiston(intake, true),
         new ParallelDeadlineGroup(
           command, 
           new ControlledIntake(intake, indexer, null)
@@ -64,8 +66,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new FeedAll(indexer)
           ),
           new SetRpmSetpoint(flywheel, vision, 1000)
-        )
-        
+        ),
+        new SetIntakePiston(intake, false)
         
     );
 
