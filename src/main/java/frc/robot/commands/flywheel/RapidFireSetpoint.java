@@ -39,19 +39,31 @@ public class RapidFireSetpoint extends CommandBase {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
-  }
+}
+//Uncomment execute once intake/indexer are made
+// Called every time the scheduler runs while the command is scheduled.
+@Override
+public void execute() {
+/*
+    if(Math.abs(m_flywheel.getRPM(0) - m_flywheel.getSetpointRPM()) <= 100 || Timer.getFPGATimestamp() - startTime > 0.5) {
+        m_indexer.setIndexerOutput(1);
+        m_indexer.setKickerOutput(1);
+        m_intake.setIntakePercentOutput(1);
+    }
+}
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
+// Called once the command ends or is interrupted.
+@Override
+public void end(boolean interrupted) {
+    m_intake.setIntakePercentOutput(0);
+    m_indexer.setIndexerOutput(0);
+    m_indexer.setKickerOutput(0);
+    m_flywheel.setPower(0);
+*/}
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+// Returns true when the command should end.
+@Override
+public boolean isFinished() {
+    return (false);
+}
 }
