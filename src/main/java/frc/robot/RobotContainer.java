@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
@@ -67,6 +68,9 @@ public class RobotContainer {
 
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+
+    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1500)); 
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2000)); 
   }
 
   public void initializeSubsystems() {
