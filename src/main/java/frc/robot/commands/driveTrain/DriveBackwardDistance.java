@@ -13,29 +13,35 @@ import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.ArrayList;
 
-public class DriveBackwardDistance extends SequentialCommandGroup {
-  public DriveBackwardDistance(
-      DriveTrain driveTrain, FieldSim fieldSim, double distance) { // Distance in meters
+/**
+ * Drives the robot backward a distance in meters
+ */
+public class DriveBackwardDistance extends SequentialCommandGroup {    
+  /**
+   * Drives the robot backward a distance in meters
+   */
+  public DriveBackwardDistance(DriveTrain driveTrain, FieldSim fieldSim, double distance) { // Distance in meters
     Pose2d startPosition = new Pose2d();
     Pose2d endPosition = new Pose2d(-distance, 0, new Rotation2d());
     TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(10));
     configA.setReversed(true);
     configA.setEndVelocity(0);
     configA.addConstraint(
-        new DifferentialDriveKinematicsConstraint(
-            driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
+      new DifferentialDriveKinematicsConstraint(
+        driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
     configA.addConstraint(
-        new DifferentialDriveVoltageConstraint(
-            driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(), 10));
+      new DifferentialDriveVoltageConstraint(
+        driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(), 10));
     ArrayList<Pose2d> driveBackwardPath = new ArrayList<Pose2d>();
     driveBackwardPath.add(startPosition);
     driveBackwardPath.add(endPosition);
     var driveBackwardCommand =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, driveBackwardPath, configA);
+      TrajectoryUtils.generateRamseteCommand(driveTrain, driveBackwardPath, configA);
 
     addCommands(
-        new SetOdometry(driveTrain, fieldSim, startPosition),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
-        driveBackwardCommand);
+      new SetOdometry(driveTrain, fieldSim, startPosition),
+      new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+      driveBackwardCommand
+    );
   }
 }

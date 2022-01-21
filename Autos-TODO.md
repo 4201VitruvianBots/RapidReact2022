@@ -46,5 +46,6 @@
 - [ ] Test paths on new robot
 
 ## When comp robot is ready
-- [ ] Test drivetrain code on new robot
+- [x] Test drivetrain code on new robot
+- [x] Test paths on new robot
 - [ ] Test on field

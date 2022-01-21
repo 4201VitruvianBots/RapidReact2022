@@ -22,6 +22,7 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -64,7 +65,8 @@ public class RobotContainer {
     ONE_BALL_AUTO,
     TWO_BALL_AUTO,
     THREE_BALL_AUTO,
-    TEST_PATH
+    TEST_PATH,
+    DRIVE_FORWARD
   }
 
   private final SendableChooser<CommandSelector> m_autoChooser =
@@ -85,24 +87,11 @@ public class RobotContainer {
     m_autoCommand =
         new SelectCommand(
             Map.ofEntries(
-                entry(
-                    CommandSelector.ONE_BALL_AUTO,
-                    new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
-                entry(
-                    CommandSelector.TWO_BALL_AUTO,
-                    new TwoBallAuto(
-                        m_driveTrain, m_fieldSim, m_intake, m_flywheel, m_indexer, m_vision)),
-                entry(
-                    CommandSelector.THREE_BALL_AUTO,
-                    new ThreeBallAuto(
-                        m_driveTrain,
-                        m_fieldSim,
-                        m_intake,
-                        m_indexer,
-                        m_flywheel,
-                        m_turret,
-                        m_vision)),
-                entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim))),
+                entry(CommandSelector.ONE_BALL_AUTO,new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_vision)),
+                entry(CommandSelector.TWO_BALL_AUTO,new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_flywheel, m_indexer, m_vision)),
+                entry(CommandSelector.THREE_BALL_AUTO,new ThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision)),
+                entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim)),
+                entry(CommandSelector.DRIVE_FORWARD, new DriveForwardDistance(m_driveTrain, m_fieldSim, 4))),
             m_autoChooser::getSelected);
 
     initializeSubsystems();
