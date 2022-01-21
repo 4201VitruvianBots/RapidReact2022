@@ -41,12 +41,13 @@ import java.util.Map;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain m_driveTrain = new DriveTrain();
-  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
   private final Turret m_turret = new Turret(m_driveTrain);
   private final Vision m_vision = new Vision();
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
+  
+  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);

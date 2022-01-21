@@ -61,7 +61,7 @@ public class AutoControlledIntake extends CommandBase {
     m_intake.setIntakePercentOutput(0);
     m_indexer.setIndexerOutput(0);
     m_indexer.setKickerOutput(0);
-    m_intake.setIntakePiston(false);
+    // m_intake.setIntakePiston(false);
   }
 
   // Returns true when the command should end.

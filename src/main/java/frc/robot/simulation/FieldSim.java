@@ -9,10 +9,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.Sim.BallState;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 
 public class FieldSim {
   private final Field2d m_field2d;
   private final DriveTrain m_driveTrain;
+  private final Intake m_intake;
   private final Cargo[] m_cargo =
       new Cargo[15]; // Do not include the 5 cargo that will be in other robots or 2 with the human
   // players
@@ -22,8 +24,9 @@ public class FieldSim {
 
   private double m_autoStartTime;
 
-  public FieldSim(DriveTrain driveTrain /*, Outtake outtake*/) {
+  public FieldSim(DriveTrain driveTrain, Intake intake /*, Outtake outtake*/) {
     m_driveTrain = driveTrain;
+    m_intake = intake;
 
     for (int i = 0; i < m_cargo.length; i++)
       m_cargo[i] = new Cargo(String.format("Cargo_" + String.format("%02d", i)));
@@ -150,11 +153,19 @@ public class FieldSim {
                 Rotation2d.fromDegrees(getIdealAngleToHub())));
 
     updateIntakePoses();
+    
+    if (m_intake.getIntakePistonExtendStatus()) {
+      m_field2d.getObject("Intake A").setPose(intakePose[0]);
+      m_field2d.getObject("Intake B").setPose(intakePose[1]);
+      m_field2d.getObject("Intake C").setPose(intakePose[2]);
+      m_field2d.getObject("Intake D").setPose(intakePose[3]);
+    } else {
+      m_field2d.getObject("Intake A").setPose(new Pose2d(-50, 50, new Rotation2d()));
+      m_field2d.getObject("Intake B").setPose(new Pose2d(-50, 50, new Rotation2d()));
+      m_field2d.getObject("Intake C").setPose(new Pose2d(-50, 50, new Rotation2d()));
+      m_field2d.getObject("Intake D").setPose(new Pose2d(-50, 50, new Rotation2d()));
+    }
 
-    m_field2d.getObject("Intake A").setPose(intakePose[0]);
-    m_field2d.getObject("Intake B").setPose(intakePose[1]);
-    m_field2d.getObject("Intake C").setPose(intakePose[2]);
-    m_field2d.getObject("Intake D").setPose(intakePose[3]);
 
     for (Cargo p : m_cargo) {
       updateBallState(p);
@@ -238,7 +249,7 @@ public class FieldSim {
         break;
       case ON_FIELD:
       default:
-        if (isBallInIntakeZone(ballPose) && ballCount < 2) {
+        if (m_intake.getIntakeState() && m_intake.getIntakePistonExtendStatus() && isBallInIntakeZone(ballPose) && ballCount < 2) {
           ballCount++;
           cargo.setBallState(BallState.IN_ROBOT);
         }
