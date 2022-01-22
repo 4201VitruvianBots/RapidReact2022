@@ -55,10 +55,8 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    Trajectory trajectory2 =
-        PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(2), Units.feetToMeters(2), true);
-    VitruvianRamseteCommand command2 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+        Trajectory trajectory2 = PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        VitruvianRamseteCommand command2 = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),

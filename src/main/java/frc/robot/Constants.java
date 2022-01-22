@@ -123,6 +123,7 @@ public final class Constants {
       new Pose2d(Units.inchesToMeters(418), Units.inchesToMeters(39), new Rotation2d()),
       new Pose2d(Units.inchesToMeters(200), Units.inchesToMeters(249), new Rotation2d()),
       new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(44), Units.inchesToMeters(42), new Rotation2d()),
       new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
     };
 
