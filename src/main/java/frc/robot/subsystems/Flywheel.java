@@ -43,6 +43,8 @@ public class Flywheel extends SubsystemBase {
   private boolean initialHome;
   private boolean canShoot;
   private double idealRPM;
+  private boolean timerStart;
+  private double timestamp;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
@@ -183,6 +185,23 @@ public class Flywheel extends SubsystemBase {
     // This method will be called once per scheduler run
     updateRPMSetpoint();
     updateShuffleboard();
+
+    if((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())/* && m_vision.hasTarget()*/ &&
+    /*(Math.abs(m_vision.getTargetX()) < 1) &&*/ ! timerStart) {
+timerStart = true;
+timestamp = Timer.getFPGATimestamp();
+} else if(((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) /*|| ! m_vision.hasTarget()()*/ ||
+    /*(Math.abs(m_vision.getTargetX()) > 1)) && */ (timerStart))) {
+timestamp = 0;
+timerStart = false;
+}
+
+if(timestamp != 0) {
+
+canShoot = Math.abs(Timer.getFPGATimestamp() - timestamp) > 0.6;
+
+} else
+canShoot = false;
   }
 
   @Override

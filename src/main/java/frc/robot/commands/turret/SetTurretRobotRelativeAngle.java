@@ -39,10 +39,8 @@ public class SetTurretRobotRelativeAngle extends CommandBase {
   public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
-
-  /** @return absolute value of turret angle minus that b m_setpoint and add a <1 at the end */
   @Override
   public boolean isFinished() {
-    return false;
+    return Math.abs(m_turret.getTurretAngle() - m_setpoint) < 1;
   }
 }

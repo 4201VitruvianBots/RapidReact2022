@@ -21,7 +21,6 @@ public class DefaultFlywheelRPM extends CommandBase {
    */
   public DefaultFlywheelRPM(Flywheel flywheel /* Vision vision*/) {
     m_flywheel = flywheel;
-    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(flywheel);
   }
 
@@ -30,9 +29,18 @@ public class DefaultFlywheelRPM extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  /** if vision gets valid target, then set shooter to 3000 RPM, else 0 */
+
   @Override
-  public void execute() {}
+  public void execute() {
+    if(/*vision.getValidTarget*/ 1 == 1 )
+      m_flywheel.setRPM(3000);
+    
+    
+    else
+        m_flywheel.setRPM(0);
+      
+    }
+  
 
   // Called once the command ends or is interrupted.
   @Override

@@ -28,14 +28,13 @@ public class SetAndHoldRpmSetpoint extends CommandBase {
         m_flywheel = flywheel; 
         m_RPM = RPM;
         m_vision = vision;
-//  addRequirements(shooter);
     }
 
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
     }
-    //Uncomment execute once vision is made
+    //TODO uncomment execute once vision is made
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {

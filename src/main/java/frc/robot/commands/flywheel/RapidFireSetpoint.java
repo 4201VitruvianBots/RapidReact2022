@@ -43,6 +43,7 @@ public class RapidFireSetpoint extends CommandBase {
 //Uncomment execute once intake/indexer are made
 // Called every time the scheduler runs while the command is scheduled.
 @Override
+//TODO: Uncomment when intake/indexer don't error
 public void execute() {
 /*
     if(Math.abs(m_flywheel.getRPM(0) - m_flywheel.getSetpointRPM()) <= 100 || Timer.getFPGATimestamp() - startTime > 0.5) {

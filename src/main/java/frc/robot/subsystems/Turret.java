@@ -32,12 +32,17 @@ public class Turret extends SubsystemBase {
   private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
   private final TalonFX turretMotor = new TalonFX(Constants.Turret.turretMotor);
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
-  double minAngle = -90; // -135;
-  double maxAngle = 90; // 195;
+  double minAngle = -90;
+  double maxAngle = 90;
   double gearRatio = 18.0 / 120.0;
   private double turretSetpointDegrees = 0; // angle
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
-  private int controlMode = 1;
+  enum TurretControlMode{
+    OPENLOOP,
+    CLOSEDLOOP
+  };
+  private TurretControlMode TurretControlMode; 
+  
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
 
@@ -94,15 +99,15 @@ public class Turret extends SubsystemBase {
 
   public void resetEncoder() {
     turretMotor.setSelectedSensorPosition(0);
-    // encoder.setPosition(0);
+    encoder.setPosition(0);
   }
 
-  public int getControlMode() {
-    return controlMode;
+  public TurretControlMode getControlMode() {
+    return TurretControlMode;
   }
 
-  public void setControlMode(int mode) {
-    controlMode = mode;
+  public void setControlMode(TurretControlMode mode) {
+    TurretControlMode = mode;
   }
 
   /** double returns encoder units of turret into degrees */
@@ -116,7 +121,7 @@ public class Turret extends SubsystemBase {
    * @return turret angle - drivetrain angle
    */
   public double getFieldRelativeAngle() {
-    return getTurretAngle(); // - m_driveTrain.getAngle()
+    return getTurretAngle() - m_driveTrain.getHeadingDegrees();
   }
 
   /**
