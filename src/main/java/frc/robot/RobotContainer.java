@@ -15,6 +15,7 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
@@ -31,7 +32,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
-  private final Vision m_vision = new Vision();
+  private final Controls m_controls = new Controls();
+  private final Vision m_vision = new Vision(m_controls);
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
