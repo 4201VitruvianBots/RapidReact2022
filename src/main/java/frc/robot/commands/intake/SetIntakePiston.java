@@ -5,27 +5,34 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class SetIntakePiston extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
+  private final Intake m_intake;
+
+  boolean extend;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * @param intake The intake used by this command.
+   * @return returns true or false if the piston is extended
    */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public SetIntakePiston(Intake intake, boolean extend) {
+    m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(intake);
+    this.extend = extend;
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * Called when the command is initially scheduled. sets the intake piston to either extend or
+   * retract
+   */
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (m_intake.getIntakePistonExtendStatus() != extend) m_intake.setIntakePiston(extend);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -38,6 +45,6 @@ public class ExampleCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
