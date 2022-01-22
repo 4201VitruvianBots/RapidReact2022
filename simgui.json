@@ -121,7 +121,9 @@
         "Turret": {
           "image": "resources/Images/turret.png"
         },
+        "height": 8.229999542236328,
         "image": "resources/Images/RapidReactField.PNG",
+        "width": 16.459999084472656,
         "window": {
           "visible": true
         }
