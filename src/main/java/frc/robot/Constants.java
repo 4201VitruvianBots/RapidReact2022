@@ -117,12 +117,12 @@ public final class Constants {
     };
 
     public static final Pose2d[] blueHubBallPos = {
-      new Pose2d(Units.inchesToMeters(460), Units.inchesToMeters(192), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(296), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(206), Units.inchesToMeters(235), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(83), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(301), Units.inchesToMeters(27), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(405), Units.inchesToMeters(50), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(478), Units.inchesToMeters(196), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(300), Units.inchesToMeters(12), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(199), Units.inchesToMeters(76), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(418), Units.inchesToMeters(39), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(200), Units.inchesToMeters(249), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(313), new Rotation2d()),
       new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
     };
 
