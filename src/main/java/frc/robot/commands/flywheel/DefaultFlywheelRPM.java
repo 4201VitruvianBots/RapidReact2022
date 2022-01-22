@@ -32,15 +32,10 @@ public class DefaultFlywheelRPM extends CommandBase {
 
   @Override
   public void execute() {
-    if(/*vision.getValidTarget*/ 1 == 1 )
-      m_flywheel.setRPM(3000);
-    
-    
-    else
-        m_flywheel.setRPM(0);
-      
-    }
-  
+    if (
+    /*vision.getValidTarget*/ 1 == 1) m_flywheel.setRPM(3000);
+    else m_flywheel.setRPM(0);
+  }
 
   // Called once the command ends or is interrupted.
   @Override

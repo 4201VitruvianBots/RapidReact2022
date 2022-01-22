@@ -186,22 +186,24 @@ public class Flywheel extends SubsystemBase {
     updateRPMSetpoint();
     updateShuffleboard();
 
-    if((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())/* && m_vision.hasTarget()*/ &&
-    /*(Math.abs(m_vision.getTargetX()) < 1) &&*/ ! timerStart) {
-timerStart = true;
-timestamp = Timer.getFPGATimestamp();
-} else if(((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) /*|| ! m_vision.hasTarget()()*/ ||
-    /*(Math.abs(m_vision.getTargetX()) > 1)) && */ (timerStart))) {
-timestamp = 0;
-timerStart = false;
-}
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance()) /* && m_vision.hasTarget()*/
+        &&
+        /*(Math.abs(m_vision.getTargetX()) < 1) &&*/ !timerStart) {
+      timerStart = true;
+      timestamp = Timer.getFPGATimestamp();
+    } else if (((Math.abs(getSetpointRPM() - getRPM(0))
+            > getRPMTolerance()) /*|| ! m_vision.hasTarget()()*/
+        ||
+        /*(Math.abs(m_vision.getTargetX()) > 1)) && */ (timerStart))) {
+      timestamp = 0;
+      timerStart = false;
+    }
 
-if(timestamp != 0) {
+    if (timestamp != 0) {
 
-canShoot = Math.abs(Timer.getFPGATimestamp() - timestamp) > 0.6;
+      canShoot = Math.abs(Timer.getFPGATimestamp() - timestamp) > 0.6;
 
-} else
-canShoot = false;
+    } else canShoot = false;
   }
 
   @Override

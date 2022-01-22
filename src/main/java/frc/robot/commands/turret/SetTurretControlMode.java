@@ -20,7 +20,7 @@ public class SetTurretControlMode extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  //TODO fix control mode as an enum
+  // TODO fix control mode as an enum
   public SetTurretControlMode(Turret turret, TurretControlMode mode) {
     m_turret = turret;
     m_mode = mode;
