@@ -76,7 +76,7 @@ public class DriveTrain extends SubsystemBase {
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.ALL_COAST;
 
   // Temporary until CTRE supports FalconFX in WPILib Sim
-  private final TalonSRX[] simMotors = new TalonSRX[4];
+  private final TalonFX[] simMotors = new TalonFX[4];
 
   public DifferentialDrivetrainSim m_drivetrainSimulator;
   private ADXRS450_GyroSim m_gyroAngleSim;
@@ -90,7 +90,7 @@ public class DriveTrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
     if (RobotBase.isSimulation()) {
-      for (int i = 0; i < 4; i++) simMotors[i] = new TalonSRX(24 + i);
+      for (int i = 0; i < 4; i++) simMotors[i] = new TalonFX(24 + i);
       configureCtreMotors(simMotors);
       simMotors[0].setSensorPhase(true);
       simMotors[2].setSensorPhase(false);
@@ -184,8 +184,8 @@ public class DriveTrain extends SubsystemBase {
     driveMotors[0].setSelectedSensorPosition(0);
     driveMotors[2].setSelectedSensorPosition(0);
     if (RobotBase.isSimulation()) {
-      simMotors[0].getSimCollection().setQuadratureRawPosition(0);
-      simMotors[2].getSimCollection().setQuadratureRawPosition(0);
+      simMotors[0].getSimCollection().setIntegratedSensorRawPosition(0);
+      simMotors[2].getSimCollection().setIntegratedSensorRawPosition(0);
     }
   }
 
@@ -401,6 +401,7 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getPoseMeters().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
         getWheelDistanceMeters(0),
@@ -428,25 +429,25 @@ public class DriveTrain extends SubsystemBase {
     Unmanaged.feedEnable(40);
     simMotors[0]
         .getSimCollection()
-        .setQuadratureRawPosition(
+        .setIntegratedSensorRawPosition( 
             (int)
                 (m_drivetrainSimulator.getLeftPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMetersSim));
     simMotors[0]
         .getSimCollection()
-        .setQuadratureVelocity(
+        .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getLeftVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMetersSim * 10.0)));
     simMotors[2]
         .getSimCollection()
-        .setQuadratureRawPosition(
+        .setIntegratedSensorRawPosition(
             (int)
                 (m_drivetrainSimulator.getRightPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMetersSim));
     simMotors[2]
         .getSimCollection()
-        .setQuadratureVelocity(
+        .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getRightVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMetersSim * 10.0)));
