@@ -49,7 +49,7 @@ public class FeedAll extends CommandBase {
   @Override
   public boolean isFinished() {
     double time = Timer.getFPGATimestamp();
-    if (m_indexer.getIndexerSensor()) {
+    if (m_indexer.getIndexerTopSensor()) {
       time = Timer.getFPGATimestamp();
     }
     return time >= 2;

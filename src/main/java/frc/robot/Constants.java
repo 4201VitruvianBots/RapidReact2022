@@ -33,7 +33,8 @@ public final class Constants {
 
   public final class Indexer {
     public static final int indexerMotor = 35;
-    public static final int indexerSensor = 1;
+    public static final int indexerTopSensor = 1;
+    public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
   }
 
