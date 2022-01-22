@@ -30,8 +30,11 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-
-  public final class Climber {}
+  public final class Climber {
+    public static final int climbMotorA = 50;
+    public static final int climbPistonForward = 4;
+    public static final int climbPistonReverse = 8;
+  }
 
   public final class Indexer {
     public static final int indexerMotor = 35;
@@ -171,5 +174,20 @@ public final class Constants {
     public static final int turretHomeSensor = 3;
   }
 
-  public final class Vision {}
+  public static final class Vision {
+    public enum CAMERA_TYPE {
+      OAK_D,
+      LIMELIGHT,
+      PHOTONVISION
+    }
+
+    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+
+    /* Co-Processor IP Addresses
+       10.42.1.100: Goal Camera
+       10.42.1.101: Intake Camera
+    */
+    public static String goalCameraIP = "10.42.1.100";
+    public static String intakeCameraIP = "10.42.1.101";
+  }
 }
