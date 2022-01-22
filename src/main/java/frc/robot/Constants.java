@@ -12,7 +12,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -176,12 +175,15 @@ public final class Constants {
 
   public static final class Vision {
     public enum CAMERA_TYPE {
-      OAK_D,
+      OAK,
       LIMELIGHT,
       PHOTONVISION
     }
 
     public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+
+    public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
+    public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
     /* Co-Processor IP Addresses
        10.42.1.100: Goal Camera

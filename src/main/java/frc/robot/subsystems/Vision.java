@@ -19,7 +19,7 @@ public class Vision extends SubsystemBase {
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
 
-  private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK_D;
+  private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls) {
@@ -32,6 +32,17 @@ public class Vision extends SubsystemBase {
     PortForwarder.add(5801, goalCameraIP, 5801);
     PortForwarder.add(5802, intakeCameraIP, 5800);
     PortForwarder.add(5803, intakeCameraIP, 5801);
+  }
+  /**
+   * Returns a boolean value based on checks to determine if the robot can shoot.
+   *
+   * @return true: All shooting parameters passed, so the robot can shoot false: One or more parameters failed,
+   * so the robot shouldn't shoot
+   */
+  public boolean canShoot() {
+    return MIN_SHOOTING_DISTANCE < getGoalTargetHorizontalDistance() &&
+            getGoalTargetHorizontalDistance() < MAX_SHOOTING_DISTANCE &&
+            getGoalValidTarget();
   }
 
   /**
@@ -133,7 +144,7 @@ public class Vision extends SubsystemBase {
         case PHOTONVISION:
           ledMode = 1;
           break;
-        case OAK_D:
+        case OAK:
         default:
           ledMode = 0;
           break;
@@ -144,7 +155,7 @@ public class Vision extends SubsystemBase {
           ledMode = 1;
           break;
         case PHOTONVISION:
-        case OAK_D:
+        case OAK:
         default:
           ledMode = 0;
           break;
