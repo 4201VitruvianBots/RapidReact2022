@@ -14,10 +14,11 @@ public class Controls extends SubsystemBase {
   public DriverStation.Alliance getAllianceColor() {
     var alliance = DriverStation.getAlliance();
     if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
-      System.out.println("Vision Subsystem Error: Invalid Alliance Color");
+      System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
+      alliance = DriverStation.Alliance.Red;
     }
 
-    return DriverStation.getAlliance();
+    return alliance;
   }
 
   /** Sends values to SmartDashboard */

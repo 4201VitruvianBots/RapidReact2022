@@ -96,7 +96,7 @@ public class Vision extends SubsystemBase {
    * @return true: Intake Camera has a target. false: Intake Camera does not have a target.
    */
   public int getIntakeTargetsValid() {
-    return (int) goal_camera.getEntry("tv").getNumber(0);
+    return (int) goal_camera.getEntry("tv").getDouble(0);
   }
 
   /**
