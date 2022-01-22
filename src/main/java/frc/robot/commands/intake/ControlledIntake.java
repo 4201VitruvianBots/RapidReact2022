@@ -18,14 +18,22 @@ import frc.robot.subsystems.Intake;
 public class ControlledIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Indexer m_indexer;
-
   private final Intake m_intake;
-
+  private final Joystick m_controller;
   private final double intakeRPM = 5000;
   private final double indexRPM = 300;
-  private double timestamp, intakeTimestamp, indexerTimestamp, fourBallTimestamp;
-  private boolean intaking;
-  private final Joystick m_controller;
+  private double timestamp, intakeTimestamp, indexerTimestamp, twoBallTimestamp;
+  private boolean intaking, haveTwo, haveTwoTripped;
+  private IntakeStates intakeState = IntakeStates.INTAKE_EMPTY;
+
+  public enum IntakeStates {
+    INTAKE_EMPTY,
+    INTAKE_ONE_BALL,
+    INTAKE_TWO_BALLS,
+    INTAKE_THREE_BALLS,
+    INTAKE_FOUR_BALLS,
+    INTAKE_FIVE_BALLS
+  }
 
   /*
    * Creates a new ExampleCommand.
@@ -39,7 +47,7 @@ public class ControlledIntake extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
     addRequirements(indexer);
-  }
+}
 
   /**
    * Called when the command is initially scheduled. Sets the intake state to true Sets timestamp to
@@ -49,7 +57,14 @@ public class ControlledIntake extends CommandBase {
   public void initialize() {
     m_intake.setIntakeState(true);
     timestamp = Timer.getFPGATimestamp();
-  }
+
+    if(m_indexer.getIntakeSensor() && m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor())
+        intakeState = IntakeStates.INTAKE_THREE_BALLS;
+    else if(m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor())
+        intakeState = IntakeStates.INTAKE_TWO_BALLS;
+    else
+        intakeState = IntakeStates.INTAKE_EMPTY;
+}
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake forward
@@ -57,10 +72,44 @@ public class ControlledIntake extends CommandBase {
    */
   @Override
   public void execute() {
-    m_intake.setIntakePercentOutput(0.8);
-    m_indexer.setKickerOutput(0);
-    m_indexer.setIndexerOutput(0);
+    switch(intakeState) {
+      case INTAKE_THREE_BALLS:
+          m_intake.setIntakePercentOutput(0);
+          m_indexer.setKickerOutput(0);
+          m_indexer.setIndexerOutput(0);
+          m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
+          m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
+          break;
+      case INTAKE_TWO_BALLS:
+          m_intake.setIntakePercentOutput(0.8);
+          m_indexer.setKickerOutput(0);
+          if(m_indexer.getIntakeSensor())
+              intakeState = IntakeStates.INTAKE_THREE_BALLS;
+          break;
+      case INTAKE_EMPTY:
+      default:
+          m_intake.setIntakePercentOutput(0.8);
+          m_indexer.setKickerOutput(- 0.4);
+          if(m_indexer.getIndexerBottomSensor()) {
+              m_indexer.setIndexerOutput(0.95);
+          } else {
+              m_indexer.setIndexerOutput(0);
+          }
+
+          if(m_indexer.getIndexerTopSensor() && m_indexer.getIndexerBottomSensor()) {
+            m_indexer.setRPM(0);
+            intakeState = IntakeStates.INTAKE_TWO_BALLS;
+            break;
+      } 
+    }
+    
+
+
   }
+
+
+
+
 
   /**
    * If the Indexer time is not 0, and if the difference between the start time and indexer time is
