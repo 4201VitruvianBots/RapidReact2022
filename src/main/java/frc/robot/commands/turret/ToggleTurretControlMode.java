@@ -6,6 +6,7 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Turret.TurretControlMode;
 
 /** An example command that uses an example subsystem. */
 public class ToggleTurretControlMode extends CommandBase {
@@ -27,7 +28,7 @@ public class ToggleTurretControlMode extends CommandBase {
   //TODO: fix controlmode enum
   @Override
   public void initialize() {
-    m_turret.setControlMode(m_turret.getControlMode() != CLOSEDLOOP ? 1 : 0);
+    m_turret.setControlMode(m_turret.getControlMode() != TurretControlMode.CLOSEDLOOP ? TurretControlMode.CLOSEDLOOP : TurretControlMode.OPENLOOP);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

@@ -37,7 +37,7 @@ public class Turret extends SubsystemBase {
   double gearRatio = 18.0 / 120.0;
   private double turretSetpointDegrees = 0; // angle
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
-  enum TurretControlMode{
+  public enum TurretControlMode{
     OPENLOOP,
     CLOSEDLOOP
   };

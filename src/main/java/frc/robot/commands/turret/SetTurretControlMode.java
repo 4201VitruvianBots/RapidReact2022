@@ -6,13 +6,14 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Turret.TurretControlMode;
 
 /** An example command that uses an example subsystem. */
 public class SetTurretControlMode extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Turret m_turret;
 
-  private final int m_mode;
+  private final TurretControlMode m_mode;
 
   /**
    * Creates a new ExampleCommand.
