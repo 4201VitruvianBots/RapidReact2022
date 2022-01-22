@@ -30,12 +30,16 @@
   - [ ] Solve teleop breaking
 - [x] Fix weird issues with sim (?)
 
-
 ## When declaration are merged
 - [x] Integrate subsystems into autos
   - [x] One ball
   - [x] Two ball
   - [x] Three ball
+
+# Simulation
+- [x] Update ball poses
+- [ ] Switch Talon SRX to Talon FX
+- [ ] Fix distance issues
 
 ## When field is ready
 - [ ] Test a robot on the field

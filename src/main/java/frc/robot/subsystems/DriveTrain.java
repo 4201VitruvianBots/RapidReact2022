@@ -11,12 +11,10 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.unmanaged.Unmanaged;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -49,11 +47,10 @@ public class DriveTrain extends SubsystemBase {
   private final double kI = 0;
   private final double kD = 0;
 
-  DifferentialDriveKinematics kinematics =
+  private final DifferentialDriveKinematics kinematics =
       new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
-  DifferentialDriveOdometry odometry;
-  DifferentialDrivePoseEstimator m_poseEstimator;
-  SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
+  private final DifferentialDriveOdometry odometry;
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
 
   // Temporary, just to keep the intake piston up
   DoubleSolenoid intakePiston = new DoubleSolenoid(11, PneumaticsModuleType.CTREPCM, 2, 3);
@@ -75,10 +72,7 @@ public class DriveTrain extends SubsystemBase {
 
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.ALL_COAST;
 
-  // Temporary until CTRE supports FalconFX in WPILib Sim
-  private final TalonFX[] simMotors = new TalonFX[4];
-
-  public DifferentialDrivetrainSim m_drivetrainSimulator;
+  private DifferentialDrivetrainSim m_drivetrainSimulator;
   private ADXRS450_GyroSim m_gyroAngleSim;
 
   public DriveTrain() {
@@ -90,10 +84,6 @@ public class DriveTrain extends SubsystemBase {
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
     if (RobotBase.isSimulation()) {
-      for (int i = 0; i < 4; i++) simMotors[i] = new TalonFX(24 + i);
-      configureCtreMotors(simMotors);
-      simMotors[0].setSensorPhase(true);
-      simMotors[2].setSensorPhase(false);
 
       m_drivetrainSimulator =
           new DifferentialDrivetrainSim(
@@ -119,14 +109,11 @@ public class DriveTrain extends SubsystemBase {
       motors[i].configForwardSoftLimitEnable(false);
       motors[i].configReverseSoftLimitEnable(false);
 
-      if (motors[i] instanceof TalonFX) {
-        driveMotors[i].configSupplyCurrentLimit(
-            new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-        driveMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-      } else if (motors[i] instanceof TalonSRX) {
-        simMotors[i].configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-        simMotors[i].configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-      }
+      
+      driveMotors[i].configSupplyCurrentLimit(
+        new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+
+      driveMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
 
     motors[0].setInverted(false);
@@ -166,14 +153,8 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public double getWheelDistanceMeters(int sensorIndex) {
-
-    if (RobotBase.isReal())
-      return driveMotors[sensorIndex].getSelectedSensorPosition()
-          * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
-    else {
-      return simMotors[sensorIndex].getSelectedSensorPosition()
-          * Constants.DriveTrain.kEncoderDistancePerPulseMetersSim;
-    }
+    return driveMotors[sensorIndex].getSelectedSensorPosition()
+      * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
   public double getMotorInputCurrentAmps(int motorIndex) {
@@ -183,10 +164,6 @@ public class DriveTrain extends SubsystemBase {
   public void resetEncoderCounts() {
     driveMotors[0].setSelectedSensorPosition(0);
     driveMotors[2].setSelectedSensorPosition(0);
-    if (RobotBase.isSimulation()) {
-      simMotors[0].getSimCollection().setIntegratedSensorRawPosition(0);
-      simMotors[2].getSimCollection().setIntegratedSensorRawPosition(0);
-    }
   }
 
   public void setMotorArcadeDrive(double throttle, double turn) {
@@ -228,11 +205,6 @@ public class DriveTrain extends SubsystemBase {
     m_rightOutput = rightOutput;
     driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
     driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
-
-    if (RobotBase.isSimulation()) {
-      simMotors[0].set(ControlMode.PercentOutput, leftOutput);
-      simMotors[2].set(ControlMode.PercentOutput, rightOutput);
-    }
   }
 
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
@@ -277,27 +249,21 @@ public class DriveTrain extends SubsystemBase {
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
     double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
-    if (RobotBase.isReal()) {
       //             getSelectedSensorVelocity() returns values in units per 100ms. Need to convert
       // value to RPS
-      leftMetersPerSecond =
-          driveMotors[0].getSelectedSensorVelocity()
-              * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-              * 10.0;
-      rightMetersPerSecond =
-          driveMotors[2].getSelectedSensorVelocity()
-              * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-              * 10.0;
-    } else {
-      leftMetersPerSecond =
-          driveMotors[0].getSelectedSensorVelocity()
-              * Constants.DriveTrain.kEncoderDistancePerPulseMetersSim
-              * 10.0;
-      rightMetersPerSecond =
-          driveMotors[2].getSelectedSensorVelocity()
-              * Constants.DriveTrain.kEncoderDistancePerPulseMetersSim
-              * 10.0;
-    }
+      if (RobotBase.isReal()) {
+        leftMetersPerSecond =
+            driveMotors[0].getSelectedSensorVelocity()
+                * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+                * 10.0;
+        rightMetersPerSecond =
+            driveMotors[2].getSelectedSensorVelocity()
+                * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+                * 10.0;
+      } else {
+        leftMetersPerSecond = m_drivetrainSimulator.getLeftVelocityMetersPerSecond();
+        rightMetersPerSecond = m_drivetrainSimulator.getRightVelocityMetersPerSecond();
+      }
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
@@ -306,7 +272,11 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public Pose2d getRobotPoseMeters() {
-    return odometry.getPoseMeters();
+    if (RobotBase.isReal()) {
+      return odometry.getPoseMeters();
+    } else {
+      return m_drivetrainSimulator.getPose();
+    }
   }
 
   public DifferentialDriveKinematics getDriveTrainKinematics() {
@@ -377,13 +347,13 @@ public class DriveTrain extends SubsystemBase {
           "rightSpeed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Count", simMotors[0].getSelectedSensorPosition());
+          "DriveTrain", "L Encoder Count", driveMotors[0].getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Count", simMotors[2].getSelectedSensorPosition());
+          "DriveTrain", "R Encoder Count", driveMotors[2].getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Rate", simMotors[0].getSelectedSensorVelocity());
+          "DriveTrain", "L Encoder Rate", driveMotors[0].getSelectedSensorVelocity());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Rate", simMotors[2].getSelectedSensorVelocity());
+          "DriveTrain", "R Encoder Rate", driveMotors[2].getSelectedSensorVelocity());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     }
@@ -427,30 +397,30 @@ public class DriveTrain extends SubsystemBase {
 
     // For CTRE devices, you must call this function periodically for simulation
     Unmanaged.feedEnable(40);
-    simMotors[0]
+    driveMotors[0]
         .getSimCollection()
         .setIntegratedSensorRawPosition( 
             (int)
                 (m_drivetrainSimulator.getLeftPositionMeters()
-                    / Constants.DriveTrain.kEncoderDistancePerPulseMetersSim));
-    simMotors[0]
+                    / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
+    driveMotors[0]
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getLeftVelocityMetersPerSecond()
-                    / (Constants.DriveTrain.kEncoderDistancePerPulseMetersSim * 10.0)));
-    simMotors[2]
+                    / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
+    driveMotors[2]
         .getSimCollection()
         .setIntegratedSensorRawPosition(
             (int)
                 (m_drivetrainSimulator.getRightPositionMeters()
-                    / Constants.DriveTrain.kEncoderDistancePerPulseMetersSim));
-    simMotors[2]
+                    / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
+    driveMotors[2]
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getRightVelocityMetersPerSecond()
-                    / (Constants.DriveTrain.kEncoderDistancePerPulseMetersSim * 10.0)));
+                    / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
     m_gyroAngleSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
   }
 }

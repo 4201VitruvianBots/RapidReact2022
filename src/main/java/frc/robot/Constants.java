@@ -70,9 +70,6 @@ public final class Constants {
     public static final double kEncoderDistancePerPulseMeters =
         // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
         (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
-    public static final double kEncoderDistancePerPulseMetersSim =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kMagEncoderCPR * kDriveGearing;
 
     public static final boolean kGyroReversed = true;
 
