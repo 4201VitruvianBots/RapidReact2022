@@ -107,13 +107,13 @@ public final class Constants {
 
   public static final class Sim {
     public static final Pose2d[] redHubBallPos = {
-      new Pose2d(Units.inchesToMeters(351), Units.inchesToMeters(13), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(168), Units.inchesToMeters(128), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(229), Units.inchesToMeters(288), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(343), Units.inchesToMeters(313), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(443), Units.inchesToMeters(251), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(447), Units.inchesToMeters(80), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(600), Units.inchesToMeters(279), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(362), Units.inchesToMeters(13), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(178), Units.inchesToMeters(128), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(239), Units.inchesToMeters(288), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(354), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(453), Units.inchesToMeters(251), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(457), Units.inchesToMeters(80), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(612), Units.inchesToMeters(280), new Rotation2d())
     };
 
     public static final Pose2d[] blueHubBallPos = {
