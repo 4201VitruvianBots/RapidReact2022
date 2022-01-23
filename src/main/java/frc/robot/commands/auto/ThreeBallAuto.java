@@ -7,13 +7,15 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
-import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
 import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
@@ -38,7 +40,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
    * @param vision Find target
    */
   public ThreeBallAuto(
-      DriveTrain driveTrain,
+    DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
       Indexer indexer,
@@ -55,35 +57,35 @@ public class ThreeBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-        Trajectory trajectory2 = PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
-        VitruvianRamseteCommand command2 = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+    Trajectory trajectory2 =
+        PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetIntakePiston(intake, true),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                new ParallelDeadlineGroup(
-                    command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                    new AutoControlledIntake(intake, indexer)),
-                new ConditionalCommand(
-                    new FeedAll(indexer),
-                    new SimulationShoot(fieldSim, true).withTimeout(2),
-                    RobotBase::isReal)),
-            new SetRpmSetpoint(flywheel, vision, 3000)
-            // TODO: Add vision aimings
-            ),
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoControlledIntake(intake, indexer)),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        new ConditionalCommand(
+            new FeedAll(indexer),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                new ParallelDeadlineGroup(
-                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                    new AutoControlledIntake(intake, indexer)),
-                new ConditionalCommand(
-                    new FeedAll(indexer), new SimulationShoot(fieldSim, false), RobotBase::isReal),
-                new SetIntakePiston(intake, false)),
-            new SetRpmSetpoint(flywheel, vision, 3000)
-            // TODO: Add vision aimings
-            ));
+            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoControlledIntake(intake, indexer)),
+        new SetIntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        new ConditionalCommand(
+            new FeedAll(indexer),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal));
   }
 }

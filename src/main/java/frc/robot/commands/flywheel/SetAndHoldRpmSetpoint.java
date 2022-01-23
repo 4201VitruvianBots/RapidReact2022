@@ -5,50 +5,39 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.simulation;
+package frc.robot.commands.flywheel;
 
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Sim.BallState;
-import frc.robot.simulation.FieldSim.Cargo;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
-public class SimulationShoot extends CommandBase {
+public class SetAndHoldRpmSetpoint extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  FieldSim m_fieldSim;
-  private static double lastShotTime;
+  private final Flywheel m_flywheel;
 
-  private boolean m_continuous;
+  private final Vision m_vision;
+  private final double m_RPM;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param RobotContainer.m_shooter The subsystem used by this command.
-   */
-  public SimulationShoot(FieldSim fieldSim, boolean continuous) {
+  /** Creates a new ExampleCommand. */
+  public SetAndHoldRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_fieldSim = fieldSim;
-    m_continuous = continuous;
+    m_flywheel = flywheel;
+    m_RPM = RPM;
+    m_vision = vision;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-
+  // TODO uncomment execute once vision is made
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentTime = RobotController.getFPGATime();
-    // Shoot only every 80ms
-    if (((currentTime - lastShotTime) / 1e6) > 0.080) {
-      for (Cargo p : m_fieldSim.getCargo()) {
-        if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
-          p.setBallShotState(true);
-          lastShotTime = currentTime;
-          break;
-        }
-      }
-    }
+    /*    m_vision.ledsOn();
+        m_vision.setLastValidTargetTime();
+    */
+    m_flywheel.setRPM(m_RPM);
   }
 
   // Called once the command ends or is interrupted.
@@ -58,6 +47,6 @@ public class SimulationShoot extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !m_continuous;
+    return true;
   }
 }

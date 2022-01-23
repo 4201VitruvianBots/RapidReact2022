@@ -11,16 +11,18 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
-import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.FeedAll;
 import frc.robot.commands.intake.AutoControlledIntake;
 import frc.robot.commands.intake.SetIntakePiston;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
@@ -36,8 +38,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
-      Flywheel flywheel,
       Indexer indexer,
+      Flywheel flywheel,
+      Turret turret,
       Vision vision) {
     // Drive backward maximum distance to ball
     // While dirivng backward, intake is running
@@ -58,25 +61,21 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetIntakePiston(intake, true),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
             command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoControlledIntake(intake, indexer)
-            // TODO vision turret adjustment
             // TODO implement indexer
-
-            ),
-        new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                new WaitCommand(0.5),
-                // TODO how long does flywheel take to rev up? (should the flywheel run while
-                // driving?)
-                new ConditionalCommand(
-                    new FeedAll(indexer),
-                    new SimulationShoot(fieldSim, true).withTimeout(2),
-                    RobotBase::isReal)
-                // TODO: check if the shooter can shoot, maybe a wait command
-                ),
-            new SetRpmSetpoint(flywheel, vision, 3000)),
+        ),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        // TODO how long does flywheel take to rev up? (should the flywheel run while
+        // driving?)
+        new ConditionalCommand(
+            new FeedAll(indexer),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal
+        ),
         new SetIntakePiston(intake, false));
   }
 }
