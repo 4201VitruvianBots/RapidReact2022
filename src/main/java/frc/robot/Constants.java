@@ -12,7 +12,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -36,20 +35,9 @@ public final class Constants {
     public static final int climbPistonReverse = 8;
   }
 
-  public final class Indexer {
-    public static final int indexerMotor = 35;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
-    public static final int kickerMotor = 36;
-  }
+  public final class Indexer {}
 
-  public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 47;
-    public static final int intakeSensor = 0;
-  }
+  public final class Intake {}
 
   public static final class DriveTrain {
     public static final int[] kLeftEncoderPorts = new int[] {10, 11};
@@ -147,9 +135,7 @@ public final class Constants {
     }
   }
 
-  public final class LED {
-    public static final int ledPort = 0;
-  }
+  public final class LED {}
 
   public final class Flywheel {
     public static final int flywheelMotorA = 40;

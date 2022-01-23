@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 /*
 Code to interact with the robot's color sensor for the wheel of fortune (WoF)
@@ -35,8 +34,6 @@ public class ColorSensors extends SubsystemBase {
   public ColorSensorV3 colorBottomSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private int colorIDTop;
   private int colorIDBottom;
-  public boolean blueTeamBall;
-  public int allianceColor;
 
   public Color getTopColor() {
     return colorTopSensor.getColor();
@@ -63,13 +60,12 @@ public class ColorSensors extends SubsystemBase {
   public int getBottomProximity() {
     return colorBottomSensor.getProximity();
   }
- 
+
   // ???
   public int panelTopColor() { // none = 0; red = 1; blue = 2;
     if (practiceField) {
       if (getTopColor().red > getTopColor().green && getTopColor().green * 1.8 > getTopColor().red) {
         return 1;
-
       }
       if (getTopColor().blue * 1.25 > getTopColor().green && getTopColor().blue * 1.02 < getTopColor().green && getTopColor().blue > getTopColor().red * 1.89) {
         return 2;
@@ -85,51 +81,7 @@ public class ColorSensors extends SubsystemBase {
         return 2;
       } else return 0;
     }
-
   }
-
-
-  /**
-   * sets the alliance color depending on the alliance selection on Shuffleboard (robotContainer)
-   * @return
-   */
-  public int allianceSelection(){
-    if(RobotContainer.allianceColorBlue == true) {
-      int allianceColor = 2;
-      return allianceColor;
-    }else if(RobotContainer.allianceColorRed == true) {
-      int allianceColor = 1;
-      return allianceColor;
-    }else{
-      return allianceColor = 0;
-
-    }
-
-  }
-
-  /**
-   * Checks if the alliance is red
-   */
-  public boolean redMatch(){
-    if( allianceColor == panelTopColor() && allianceColor == panelBottomColor()) {
-      return true;
-    }else{
-      return false;
-    }
-  }
-
-   /**
-   * Checks if the alliance is red
-   */
-  public boolean blueMatch(){
-    if( allianceColor == panelTopColor() && allianceColor == panelBottomColor()) {
-      return true;
-    }else{
-      return false;
-    }
-  }
-
-
 
   public int panelBottomColor() { // none = 0; red = 1; green = 2; blue = 3; yellow = 4   if red is greater than Green, and Green * 1.8 is greater than red
     if (practiceField) {
