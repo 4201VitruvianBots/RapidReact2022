@@ -61,38 +61,19 @@ public class RobotContainer {
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
 
-  public static enum CommandSelector {
-    ONE_BALL_AUTO,
-    TWO_BALL_AUTO,
-    THREE_BALL_AUTO,
-    TEST_PATH,
-    DRIVE_FORWARD
-  }
-
-  private final SendableChooser<CommandSelector> m_autoChooser =
-      new SendableChooser<CommandSelector>();
-  private final SelectCommand m_autoCommand;
+  private final SendableChooser<Command> m_autoChooser =
+      new SendableChooser<Command>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
-    for (CommandSelector command : CommandSelector.values()) {
-      if (command == CommandSelector.ONE_BALL_AUTO)
-        m_autoChooser.setDefaultOption(command.toString(), command);
-      else m_autoChooser.addOption(command.toString(), command);
-    }
+    m_autoChooser.setDefaultOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 4));
+    m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption("Three Ball Auto" ,new ThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));
+    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-
-    m_autoCommand =
-        new SelectCommand(
-            Map.ofEntries(
-                entry(CommandSelector.ONE_BALL_AUTO,new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision)),
-                entry(CommandSelector.TWO_BALL_AUTO,new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision)),
-                entry(CommandSelector.THREE_BALL_AUTO,new ThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision)),
-                entry(CommandSelector.TEST_PATH, new TestPath(m_driveTrain, m_fieldSim)),
-                entry(CommandSelector.DRIVE_FORWARD, new DriveForwardDistance(m_driveTrain, m_fieldSim, 4))),
-            m_autoChooser::getSelected);
 
     initializeSubsystems();
 
@@ -132,7 +113,7 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return m_autoChooser.getSelected();
   }
 
   public void robotPeriodic() {}
