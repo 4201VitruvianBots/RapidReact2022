@@ -27,7 +27,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Scores 3 cargo in the high goal and exits the tarmac */
-public class ThreeBallAuto extends SequentialCommandGroup {
+public class IndividualThreeBallAuto extends SequentialCommandGroup {
   /**
    * Scores 3 cargo in the high goal and exits the tarmac.
    *
@@ -39,7 +39,7 @@ public class ThreeBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal
    * @param vision Find target
    */
-  public ThreeBallAuto(
+  public IndividualThreeBallAuto(
     DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -47,10 +47,14 @@ public class ThreeBallAuto extends SequentialCommandGroup {
       Flywheel flywheel,
       Turret turret,
       Vision vision) {
-    // Drive backward maximum distance to ball
-    // While dirivng backward, intake is running
-    // Stop (now with 2 cargo) and aim for high goal
-    // Shoot 2 cargo into high goal
+    /**
+     * Shoots cargo the ball started with
+     * Drives backwards, intake running, picks up second cargo
+     * Shoots second cargo
+     * Drives backward, intake running, picks up third cargo
+     * Shoots third cargo
+     */
+
 
     Trajectory trajectory1 =
         PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
@@ -67,6 +71,12 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetIntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        new ConditionalCommand(
+            new FeedAll(indexer),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoControlledIntake(intake, indexer)),
@@ -76,7 +86,6 @@ public class ThreeBallAuto extends SequentialCommandGroup {
             new FeedAll(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoControlledIntake(intake, indexer)),
