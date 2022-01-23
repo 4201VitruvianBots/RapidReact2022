@@ -35,10 +35,10 @@ public class SetRpmSetpoint extends CommandBase {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
-  // TODO Uncomment when vision doesn't error
+  // TODO CHECK LAST VALID TIME
   @Override
   public void execute() {
-    // m_vision.ledsOn();
+    m_vision.setGoalCameraLedState(true);
     // m_vision.setLastValidTargetTime();
     m_flywheel.setRPM(m_RPM);
   }

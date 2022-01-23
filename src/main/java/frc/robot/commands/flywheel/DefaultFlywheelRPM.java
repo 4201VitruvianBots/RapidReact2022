@@ -6,11 +6,13 @@ package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
 public class DefaultFlywheelRPM extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Flywheel m_flywheel;
+  private final Vision m_vision;
   /*private final Vision m_vision;*/
   private final boolean printed = false;
   private double time;
@@ -19,7 +21,8 @@ public class DefaultFlywheelRPM extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public DefaultFlywheelRPM(Flywheel flywheel /* Vision vision*/) {
+  public DefaultFlywheelRPM(Flywheel flywheel, Vision vision) {
+    m_vision = vision;
     m_flywheel = flywheel;
     addRequirements(flywheel);
   }
@@ -33,7 +36,8 @@ public class DefaultFlywheelRPM extends CommandBase {
   @Override
   public void execute() {
     if (
-    /*vision.getValidTarget*/ 1 == 1) m_flywheel.setRPM(3000);
+    //m_vision.getValidTarget 1 == 1) m_flywheel.setRPM(3000); TODO
+    m_vision.getGoalValidTarget())m_flywheel.setRPM(3000);
     else m_flywheel.setRPM(0);
   }
 
