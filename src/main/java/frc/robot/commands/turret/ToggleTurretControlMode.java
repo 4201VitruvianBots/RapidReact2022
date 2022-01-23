@@ -25,7 +25,6 @@ public class ToggleTurretControlMode extends CommandBase {
   }
 
   // Called when the command is initially scheduled.
-  // TODO: fix controlmode enum
   @Override
   public void initialize() {
     m_turret.setControlMode(

@@ -168,6 +168,9 @@ public final class Constants {
   }
 
   public final class Turret {
+
+    // TODO: might not need this need to confirm 
+    public static final int kErrorBand = 50;
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;

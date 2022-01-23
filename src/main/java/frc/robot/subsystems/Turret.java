@@ -182,6 +182,11 @@ public class Turret extends SubsystemBase {
     return turretHomeSensorLatch;
   }
 
+   // checks if the turret is pointing within the tolerance of the target
+  public boolean onTarget() {
+    return Math.abs(turretMotor.getClosedLoopError()) < kErrorBand;
+}
+
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboard.putNumber("Angle", getTurretAngle());

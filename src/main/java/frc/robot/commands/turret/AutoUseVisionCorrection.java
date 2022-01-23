@@ -9,8 +9,10 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.Vision.CAMERA_TYPE;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Turret.TurretControlMode;
 
 /** An example command that uses an example subsystem. */
 public class AutoUseVisionCorrection extends CommandBase {
@@ -21,13 +23,14 @@ public class AutoUseVisionCorrection extends CommandBase {
   boolean turning, usingVisionSetpoint;
   private double setpoint;
   private double startTime;
-
+  private CAMERA_TYPE state; 
   /** Creates a new ExampleCommand. */
-  public AutoUseVisionCorrection(Turret turretSubsystem, Vision visionSubsystem) {
-    m_turret = turretSubsystem;
-    m_vision = visionSubsystem;
+  public AutoUseVisionCorrection(Turret turret, Vision vision) {
+    m_turret = turret;
+    m_vision = vision;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(turretSubsystem);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
@@ -40,16 +43,16 @@ public class AutoUseVisionCorrection extends CommandBase {
   @Override
   public void execute() {
     // TODO: Uncomment execute/isfinished when vision doesn't error
-    /*
+    
             //// if the turret is using sensor feedback
-            if(m_turret.getControlMode() == 1) {
+            if(m_turret.getControlMode() == TurretControlMode.CLOSEDLOOP) {
                 // if vision has a valid target to shoot at then set usingVisinoSetpoint to true
-                if(m_vision.getValidTarget()) {
+                if(m_vision.getGoalValidTarget()) {
                     usingVisionSetpoint = true;
                     //if we are not turning then turn on vision leds and set the turret setpoint to the turret angle + targetx
                     if(! turning) {
-                        m_vision.ledsOn();
-                        setpoint = m_turret.getTurretAngle() + m_vision.getTargetX();
+                        m_vision.setGoalCameraLedState(true);
+                        setpoint = m_turret.getTurretAngle() + m_vision.getGoalTargetXAngle();
                         //if the setpoint is greater than the max turret angle then subtract 360 from it
                         if(setpoint > m_turret.getMaxAngle()) {
                             setpoint -= 360;
@@ -72,15 +75,15 @@ public class AutoUseVisionCorrection extends CommandBase {
                             turning = false;
                     }
                   //else if vision does not have a valid target, set usingVisionSetpoint to false and make the setpoint the current turret angle
-                } else if(! m_vision.getValidTarget()) {
+                } else if(! m_vision.getGoalValidTarget()) {
                     usingVisionSetpoint = false;
                     setpoint = m_turret.getTurretAngle();
                 }
 
                 m_turret.setRobotCentricSetpoint(setpoint);
-    //                m_turret.setFieldCentricSetpoint(setpoint);
+            
             }
-            */
+          
   }
 
   // Called once the command ends or is interrupted.

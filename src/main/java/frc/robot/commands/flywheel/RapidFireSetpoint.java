@@ -45,7 +45,7 @@ public class RapidFireSetpoint extends CommandBase {
   @Override
   // TODO: Uncomment when intake/indexer don't error
   public void execute() {
-    /*
+    
         if(Math.abs(m_flywheel.getRPM(0) - m_flywheel.getSetpointRPM()) <= 100 || Timer.getFPGATimestamp() - startTime > 0.5) {
             m_indexer.setIndexerOutput(1);
             m_indexer.setKickerOutput(1);
@@ -60,7 +60,7 @@ public class RapidFireSetpoint extends CommandBase {
         m_indexer.setIndexerOutput(0);
         m_indexer.setKickerOutput(0);
         m_flywheel.setPower(0);
-    */ }
+    }
 
   // Returns true when the command should end.
   @Override
