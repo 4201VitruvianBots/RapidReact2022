@@ -60,7 +60,7 @@ public class DriveTrain extends SubsystemBase {
     MotorPosition.RIGHT_REAR, new TalonFX(Constants.DriveTrain.rightRearDriveMotor)
   ));
 
-  // To hold on to the values to set the simulation motors
+  /** To hold on to the values to set the simulation motors */
   double m_leftOutput, m_rightOutput;
 
   private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
@@ -129,12 +129,21 @@ public class DriveTrain extends SubsystemBase {
     driveMotors.get(MotorPosition.RIGHT_REAR).configOpenloopRamp(0);
   }
 
-  /** Gets the number of counts made by a specified encoder */
+  /** 
+   * Gets the number of counts made by a specified encoder.
+   * 
+   * @param position The position of the motor to get the encoder count of
+   * @return The encoder count of the specified motor
+   */
   public double getEncoderCount(MotorPosition position) {
     return driveMotors.get(position).getSelectedSensorPosition();
   }
   
-  /** Clockwise negative */
+  /** 
+   * Gets the heading of the robot.
+   * 
+   * @return Clockwise negative heading of the robot in degrees
+   */
   public double getHeadingDegrees() {
     if (RobotBase.isReal()) return Math.IEEEremainder(-navX.getAngle(), 360);
     else
@@ -146,64 +155,121 @@ public class DriveTrain extends SubsystemBase {
     navX.zeroYaw();
   }
   
+  /**
+   * Sets the angle adjustment of the NavX.
+   * 
+   * @param angle the offset angle
+   */
   public void setNavXOffsetDegrees(double angle) {
     navX.setAngleAdjustment(angle);
   }
 
+  /**
+   * Gets the encoder position of a specified motor converted to wheel distance traveled.
+   * 
+   * @param position The position of the motor to get the wheel distance of
+   * @return The equivalent wheel distance traveled by the specified motor in meters
+   */
   public double getWheelDistanceMeters(MotorPosition position) {
     return driveMotors.get(position).getSelectedSensorPosition()
       * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
+  /**
+   * Gets the input current of a specified motor.
+   * 
+   * @param position The position of the motor to get the input current of
+   * @return The input current of the specified motor in amps
+   */
   public double getMotorInputCurrentAmps(MotorPosition position) {
     return driveMotors.get(position).getSupplyCurrent();
   }
   
+  /**
+   * Gets the current being drawn by the simulated drivetrain.
+   * 
+   * @return The simulated current being drawn in amps
+   */
   public double getDrawnCurrentAmps() {
     return m_drivetrainSimulator.getCurrentDrawAmps();
   }
 
+  /**
+   * Sets the encoder counts of all motors to 0
+   */
   public void resetEncoderCounts() {
     driveMotors.get(MotorPosition.LEFT_FRONT).setSelectedSensorPosition(0);
     driveMotors.get(MotorPosition.RIGHT_FRONT).setSelectedSensorPosition(0);
   }
 
-  /** Takes values in percent output, will be reduced proportionally so the max is still 1.0 */
+  /**
+   * Sets the drivetrain's motors using Arcade Drive: The forward/backward and rotational output can be set independently.<p>
+   * Values are in percent output, but will be reduced proportionally to ensure no motor is set to above 1.0 output
+   * 
+   * @param throttle The forward/backward speed of the drivetrain (positive forward, negative backward)
+   * @param turn The rotation of the drivetrain (positive clockwise, negative counterclockwise)
+   */
   public void setMotorArcadeDrive(double throttle, double turn) {
-    double leftPWM = throttle + turn;
-    double rightPWM = throttle - turn;
+    double leftOutput = throttle + turn;
+    double rightOutput = throttle - turn;
 
     // Normalization
-    double magnitude = Math.max(Math.abs(leftPWM), Math.abs(rightPWM));
+    double magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
     if (magnitude > 1.0) {
-      leftPWM /= magnitude;
-      rightPWM /= magnitude;
+      leftOutput /= magnitude;
+      rightOutput /= magnitude;
     }
 
-    setMotorPercentOutput(leftPWM, rightPWM);
-    // setMotorVelocityMetersPerSecond(leftPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
-    // rightPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    // setMotorPercentOutput(leftPWM, rightPWM);
+    setMotorVelocityMetersPerSecond(leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
+    rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    // setVoltageOutput(leftOutput * RobotController.getBatteryVoltage(), rightOutput * RobotController.getBatteryVoltage());
   }
 
-  /** Input is in percent output */
+  /**
+   * Sets the drivetrain's motors using Tank Drive: The speeds of each sides are set individually. Setting the left and
+   * right sides to the same value will make the drivetrain move straight, setting the speeds to different values will
+   * cause the drivetrain to turn or curve.<p>
+   * Values are in percent output (positive forward, negative backward).
+   * 
+   * @param leftOutput The output for the left side of the drivetrain
+   * @param rightOutput The output for the right side of the drivetrain
+   */
   public void setMotorTankDrive(double leftOutput, double rightOutput) {
     setMotorVelocityMetersPerSecond(
         leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
         rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
   }
 
+  /**
+   * Calculates the percent output to send to the motors using the desired voltage and the current battery voltage.<p>
+   * If either desired voltage is greater than the robot's current voltage, the amounts will be reduced proportionally
+   * to ensure no motor is set above the available voltage.<p>
+   * Positive is forward, negative is backward.
+   * 
+   * @param leftVoltage The voltage for the left side of the drivetrain
+   * @param rightVoltage The voltage for the right side of the drivetrain
+   */
   public void setVoltageOutput(double leftVoltage, double rightVoltage) {
     var batteryVoltage = RobotController.getBatteryVoltage();
     if (Math.max(Math.abs(leftVoltage), Math.abs(rightVoltage)) > batteryVoltage) {
       leftVoltage *= batteryVoltage / 12.0;
       rightVoltage *= batteryVoltage / 12.0;
     }
+    m_leftOutput = leftVoltage / batteryVoltage;
+    m_rightOutput = rightVoltage / batteryVoltage;
     SmartDashboardTab.putNumber("DriveTrain", "Left Voltage", leftVoltage);
     SmartDashboardTab.putNumber("DriveTrain", "Right Voltage", rightVoltage);
 
     setMotorPercentOutput(leftVoltage / batteryVoltage, rightVoltage / batteryVoltage);
   }
 
+  /**
+   * Sets the percent output of the drivetrain.
+   * 
+   * @param leftOutput The output for the left side of the drivetrain
+   * @param rightOutput The output for the right side of the drivetrain
+   */
   private void setMotorPercentOutput(double leftOutput, double rightOutput) {
     m_leftOutput = leftOutput;
     m_rightOutput = rightOutput;
@@ -211,7 +277,13 @@ public class DriveTrain extends SubsystemBase {
     driveMotors.get(MotorPosition.RIGHT_FRONT).set(ControlMode.PercentOutput, rightOutput);
   }
 
-  /** Sets the motor velocities and calculates feedforward */
+  /**
+   * Sets the velocity of the drivetrain, also taking into account feedforward.<p>
+   * Values are in meters per second (positive forward, negative backward).
+   * 
+   * @param leftSpeed The velocity for the left side of the drivetrain
+   * @param rightSpeed The velocity for the right side of the drivetrain
+   */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
@@ -275,6 +347,8 @@ public class DriveTrain extends SubsystemBase {
     return feedforward;
   }
 
+  // TODO: The robot moves too quickly in teleop simulation, perhaps m_drivetrainSimulator 
+  // does not calculate the speeds correctly (possibly in DriveTrain.simulationPeriodic())
   public Pose2d getRobotPoseMeters() {
     if (RobotBase.isReal()) {
       return odometry.getPoseMeters();

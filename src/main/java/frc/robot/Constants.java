@@ -135,7 +135,6 @@ public final class Constants {
     public static final double fieldHieghtMeters = Units.feetToMeters(27);
     public static final double ballDiameterMeters = Units.inchesToMeters(9.5);
 
-    // TODO: update robotWidth,robotLength and intakeLength for the new robot
     public static final double robotWidthMeters = 0.673;
     public static final double robotLengthMeters = 0.838;
     public static final double intakeLengthMeters = 0.3048;
