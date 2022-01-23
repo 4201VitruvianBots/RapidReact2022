@@ -90,6 +90,7 @@ public final class Constants {
 
     public static final double kMaxVelocityMetersPerSecond = 2.0;
 
+    // Number identification for the CAN motors
     public static final int leftFrontDriveMotor = 20;
     public static final int leftRearDriveMotor = 21;
     public static final int rightFrontDriveMotor = 22;
