@@ -4,136 +4,130 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.led.Animation;
+import com.ctre.phoenix.led.CANdle;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import com.ctre.phoenix.led.*;
+import com.ctre.phoenix.led.CANdle.LEDStripType;
+import com.ctre.phoenix.led.CANdle.VBatOutputMode;
+import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
+import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
+import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
 /*
 Subsystem for controlling robot LEDs
  */
 public class LED extends SubsystemBase {
-    private final AddressableLEDBuffer LEDBuffer;
+    private final CANdle m_candle = new CANdle(Constants.LED.CANdleID, "FastFD");
+    private final int LedCount = 300;
+    private AnimationTypes m_currentAnimation;
 
-    final int stripLength;
-    double hueOffset = 0;
-    int head = 0;
+
+    private Animation m_toAnimate = null;
 
     public LED() {
         // Setup LED strip
-        AddressableLED LEDStrip = new AddressableLED(frc.robot.Constants.LED.ledPort);
-        LEDBuffer = new AddressableLEDBuffer(111);
-        LEDStrip.setLength(LEDBuffer.getLength());
-        LEDStrip.setData(LEDBuffer);
-        LEDStrip.start();
-        stripLength = LEDBuffer.getLength() / 2;
+        changeAnimation(8,95,0,255, 1, AnimationTypes.SetAll);
+        CANdleConfiguration configAll = new CANdleConfiguration();
+        configAll.statusLedOffWhenActive = true;
+        configAll.disableWhenLOS = false;
+        configAll.stripType = LEDStripType.GRB;
+        configAll.brightnessScalar = 0.1;
+        configAll.vBatOutputMode = VBatOutputMode.Modulated;
+        m_candle.configAllSettings(configAll, 100);
     }
 
     /**
-     * Set the LEDs with a color and lighting mode
+     * Set the LEDs with a color and animation type
      *
      * @param red   the red value of the color
      * @param green the green value of the color
      * @param blue  the blue value of the color
-     * @param mode  the lighting mode of the LEDs
+     * @param white the white value of the color
+     * @param speed the speed of the animation
+     * @param toChange the animation mode of the LEDs
      */
-    public void setLED(int red, int green, int blue, LEDMode mode) {
-        switch (mode) {
-            case BLINK:
-                double time = (int) (5 * Timer.getFPGATimestamp());
-                if (time / 2 == Math.floor(time / 2)) {
-                    for (int i = 0; i < stripLength; i++) {
-                        LEDBuffer.setRGB(i, red, green, blue);
-                        LEDBuffer.setRGB(stripLength + i, red, green, blue);
-                    }
-                } else setLED(LEDMode.OFF);
+    public void changeAnimation(int red, int green, int blue, int white, double speed, AnimationTypes toChange) {
+        m_currentAnimation = toChange;
+
+        switch (toChange) {
+            case ColorFlow:
+                m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
                 break;
-            case TWINKLE:
-                setLED(LEDMode.OFF);
-                for (int i = head; i < LEDBuffer.getLength(); i += 2) {
-                    LEDBuffer.setRGB(i % LEDBuffer.getLength(), red, green, blue);
-                }
-                Timer.delay(0.2);
-                head = ++head % 2;
+            case Fire:
+                m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
                 break;
-            case OFF:
-                for (int i = 0; i < LEDBuffer.getLength(); i++) {
-                    LEDBuffer.setRGB(i, 0, 0, 0);
-                }
+            case Larson: // a line bouncing back and forth with its width determined by size
+                m_toAnimate = new LarsonAnimation(red, green, blue, white, 1, LedCount, BounceMode.Front, 3);
                 break;
-            case RAINBOW:
-                for (int i = 0; i < stripLength; i++) {
-                    LEDBuffer.setHSV(i, (int) (900 * i / stripLength + hueOffset) % 180, 255, 255);
-                    LEDBuffer.setHSV(stripLength + i, (int) (900 * i / stripLength + hueOffset) % 180, 255, 255);
-                }
-                hueOffset = (hueOffset + 120) % 180;
-                Timer.delay(0.05);
+            case Rainbow: // neon cat type beat
+                m_toAnimate = new RainbowAnimation(1, speed, LedCount);
                 break;
-            case SOLID:
-                for (int i = 0; i < LEDBuffer.getLength(); i++) {
-                    LEDBuffer.setRGB(i, (int) (red * 0.5), (int) (blue * 0.5), (int) (green * 0.5));
-                }
+            case RgbFade: // cycling between red, greed, and blue
+                m_toAnimate = new RgbFadeAnimation(1, speed, LedCount);
                 break;
-            case TRAILING:
-                for (int i = head; i < LEDBuffer.getLength(); i += 5) {
-                    LEDBuffer.setRGB(i % LEDBuffer.getLength(), (int) (red * 0.5), (int) (blue * 0.5), (int) (green * 0.5));
-                }
-                Timer.delay(0.03);
-                head = ++head % 5;
+            case SingleFade:
+                m_toAnimate = new SingleFadeAnimation(red, green, blue, white, speed, LedCount);
                 break;
+            case Strobe: // ahhhhhhhhhhhhhh
+                m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, LedCount);
+                break;
+            case Twinkle:
+                m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
+                break;
+            case TwinkleOff:
+                m_toAnimate = new TwinkleOffAnimation(red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
+                break;
+            case SetAll:
+                m_toAnimate = null;
+                break;
+            default:
+                System.out.println("Incorrect animation type provided to changeAnimation() method");
         }
+        System.out.println("Changed to " + m_currentAnimation.toString());
     }
-
-    /**
-     * Set the LEDs with a color and lighting mode
-     *
-     * @param mode the lighting mode of the LEDs
-     */
-    public void setLED(LEDMode mode) {
-        setLED(0, 0, 0, mode);
-    }
-
     /**
      * Interpret a robot state and set the LEDs to express that state
      *
      * @param state the dominant robot state that the LEDs will express
      */
     public void expressState(robotState state) {
-        // Rainbow
-        // Blinking dirty-yellow
-        // Solid red
-        // Blinking purple
         switch (state) {
             case READY:
-                setLED(LEDMode.RAINBOW);
+                changeAnimation(0,0,0,0,0.1, AnimationTypes.Rainbow);
                 break;
             case SET:
-                setLED(255, 200, 0, LEDMode.TWINKLE);
+                changeAnimation(255, 200, 0, 0, 0.4, AnimationTypes.Twinkle);
                 break;
             case GO:
-                setLED(255, 0, 0, LEDMode.SOLID);
+                changeAnimation(255, 0, 0, 0,0, AnimationTypes.SetAll);
                 break;
             default:
-                setLED(106, 90, 205, LEDMode.TWINKLE);
+                changeAnimation(106, 90, 205, 0, 0.4,AnimationTypes.Twinkle);
                 break;
         }
     }
 
     @Override
     public void periodic() {
-
+        if(m_toAnimate == null) {
+            m_candle.setLEDs(0,0,0);
+        } else {
+            m_candle.animate(m_toAnimate);
+        }
     }
 
     /**
-     * Different LED modes
+     * Different LED animation types
      */
-    public enum LEDMode {
-        BLINK, // flashing on and off
-        TWINKLE, //alternating even and odd LEDs
-        OFF, // all LEDs off
-        RAINBOW, //a trailing rainbow
-        SOLID, // one solid color
-        TRAILING // snake of colour cycling through LEDs
+    public enum AnimationTypes {
+        ColorFlow, Fire, Larson, Rainbow, RgbFade, SingleFade, Strobe, Twinkle, TwinkleOff, SetAll
     }
 
     /**
