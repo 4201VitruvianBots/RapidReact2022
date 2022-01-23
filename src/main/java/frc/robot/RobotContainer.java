@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -47,9 +48,38 @@ public class RobotContainer {
   public Button[] xBoxButtons = new Button[10];
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
+  public static boolean allianceColorBlue;
+  public static boolean allianceColorRed;
+
+
+  public static enum CommandSelector {
+    BLUE_ALLIANCE,  //01 
+    RED_ALLIANCE
+  }
+
+
+  public final SendableChooser<CommandSelector> m_allianceChooser = 
+      new SendableChooser<CommandSelector>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
+    /**
+     * Sets the AllianceColor
+     */
+    for (CommandSelector command : CommandSelector.values()) {
+      if (command == CommandSelector.BLUE_ALLIANCE) {
+        m_allianceChooser.setDefaultOption(command.toString(), command);
+        allianceColorBlue = true;
+        allianceColorRed = false;
+      }else{
+        m_allianceChooser.addOption(command.toString(), command);
+        allianceColorBlue = false;
+        allianceColorRed = true;
+      }
+    }
+
     initializeSubsystems();
 
     // Configure the button bindings

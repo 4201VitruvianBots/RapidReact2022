@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ColorSensors;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.CommandSelector;
 
 public class AutoControlledIntake extends CommandBase {
   /** Creates a new AutoControlledIntake. */
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Indexer m_indexer;
-
+  private final ColorSensors m_colorSensors;
   private final Intake m_intake;
 
   private final double intakeRPM = 5000;
@@ -25,35 +27,40 @@ public class AutoControlledIntake extends CommandBase {
   private IntakeStates intakeState = IntakeStates.INTAKE_EMPTY;
 
   public enum IntakeStates {
+ // INTAKE_WRONG_BALL,
     INTAKE_EMPTY,
     INTAKE_ONE_BALL,
     INTAKE_TWO_BALLS,
     INTAKE_THREE_BALLS
   }
 
-  public AutoControlledIntake(Intake intake, Indexer indexer) {
+  public AutoControlledIntake(Intake intake, Indexer indexer, ColorSensors colorSensors) {
 
     m_intake = intake;
     m_indexer = indexer;
+    m_colorSensors = colorSensors;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
     addRequirements(indexer);
+    addRequirements(colorSensors);
   }
 
   /**
    * If the Intake, Indexer top and bottom sensors are one, there are 2 balls,
-   * If the 
-   * TODO: 
    */
   @Override
   public void initialize() {
     m_intake.setIntakeState(true);
     timestamp = Timer.getFPGATimestamp();
-    if (m_indexer.getIntakeSensor() && m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor() /*&& TeamColor == TeamColorSet*/)
+    if (m_indexer.getIntakeSensor() && m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor() && m_colorSensors.redMatch() || m_colorSensors.blueMatch())
      intakeState = IntakeStates.INTAKE_THREE_BALLS;
-    else if (m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor())
+    else if (m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor() && m_colorSensors.redMatch() || m_colorSensors.blueMatch())
       intakeState = IntakeStates.INTAKE_TWO_BALLS;
-    else intakeState = IntakeStates.INTAKE_EMPTY;
+    else if (m_colorSensors.redMatch() || m_colorSensors.blueMatch())
+    intakeState = IntakeStates.INTAKE_EMPTY;
+    else 
+    return;
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.

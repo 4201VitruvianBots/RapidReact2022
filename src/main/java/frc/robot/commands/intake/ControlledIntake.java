@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ColorSensors;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
@@ -18,10 +19,13 @@ import frc.robot.subsystems.Intake;
 public class ControlledIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Indexer m_indexer;
+  private final ColorSensors m_colorSensors;
   private final Intake m_intake;
   private final Joystick m_controller;
+
   private final double intakeRPM = 5000;
   private final double indexRPM = 300;
+
   private double timestamp, intakeTimestamp, indexerTimestamp, twoBallTimestamp;
   private boolean intaking, haveTwo, haveTwoTripped;
   private IntakeStates intakeState = IntakeStates.INTAKE_EMPTY;
@@ -30,24 +34,22 @@ public class ControlledIntake extends CommandBase {
     INTAKE_EMPTY,
     INTAKE_ONE_BALL,
     INTAKE_TWO_BALLS,
-    INTAKE_THREE_BALLS,
-    INTAKE_FOUR_BALLS,
-    INTAKE_FIVE_BALLS
+    INTAKE_THREE_BALLS
+  //INTAKE_WRONG_BALL
   }
 
-  /*
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ControlledIntake(Intake intake, Indexer indexer, Joystick controller) {
+  public ControlledIntake(Intake intake, Indexer indexer, Joystick controller, ColorSensors colorSensors) {
+
     m_intake = intake;
     m_indexer = indexer;
+    m_colorSensors = colorSensors;
     m_controller = controller;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
     addRequirements(indexer);
-}
+    addRequirements(colorSensors);
+  }
+
 
   /**
    * Called when the command is initially scheduled. Sets the intake state to true Sets timestamp to
@@ -57,14 +59,17 @@ public class ControlledIntake extends CommandBase {
   public void initialize() {
     m_intake.setIntakeState(true);
     timestamp = Timer.getFPGATimestamp();
-
-    if(m_indexer.getIntakeSensor() && m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor())
-        intakeState = IntakeStates.INTAKE_THREE_BALLS;
-    else if(m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor())
-        intakeState = IntakeStates.INTAKE_TWO_BALLS;
-    else
-        intakeState = IntakeStates.INTAKE_EMPTY;
-}
+    
+    if (m_indexer.getIntakeSensor() && m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor() && m_colorSensors.redMatch() || m_colorSensors.blueMatch())
+     intakeState = IntakeStates.INTAKE_THREE_BALLS;
+    else if (m_indexer.getIndexerBottomSensor() && m_indexer.getIndexerTopSensor() && m_colorSensors.redMatch() || m_colorSensors.blueMatch())
+      intakeState = IntakeStates.INTAKE_TWO_BALLS;
+    else if (m_colorSensors.redMatch() || m_colorSensors.blueMatch())
+    intakeState = IntakeStates.INTAKE_EMPTY;
+    else 
+    return;
+    
+  }
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake forward
