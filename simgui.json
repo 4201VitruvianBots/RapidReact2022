@@ -20,100 +20,105 @@
       "/SmartDashboard/DT Subsystem": "Subsystem",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/NeutralMode": "Command",
-      "/SmartDashboard/Selected Auto": "String Chooser"
+      "/SmartDashboard/Selected Auto": "String Chooser",
+      "/SmartDashboard/Set Neutral": "Command"
     },
     "windows": {
       "/SmartDashboard/Field2d": {
-        "Cargo_00": {
+        "BlueCargo_0": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_01": {
+        "BlueCargo_1": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_02": {
+        "BlueCargo_2": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_03": {
+        "BlueCargo_3": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_04": {
+        "BlueCargo_4": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_05": {
+        "BlueCargo_5": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_06": {
+        "BlueCargo_6": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
-        "Cargo_07": {
+        "BlueCargo_7": {
           "image": "resources/Images/blue_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_08": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_09": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_10": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_11": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_12": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_13": {
-          "image": "resources/Images/red_cargo.png",
-          "length": 0.23999999463558197,
-          "width": 0.23999999463558197
-        },
-        "Cargo_14": {
-          "image": "resources/Images/red_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
         "Intake A": {
+          "arrows": false,
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
         "Intake B": {
+          "arrows": false,
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
         "Intake C": {
+          "arrows": false,
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
         "Intake D": {
+          "arrows": false,
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
+        },
+        "RedCargo_0": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_1": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_2": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_3": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_4": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_5": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
+        },
+        "RedCargo_6": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.23999999463558197,
+          "width": 0.23999999463558197
         },
         "Robot": {
           "image": "resources/Images/robot.png"
@@ -137,7 +142,11 @@
     "SmartDashboard": {
       "DT Subsystem": {
         "open": true
-      }
+      },
+      "Selected Auto": {
+        "open": true
+      },
+      "open": true
     }
   }
 }

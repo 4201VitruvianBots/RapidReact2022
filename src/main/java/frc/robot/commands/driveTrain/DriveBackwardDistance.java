@@ -40,7 +40,7 @@ public class DriveBackwardDistance extends SequentialCommandGroup {
 
     addCommands(
       new SetOdometry(driveTrain, fieldSim, startPosition),
-      new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+      new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
       driveBackwardCommand
     );
   }

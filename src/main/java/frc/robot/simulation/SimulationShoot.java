@@ -10,12 +10,11 @@ package frc.robot.simulation;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Sim.BallState;
+import frc.robot.simulation.FieldSim.Cargo;;
 
 /** An example command that uses an example subsystem. */
 public class SimulationShoot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private double startTime, m_shootTimeout;
-  private boolean timerStart;
   FieldSim m_fieldSim;
   private static double lastShotTime;
 

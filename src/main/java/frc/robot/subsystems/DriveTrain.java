@@ -4,15 +4,18 @@
 
 package frc.robot.subsystems;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.BaseTalon;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.unmanaged.Unmanaged;
 import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -22,27 +25,22 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.Constants.DriveTrain.MotorPosition;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
 
-  private final double kS = Constants.DriveTrain.ksVolts;
-  private final double kV = Constants.DriveTrain.kvVoltSecondsPerMeter;
-  private final double kA = Constants.DriveTrain.kaVoltSecondsSquaredPerMeter;
-
+  // PID constants for the drive motors
   private final double kP = 1.2532;
   private final double kI = 0;
   private final double kD = 0;
@@ -50,41 +48,40 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveKinematics kinematics =
       new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
   private final DifferentialDriveOdometry odometry;
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
-
-  // Temporary, just to keep the intake piston up
-  DoubleSolenoid intakePiston = new DoubleSolenoid(11, PneumaticsModuleType.CTREPCM, 2, 3);
+  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.DriveTrain.ksVolts, Constants.DriveTrain.kvVoltSecondsPerMeter, Constants.DriveTrain.kaVoltSecondsSquaredPerMeter);
 
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
 
-  private final TalonFX[] driveMotors = {
-    new TalonFX(Constants.DriveTrain.leftFrontDriveMotor),
-    new TalonFX(Constants.DriveTrain.leftRearDriveMotor),
-    new TalonFX(Constants.DriveTrain.rightFrontDriveMotor),
-    new TalonFX(Constants.DriveTrain.rightRearDriveMotor)
-  };
+  private final HashMap<MotorPosition,TalonFX> driveMotors = new HashMap<MotorPosition,TalonFX>(Map.of(
+    MotorPosition.LEFT_FRONT, new TalonFX(Constants.DriveTrain.leftFrontDriveMotor),
+    MotorPosition.LEFT_REAR, new TalonFX(Constants.DriveTrain.leftRearDriveMotor),
+    MotorPosition.RIGHT_FRONT, new TalonFX(Constants.DriveTrain.rightFrontDriveMotor),
+    MotorPosition.RIGHT_REAR, new TalonFX(Constants.DriveTrain.rightRearDriveMotor)
+  ));
+
+  // To hold on to the values to set the simulation motors
   double m_leftOutput, m_rightOutput;
 
   private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
 
+  /** Simulation Gyro */
   private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
-  private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.ALL_COAST;
+  private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
-  private ADXRS450_GyroSim m_gyroAngleSim;
 
+  /** A differential drivetrain with two falcon motors on each side */
   public DriveTrain() {
     // Set up DriveTrain motors
-    configureCtreMotors(driveMotors);
+    configureCtreMotors();
 
     navX.reset();
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
     if (RobotBase.isSimulation()) {
-
       m_drivetrainSimulator =
           new DifferentialDrivetrainSim(
               Constants.DriveTrain.kDrivetrainPlant,
@@ -93,50 +90,51 @@ public class DriveTrain extends SubsystemBase {
               Constants.DriveTrain.kTrackWidthMeters,
               Constants.DriveTrain.kWheelDiameterMeters / 2.0,
               null); // VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
-
-      m_gyroAngleSim = new ADXRS450_GyroSim(m_gyro);
     }
+    // To display current commands on SmartDashboard
     SmartDashboard.putData("DT Subsystem", this);
   }
 
-  public void configureCtreMotors(BaseTalon... motors) {
-    for (int i = 0; i < motors.length; i++) {
-      motors[i].configFactoryDefault();
+  private void configureCtreMotors() {
+    for (TalonFX motor : driveMotors.values()) {
+      motor.configFactoryDefault();
 
-      motors[i].configOpenloopRamp(0.1);
-      motors[i].configClosedloopRamp(0.1);
-      motors[i].setNeutralMode(NeutralMode.Coast);
-      motors[i].configForwardSoftLimitEnable(false);
-      motors[i].configReverseSoftLimitEnable(false);
+      motor.configOpenloopRamp(0.1);
+      motor.configClosedloopRamp(0.1);
+      motor.setNeutralMode(NeutralMode.Coast);
+      motor.configForwardSoftLimitEnable(false);
+      motor.configReverseSoftLimitEnable(false);
 
       
-      driveMotors[i].configSupplyCurrentLimit(
+      motor.configSupplyCurrentLimit(
         new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
 
-      driveMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+      motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
 
-    motors[0].setInverted(false);
-    motors[1].setInverted(false);
-    motors[2].setInverted(true);
-    motors[3].setInverted(true);
+    driveMotors.get(MotorPosition.LEFT_FRONT).setInverted(false);
+    driveMotors.get(MotorPosition.LEFT_REAR).setInverted(false);
+    driveMotors.get(MotorPosition.RIGHT_FRONT).setInverted(true);
+    driveMotors.get(MotorPosition.RIGHT_REAR).setInverted(true);
 
-    motors[0].setSensorPhase(false);
-    motors[2].setSensorPhase(false);
+    driveMotors.get(MotorPosition.LEFT_FRONT).setSensorPhase(false);
+    driveMotors.get(MotorPosition.RIGHT_FRONT).setSensorPhase(false);
 
-    motors[1].set(ControlMode.Follower, driveMotors[0].getDeviceID());
-    motors[3].set(ControlMode.Follower, driveMotors[2].getDeviceID());
-    motors[1].setNeutralMode(NeutralMode.Brake);
-    motors[3].setNeutralMode(NeutralMode.Brake);
+    driveMotors.get(MotorPosition.LEFT_REAR).set(ControlMode.Follower, driveMotors.get(MotorPosition.LEFT_FRONT).getDeviceID());
+    driveMotors.get(MotorPosition.RIGHT_REAR).set(ControlMode.Follower, driveMotors.get(MotorPosition.RIGHT_FRONT).getDeviceID());
+    driveMotors.get(MotorPosition.LEFT_REAR).setNeutralMode(NeutralMode.Brake);
+    driveMotors.get(MotorPosition.RIGHT_REAR).setNeutralMode(NeutralMode.Brake);
 
-    motors[1].configOpenloopRamp(0);
-    motors[3].configOpenloopRamp(0);
+    driveMotors.get(MotorPosition.LEFT_REAR).configOpenloopRamp(0);
+    driveMotors.get(MotorPosition.RIGHT_REAR).configOpenloopRamp(0);
   }
 
-  public double getEncoderCount(int sensorIndex) {
-    return driveMotors[sensorIndex].getSelectedSensorPosition();
+  /** Gets the number of counts made by a specified encoder */
+  public double getEncoderCount(MotorPosition position) {
+    return driveMotors.get(position).getSelectedSensorPosition();
   }
-
+  
+  /** Clockwise negative */
   public double getHeadingDegrees() {
     if (RobotBase.isReal()) return Math.IEEEremainder(-navX.getAngle(), 360);
     else
@@ -147,25 +145,30 @@ public class DriveTrain extends SubsystemBase {
   public void resetAngle() {
     navX.zeroYaw();
   }
-
+  
   public void setNavXOffsetDegrees(double angle) {
     navX.setAngleAdjustment(angle);
   }
 
-  public double getWheelDistanceMeters(int sensorIndex) {
-    return driveMotors[sensorIndex].getSelectedSensorPosition()
+  public double getWheelDistanceMeters(MotorPosition position) {
+    return driveMotors.get(position).getSelectedSensorPosition()
       * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
-  public double getMotorInputCurrentAmps(int motorIndex) {
-    return driveMotors[motorIndex].getSupplyCurrent();
+  public double getMotorInputCurrentAmps(MotorPosition position) {
+    return driveMotors.get(position).getSupplyCurrent();
+  }
+  
+  public double getDrawnCurrentAmps() {
+    return m_drivetrainSimulator.getCurrentDrawAmps();
   }
 
   public void resetEncoderCounts() {
-    driveMotors[0].setSelectedSensorPosition(0);
-    driveMotors[2].setSelectedSensorPosition(0);
+    driveMotors.get(MotorPosition.LEFT_FRONT).setSelectedSensorPosition(0);
+    driveMotors.get(MotorPosition.RIGHT_FRONT).setSelectedSensorPosition(0);
   }
 
+  /** Takes values in percent output, will be reduced proportionally so the max is still 1.0 */
   public void setMotorArcadeDrive(double throttle, double turn) {
     double leftPWM = throttle + turn;
     double rightPWM = throttle - turn;
@@ -182,6 +185,7 @@ public class DriveTrain extends SubsystemBase {
     // rightPWM * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
   }
 
+  /** Input is in percent output */
   public void setMotorTankDrive(double leftOutput, double rightOutput) {
     setMotorVelocityMetersPerSecond(
         leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
@@ -203,19 +207,20 @@ public class DriveTrain extends SubsystemBase {
   private void setMotorPercentOutput(double leftOutput, double rightOutput) {
     m_leftOutput = leftOutput;
     m_rightOutput = rightOutput;
-    driveMotors[0].set(ControlMode.PercentOutput, leftOutput);
-    driveMotors[2].set(ControlMode.PercentOutput, rightOutput);
+    driveMotors.get(MotorPosition.LEFT_FRONT).set(ControlMode.PercentOutput, leftOutput);
+    driveMotors.get(MotorPosition.RIGHT_FRONT).set(ControlMode.PercentOutput, rightOutput);
   }
 
+  /** Sets the motor velocities and calculates feedforward */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
-    driveMotors[0].set(
+    driveMotors.get(MotorPosition.LEFT_FRONT).set(
         ControlMode.Velocity,
         m_leftOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
         DemandType.ArbitraryFeedForward,
         feedforward.calculate(m_leftOutput));
-    driveMotors[2].set(
+    driveMotors.get(MotorPosition.RIGHT_FRONT).set(
         ControlMode.Velocity,
         m_rightOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
         DemandType.ArbitraryFeedForward,
@@ -230,18 +235,18 @@ public class DriveTrain extends SubsystemBase {
   public void setDriveTrainNeutralMode(DriveTrainNeutralMode mode) {
     neutralMode = mode;
     switch (mode) {
-      case ALL_COAST:
-        for (TalonFX motor : driveMotors) motor.setNeutralMode(NeutralMode.Coast);
+      case COAST:
+        for (TalonFX motor : driveMotors.values()) motor.setNeutralMode(NeutralMode.Coast);
         break;
-      case ALL_BRAKE:
-        for (var motor : driveMotors) motor.setNeutralMode(NeutralMode.Brake);
+      case BRAKE:
+        for (TalonFX motor : driveMotors.values()) motor.setNeutralMode(NeutralMode.Brake);
         break;
-      case FOLLOWER_COAST:
+      case HALF_BRAKE:
       default:
-        driveMotors[0].setNeutralMode(NeutralMode.Brake);
-        driveMotors[1].setNeutralMode(NeutralMode.Coast);
-        driveMotors[2].setNeutralMode(NeutralMode.Brake);
-        driveMotors[3].setNeutralMode(NeutralMode.Coast);
+        driveMotors.get(MotorPosition.LEFT_FRONT).setNeutralMode(NeutralMode.Brake);
+        driveMotors.get(MotorPosition.LEFT_REAR).setNeutralMode(NeutralMode.Coast);
+        driveMotors.get(MotorPosition.RIGHT_FRONT).setNeutralMode(NeutralMode.Brake);
+        driveMotors.get(MotorPosition.RIGHT_REAR).setNeutralMode(NeutralMode.Coast);
         break;
     }
   }
@@ -249,15 +254,14 @@ public class DriveTrain extends SubsystemBase {
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
     double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
-      //             getSelectedSensorVelocity() returns values in units per 100ms. Need to convert
-      // value to RPS
+      // getSelectedSensorVelocity() returns values in units per 100ms. Need to convert value to RPS
       if (RobotBase.isReal()) {
         leftMetersPerSecond =
-            driveMotors[0].getSelectedSensorVelocity()
+            driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity()
                 * Constants.DriveTrain.kEncoderDistancePerPulseMeters
                 * 10.0;
         rightMetersPerSecond =
-            driveMotors[2].getSelectedSensorVelocity()
+            driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity()
                 * Constants.DriveTrain.kEncoderDistancePerPulseMeters
                 * 10.0;
       } else {
@@ -291,6 +295,8 @@ public class DriveTrain extends SubsystemBase {
     return rightPIDController;
   }
 
+  // TODO look into how odometry.resetPosition() should work. Apparently it takes a gyro angle?
+  /** Resets the odometry and navX to a specified pose and heading */
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
     resetEncoderCounts();
     navX.reset();
@@ -303,57 +309,57 @@ public class DriveTrain extends SubsystemBase {
 
   private void updateSmartDashboard() {
     if (RobotBase.isReal()) {
-      SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(0));
-      SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(2));
+      SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
+      SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "xCoordinate",
+          "X Coordinate",
           Units.metersToFeet(getRobotPoseMeters().getTranslation().getX()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "yCoordinate",
+          "Y Coordinate",
           Units.metersToFeet(getRobotPoseMeters().getTranslation().getY()));
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "leftSpeed",
+          "Left Speed",
           Units.metersToFeet(getSpeedsMetersPerSecond().leftMetersPerSecond));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "rightSpeed",
+          "Right Speed",
           Units.metersToFeet(getSpeedsMetersPerSecond().rightMetersPerSecond));
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
-      SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(0));
-      SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(2));
+      SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(MotorPosition.LEFT_FRONT));
+      SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(MotorPosition.RIGHT_FRONT));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "xCoordinate",
+          "X Coordinate",
           Units.metersToFeet(getRobotPoseMeters().getTranslation().getX()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "yCoordinate",
+          "Y Coordinate",
           Units.metersToFeet(getRobotPoseMeters().getTranslation().getY()));
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "leftSpeed",
+          "Right Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "rightSpeed",
+          "Right Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Count", driveMotors[0].getSelectedSensorPosition());
+          "DriveTrain", "L Encoder Count", driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Count", driveMotors[2].getSelectedSensorPosition());
+          "DriveTrain", "R Encoder Count", driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Rate", driveMotors[0].getSelectedSensorVelocity());
+          "DriveTrain", "L Encoder Rate", driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Rate", driveMotors[2].getSelectedSensorVelocity());
+          "DriveTrain", "R Encoder Rate", driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     }
@@ -365,7 +371,7 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
     SmartDashboard.putData(
-        "NeutralMode", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.ALL_COAST));
+        "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
   }
 
   @Override
@@ -374,13 +380,9 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getPoseMeters().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
-        getWheelDistanceMeters(0),
-        getWheelDistanceMeters(2));
+        getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
+        getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
     updateSmartDashboard();
-  }
-
-  public double getDrawnCurrentAmps() {
-    return m_drivetrainSimulator.getCurrentDrawAmps();
   }
 
   @Override
@@ -397,30 +399,29 @@ public class DriveTrain extends SubsystemBase {
 
     // For CTRE devices, you must call this function periodically for simulation
     Unmanaged.feedEnable(40);
-    driveMotors[0]
+    driveMotors.get(MotorPosition.LEFT_FRONT)
         .getSimCollection()
         .setIntegratedSensorRawPosition( 
             (int)
                 (m_drivetrainSimulator.getLeftPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
-    driveMotors[0]
+    driveMotors.get(MotorPosition.LEFT_FRONT)
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getLeftVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
-    driveMotors[2]
+    driveMotors.get(MotorPosition.RIGHT_FRONT)
         .getSimCollection()
         .setIntegratedSensorRawPosition(
             (int)
                 (m_drivetrainSimulator.getRightPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
-    driveMotors[2]
+    driveMotors.get(MotorPosition.RIGHT_FRONT)
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getRightVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
-    m_gyroAngleSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
   }
 }

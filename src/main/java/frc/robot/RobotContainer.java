@@ -138,14 +138,14 @@ public class RobotContainer {
   public void robotPeriodic() {}
 
   public void disabledInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.ALL_COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
   }
 
   public void disabledPeriodic() {}
 
   public void teleopInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.ALL_COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
   }
 
   public void teleopPeriodic() {}

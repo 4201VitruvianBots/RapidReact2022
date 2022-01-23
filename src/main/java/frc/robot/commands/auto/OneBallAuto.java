@@ -44,7 +44,7 @@ public class OneBallAuto extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         // Rev up flywheel while driving backwards
         // Once finish driving, feed indexer
         // After that, stop indexer and flywheel

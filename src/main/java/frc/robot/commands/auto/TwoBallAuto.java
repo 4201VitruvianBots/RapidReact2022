@@ -56,7 +56,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
      */
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetIntakePiston(intake, true),
         new ParallelDeadlineGroup(
             command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
