@@ -10,7 +10,7 @@ import frc.robot.subsystems.Intake;
 public class IntakePiston extends CommandBase {
   public final Intake m_intake;
   boolean extend;
-  
+
   /** Creates a new IntakePiston. */
   public IntakePiston(Intake intake, boolean extend) {
     m_intake = intake;

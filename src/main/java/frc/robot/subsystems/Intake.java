@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
           Constants.Intake.pcmOne,
-          PneumaticsModuleType.CTREPCM, 
+          PneumaticsModuleType.CTREPCM,
           Constants.Intake.intakePistonForward,
           Constants.Intake.intakePistonReverse);
 
@@ -60,7 +60,6 @@ public class Intake extends SubsystemBase {
   public void setIntakePercentOutput(double value) {
     intakeMotor.set(ControlMode.PercentOutput, value);
   }
-
 
   /** updates intake data on to the dashboard */
   public void updateSmartDashboard() {

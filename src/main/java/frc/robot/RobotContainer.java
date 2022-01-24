@@ -52,23 +52,18 @@ public class RobotContainer {
   public static boolean allianceColorBlue;
   public static boolean allianceColorRed;
 
-
   public static enum CommandSelector {
-    BLUE_ALLIANCE,  //01 
+    BLUE_ALLIANCE, // 01
     RED_ALLIANCE
   }
 
-
-  public final SendableChooser<CommandSelector> m_allianceChooser = 
+  public final SendableChooser<CommandSelector> m_allianceChooser =
       new SendableChooser<CommandSelector>();
-
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    /**
-     * Sets the AllianceColor
-     */
+    /** Sets the AllianceColor */
     // for (CommandSelector command : CommandSelector.values()) {
     //   if (command == CommandSelector.BLUE_ALLIANCE) {
     //     m_allianceChooser.setDefaultOption(command.toString(), command);
@@ -80,8 +75,6 @@ public class RobotContainer {
     //     allianceColorRed = true;
     //   }
     // }
-
-    initializeSubsystems();
 
     // Configure the button bindings
     configureButtonBindings();
@@ -105,10 +98,10 @@ public class RobotContainer {
 
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
-    xBoxLeftTrigger.whenPressed(new IntakePiston(m_intake, true));  // Left trigger: Extend intake
+    xBoxLeftTrigger.whenPressed(new IntakePiston(m_intake, true)); // Left trigger: Extend intake
     xBoxLeftTrigger.whenReleased(new IntakePiston(m_intake, false)); // Left trigger: Retract intake
-    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer)); // Left trigger: intake & carousel
-    
+    xBoxLeftTrigger.whileHeld(
+        new RunIntake(m_intake, m_indexer)); // Left trigger: intake & carousel
   }
 
   public void initializeSubsystems() {

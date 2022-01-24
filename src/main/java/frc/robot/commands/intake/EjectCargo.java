@@ -11,6 +11,7 @@ import frc.robot.subsystems.Intake;
 public class EjectCargo extends CommandBase {
   /** Creates a new EjectCargo. */
   private final Intake m_intake;
+
   private final Indexer m_indexer;
 
   public EjectCargo(Intake intake, Indexer indexer) {
@@ -19,15 +20,16 @@ public class EjectCargo extends CommandBase {
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    addRequirements(indexer);  }
+    addRequirements(indexer);
+  }
 
-  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  //TODO: Use ColorSensors to detect if a there is a bad ball, if so, reverse until there is a correct ball
+  // TODO: Use ColorSensors to detect if a there is a bad ball, if so, reverse until there is a
+  // correct ball
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(-0.8);
@@ -38,7 +40,7 @@ public class EjectCargo extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setIndexerPercentOutput(0);
-    m_intake.setIntakePercentOutput(0); 
+    m_intake.setIntakePercentOutput(0);
   }
 
   // Returns true when the command should end.

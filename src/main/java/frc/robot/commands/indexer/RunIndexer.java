@@ -10,11 +10,10 @@ import frc.robot.subsystems.Indexer;
 public class RunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
-  
+
   /** Creates a new RunIndexer. */
   public RunIndexer(Indexer indexer) {
     m_indexer = indexer;
-  
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);

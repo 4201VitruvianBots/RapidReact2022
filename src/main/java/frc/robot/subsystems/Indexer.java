@@ -8,10 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
- 
 
 public class Indexer extends SubsystemBase {
   private final double kI_Zone = 1;
@@ -22,7 +20,6 @@ public class Indexer extends SubsystemBase {
   // Setup indexer motor controller (SparkMaxs)
   TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor);
   TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
-
 
   // Indexer sensors setup
   DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
@@ -35,11 +32,9 @@ public class Indexer extends SubsystemBase {
 
     indexerMotor.setNeutralMode(NeutralMode.Brake);
 
-
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(true);
   }
-
 
   /**
    * sets the power for the kicker motor
@@ -59,31 +54,29 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(ControlMode.PercentOutput, output);
   }
 
-
   public boolean getIndexerFrontSensorTripped() {
     return !frontBeamBreak.get();
   }
-  
 
   public boolean getIndexerRearSensorTripped() {
     return !rearBeamBreak.get();
   }
 
   /*
-  public void getFrontCargoColor() {
-    if(getIndexerFrontSensorTripped()) {
-      if(colorSensorDetection == ColorCargo.red) {
-        return RED;
-      }else if(colorSensorDetection == ColorCargo.blue) {
-        return BLUE;
-      }else{
-        return UNKNOWN;
+    public void getFrontCargoColor() {
+      if(getIndexerFrontSensorTripped()) {
+        if(colorSensorDetection == ColorCargo.red) {
+          return RED;
+        }else if(colorSensorDetection == ColorCargo.blue) {
+          return BLUE;
+        }else{
+          return UNKNOWN;
+        }
       }
-    }
-      
-  }
 
-*/
+    }
+
+  */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

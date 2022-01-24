@@ -5,7 +5,6 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-
 // package frc.robot.subsystems;
 
 // import com.revrobotics.ColorSensorV3;
@@ -65,46 +64,55 @@
 //   // ???
 //   public int panelTopColor() { // none = 0; red = 1; blue = 2;
 //     if (practiceField) {
-//       if (getTopColor().red > getTopColor().green && getTopColor().green * 1.8 > getTopColor().red) {
+//       if (getTopColor().red > getTopColor().green && getTopColor().green * 1.8 >
+// getTopColor().red) {
 //         return 1;
 //       }
-//       if (getTopColor().blue * 1.25 > getTopColor().green && getTopColor().blue * 1.02 < getTopColor().green && getTopColor().blue > getTopColor().red * 1.89) {
+//       if (getTopColor().blue * 1.25 > getTopColor().green && getTopColor().blue * 1.02 <
+// getTopColor().green && getTopColor().blue > getTopColor().red * 1.89) {
 //         return 2;
 
 //       } else return 0;
-//     } 
+//     }
 
 //     else {
 
-//       if (getTopColor().red > getTopColor().blue * 3 && getTopColor().red > getTopColor().green * 1.33) {
+//       if (getTopColor().red > getTopColor().blue * 3 && getTopColor().red > getTopColor().green *
+// 1.33) {
 //         return 1;
-//       } else if (getTopColor().blue < getTopColor().green * 1.15 && getTopColor().green < getTopColor().blue * 1.15 && getTopColor().blue > getTopColor().red * 2.5) {
+//       } else if (getTopColor().blue < getTopColor().green * 1.15 && getTopColor().green <
+// getTopColor().blue * 1.15 && getTopColor().blue > getTopColor().red * 2.5) {
 //         return 2;
 //       } else return 0;
 //     }
 //   }
 
-//   public int panelBottomColor() { // none = 0; red = 1; green = 2; blue = 3; yellow = 4   if red is greater than Green, and Green * 1.8 is greater than red
+//   public int panelBottomColor() { // none = 0; red = 1; green = 2; blue = 3; yellow = 4   if red
+// is greater than Green, and Green * 1.8 is greater than red
 //     if (practiceField) {
-//       if (getBottomColor().red > getBottomColor().green && getBottomColor().green * 1.8 > getBottomColor().red) {
+//       if (getBottomColor().red > getBottomColor().green && getBottomColor().green * 1.8 >
+// getBottomColor().red) {
 //         return 1;
 //       }
-//       if (getBottomColor().blue * 1.25 > getBottomColor().green && getBottomColor().blue * 1.02 < getBottomColor().green && getBottomColor().blue > getBottomColor().red * 1.89) {
+//       if (getBottomColor().blue * 1.25 > getBottomColor().green && getBottomColor().blue * 1.02 <
+// getBottomColor().green && getBottomColor().blue > getBottomColor().red * 1.89) {
 //         return 2;
 //       }
-//         else 
+//         else
 //           return 0;
 
-//     } 
-    
+//     }
+
 //     else {
 
-//       if (getBottomColor().red > getBottomColor().blue * 3 && getBottomColor().red > getBottomColor().green * 1.33) {
+//       if (getBottomColor().red > getBottomColor().blue * 3 && getBottomColor().red >
+// getBottomColor().green * 1.33) {
 //         return 1;
-//       } 
-//       else if (getBottomColor().blue < getBottomColor().green * 1.15 && getBottomColor().green < getBottomColor().blue * 1.15 && getBottomColor().blue > getBottomColor().red * 2.5) {
+//       }
+//       else if (getBottomColor().blue < getBottomColor().green * 1.15 && getBottomColor().green <
+// getBottomColor().blue * 1.15 && getBottomColor().blue > getBottomColor().red * 2.5) {
 //         return 2;
-      
+
 //       } else return 0;
 //     }
 //   }
@@ -185,7 +193,8 @@
 //     // SmartDashboard.putString("Color", getColorString());
 //     SmartDashboardTab.putNumber("ColorSensor", "Panel Color", panelTopColor());
 //     SmartDashboardTab.putNumber("ColorSensor", "Panel Color", panelBottomColor());
-//     SmartDashboardTab.putBoolean("ColorSensor", "Rotation Control Complete", rotationControlComplete());
+//     SmartDashboardTab.putBoolean("ColorSensor", "Rotation Control Complete",
+// rotationControlComplete());
 //     SmartDashboardTab.putNumber("ColorSensor", "Semi Rotations", semiRotations);
 
 //     SmartDashboard.putNumber("Thing", getFMSColor());
