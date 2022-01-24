@@ -76,8 +76,12 @@ public class RobotContainer {
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
 
-    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1500));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2000));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1000));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1500));
+    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2000));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+    xBoxButtons[4].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 4000));
+    xBoxButtons[5].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 5000));
   }
 
   public void initializeSubsystems() {

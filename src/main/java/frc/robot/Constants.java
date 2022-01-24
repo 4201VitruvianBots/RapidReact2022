@@ -166,7 +166,7 @@ public final class Constants {
 
     public static final double rpmTolerance = 25.0;
 
-    public static final double gearRatio = 2 / 3;
+    public static final double gearRatio = 2.0 / 3.0;
   }
 
   public final class Turret {
