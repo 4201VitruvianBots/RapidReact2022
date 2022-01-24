@@ -13,7 +13,6 @@ public class DefaultFlywheelRPM extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Flywheel m_flywheel;
   private final Vision m_vision;
-  /*private final Vision m_vision;*/
   private final boolean printed = false;
   private double time;
   /**

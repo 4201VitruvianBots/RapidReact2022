@@ -9,7 +9,6 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Vision.CAMERA_TYPE;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Turret.TurretControlMode;
@@ -23,7 +22,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   boolean turning, usingVisionSetpoint;
   private double setpoint;
   private double startTime;
-  private CAMERA_TYPE state; 
   /** Creates a new ExampleCommand. */
   public AutoUseVisionCorrection(Turret turret, Vision vision) {
     m_turret = turret;
@@ -91,6 +89,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return /*(Math.abs(m_vision.getTargetX()) <= 3)*/ false;
+    return (Math.abs(m_vision.getGoalTargetXAngle()) <= 3);
   }
 }

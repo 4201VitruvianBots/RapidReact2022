@@ -38,9 +38,6 @@ public class Flywheel extends SubsystemBase {
   private final Timer timeout = new Timer();
   public double rpmOutput;
   private double flywheelSetpointRPM;
-  private double turretSetpoint;
-  private int controlMode;
-  private boolean initialHome;
   private boolean canShoot;
   private double idealRPM;
   private boolean timerStart;
@@ -186,15 +183,15 @@ public class Flywheel extends SubsystemBase {
     updateRPMSetpoint();
     updateShuffleboard();
 
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance()) /* && m_vision.hasTarget()*/
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())  && m_vision.getGoalValidTarget()
         &&
-        /*(Math.abs(m_vision.getTargetX()) < 1) &&*/ !timerStart) {
+        (Math.abs(m_vision.getGoalTargetXAngle()) < 1) && !timerStart) {
       timerStart = true;
       timestamp = Timer.getFPGATimestamp();
     } else if (((Math.abs(getSetpointRPM() - getRPM(0))
-            > getRPMTolerance()) /*|| ! m_vision.hasTarget()()*/
+            > getRPMTolerance()) || ! m_vision.getGoalValidTarget()
         ||
-        /*(Math.abs(m_vision.getTargetX()) > 1)) && */ (timerStart))) {
+        (Math.abs(m_vision.getGoalTargetXAngle()) > 1)) && (timerStart)) {
       timestamp = 0;
       timerStart = false;
     }
