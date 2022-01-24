@@ -97,14 +97,23 @@ public class LED extends SubsystemBase {
      */
     public void expressState(robotState state) {
         switch (state) {
-            case READY:
-                setPattern(0,0,0,0,0.1, AnimationTypes.Rainbow);
+            case Shooting: // Strobing green
+                setPattern(58,199,71,0,0.1,AnimationTypes.Strobe);
                 break;
-            case SET:
-                setPattern(255, 200, 0, 0, 0.4, AnimationTypes.Twinkle);
+            case Intaking: // Solid Blue
+                setPattern(66,95,255,0,0,AnimationTypes.Solid);
                 break;
-            case GO:
-                setPattern(255, 0, 0, 0,0, AnimationTypes.Solid);
+            case Idle: // Fuchsia larson animation
+                setPattern(255,0,255,0,0.1,AnimationTypes.Larson);
+                break;
+            case Climbing: // cyceling rainbow
+                setPattern(0,0,0,0,0.4,AnimationTypes.Rainbow);
+                break;
+            case Disabled: // solid red
+                setPattern(255,0,0,0,0,AnimationTypes.Solid);
+                break;
+            case VisionLock: // strobing yellow
+                setPattern(255,255,153,0,0.1,AnimationTypes.Strobe);
                 break;
             default:
                 setPattern(106, 90, 205, 0, 0.4,AnimationTypes.Twinkle);
@@ -132,6 +141,6 @@ public class LED extends SubsystemBase {
      * Different robot states
      */
     public enum robotState {
-        READY, SET, GO, NOPE
+        Climbing, Disabled, Idle, Intaking, Shooting, VisionLock
     }
 }

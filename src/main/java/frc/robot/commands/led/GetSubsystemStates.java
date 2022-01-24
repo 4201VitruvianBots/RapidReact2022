@@ -50,6 +50,14 @@ public class GetSubsystemStates extends CommandBase {
         boolean shooterIsActive = /*turret.shooterIsActive();*/ true;
 
         //set in order of priority to be expressed from the least priority to the highest priority
+        /*
+        Disabled,
+        Idle,
+        Intaking,
+        VisionLock
+        Shooting,
+        Climbing,
+       */
         if(!driverStationReady){
             expressedRobotState = LED.robotState.NOPE;
         }
