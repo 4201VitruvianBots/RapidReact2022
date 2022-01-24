@@ -6,10 +6,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import com.ctre.phoenix.led.*;
@@ -35,7 +31,7 @@ public class LED extends SubsystemBase {
 
     public LED() {
         // Setup LED strip
-        changeAnimation(8,95,0,255, 1, AnimationTypes.SetAll);
+        setPattern(8,95,0,255, 1, AnimationTypes.Solid);
         CANdleConfiguration configAll = new CANdleConfiguration();
         configAll.statusLedOffWhenActive = true;
         configAll.disableWhenLOS = false;
@@ -55,7 +51,7 @@ public class LED extends SubsystemBase {
      * @param speed the speed of the animation
      * @param toChange the animation mode of the LEDs
      */
-    public void changeAnimation(int red, int green, int blue, int white, double speed, AnimationTypes toChange) {
+    public void setPattern(int red, int green, int blue, int white, double speed, AnimationTypes toChange) {
         m_currentAnimation = toChange;
 
         switch (toChange) {
@@ -105,16 +101,16 @@ public class LED extends SubsystemBase {
     public void expressState(robotState state) {
         switch (state) {
             case READY:
-                changeAnimation(0,0,0,0,0.1, AnimationTypes.Rainbow);
+                setPattern(0,0,0,0,0.1, AnimationTypes.Rainbow);
                 break;
             case SET:
-                changeAnimation(255, 200, 0, 0, 0.4, AnimationTypes.Twinkle);
+                setPattern(255, 200, 0, 0, 0.4, AnimationTypes.Twinkle);
                 break;
             case GO:
-                changeAnimation(255, 0, 0, 0,0, AnimationTypes.Solid);
+                setPattern(255, 0, 0, 0,0, AnimationTypes.Solid);
                 break;
             default:
-                changeAnimation(106, 90, 205, 0, 0.4,AnimationTypes.Twinkle);
+                setPattern(106, 90, 205, 0, 0.4,AnimationTypes.Twinkle);
                 break;
         }
     }
