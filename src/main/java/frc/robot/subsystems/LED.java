@@ -16,9 +16,6 @@ import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 
-/*
-Subsystem for controlling robot LEDs
- */
 public class LED extends SubsystemBase {
     private final CANdle m_candle = new CANdle(Constants.LED.CANdleID, "FastFD");
     private final int LedCount = 300;

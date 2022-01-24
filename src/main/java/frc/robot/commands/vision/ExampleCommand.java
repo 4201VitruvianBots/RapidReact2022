@@ -4,8 +4,8 @@
 
 package frc.robot.commands.vision;
 
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.ExampleSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ExampleCommand extends CommandBase {

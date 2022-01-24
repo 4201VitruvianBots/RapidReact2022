@@ -2,25 +2,27 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Flywheel;
 
 /** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class DefaultFlywheelRPM extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
-
+  private final Flywheel m_flywheel;
+  /*private final Vision m_vision;*/
+  private final boolean printed = false;
+  private double time;
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+  public DefaultFlywheelRPM(Flywheel flywheel /* Vision vision*/) {
+    m_flywheel = flywheel;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(flywheel);
   }
 
   // Called when the command is initially scheduled.
@@ -28,6 +30,7 @@ public class ExampleCommand extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
+  /** if vision gets valid target, then set shooter to 3000 RPM, else 0 */
   @Override
   public void execute() {}
 
