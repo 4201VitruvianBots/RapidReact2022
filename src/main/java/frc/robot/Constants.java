@@ -156,13 +156,13 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
+    public static final double kFlywheelKs = 0.63348; // Jamgo: 0.53456;
+
     // Volts per (radian per second)
-    public static final double kFlywheelKv = 0.017092;
+    public static final double kFlywheelKv = 0.15784; // Jamgo: 0.017092;
 
     // Volts per (radian per second squared)
-    public static final double kFlywheelKa = 0.0083035;
-
-    public static final double kFlywheelKs = 0.53456;
+    public static final double kFlywheelKa = 0.034438; // Jamgo: 0.0083035;
 
     public static final double rpmTolerance = 25.0;
 
