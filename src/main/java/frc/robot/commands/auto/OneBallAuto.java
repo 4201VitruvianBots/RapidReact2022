@@ -19,7 +19,7 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Vision; 
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Drives off the tarmac and shoots one cargo into the high goal. */
@@ -29,9 +29,9 @@ public class OneBallAuto extends SequentialCommandGroup {
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
-   * @param indexer To feed the cargo to the shooter
-   * @param flywheel To shoot the cargo
-   * @param vision To find the target
+   * @param indexer To feed the cargo to the shooter.
+   * @param flywheel To shoot the cargo.
+   * @param vision To find the target.
    */
   public OneBallAuto(
     DriveTrain driveTrain,

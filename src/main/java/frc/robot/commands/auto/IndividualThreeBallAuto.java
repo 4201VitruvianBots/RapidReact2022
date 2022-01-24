@@ -33,11 +33,11 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
-   * @param intake Runs the intake to pick up new cargo
-   * @param indexer Feeds cargo through indexer to shoot
-   * @param flywheel Rev flywheel to shoot
-   * @param turret Turn turret to goal
-   * @param vision Find target
+   * @param intake Runs the intake to pick up new cargo.
+   * @param indexer Feeds cargo through indexer to shoot.
+   * @param flywheel Rev flywheel to shoot.
+   * @param turret Turn turret to goal.
+   * @param vision Find target.
    */
   public IndividualThreeBallAuto(
     DriveTrain driveTrain,
