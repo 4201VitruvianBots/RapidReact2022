@@ -42,8 +42,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // TODO: Uncomment execute/isfinished when vision doesn't error
-    
             //// if the turret is using sensor feedback
             if(m_turret.getControlMode() == TurretControlMode.CLOSEDLOOP) {
                 // if vision has a valid target to shoot at then set usingVisinoSetpoint to true

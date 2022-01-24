@@ -55,8 +55,8 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   @Override
   public void execute() {
   
-    // TODO: Ask if we are still using setlastvalidtargettime and if hastarget=getGoalValidTarget
-    //and if getfilteredtargetx is being used
+    // TODO: Ask if hastarget=getGoalValidTarget
+   
     
         //If we are not climbing
         if(! m_climber.getClimbState()) {
@@ -65,7 +65,6 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                 //if the joystick sensors report movement greater than the deadzone it runs these methods
                 if((Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2)) >= Math.pow(deadZone, 2)) {
                     m_vision.setGoalCameraLedState(true);
-                    m_vision.setLastValidTargetTime();
                     joystickMoved = true;
                     //if the movement of left joystick is greater than zero, set the setpoint with that value but negative
                     if(m_controller.getRawAxis(0) >= 0)
@@ -80,7 +79,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
                     if(setpoint < m_turret.getMinAngle())
                         setpoint = m_turret.getMinAngle();
                     ////if vision has a target and the absolute value of the target is less than 20, make the controller rumble
-                    if(m_vision.getGoalValidTarget() && Math.abs(m_vision.getFilteredTargetX()) < 20) {
+                    if(m_vision.getGoalValidTarget()) {
                         m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
                         m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
                     }

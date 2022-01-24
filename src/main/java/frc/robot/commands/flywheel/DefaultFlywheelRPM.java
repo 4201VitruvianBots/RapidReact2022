@@ -36,7 +36,6 @@ public class DefaultFlywheelRPM extends CommandBase {
   @Override
   public void execute() {
     if (
-    //m_vision.getValidTarget 1 == 1) m_flywheel.setRPM(3000); TODO
     m_vision.getGoalValidTarget())m_flywheel.setRPM(3000);
     else m_flywheel.setRPM(0);
   }
