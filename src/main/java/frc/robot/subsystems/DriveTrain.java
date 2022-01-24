@@ -323,6 +323,18 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the encoder position of a specified motor converted to wheel distance traveled.
+   * 
+   * @param position The position of the motor to get the wheel distance of
+   * @return The equivalent wheel distance traveled by the specified motor in meters
+   */
+
+  /**
+   * Gets the speeds of both sides of the drivetrain converted to wheel speeds.
+   * 
+   * @return A {@link DifferentialDriveWheelSpeeds} containing the speeds of each side in meters per second.
+   */
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
     double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
@@ -343,6 +355,11 @@ public class DriveTrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
+  /**
+   * Gets the feedforward.
+   * 
+   * @return The {@link SimpleMotorFeedforward}
+   */
   public SimpleMotorFeedforward getFeedforward() {
     return feedforward;
   }
@@ -357,20 +374,40 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets the drivetrain kinematics.
+   * 
+   * @return The {@link DifferentialDriveKinematics}
+   */
   public DifferentialDriveKinematics getDriveTrainKinematics() {
     return kinematics;
   }
 
+  /**
+   * Gets the PID controller for the left side of the drivetrain.
+   * 
+   * @return A {@link PIDController}
+   */
   public PIDController getLeftPIDController() {
     return leftPIDController;
   }
 
+  /**
+   * Gets the PID controller for the right side of the drivetrain.
+   * 
+   * @return A {@link PIDController}
+   */
   public PIDController getRightPIDController() {
     return rightPIDController;
   }
 
   // TODO look into how odometry.resetPosition() should work. Apparently it takes a gyro angle?
-  /** Resets the odometry and navX to a specified pose and heading */
+  /**
+   * Resets the odometry and navX to a specified pose and heading.
+   * 
+   * @param pose The new pose of the robot
+   * @param rotation The current gyro angle of the robot
+   */
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
     resetEncoderCounts();
     navX.reset();
@@ -381,6 +418,9 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  /**
+   * Puts values on SmartDashboard.
+   */
   private void updateSmartDashboard() {
     if (RobotBase.isReal()) {
       SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
