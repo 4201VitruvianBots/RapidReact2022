@@ -14,10 +14,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.intake.IntakePiston;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -33,6 +37,8 @@ public class RobotContainer {
   private final Controls m_controls = new Controls();
   private final Vision m_vision = new Vision(m_controls);
   private final Flywheel m_flywheel = new Flywheel(m_vision);
+  private final Intake m_intake = new Intake();
+  private final Indexer m_indexer = new Indexer();
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -63,17 +69,17 @@ public class RobotContainer {
     /**
      * Sets the AllianceColor
      */
-    for (CommandSelector command : CommandSelector.values()) {
-      if (command == CommandSelector.BLUE_ALLIANCE) {
-        m_allianceChooser.setDefaultOption(command.toString(), command);
-        allianceColorBlue = true;
-        allianceColorRed = false;
-      }else{
-        m_allianceChooser.addOption(command.toString(), command);
-        allianceColorBlue = false;
-        allianceColorRed = true;
-      }
-    }
+    // for (CommandSelector command : CommandSelector.values()) {
+    //   if (command == CommandSelector.BLUE_ALLIANCE) {
+    //     m_allianceChooser.setDefaultOption(command.toString(), command);
+    //     allianceColorBlue = true;
+    //     allianceColorRed = false;
+    //   }else{
+    //     m_allianceChooser.addOption(command.toString(), command);
+    //     allianceColorBlue = false;
+    //     allianceColorRed = true;
+    //   }
+    // }
 
     initializeSubsystems();
 
@@ -99,6 +105,10 @@ public class RobotContainer {
 
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+    xBoxLeftTrigger.whenPressed(new IntakePiston(m_intake, true));  // Left trigger: Extend intake
+    xBoxLeftTrigger.whenReleased(new IntakePiston(m_intake, false)); // Left trigger: Retract intake
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer)); // Left trigger: intake & carousel
+    
   }
 
   public void initializeSubsystems() {
