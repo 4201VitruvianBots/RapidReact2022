@@ -22,7 +22,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   boolean turning, usingVisionSetpoint;
   private double setpoint;
   private double startTime;
-  private CAMERA_TYPE state;
   /** Creates a new ExampleCommand. */
   public AutoUseVisionCorrection(Turret turret, Vision vision) {
     m_turret = turret;
