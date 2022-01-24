@@ -152,15 +152,15 @@ public class Flywheel extends SubsystemBase {
    */
   public double getRPM(int motorIndex) {
     return flywheelMotors[motorIndex].getSelectedSensorVelocity()
-        * (600.0 / encoderUnitsPerRotation);
+        * (600.0 / encoderUnitsPerRotation) / gearRatio;
   }
 
   public double FalconUnitstoRPM(double SensorUnits) {
-    return (SensorUnits / 2048.0) * 600.0;
+    return (SensorUnits / 2048.0) * 600.0 / gearRatio;
   }
 
   public double RPMtoFalconUnits(double RPM) {
-    return (RPM / 600.0) * 2048.0;
+    return (RPM / 600.0) * 2048.0 * gearRatio;
   }
 
   public void setIdealRPM() {

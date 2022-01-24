@@ -165,11 +165,13 @@ public final class Constants {
     public static final double kFlywheelKs = 0.53456;
 
     public static final double rpmTolerance = 25.0;
+
+    public static final double gearRatio = 2/3; 
   }
 
   public final class Turret {
 
-    // TODO: might not need this need to confirm 
+    // TODO: might not need kErrorBand, need to confirm 
     public static final int kErrorBand = 50;
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
