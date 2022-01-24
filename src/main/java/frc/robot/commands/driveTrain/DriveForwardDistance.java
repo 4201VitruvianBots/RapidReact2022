@@ -21,6 +21,10 @@ import java.util.List;
 public class DriveForwardDistance extends SequentialCommandGroup {  
   /**
    * Drives the robot forward a distance in meters
+   * 
+   * @param driveTrain The driveTrain used by this command
+   * @param fieldSim The fieldSim used by this command
+   * @param distanceMeters The distance in meters to travel
    */
   public DriveForwardDistance(DriveTrain driveTrain, FieldSim fieldSim, double distanceMeters) { // Distance in meters
     Pose2d startPosition = new Pose2d();
