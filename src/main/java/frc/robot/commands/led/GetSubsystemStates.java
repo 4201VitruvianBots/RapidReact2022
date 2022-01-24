@@ -19,14 +19,20 @@ public class GetSubsystemStates extends CommandBase {
     //TODO: make sure the correct subsystems are used
     private final LED m_led;
     private final Vision m_vision;
+    private final Intake m_intake;
+    private final Flywheel m_flywheel;
+    private final Climber m_climber ;
     // private final Controls m_controls;
 
     /**
      * Sets the LED based on the subsystems' statuses
      */
-    public GetSubsystemStates(LED led, Vision vision) {
+    public GetSubsystemStates(LED led, Intake intake, Vision vision, Flywheel flywheel, Climber climber) {
         m_led = led;
         m_vision = vision;
+        m_climber = climber;
+        m_flywheel = flywheel;
+        m_intake = intake;
         // Use addRequirements() here to declare subsystem dependencies.
         addRequirements(led);
     }
@@ -34,44 +40,48 @@ public class GetSubsystemStates extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        m_led.expressState(LED.robotState.READY);
+        m_led.expressState(LED.robotState.Idle);
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         //the prioritized state to be expressed to the LEDs
-        LED.robotState expressedRobotState = null;
-
-        //TODO: correct and expand to other subsystems and commands
-        //the possible states that can be passed to the LEDs and their values
-        boolean driverStationReady = !DriverStation.isDisabled();
-        boolean visionHasTarget = /*m_vision.hasTarget();*/ true;
-        boolean shooterIsActive = /*turret.shooterIsActive();*/ true;
+        //TODO: There should be disabled (not ready) and disabled (ready) like what we have on jango.
+        boolean Disabled = DriverStation.isDisabled();
+        boolean Idle = true; // Reevaluate what is "Idle"
+        boolean Intaking = m_intake.getIntakeState();
+        boolean VisionLock = m_vision.getGoalValidTarget();
+        boolean Shooting = true; // need a method for this
+        boolean Climbing = m_climber.getClimbState();
 
         //set in order of priority to be expressed from the least priority to the highest priority
         /*
         Disabled,
         Idle,
         Intaking,
-        VisionLock
+        VisionLock,
         Shooting,
-        Climbing,
+        Climbing
        */
-        if(!driverStationReady){
-            expressedRobotState = LED.robotState.NOPE;
+        if(Disabled){
+            m_led.expressState(LED.robotState.Disabled);
         }
-        if(driverStationReady){
-            expressedRobotState = LED.robotState.READY;
+        if(Idle){
+            m_led.expressState(LED.robotState.Idle);
         }
-        if(visionHasTarget){
-            expressedRobotState = LED.robotState.SET;
+        if(Intaking){
+            m_led.expressState(LED.robotState.Intaking);
         }
-        if(shooterIsActive){
-            expressedRobotState = LED.robotState.GO;
+        if(VisionLock){
+            m_led.expressState(LED.robotState.VisionLock);
         }
-
-        m_led.expressState(expressedRobotState);
+        if(Shooting){
+            m_led.expressState(LED.robotState.Shooting);
+        }
+        if(Climbing){
+            m_led.expressState(LED.robotState.Climbing);
+        }
     }
 
     // Called once the command ends or is interrupted.
