@@ -22,10 +22,10 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Drives off the tarmac and shoots two cargo into the high goal. */
+/** Drives off the tarmac and shoots one cargo into the high goal. */
 public class OneBallAuto extends SequentialCommandGroup {
   /**
-   * Drives off the tarmac and shoots two cargo into the high goal.
+   * Drives off the tarmac and shoots one cargo into the high goal.
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -40,7 +40,7 @@ public class OneBallAuto extends SequentialCommandGroup {
     Flywheel flywheel,
     Turret turret,
     Vision vision) {
-    // Drive backward maximum distance to ball
+    // Drive backward
     // Stop and aim for high goal
     // Shoot 1 cargo into high goal
     Trajectory trajectory =

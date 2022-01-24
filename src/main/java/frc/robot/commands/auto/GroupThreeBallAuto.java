@@ -26,18 +26,18 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Scores 3 cargo in the high goal and exits the tarmac */
+/** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
 public class GroupThreeBallAuto extends SequentialCommandGroup {
   /**
-   * Scores 3 cargo in the high goal and exits the tarmac.
+   * Intakes one cargo, shoots two, then intakes and shoots a third cargo
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
-   * @param intake Runs the intake to pick up new cargo
-   * @param indexer Feeds cargo through indexer to shoot
-   * @param flywheel Rev flywheel to shoot
-   * @param turret Turn turret to goal
-   * @param vision Find target
+   * @param intake Runs the intake to pick up new cargo.
+   * @param indexer Feeds cargo through indexer to shoot.
+   * @param flywheel Rev flywheel to shoot.
+   * @param turret Turn turret to goal.
+   * @param vision Find target.
    */
   public GroupThreeBallAuto(
     DriveTrain driveTrain,
@@ -47,10 +47,13 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
       Flywheel flywheel,
       Turret turret,
       Vision vision) {
-    // Drive backward maximum distance to ball
-    // While dirivng backward, intake is running
-    // Stop (now with 2 cargo) and aim for high goal
-    // Shoot 2 cargo into high goal
+    /**
+     * Shoots cargo the ball started with
+     * Drives backwards, intake running, picks up second cargo
+     * Shoots second cargo
+     * Drives backward, intake running, picks up third cargo
+     * Shoots third cargo
+     */
 
     Trajectory trajectory1 =
         PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
@@ -88,4 +91,5 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
   }
+  // class ToastAuto {
 }

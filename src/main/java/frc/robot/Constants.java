@@ -106,7 +106,7 @@ public final class Constants {
     public static enum DriveTrainNeutralMode {
       BRAKE,
       COAST,
-      /**Master motors brake, follower motors coast */
+      /** Master motors brake, follower motors coast */
       HALF_BRAKE
     }
   }

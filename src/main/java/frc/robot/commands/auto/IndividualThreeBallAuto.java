@@ -26,10 +26,10 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Scores 3 cargo in the high goal and exits the tarmac */
+/** Shoots one cargo, intakes and shoots a second, then intakes and shoots a third. */
 public class IndividualThreeBallAuto extends SequentialCommandGroup {
   /**
-   * Scores 3 cargo in the high goal and exits the tarmac.
+   * Shoots one cargo, intakes and shoots a second, then intakes and shoots a third.
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.

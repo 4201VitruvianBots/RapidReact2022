@@ -29,11 +29,16 @@ import frc.vitruvianlib.utils.TrajectoryUtils;
 /** Intakes one cargo and shoots two cargo into the high goal. */
 public class TwoBallAuto extends SequentialCommandGroup {
   /**
-   * Intakes one cargo and shoots two cargo into the high goal.
+   *    * Intakes one cargo and shoots two cargo into the high goal.
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
-   */
+   * @param intake Runs the intake to pick up new cargo.
+   * @param indexer Feeds cargo through indexer to shoot.
+   * @param flywheel Rev flywheel to shoot.
+   * @param turret Turn turret to goal.
+   * @param vision Find target.
+  */
   public TwoBallAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
@@ -43,7 +48,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
       Turret turret,
       Vision vision) {
     // Drive backward maximum distance to ball
-    // While dirivng backward, intake is running
+    // While drivng backward, intake is running
     // Stop (now with 2 cargo) and aim for high goal
     // Shoot 2 cargo into high goal
 

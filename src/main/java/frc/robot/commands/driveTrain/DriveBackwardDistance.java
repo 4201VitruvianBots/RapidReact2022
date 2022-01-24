@@ -19,10 +19,14 @@ import java.util.ArrayList;
 public class DriveBackwardDistance extends SequentialCommandGroup {    
   /**
    * Drives the robot backward a distance in meters
+   * 
+   * @param driveTrain The driveTrain used by this command
+   * @param fieldSim The fieldSim used by this command
+   * @param distanceMeters The distance in meters to travel
    */
-  public DriveBackwardDistance(DriveTrain driveTrain, FieldSim fieldSim, double distance) { // Distance in meters
+  public DriveBackwardDistance(DriveTrain driveTrain, FieldSim fieldSim, double distanceMeters) {
     Pose2d startPosition = new Pose2d();
-    Pose2d endPosition = new Pose2d(-distance, 0, new Rotation2d());
+    Pose2d endPosition = new Pose2d(-distanceMeters, 0, new Rotation2d());
     TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(6), Units.feetToMeters(10));
     configA.setReversed(true);
     configA.setEndVelocity(0);
