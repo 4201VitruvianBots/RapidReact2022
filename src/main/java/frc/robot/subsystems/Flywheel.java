@@ -149,7 +149,8 @@ public class Flywheel extends SubsystemBase {
    */
   public double getRPM(int motorIndex) {
     return flywheelMotors[motorIndex].getSelectedSensorVelocity()
-        * (600.0 / encoderUnitsPerRotation) / gearRatio;
+        * (600.0 / encoderUnitsPerRotation)
+        / gearRatio;
   }
 
   public double FalconUnitstoRPM(double SensorUnits) {
@@ -183,15 +184,16 @@ public class Flywheel extends SubsystemBase {
     updateRPMSetpoint();
     updateShuffleboard();
 
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())  && m_vision.getGoalValidTarget()
-        &&
-        (Math.abs(m_vision.getGoalTargetXAngle()) < 1) && !timerStart) {
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())
+        && m_vision.getGoalValidTarget()
+        && (Math.abs(m_vision.getGoalTargetXAngle()) < 1)
+        && !timerStart) {
       timerStart = true;
       timestamp = Timer.getFPGATimestamp();
-    } else if (((Math.abs(getSetpointRPM() - getRPM(0))
-            > getRPMTolerance()) || ! m_vision.getGoalValidTarget()
-        ||
-        (Math.abs(m_vision.getGoalTargetXAngle()) > 1)) && (timerStart)) {
+    } else if (((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance())
+            || !m_vision.getGoalValidTarget()
+            || (Math.abs(m_vision.getGoalTargetXAngle()) > 1))
+        && (timerStart)) {
       timestamp = 0;
       timerStart = false;
     }

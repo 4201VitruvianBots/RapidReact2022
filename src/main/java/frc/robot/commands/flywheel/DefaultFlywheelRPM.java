@@ -12,6 +12,7 @@ import frc.robot.subsystems.Vision;
 public class DefaultFlywheelRPM extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Flywheel m_flywheel;
+
   private final Vision m_vision;
   private final boolean printed = false;
   private double time;
@@ -34,8 +35,7 @@ public class DefaultFlywheelRPM extends CommandBase {
 
   @Override
   public void execute() {
-    if (
-    m_vision.getGoalValidTarget())m_flywheel.setRPM(3000);
+    if (m_vision.getGoalValidTarget()) m_flywheel.setRPM(3000);
     else m_flywheel.setRPM(0);
   }
 
