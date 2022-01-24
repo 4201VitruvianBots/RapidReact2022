@@ -27,7 +27,9 @@ public class LED extends SubsystemBase {
     private final CANdle m_candle = new CANdle(Constants.LED.CANdleID, "FastFD");
     private final int LedCount = 300;
     private AnimationTypes m_currentAnimation;
-
+    int red = 0;
+    int green = 0;
+    int blue = 0;
 
     private Animation m_toAnimate = null;
 
@@ -84,7 +86,10 @@ public class LED extends SubsystemBase {
             case TwinkleOff:
                 m_toAnimate = new TwinkleOffAnimation(red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
                 break;
-            case SetAll:
+            case Solid:
+                this.red = red;
+                this.green = green;
+                this.blue = blue;
                 m_toAnimate = null;
                 break;
             default:
@@ -106,7 +111,7 @@ public class LED extends SubsystemBase {
                 changeAnimation(255, 200, 0, 0, 0.4, AnimationTypes.Twinkle);
                 break;
             case GO:
-                changeAnimation(255, 0, 0, 0,0, AnimationTypes.SetAll);
+                changeAnimation(255, 0, 0, 0,0, AnimationTypes.Solid);
                 break;
             default:
                 changeAnimation(106, 90, 205, 0, 0.4,AnimationTypes.Twinkle);
@@ -117,7 +122,7 @@ public class LED extends SubsystemBase {
     @Override
     public void periodic() {
         if(m_toAnimate == null) {
-            m_candle.setLEDs(0,0,0);
+            m_candle.setLEDs(red,green,blue);
         } else {
             m_candle.animate(m_toAnimate);
         }
@@ -127,7 +132,7 @@ public class LED extends SubsystemBase {
      * Different LED animation types
      */
     public enum AnimationTypes {
-        ColorFlow, Fire, Larson, Rainbow, RgbFade, SingleFade, Strobe, Twinkle, TwinkleOff, SetAll
+        ColorFlow, Fire, Larson, Rainbow, RgbFade, SingleFade, Strobe, Twinkle, TwinkleOff, Solid
     }
 
     /**
