@@ -96,6 +96,9 @@ public class Climber extends SubsystemBase {
         // This method will be called once per scheduler run during simulation
     }
 
+    /**
+     * The different states that the climber can be in
+     */
     private enum ClimbBrakeStatus {
         ENGAGED,
         DISENGAGED
