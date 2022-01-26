@@ -38,7 +38,7 @@ public class GetSubsystemStates extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_led.expressState(LED.robotState.Idle);
+    m_led.expressState(LED.robotState.Enabled);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,16 +47,15 @@ public class GetSubsystemStates extends CommandBase {
     // the prioritized state to be expressed to the LEDs
     // TODO: There should be disabled (not ready) and disabled (ready) like what we have on jango.
     boolean Disabled = DriverStation.isDisabled();
-    boolean Idle = true; // Reevaluate what is "Idle"
+    boolean Enabled = true; // Reevaluate what is "Enabled"
     boolean Intaking = m_intake.getIntakeState();
     boolean VisionLock = m_vision.getGoalValidTarget();
-    boolean Shooting = true; // need a method for this
     boolean Climbing = m_climber.getClimbState();
 
     // set in order of priority to be expressed from the least priority to the highest priority
     /*
      Disabled,
-     Idle,
+     Enabled,
      Intaking,
      VisionLock,
      Shooting,
@@ -65,8 +64,8 @@ public class GetSubsystemStates extends CommandBase {
     if (Disabled) {
       m_led.expressState(LED.robotState.Disabled);
     }
-    if (Idle) {
-      m_led.expressState(LED.robotState.Idle);
+    if (Enabled) {
+      m_led.expressState(LED.robotState.Enabled);
     }
     if (Intaking) {
       m_led.expressState(LED.robotState.Intaking);
