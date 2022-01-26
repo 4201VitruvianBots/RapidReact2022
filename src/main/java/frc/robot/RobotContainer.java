@@ -16,13 +16,9 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.Controls;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Flywheel;
-import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.*;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -39,6 +35,8 @@ public class RobotContainer {
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
+  private final LED m_led = new LED();
+  private final Climber m_climber = new Climber();
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -107,6 +105,7 @@ public class RobotContainer {
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
 
   /**
