@@ -23,7 +23,7 @@ public class TestPath extends SequentialCommandGroup {
 
 
     Trajectory trajectory =
-        PathPlanner.loadPath("Testpath", Units.feetToMeters(1), Units.feetToMeters(1), false);
+        PathPlanner.loadPath("Testpath", Units.feetToMeters(1), Units.feetToMeters(1), true);
 
     VitruvianRamseteCommand command =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);

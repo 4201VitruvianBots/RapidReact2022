@@ -61,8 +61,7 @@ public final class Constants {
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-    public static final double kDriveGearing = 9.05; // For test bed
-    // public static final double kDriveGearing = 128.0/15.0; // For Jango
+    public static final double kDriveGearing = 9.05;
 
     public static final int kMagEncoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;

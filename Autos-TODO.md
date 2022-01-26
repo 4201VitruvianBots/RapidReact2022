@@ -14,6 +14,11 @@
   - [x] Decide Path
   - [x] Write waypoints
   - [x] Test in sim
+- [ ] Add ball alignment 
+  - [ ] One ball
+  - [ ] Two ball
+  - [ ] Three ball
+- [ ] Add Post-Auto intake command
 
 ## When jango is ready
 - [x] Test drivetrain code on jango
@@ -26,8 +31,8 @@
 - [x] More testing of Jango
   - [x] Distance consistency
   - [x] Turning consistency
-  - [ ] Timing consistency
-  - [ ] Solve teleop breaking
+  - [x] Timing consistency
+  - [x] Solve teleop breaking
 - [x] Fix weird issues with sim (?)
 
 ## When declaration are merged
