@@ -43,24 +43,31 @@ public class OneBallAuto extends SequentialCommandGroup {
     // Drive backward
     // Stop and aim for high goal
     // Shoot 1 cargo into high goal
-    Trajectory trajectory =
-      PathPlanner.loadPath("OneBallAuto", Units.feetToMeters(2), Units.feetToMeters(2), true);
+    Trajectory trajectory1 =
+      PathPlanner.loadPath("OneBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
 
-    VitruvianRamseteCommand command =
-      TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
+    VitruvianRamseteCommand command1 =
+      TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
+    
+    Trajectory trajectory2 =
+      PathPlanner.loadPath("OneBallAuto-2", Units.feetToMeters(2), Units.feetToMeters(2), true);
+
+    VitruvianRamseteCommand command2 =
+      TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     addCommands(
-      new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
+      new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
       new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
       new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
-      command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+      command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
       new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
       new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
       new ConditionalCommand(
         new FeedAll(indexer),
         new SimulationShoot(fieldSim, true).withTimeout(2),
         RobotBase::isReal
-      )
+      ),
+      command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0))
         // Rev up flywheel while driving backwards
         // Once finish driving, feed indexer
         // After that, stop indexer and flywheel
