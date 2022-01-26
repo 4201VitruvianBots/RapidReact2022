@@ -7,24 +7,21 @@ package frc.robot.commands.intake;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Intake;
 
-public class IntakePiston extends CommandBase {
+public class ToggleIntakePiston extends CommandBase {
   public final Intake m_intake;
   public boolean extend;
 
   /** Creates a new IntakePiston. */
-  public IntakePiston(Intake intake, boolean extend) {
+  public ToggleIntakePiston(Intake intake) {
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    this.extend = extend;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake.getIntakePistonExtendStatus() != extend) {
-      m_intake.setIntakePiston(extend);
-    }
+    m_intake.setIntakePiston(!m_intake.getIntakePistonExtendStatus());
   }
 
   // Called every time the scheduler runs while the command is scheduled.

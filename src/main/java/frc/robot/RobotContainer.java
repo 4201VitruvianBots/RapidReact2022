@@ -16,6 +16,7 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
@@ -42,7 +43,7 @@ public class RobotContainer {
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
-  static Joystick xBoxController = new Joystick(Constants.USB.xBoxController);
+  static XboxController xBoxController = new XboxController(Constants.USB.xBoxController);
 
   public Button[] leftButtons = new Button[2];
   public Button[] rightButtons = new Button[2];
@@ -96,12 +97,10 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
-    xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
-    xBoxLeftTrigger.whenPressed(new IntakePiston(m_intake, true)); // Left trigger: Extend intake
-    xBoxLeftTrigger.whenReleased(new IntakePiston(m_intake, false)); // Left trigger: Retract intake
-    xBoxLeftTrigger.whileHeld(
-        new RunIntake(m_intake, m_indexer)); // Left trigger: intake & carousel
+    xBoxLeftTrigger = new Button(() -> xBoxController.getLeftTriggerAxis() > 0.05);// getTrigger());// getRawAxis(2));
+    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
+    xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
+    xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer)); // Left trigger: intake & carousel
   }
 
   public void initializeSubsystems() {
