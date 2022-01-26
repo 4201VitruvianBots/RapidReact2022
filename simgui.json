@@ -136,6 +136,9 @@
     }
   },
   "NetworkTables": {
+    "DriveTrain": {
+      "open": true
+    },
     "Drivetrain": {
       "open": true
     },
