@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class LED extends SubsystemBase {
-  private final CANdle m_candle = new CANdle(Constants.LED.CANdleID, "FastFD");
+  private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
   private final int LedCount = 8;
   private AnimationTypes m_currentAnimation;
   int red = 0;
