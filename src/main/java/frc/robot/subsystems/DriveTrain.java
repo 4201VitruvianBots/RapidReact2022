@@ -220,9 +220,9 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    // setMotorPercentOutput(leftPWM, rightPWM);
-    setMotorVelocityMetersPerSecond(leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
-    rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    setMotorPercentOutput(leftOutput, rightOutput);
+    // setMotorVelocityMetersPerSecond(leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
+    // rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
     // setVoltageOutput(leftOutput * RobotController.getBatteryVoltage(), rightOutput * RobotController.getBatteryVoltage());
   }
 

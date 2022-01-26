@@ -68,7 +68,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
-    m_autoChooser.setDefaultOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 4));
+    m_autoChooser.setDefaultOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 2));
     m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Group Three Ball Auto", new GroupThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));

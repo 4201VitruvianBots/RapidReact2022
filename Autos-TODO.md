@@ -38,8 +38,8 @@
 
 # Simulation
 - [x] Update ball poses
-- [ ] Switch Talon SRX to Talon FX
-- [ ] Fix distance issues
+- [x] Switch Talon SRX to Talon FX
+- [x] Fix distance issues
 
 ## When field is ready
 - [ ] Test a robot on the field
