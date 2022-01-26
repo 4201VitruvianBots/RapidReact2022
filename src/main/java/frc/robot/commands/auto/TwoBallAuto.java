@@ -52,23 +52,31 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Stop (now with 2 cargo) and aim for high goal
     // Shoot 2 cargo into high goal
 
-    Trajectory trajectory =
-        PathPlanner.loadPath("TwoBallAuto", Units.feetToMeters(4), Units.feetToMeters(4), true);
+    Trajectory trajectory1 =
+        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(4), Units.feetToMeters(4), true);
 
-    VitruvianRamseteCommand command =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
+    VitruvianRamseteCommand command1 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
+
+    Trajectory trajectory2 =
+        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence
+     * Turn and move forward to line up with blue ball on other side of the line (NOT running intake, indexer, shooter or vision)
+     * End path
      */
     addCommands(
-        new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
+        new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetIntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
-            command.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoControlledIntake(intake, indexer)
             // TODO implement indexer
         ),
@@ -81,6 +89,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal
         ),
-        new SetIntakePiston(intake, false));
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        
+
   }
 }
