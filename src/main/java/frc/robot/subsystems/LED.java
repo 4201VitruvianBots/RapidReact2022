@@ -105,6 +105,7 @@ public class LED extends SubsystemBase {
    * @param state the dominant robot state that the LEDs will express
    */
   public void expressState(robotState state) {
+    setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
     switch (state) {
       case Intaking: // Solid Blue
         setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);

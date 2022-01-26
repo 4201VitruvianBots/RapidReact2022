@@ -73,9 +73,6 @@ public class GetSubsystemStates extends CommandBase {
     if (VisionLock) {
       m_led.expressState(LED.robotState.VisionLock);
     }
-    if (Shooting) {
-      m_led.expressState(LED.robotState.Shooting);
-    }
     if (Climbing) {
       m_led.expressState(LED.robotState.Climbing);
     }
