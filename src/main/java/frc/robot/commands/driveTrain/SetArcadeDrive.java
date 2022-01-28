@@ -45,8 +45,8 @@ public class SetArcadeDrive extends CommandBase {
     double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
     double throttle = joystickY;
-    throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle;
-    double turn = joystickX;
+    throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle; // TODO: Should backwards speed still be limited?
+    double turn = -joystickX;
 
     m_driveTrain.setMotorArcadeDrive(throttle, turn);
   }
