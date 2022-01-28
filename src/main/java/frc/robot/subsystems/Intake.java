@@ -19,4 +19,12 @@ public class Intake extends SubsystemBase {
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
   }
+
+  public boolean getIntakePistonExtendStatus() {
+      return true;
+  }
+
+  public boolean getIntakeState() {
+      return true;
+  }
 }

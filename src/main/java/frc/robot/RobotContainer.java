@@ -20,10 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
-import frc.robot.commands.auto.GroupThreeBallAuto;
-import frc.robot.commands.auto.IndividualThreeBallAuto;
+import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
@@ -48,7 +46,7 @@ public class RobotContainer {
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final Controls m_controls = new Controls();
   private final Turret m_turret = new Turret(m_driveTrain);
-  private final Vision m_vision = new Vision();
+  private final Vision m_vision = new Vision(m_controls);
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
@@ -72,10 +70,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 2));
-    m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto (m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Group Three Ball Auto", new GroupThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));
-    m_autoChooser.addOption("Individual Three Ball Auto", new IndividualThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));
+    m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim));
+    m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto (m_driveTrain, m_fieldSim));
+    m_autoChooser.addOption("Three Ball Auto", new ThreeBallAuto(m_driveTrain,m_fieldSim));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
