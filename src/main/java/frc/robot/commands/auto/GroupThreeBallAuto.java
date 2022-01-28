@@ -53,6 +53,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
      * Shoots second cargo
      * Drives backward, intake running, picks up third cargo
      * Shoots third cargo
+     * Drives back to the terminal and lines up with the ball there, to pick up at the start of tele-op
      */
 
     Trajectory trajectory1 =
@@ -64,6 +65,11 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+        Trajectory trajectory3 =
+        PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
+    VitruvianRamseteCommand command3 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);    
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -89,7 +95,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(
             new FeedAll(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal));
+            RobotBase::isReal),
+        command3.andThen(()-> driveTrain.setMotorTankDrive(0,0)));    
   }
   // class ToastAuto {
 }
