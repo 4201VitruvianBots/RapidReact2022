@@ -57,9 +57,6 @@ public class DriveTrain extends SubsystemBase {
   DifferentialDrivePoseEstimator m_poseEstimator;
   SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(kS, kV, kA);
 
-  // Temporary, just to keep the intake piston up
-  DoubleSolenoid intakePiston = new DoubleSolenoid(11, PneumaticsModuleType.CTREPCM, 2, 3);
-
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
 

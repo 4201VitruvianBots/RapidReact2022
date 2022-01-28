@@ -49,8 +49,8 @@ public final class Constants {
 
   public final class Intake {
     public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 2;
+    public static final int intakePistonForward = 2;
+    public static final int intakePistonReverse = 3;
     public static final int intakeMotor = 21;
     public static final int intakeSensor = 0;
   }

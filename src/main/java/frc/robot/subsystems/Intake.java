@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
           Constants.Intake.pcmOne,
           PneumaticsModuleType.CTREPCM,
           Constants.Intake.intakePistonForward,
-          1);//Constants.Intake.intakePistonReverse);
+          Constants.Intake.intakePistonReverse);
 
   public Intake() {
     // Motor configuration
