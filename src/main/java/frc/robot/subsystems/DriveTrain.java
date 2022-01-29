@@ -45,8 +45,6 @@ public class DriveTrain extends SubsystemBase {
   private final double kI = 0;
   private final double kD = 0;
 
-  private final DifferentialDriveKinematics kinematics =
-      new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
   private final DifferentialDriveOdometry odometry;
   private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.DriveTrain.ksVolts, Constants.DriveTrain.kvVoltSecondsPerMeter, Constants.DriveTrain.kaVoltSecondsSquaredPerMeter);
 
@@ -380,7 +378,7 @@ public class DriveTrain extends SubsystemBase {
    * @return The {@link DifferentialDriveKinematics}
    */
   public DifferentialDriveKinematics getDriveTrainKinematics() {
-    return kinematics;
+    return Constants.DriveTrain.kDriveKinematics;
   }
 
   /**
