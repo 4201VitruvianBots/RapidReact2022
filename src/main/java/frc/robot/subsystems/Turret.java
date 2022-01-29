@@ -13,13 +13,11 @@ import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -29,7 +27,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Conversions;
 
 public class Turret extends SubsystemBase {
   private final int encoderUnitsPerRotation = 4096;
@@ -42,7 +39,7 @@ public class Turret extends SubsystemBase {
   double maxAngle = 90;
   private double m_angleOffset = -329.150;
   private double turretSetpointDegrees = 0; // angle
-  private TrapezoidProfile.State m_lastProfiledReference;
+  private TrapezoidProfile.State m_lastProfiledReference = new TrapezoidProfile.State();
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
   public enum TurretControlMode {
     OPENLOOP,
@@ -55,10 +52,9 @@ public class Turret extends SubsystemBase {
   private boolean turretHomeSensorLatch = false;
 
   private final LinearSystem<N2, N1, N1> m_turretPlant =
-      LinearSystemId.createSingleJointedArmSystem(
-        DCMotor.getVex775Pro(1),
-        3.367177,
-        4.05
+      LinearSystemId.identifyPositionSystem(
+              kTurretKv,
+              kTurretKa
       );
 
   // The observer fuses our encoder data and voltage inputs to reject noise.
@@ -76,7 +72,8 @@ public class Turret extends SubsystemBase {
   private final LinearQuadraticRegulator<N2, N1, N1> m_controller =
       new LinearQuadraticRegulator<>(
           m_turretPlant,
-          VecBuilder.fill(Units.degreesToRadians(degreeTolerance), Units.degreesToRadians(degreesPerSecondTolerance)), // Velocity error tolerance
+          VecBuilder.fill(Units.degreesToRadians(degreeTolerance),
+                  Units.degreesToRadians(degreesPerSecondTolerance)), // Velocity error tolerance
           VecBuilder.fill(12.0), // Control effort (voltage) tolerance
           0.020);
 
@@ -87,26 +84,32 @@ public class Turret extends SubsystemBase {
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
+
+    turretMotor.configFactoryDefault();
+    turretMotor.setInverted(true);
+    turretMotor.configVoltageCompSaturation(12.0);
+
     encoder.configFactoryDefault();
     encoder.configAllSettings(new CANCoderConfiguration());
     encoder.setPosition(0);
-    // encoder.configMagnetOffset(m_angleOffset);
 
     m_loop.reset(VecBuilder.fill(
-      Units.degreesToRadians(getTurretAngle()),
-      Units.degreesToRadians(encoder.getVelocity())));
+      Units.degreesToRadians(getEncoderAngle()),
+      Units.degreesToRadians(getEncoderVelocity())));
 
     m_lastProfiledReference =
         new TrapezoidProfile.State(
-            Units.degreesToRadians(getTurretAngle()),
-            Units.degreesToRadians(encoder.getVelocity()));
+            Units.degreesToRadians(getEncoderAngle()),
+            Units.degreesToRadians(getEncoderVelocity()));
+
+    m_controller.latencyCompensate(m_turretPlant, 0.02, 0.01);
   }
 
   private void updateDegreesSetpoint2() {
     double setpointDegrees = getTurretSetpointDegrees();
     setpointDegrees = Math.max(Math.min(setpointDegrees, 90), -90);
 
-    double setpointRadians = Units.degreesToRadians(setpointDegrees);
+    double setpointRadians = Units.degreesToRadians(setpointDegrees) * canCodertoTurretGearRatio;
     TrapezoidProfile.State goal = new TrapezoidProfile.State(setpointRadians, 0.0);
 
     m_lastProfiledReference =
@@ -114,7 +117,7 @@ public class Turret extends SubsystemBase {
             .calculate(0.02);
     m_loop.setNextR(m_lastProfiledReference.position, m_lastProfiledReference.velocity);
 
-    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getTurretAngle())));
+    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getEncoderAngle())));
 
     m_loop.predict(0.020);
 
@@ -156,6 +159,21 @@ public class Turret extends SubsystemBase {
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
     return encoder.getPosition() / canCodertoTurretGearRatio;
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getTurretVelocity() {
+    return encoder.getVelocity() / canCodertoTurretGearRatio;
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getEncoderAngle() {
+    return encoder.getPosition();
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getEncoderVelocity() {
+    return encoder.getVelocity();
   }
 
   /**
@@ -203,7 +221,7 @@ public class Turret extends SubsystemBase {
     turretMotor.set(ControlMode.PercentOutput, output);
   }
 
-  public void setRobotCentricSetpoint(double turretSetpointDegrees) {
+  public void setAbsoluteSetpointDegrees(double turretSetpointDegrees) {
     this.turretSetpointDegrees = turretSetpointDegrees;
   }
 
@@ -226,16 +244,14 @@ public class Turret extends SubsystemBase {
 
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
-    return Math.abs(turretMotor.getClosedLoopError()) < kErrorBand;
+    return Math.abs(getTurretAngle() - getTurretSetpointDegrees()) < kErrorBand;
   }
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("Angle", getTurretAngle());
+      SmartDashboard.putNumber("Turret Angle", getTurretAngle());
 
-      SmartDashboard.putNumber("Setpoint", turretSetpointDegrees);
-
-      SmartDashboard.putNumber("Raw Angle", encoder.getAbsolutePosition());
+      SmartDashboard.putNumber("Turret Setpoint", turretSetpointDegrees);
     }
   }
 

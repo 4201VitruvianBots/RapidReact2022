@@ -173,27 +173,27 @@ public final class Constants {
   public static final class Turret {
 
     // TODO: might not need kErrorBand, need to confirm
-    public static final int kErrorBand = 50;
+    public static final int kErrorBand = 1;
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKv = 0.068821;
+    public static final double kTurretKv = 0.16822;
 
     // Volts per (radian per second squared)
-    public static final double kTurretKa = 0.0063138;
+    public static final double kTurretKa = 0.011642;
 
-    public static final double kTurretKs = 1.3661;
+    public static final double kTurretKs = 0.81464;
 
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
     public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
 
-    public static final double motortoTurretGearRatio = 1.0 / 27.0;
+    public static final double motorToTurretGearRatio = 1.0 / 27.0;
 
     public static final TrapezoidProfile.Constraints TurretConstraints =
-        new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(1440));
+        new TrapezoidProfile.Constraints(Units.degreesToRadians(360 * canCodertoTurretGearRatio), Units.degreesToRadians(1440 * canCodertoTurretGearRatio));
   }
 
   public static final class Vision {

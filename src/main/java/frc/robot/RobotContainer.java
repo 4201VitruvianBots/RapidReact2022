@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.turret.SetTurretRobotRelativeAngle;
+import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
@@ -86,7 +86,11 @@ public class RobotContainer {
     xBoxButtons[4].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 4000));
     xBoxButtons[5].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 5000));
 
-    xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
+    //xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
+    xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
+    xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 0));
+    xBoxButtons[8].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
+    xBoxButtons[9].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
   }
 
   public void initializeSubsystems() {
