@@ -22,6 +22,7 @@ import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.simulation.FieldSim;
@@ -112,8 +113,9 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
     xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
-    xBoxRightTrigger.whileHeld(new RunIntake(m_intake));
-    xBoxLeftTrigger.whileHeld(new RunIndexer(m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake,m_indexer));
+    xBoxButtons[7].whileHeld(new RunIndexer(m_indexer));
   }
 
   public void initializeSubsystems() {

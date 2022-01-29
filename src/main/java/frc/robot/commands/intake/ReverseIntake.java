@@ -9,7 +9,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class RunIntake extends CommandBase {
+public class ReverseIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
   private final Indexer m_indexer;
@@ -18,7 +18,7 @@ public class RunIntake extends CommandBase {
    * @param intake The intake used by this command
    * @param indexer The indexer used by this command
    */
-  public RunIntake(Intake intake, Indexer indexer) {
+  public ReverseIntake(Intake intake, Indexer indexer) {
     m_intake = intake;
     m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,8 +37,8 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.8);
-    m_indexer.setIndexerPercentOutput(0.8);
+    m_intake.setIntakePercentOutput(-0.8);
+    m_indexer.setIndexerPercentOutput(-0.8);
   }
 
   /**
