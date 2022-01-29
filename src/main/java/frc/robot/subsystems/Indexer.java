@@ -23,8 +23,8 @@ public class Indexer extends SubsystemBase {
   TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
 
   // Indexer sensors setup
-  DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
-  DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerBottomSensor);
+  // DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
+  // DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerBottomSensor);
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
@@ -57,13 +57,13 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(ControlMode.PercentOutput, output);
   }
 
-  public boolean getIndexerFrontSensorTripped() {
-    return !frontBeamBreak.get();
-  }
+  // public boolean getIndexerFrontSensorTripped() {
+  //   return !frontBeamBreak.get();
+  // }
 
-  public boolean getIndexerRearSensorTripped() {
-    return !rearBeamBreak.get();
-  }
+  // public boolean getIndexerRearSensorTripped() {
+  //   return !rearBeamBreak.get();
+  //}
 
   /*
     public void getFrontCargoColor() {

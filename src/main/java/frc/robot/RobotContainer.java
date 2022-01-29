@@ -60,8 +60,8 @@ public class RobotContainer {
   public Button[] xBoxButtons = new Button[10];
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
-  public static boolean allianceColorBlue;
-  public static boolean allianceColorRed;
+  // public static boolean allianceColorBlue;
+  // public static boolean allianceColorRed;
 
   public static enum CommandSelector {
     BLUE_ALLIANCE, // 01
