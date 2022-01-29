@@ -84,7 +84,7 @@ public class OneBallAuto extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, startPosition),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST));
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE));
 
     double[] startVelocities = {
       0, // starting velocity from point 0 to point 1
