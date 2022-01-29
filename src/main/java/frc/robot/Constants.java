@@ -177,14 +177,18 @@ public final class Constants {
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKv = 0;
+    public static final double kTurretKv = 0.068821;
 
     // Volts per (radian per second squared)
-    public static final double kTurretKa = 0;
+    public static final double kTurretKa = 0.0063138;
 
-    public static final double kTurretKs = 0;
+    public static final double kTurretKs = 1.3661;
 
     public static final double degreeTolerance = 1.0;
+    
+    public static final double canCodertoTurretGearRatio = 120.0 / 18.0; 
+
+    public static final double toTurretGearRatio = 27.0 / 1.0;
   }
 
   public static final class Vision {

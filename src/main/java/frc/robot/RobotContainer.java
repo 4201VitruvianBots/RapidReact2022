@@ -14,13 +14,14 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.turret.TestTurret;
+import frc.robot.commands.turret.SetTurretRobotRelativeAngle;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
 /**
@@ -84,6 +85,8 @@ public class RobotContainer {
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
     xBoxButtons[4].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 4000));
     xBoxButtons[5].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 5000));
+
+    xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
   }
 
   public void initializeSubsystems() {

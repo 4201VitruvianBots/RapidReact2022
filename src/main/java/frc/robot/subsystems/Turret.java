@@ -13,11 +13,13 @@ import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
@@ -35,7 +37,6 @@ public class Turret extends SubsystemBase {
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
   double minAngle = -90;
   double maxAngle = 90;
-  double gearRatio = 18.0 / 120.0;
   private double turretSetpointDegrees = 0; // angle
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
   public enum TurretControlMode {
@@ -75,6 +76,7 @@ public class Turret extends SubsystemBase {
   private final LinearSystemLoop<N1, N1, N1> m_loop =
       new LinearSystemLoop<>(m_turretPlant, m_controller, m_observer, 12.0, 0.020);
 
+  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(Constants.Turret.kTurretKs, Constants.Turret.kTurretKv);
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
@@ -84,19 +86,18 @@ public class Turret extends SubsystemBase {
   }
 
   private void updateDegreesSetpoint() {
-    if (getTurretSetpointDegrees() < 90 && getTurretSetpointDegrees() > -90) {
-      m_loop.setNextR(VecBuilder.fill(Conversions.DegreestoRadPerSec(turretSetpointDegrees)));
+    double setpoint = getTurretSetpointDegrees();
+    setpoint = Math.max(Math.min(setpoint, 90), -90);
 
-      m_loop.correct(VecBuilder.fill(Conversions.DegreestoRadPerSec(getTurretAngle())));
+    m_loop.setNextR(VecBuilder.fill(Units.degreesToRadians(setpoint * canCodertoTurretGearRatio)));
 
-      m_loop.predict(0.020);
+    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getTurretAngle() * canCodertoTurretGearRatio)));
 
-      double nextVoltage = m_loop.getU(0);
+    m_loop.predict(0.020);
 
-      setPercentOutput(nextVoltage / 12.0);
-    } else {
-      setPercentOutput(0);
-    }
+    double nextVoltage = m_loop.getU(0);
+
+    setPercentOutput(nextVoltage / 12.0 + Constants.Turret.kTurretKs / 12.0);
   }
 
   public void resetEncoder() {
@@ -172,11 +173,11 @@ public class Turret extends SubsystemBase {
   }
 
   public int degreestoEncoderunits(double degrees) {
-    return (int) (degrees * (1.0 / gearRatio) * (encoderUnitsPerRotation / 360.0));
+    return (int) (degrees * (1.0 / canCodertoTurretGearRatio) * (encoderUnitsPerRotation / 360.0));
   }
 
   public double encoderUnitsToDegrees(double encoderUnits) {
-    return encoderUnits * gearRatio;// * (360.0 / encoderUnitsPerRotation);
+    return encoderUnits / canCodertoTurretGearRatio;
   }
 
   public boolean getTurretLatch() {
@@ -198,6 +199,12 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (turretHomeSensor.get() && !turretHomeSensorLatch) {
+      encoder.setPosition(0);
+      turretHomeSensorLatch = true;
+    } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
+      turretHomeSensorLatch = false;
+    }
     updateDegreesSetpoint();
     updateShuffleboard();
   }
