@@ -14,7 +14,7 @@
   - [x] Decide Path
   - [x] Write waypoints
   - [x] Test in sim
-- [ ] Add ball alignment 
+- [ ] Add ball alignment
   - [ ] One ball
   - [ ] Two ball
   - [ ] Three ball

@@ -4,9 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -15,7 +12,6 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.unmanaged.Unmanaged;
 import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -36,6 +32,8 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.Constants.DriveTrain.MotorPosition;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
+import java.util.HashMap;
+import java.util.Map;
 
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
@@ -48,17 +46,22 @@ public class DriveTrain extends SubsystemBase {
   private final DifferentialDriveKinematics kinematics =
       new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
   private final DifferentialDriveOdometry odometry;
-  private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.DriveTrain.ksVolts, Constants.DriveTrain.kvVoltSecondsPerMeter, Constants.DriveTrain.kaVoltSecondsSquaredPerMeter);
+  private final SimpleMotorFeedforward feedforward =
+      new SimpleMotorFeedforward(
+          Constants.DriveTrain.ksVolts,
+          Constants.DriveTrain.kvVoltSecondsPerMeter,
+          Constants.DriveTrain.kaVoltSecondsSquaredPerMeter);
 
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
 
-  private final HashMap<MotorPosition,TalonFX> driveMotors = new HashMap<MotorPosition,TalonFX>(Map.of(
-    MotorPosition.LEFT_FRONT, new TalonFX(Constants.DriveTrain.leftFrontDriveMotor),
-    MotorPosition.LEFT_REAR, new TalonFX(Constants.DriveTrain.leftRearDriveMotor),
-    MotorPosition.RIGHT_FRONT, new TalonFX(Constants.DriveTrain.rightFrontDriveMotor),
-    MotorPosition.RIGHT_REAR, new TalonFX(Constants.DriveTrain.rightRearDriveMotor)
-  ));
+  private final HashMap<MotorPosition, TalonFX> driveMotors =
+      new HashMap<MotorPosition, TalonFX>(
+          Map.of(
+              MotorPosition.LEFT_FRONT, new TalonFX(Constants.DriveTrain.leftFrontDriveMotor),
+              MotorPosition.LEFT_REAR, new TalonFX(Constants.DriveTrain.leftRearDriveMotor),
+              MotorPosition.RIGHT_FRONT, new TalonFX(Constants.DriveTrain.rightFrontDriveMotor),
+              MotorPosition.RIGHT_REAR, new TalonFX(Constants.DriveTrain.rightRearDriveMotor)));
 
   /** To hold on to the values to set the simulation motors */
   double m_leftOutput, m_rightOutput;
@@ -105,9 +108,7 @@ public class DriveTrain extends SubsystemBase {
       motor.configForwardSoftLimitEnable(false);
       motor.configReverseSoftLimitEnable(false);
 
-      
-      motor.configSupplyCurrentLimit(
-        new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
@@ -120,8 +121,12 @@ public class DriveTrain extends SubsystemBase {
     driveMotors.get(MotorPosition.LEFT_FRONT).setSensorPhase(false);
     driveMotors.get(MotorPosition.RIGHT_FRONT).setSensorPhase(false);
 
-    driveMotors.get(MotorPosition.LEFT_REAR).set(ControlMode.Follower, driveMotors.get(MotorPosition.LEFT_FRONT).getDeviceID());
-    driveMotors.get(MotorPosition.RIGHT_REAR).set(ControlMode.Follower, driveMotors.get(MotorPosition.RIGHT_FRONT).getDeviceID());
+    driveMotors
+        .get(MotorPosition.LEFT_REAR)
+        .set(ControlMode.Follower, driveMotors.get(MotorPosition.LEFT_FRONT).getDeviceID());
+    driveMotors
+        .get(MotorPosition.RIGHT_REAR)
+        .set(ControlMode.Follower, driveMotors.get(MotorPosition.RIGHT_FRONT).getDeviceID());
     driveMotors.get(MotorPosition.LEFT_REAR).setNeutralMode(NeutralMode.Brake);
     driveMotors.get(MotorPosition.RIGHT_REAR).setNeutralMode(NeutralMode.Brake);
 
@@ -129,19 +134,19 @@ public class DriveTrain extends SubsystemBase {
     driveMotors.get(MotorPosition.RIGHT_REAR).configOpenloopRamp(0);
   }
 
-  /** 
+  /**
    * Gets the number of counts made by a specified encoder.
-   * 
+   *
    * @param position The position of the motor to get the encoder count of
    * @return The encoder count of the specified motor
    */
   public double getEncoderCount(MotorPosition position) {
     return driveMotors.get(position).getSelectedSensorPosition();
   }
-  
-  /** 
+
+  /**
    * Gets the heading of the robot.
-   * 
+   *
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
@@ -154,10 +159,10 @@ public class DriveTrain extends SubsystemBase {
   public void resetAngle() {
     navX.zeroYaw();
   }
-  
+
   /**
    * Sets the angle adjustment of the NavX.
-   * 
+   *
    * @param angle the offset angle
    */
   public void setNavXOffsetDegrees(double angle) {
@@ -166,47 +171,49 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Gets the encoder position of a specified motor converted to wheel distance traveled.
-   * 
+   *
    * @param position The position of the motor to get the wheel distance of
    * @return The equivalent wheel distance traveled by the specified motor in meters
    */
   public double getWheelDistanceMeters(MotorPosition position) {
     return driveMotors.get(position).getSelectedSensorPosition()
-      * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
+        * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
   /**
    * Gets the input current of a specified motor.
-   * 
+   *
    * @param position The position of the motor to get the input current of
    * @return The input current of the specified motor in amps
    */
   public double getMotorInputCurrentAmps(MotorPosition position) {
     return driveMotors.get(position).getSupplyCurrent();
   }
-  
+
   /**
    * Gets the current being drawn by the simulated drivetrain.
-   * 
+   *
    * @return The simulated current being drawn in amps
    */
   public double getDrawnCurrentAmps() {
     return m_drivetrainSimulator.getCurrentDrawAmps();
   }
 
-  /**
-   * Sets the encoder counts of all motors to 0
-   */
+  /** Sets the encoder counts of all motors to 0 */
   public void resetEncoderCounts() {
     driveMotors.get(MotorPosition.LEFT_FRONT).setSelectedSensorPosition(0);
     driveMotors.get(MotorPosition.RIGHT_FRONT).setSelectedSensorPosition(0);
   }
 
   /**
-   * Sets the drivetrain's motors using Arcade Drive: The forward/backward and rotational output can be set independently.<p>
-   * Values are in percent output, but will be reduced proportionally to ensure no motor is set to above 1.0 output
-   * 
-   * @param throttle The forward/backward speed of the drivetrain (positive forward, negative backward)
+   * Sets the drivetrain's motors using Arcade Drive: The forward/backward and rotational output can
+   * be set independently.
+   *
+   * <p>Values are in percent output, but will be reduced proportionally to ensure no motor is set
+   * to above 1.0 output
+   *
+   * @param throttle The forward/backward speed of the drivetrain (positive forward, negative
+   *     backward)
    * @param turn The rotation of the drivetrain (positive clockwise, negative counterclockwise)
    */
   public void setMotorArcadeDrive(double throttle, double turn) {
@@ -221,17 +228,20 @@ public class DriveTrain extends SubsystemBase {
     }
 
     setMotorPercentOutput(leftOutput, rightOutput);
-    // setMotorVelocityMetersPerSecond(leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
+    // setMotorVelocityMetersPerSecond(leftOutput *
+    // Constants.DriveTrain.kMaxVelocityMetersPerSecond,
     // rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
-    // setVoltageOutput(leftOutput * RobotController.getBatteryVoltage(), rightOutput * RobotController.getBatteryVoltage());
+    // setVoltageOutput(leftOutput * RobotController.getBatteryVoltage(), rightOutput *
+    // RobotController.getBatteryVoltage());
   }
 
   /**
-   * Sets the drivetrain's motors using Tank Drive: The speeds of each sides are set individually. Setting the left and
-   * right sides to the same value will make the drivetrain move straight, setting the speeds to different values will
-   * cause the drivetrain to turn or curve.<p>
-   * Values are in percent output (positive forward, negative backward).
-   * 
+   * Sets the drivetrain's motors using Tank Drive: The speeds of each sides are set individually.
+   * Setting the left and right sides to the same value will make the drivetrain move straight,
+   * setting the speeds to different values will cause the drivetrain to turn or curve.
+   *
+   * <p>Values are in percent output (positive forward, negative backward).
+   *
    * @param leftOutput The output for the left side of the drivetrain
    * @param rightOutput The output for the right side of the drivetrain
    */
@@ -242,11 +252,14 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Calculates the percent output to send to the motors using the desired voltage and the current battery voltage.<p>
-   * If either desired voltage is greater than the robot's current voltage, the amounts will be reduced proportionally
-   * to ensure no motor is set above the available voltage.<p>
-   * Positive is forward, negative is backward.
-   * 
+   * Calculates the percent output to send to the motors using the desired voltage and the current
+   * battery voltage.
+   *
+   * <p>If either desired voltage is greater than the robot's current voltage, the amounts will be
+   * reduced proportionally to ensure no motor is set above the available voltage.
+   *
+   * <p>Positive is forward, negative is backward.
+   *
    * @param leftVoltage The voltage for the left side of the drivetrain
    * @param rightVoltage The voltage for the right side of the drivetrain
    */
@@ -266,7 +279,7 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Sets the percent output of the drivetrain.
-   * 
+   *
    * @param leftOutput The output for the left side of the drivetrain
    * @param rightOutput The output for the right side of the drivetrain
    */
@@ -278,25 +291,30 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /**
-   * Sets the velocity of the drivetrain, also taking into account feedforward.<p>
-   * Values are in meters per second (positive forward, negative backward).
-   * 
+   * Sets the velocity of the drivetrain, also taking into account feedforward.
+   *
+   * <p>Values are in meters per second (positive forward, negative backward).
+   *
    * @param leftSpeed The velocity for the left side of the drivetrain
    * @param rightSpeed The velocity for the right side of the drivetrain
    */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
-    driveMotors.get(MotorPosition.LEFT_FRONT).set(
-        ControlMode.Velocity,
-        m_leftOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
-        DemandType.ArbitraryFeedForward,
-        feedforward.calculate(m_leftOutput));
-    driveMotors.get(MotorPosition.RIGHT_FRONT).set(
-        ControlMode.Velocity,
-        m_rightOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
-        DemandType.ArbitraryFeedForward,
-        feedforward.calculate(m_rightOutput));
+    driveMotors
+        .get(MotorPosition.LEFT_FRONT)
+        .set(
+            ControlMode.Velocity,
+            m_leftOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            DemandType.ArbitraryFeedForward,
+            feedforward.calculate(m_leftOutput));
+    driveMotors
+        .get(MotorPosition.RIGHT_FRONT)
+        .set(
+            ControlMode.Velocity,
+            m_rightOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            DemandType.ArbitraryFeedForward,
+            feedforward.calculate(m_rightOutput));
   }
 
   /**
@@ -325,46 +343,47 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Gets the encoder position of a specified motor converted to wheel distance traveled.
-   * 
+   *
    * @param position The position of the motor to get the wheel distance of
    * @return The equivalent wheel distance traveled by the specified motor in meters
    */
 
   /**
    * Gets the speeds of both sides of the drivetrain converted to wheel speeds.
-   * 
-   * @return A {@link DifferentialDriveWheelSpeeds} containing the speeds of each side in meters per second.
+   *
+   * @return A {@link DifferentialDriveWheelSpeeds} containing the speeds of each side in meters per
+   *     second.
    */
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
     double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
-      // getSelectedSensorVelocity() returns values in units per 100ms. Need to convert value to RPS
-      if (RobotBase.isReal()) {
-        leftMetersPerSecond =
-            driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity()
-                * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-                * 10.0;
-        rightMetersPerSecond =
-            driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity()
-                * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-                * 10.0;
-      } else {
-        leftMetersPerSecond = m_drivetrainSimulator.getLeftVelocityMetersPerSecond();
-        rightMetersPerSecond = m_drivetrainSimulator.getRightVelocityMetersPerSecond();
-      }
+    // getSelectedSensorVelocity() returns values in units per 100ms. Need to convert value to RPS
+    if (RobotBase.isReal()) {
+      leftMetersPerSecond =
+          driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity()
+              * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+              * 10.0;
+      rightMetersPerSecond =
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity()
+              * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+              * 10.0;
+    } else {
+      leftMetersPerSecond = m_drivetrainSimulator.getLeftVelocityMetersPerSecond();
+      rightMetersPerSecond = m_drivetrainSimulator.getRightVelocityMetersPerSecond();
+    }
     return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
   }
 
   /**
    * Gets the feedforward.
-   * 
+   *
    * @return The {@link SimpleMotorFeedforward}
    */
   public SimpleMotorFeedforward getFeedforward() {
     return feedforward;
   }
 
-  // TODO: The robot moves too quickly in teleop simulation, perhaps m_drivetrainSimulator 
+  // TODO: The robot moves too quickly in teleop simulation, perhaps m_drivetrainSimulator
   // does not calculate the speeds correctly (possibly in DriveTrain.simulationPeriodic())
   public Pose2d getRobotPoseMeters() {
     if (RobotBase.isReal()) {
@@ -376,7 +395,7 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Gets the drivetrain kinematics.
-   * 
+   *
    * @return The {@link DifferentialDriveKinematics}
    */
   public DifferentialDriveKinematics getDriveTrainKinematics() {
@@ -385,7 +404,7 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Gets the PID controller for the left side of the drivetrain.
-   * 
+   *
    * @return A {@link PIDController}
    */
   public PIDController getLeftPIDController() {
@@ -394,7 +413,7 @@ public class DriveTrain extends SubsystemBase {
 
   /**
    * Gets the PID controller for the right side of the drivetrain.
-   * 
+   *
    * @return A {@link PIDController}
    */
   public PIDController getRightPIDController() {
@@ -404,7 +423,7 @@ public class DriveTrain extends SubsystemBase {
   // TODO look into how odometry.resetPosition() should work. Apparently it takes a gyro angle?
   /**
    * Resets the odometry and navX to a specified pose and heading.
-   * 
+   *
    * @param pose The new pose of the robot
    * @param rotation The current gyro angle of the robot
    */
@@ -418,13 +437,13 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
-  /**
-   * Puts values on SmartDashboard.
-   */
+  /** Puts values on SmartDashboard. */
   private void updateSmartDashboard() {
     if (RobotBase.isReal()) {
-      SmartDashboardTab.putNumber("DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
-      SmartDashboardTab.putNumber("DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+      SmartDashboardTab.putNumber(
+          "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
+      SmartDashboardTab.putNumber(
+          "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "X Coordinate",
@@ -446,8 +465,10 @@ public class DriveTrain extends SubsystemBase {
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
-      SmartDashboardTab.putNumber("DriveTrain", "Left Encoder", getEncoderCount(MotorPosition.LEFT_FRONT));
-      SmartDashboardTab.putNumber("DriveTrain", "Right Encoder", getEncoderCount(MotorPosition.RIGHT_FRONT));
+      SmartDashboardTab.putNumber(
+          "DriveTrain", "Left Encoder", getEncoderCount(MotorPosition.LEFT_FRONT));
+      SmartDashboardTab.putNumber(
+          "DriveTrain", "Right Encoder", getEncoderCount(MotorPosition.RIGHT_FRONT));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "X Coordinate",
@@ -467,13 +488,21 @@ public class DriveTrain extends SubsystemBase {
           "Right Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Count", driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorPosition());
+          "DriveTrain",
+          "L Encoder Count",
+          driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Count", driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorPosition());
+          "DriveTrain",
+          "R Encoder Count",
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorPosition());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "L Encoder Rate", driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity());
+          "DriveTrain",
+          "L Encoder Rate",
+          driveMotors.get(MotorPosition.LEFT_FRONT).getSelectedSensorVelocity());
       SmartDashboardTab.putNumber(
-          "DriveTrain", "R Encoder Rate", driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity());
+          "DriveTrain",
+          "R Encoder Rate",
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getSelectedSensorVelocity());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     }
@@ -513,25 +542,29 @@ public class DriveTrain extends SubsystemBase {
 
     // For CTRE devices, you must call this function periodically for simulation
     Unmanaged.feedEnable(40);
-    driveMotors.get(MotorPosition.LEFT_FRONT)
+    driveMotors
+        .get(MotorPosition.LEFT_FRONT)
         .getSimCollection()
-        .setIntegratedSensorRawPosition( 
+        .setIntegratedSensorRawPosition(
             (int)
                 (m_drivetrainSimulator.getLeftPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
-    driveMotors.get(MotorPosition.LEFT_FRONT)
+    driveMotors
+        .get(MotorPosition.LEFT_FRONT)
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)
                 (m_drivetrainSimulator.getLeftVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
-    driveMotors.get(MotorPosition.RIGHT_FRONT)
+    driveMotors
+        .get(MotorPosition.RIGHT_FRONT)
         .getSimCollection()
         .setIntegratedSensorRawPosition(
             (int)
                 (m_drivetrainSimulator.getRightPositionMeters()
                     / Constants.DriveTrain.kEncoderDistancePerPulseMeters));
-    driveMotors.get(MotorPosition.RIGHT_FRONT)
+    driveMotors
+        .get(MotorPosition.RIGHT_FRONT)
         .getSimCollection()
         .setIntegratedSensorVelocity(
             (int)

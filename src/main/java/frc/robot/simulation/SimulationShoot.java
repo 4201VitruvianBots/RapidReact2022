@@ -16,6 +16,7 @@ import frc.robot.simulation.FieldSim.Cargo;
 public class SimulationShoot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   FieldSim m_fieldSim;
+
   private static double lastShotTime;
 
   private boolean m_continuous;
