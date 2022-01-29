@@ -90,9 +90,6 @@ public final class Constants {
             kaVoltSecondsSquaredPerMeter,
             kvVoltSecondsPerRadian,
             kaVoltSecondsSquaredPerRadian);
-
-
-
   }
 
   public static final class Sim {
