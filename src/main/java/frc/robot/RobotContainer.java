@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.turret.TestTurret;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
@@ -37,6 +38,7 @@ public class RobotContainer {
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
+  private final Turret m_turret = new Turret(m_driveTrain);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);

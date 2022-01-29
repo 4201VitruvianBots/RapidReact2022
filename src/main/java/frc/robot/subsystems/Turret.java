@@ -8,6 +8,7 @@ import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
@@ -30,7 +31,7 @@ public class Turret extends SubsystemBase {
   private final DriveTrain m_driveTrain;
   private final Timer timeout = new Timer();
   private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
-  private final TalonFX turretMotor = new TalonFX(Constants.Turret.turretMotor);
+  private final VictorSPX turretMotor = new VictorSPX(Constants.Turret.turretMotor);
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
   double minAngle = -90;
   double maxAngle = 90;
@@ -83,7 +84,7 @@ public class Turret extends SubsystemBase {
   }
 
   private void updateDegreesSetpoint() {
-    if (getTurretSetpointDegrees() > 0) {
+    if (getTurretSetpointDegrees() < 90 && getTurretSetpointDegrees() > -90) {
       m_loop.setNextR(VecBuilder.fill(Conversions.DegreestoRadPerSec(turretSetpointDegrees)));
 
       m_loop.correct(VecBuilder.fill(Conversions.DegreestoRadPerSec(getTurretAngle())));
@@ -113,7 +114,7 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
-    return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition());
+    return encoderUnitsToDegrees(encoder.getPosition());
   }
 
   /**
@@ -175,7 +176,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double encoderUnitsToDegrees(double encoderUnits) {
-    return encoderUnits * gearRatio * (360.0 / encoderUnitsPerRotation);
+    return encoderUnits * gearRatio;// * (360.0 / encoderUnitsPerRotation);
   }
 
   public boolean getTurretLatch() {
