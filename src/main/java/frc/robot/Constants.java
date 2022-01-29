@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -173,17 +174,24 @@ public final class Constants {
   public static final class Turret {
 
     // TODO: might not need kErrorBand, need to confirm
-    public static final int kErrorBand = 1;
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKv = 0.16822;
+    public static final double kF = 0.07;
+    public static final double kP = 0.2;
+    public static final double kI = 0.0015;
+    public static final double kD = 0.0;
 
-    // Volts per (radian per second squared)
-    public static final double kTurretKa = 0.011642;
+    public static final double kErrorBand = 50;
+    public static final double kI_Zone = 900;
+    public static final double kMaxIAccum = 1000000;
+    public static final double kCruiseVelocity = 8000;
+    public static final double kMotionAcceleration = kCruiseVelocity * 10;
 
-    public static final double kTurretKs = 0.81464;
+    public static final double kS = 0.81464;
+    public static final double kV = 0.16822;
+    public static final double kA = 0.011642;
 
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
@@ -192,8 +200,6 @@ public final class Constants {
 
     public static final double motorToTurretGearRatio = 1.0 / 27.0;
 
-    public static final TrapezoidProfile.Constraints TurretConstraints =
-        new TrapezoidProfile.Constraints(Units.degreesToRadians(360 * canCodertoTurretGearRatio), Units.degreesToRadians(1440 * canCodertoTurretGearRatio));
   }
 
   public static final class Vision {
