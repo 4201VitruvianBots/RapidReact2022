@@ -33,7 +33,7 @@ public class Intake extends SubsystemBase {
   public Intake() {
     // Motor configuration
     intakeMotor.configFactoryDefault();
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
+    intakeMotor.setNeutralMode(NeutralMode.Coast);
     intakeMotor.setInverted(false);
 
     SmartDashboard.putData("Intake Subsystem", this);

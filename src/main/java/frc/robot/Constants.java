@@ -52,7 +52,7 @@ public final class Constants {
     public static final int intakePistonForward = 2;
     public static final int intakePistonReverse = 3;
     public static final int intakeMotor = 21;
-    public static final int intakeSensor = 0;
+    // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
