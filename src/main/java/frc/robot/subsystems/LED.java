@@ -16,6 +16,9 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
+/**
+ * create a new LED subsystem
+ */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
   private final int LedCount = 8;

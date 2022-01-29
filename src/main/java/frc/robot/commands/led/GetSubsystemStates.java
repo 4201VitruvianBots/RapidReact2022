@@ -7,10 +7,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
 
-/** Sets the LED based on the subsystems' statuses */
-
-// TODO: rewrite LED subsystem with comments aswell as redesigning the assigned
-// colour values for each state
+/**
+ * Sets the LED based on the subsystems' statuses
+ */
 
 public class GetSubsystemStates extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -53,14 +52,6 @@ public class GetSubsystemStates extends CommandBase {
     boolean Climbing = m_climber.getClimbState();
 
     // set in order of priority to be expressed from the least priority to the highest priority
-    /*
-     Disabled,
-     Enabled,
-     Intaking,
-     VisionLock,
-     Shooting,
-     Climbing
-    */
     if (Disabled) {
       m_led.expressState(LED.robotState.Disabled);
     }
