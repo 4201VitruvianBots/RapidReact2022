@@ -7,18 +7,21 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -37,7 +40,9 @@ public class Turret extends SubsystemBase {
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
   double minAngle = -90;
   double maxAngle = 90;
+  private double m_angleOffset = -329.150;
   private double turretSetpointDegrees = 0; // angle
+  private TrapezoidProfile.State m_lastProfiledReference;
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
   public enum TurretControlMode {
     OPENLOOP,
@@ -49,60 +54,95 @@ public class Turret extends SubsystemBase {
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
 
-  private final LinearSystem<N1, N1, N1> m_turretPlant =
-      LinearSystemId.identifyVelocitySystem(kTurretKv, kTurretKa);
+  private final LinearSystem<N2, N1, N1> m_turretPlant =
+      LinearSystemId.createSingleJointedArmSystem(
+        DCMotor.getVex775Pro(1),
+        3.367177,
+        4.05
+      );
 
   // The observer fuses our encoder data and voltage inputs to reject noise.
-  private final KalmanFilter<N1, N1, N1> m_observer =
+  private final KalmanFilter<N2, N1, N1> m_observer =
       new KalmanFilter<>(
-          Nat.N1(),
+          Nat.N2(),
           Nat.N1(),
           m_turretPlant,
-          VecBuilder.fill(3.0), // How accurate we think our model is
+          VecBuilder.fill(0.03, 0.3), // How accurate we think our model is
           VecBuilder.fill(0.01), // How accurate we think our encoder
           // data is
           0.020);
 
   // A LQR uses feedback to create voltage commands.
-  private final LinearQuadraticRegulator<N1, N1, N1> m_controller =
+  private final LinearQuadraticRegulator<N2, N1, N1> m_controller =
       new LinearQuadraticRegulator<>(
           m_turretPlant,
-          VecBuilder.fill(
-              Conversions.DegreestoRadPerSec(degreeTolerance)), // Velocity error tolerance
+          VecBuilder.fill(Units.degreesToRadians(degreeTolerance), Units.degreesToRadians(degreesPerSecondTolerance)), // Velocity error tolerance
           VecBuilder.fill(12.0), // Control effort (voltage) tolerance
           0.020);
 
   // The state-space loop combines a controller, observer, feedforward and plant for easy control.
-  private final LinearSystemLoop<N1, N1, N1> m_loop =
+  private final LinearSystemLoop<N2, N1, N1> m_loop =
       new LinearSystemLoop<>(m_turretPlant, m_controller, m_observer, 12.0, 0.020);
 
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(Constants.Turret.kTurretKs, Constants.Turret.kTurretKv);
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
     encoder.configFactoryDefault();
-    encoder.setPositionToAbsolute();
-    encoder.configSensorDirection(true);
+    encoder.configAllSettings(new CANCoderConfiguration());
+    encoder.setPosition(0);
+    // encoder.configMagnetOffset(m_angleOffset);
+
+    m_loop.reset(VecBuilder.fill(
+      Units.degreesToRadians(getTurretAngle()),
+      Units.degreesToRadians(encoder.getVelocity())));
+
+    m_lastProfiledReference =
+        new TrapezoidProfile.State(
+            Units.degreesToRadians(getTurretAngle()),
+            Units.degreesToRadians(encoder.getVelocity()));
   }
 
-  private void updateDegreesSetpoint() {
-    double setpoint = getTurretSetpointDegrees();
-    setpoint = Math.max(Math.min(setpoint, 90), -90);
+  private void updateDegreesSetpoint2() {
+    double setpointDegrees = getTurretSetpointDegrees();
+    setpointDegrees = Math.max(Math.min(setpointDegrees, 90), -90);
 
-    m_loop.setNextR(VecBuilder.fill(Units.degreesToRadians(setpoint * canCodertoTurretGearRatio)));
+    double setpointRadians = Units.degreesToRadians(setpointDegrees);
+    TrapezoidProfile.State goal = new TrapezoidProfile.State(setpointRadians, 0.0);
 
-    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getTurretAngle() * canCodertoTurretGearRatio)));
+    m_lastProfiledReference =
+        (new TrapezoidProfile(Constants.Turret.TurretConstraints, goal, m_lastProfiledReference))
+            .calculate(0.02);
+    m_loop.setNextR(m_lastProfiledReference.position, m_lastProfiledReference.velocity);
+
+    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getTurretAngle())));
 
     m_loop.predict(0.020);
 
     double nextVoltage = m_loop.getU(0);
 
-    setPercentOutput(nextVoltage / 12.0 + Constants.Turret.kTurretKs / 12.0);
+    setPercentOutput(nextVoltage / 12.0);
+  }
+
+  private void updateDegreesSetpoint() {
+    /*double setpoint = getTurretSetpointDegrees();
+    setpoint = Math.max(Math.min(setpoint, 90), -90);
+
+    m_loop.setNextR(VecBuilder.fill(Units.degreesToRadians(setpoint * canCodertoTurretGearRatio)));
+
+    m_loop.correct(
+        VecBuilder.fill(Units.degreesToRadians(encoder.getPosition() * canCodertoTurretGearRatio)));
+
+    m_loop.predict(0.020);
+
+    double nextVoltage = m_loop.getU(0);
+
+    setPercentOutput(nextVoltage / 12.0);
+    */
   }
 
   public void resetEncoder() {
     turretMotor.setSelectedSensorPosition(0);
-    encoder.setPosition(0);
+    //  encoder.setPosition(0);
   }
 
   public TurretControlMode getControlMode() {
@@ -115,7 +155,7 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
-    return encoderUnitsToDegrees(encoder.getPosition());
+    return encoder.getPosition() / canCodertoTurretGearRatio;
   }
 
   /**
@@ -172,12 +212,12 @@ public class Turret extends SubsystemBase {
     turretSetpointDegrees = getTurretAngle();
   }
 
-  public int degreestoEncoderunits(double degrees) {
-    return (int) (degrees * (1.0 / canCodertoTurretGearRatio) * (encoderUnitsPerRotation / 360.0));
+  public int degreesToEncoderUnits(double degrees) {
+    return (int) (degrees * (encoderUnitsPerRotation / 360.0));
   }
 
   public double encoderUnitsToDegrees(double encoderUnits) {
-    return encoderUnits / canCodertoTurretGearRatio;
+    return encoderUnits * (360.0 / encoderUnitsPerRotation);
   }
 
   public boolean getTurretLatch() {
@@ -194,6 +234,8 @@ public class Turret extends SubsystemBase {
       SmartDashboard.putNumber("Angle", getTurretAngle());
 
       SmartDashboard.putNumber("Setpoint", turretSetpointDegrees);
+
+      SmartDashboard.putNumber("Raw Angle", encoder.getAbsolutePosition());
     }
   }
 
@@ -205,7 +247,8 @@ public class Turret extends SubsystemBase {
     } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
       turretHomeSensorLatch = false;
     }
-    updateDegreesSetpoint();
+
+    updateDegreesSetpoint2();
     updateShuffleboard();
   }
 }
