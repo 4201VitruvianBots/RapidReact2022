@@ -32,7 +32,7 @@ public final class Constants {
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 8;
+    public static final int climbPistonReverse = 5;
   }
 
   public final class Indexer {
@@ -73,7 +73,8 @@ public final class Constants {
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
+        // ratio
         (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
@@ -163,7 +164,9 @@ public final class Constants {
     }
   }
 
-  public final class LED {}
+  public final class LED {
+    public static final int CANdleID = 0;
+  }
 
   public final class Flywheel {
     public static final int flywheelMotorA = 40;
@@ -197,10 +200,11 @@ public final class Constants {
 
     public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
 
-    /* Co-Processor IP Addresses
-       10.42.1.100: Goal Camera
-       10.42.1.101: Intake Camera
-    */
+    /*
+     * Co-Processor IP Addresses
+     * 10.42.1.100: Goal Camera
+     * 10.42.1.101: Intake Camera
+     */
     public static String goalCameraIP = "10.42.1.100";
     public static String intakeCameraIP = "10.42.1.101";
   }
