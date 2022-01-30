@@ -60,7 +60,6 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
-  private final Turret m_turret = new Turret(m_driveTrain);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
