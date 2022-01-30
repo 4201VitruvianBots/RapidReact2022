@@ -26,6 +26,7 @@ import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
