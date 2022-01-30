@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import edu.wpi.first.math.Nat;
@@ -76,7 +75,8 @@ public class Turret extends SubsystemBase {
   private final LinearSystemLoop<N1, N1, N1> m_loop =
       new LinearSystemLoop<>(m_turretPlant, m_controller, m_observer, 12.0, 0.020);
 
-  private final SimpleMotorFeedforward m_feedforward = new SimpleMotorFeedforward(Constants.Turret.kTurretKs, Constants.Turret.kTurretKv);
+  private final SimpleMotorFeedforward m_feedforward =
+      new SimpleMotorFeedforward(Constants.Turret.kTurretKs, Constants.Turret.kTurretKv);
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
@@ -91,7 +91,8 @@ public class Turret extends SubsystemBase {
 
     m_loop.setNextR(VecBuilder.fill(Units.degreesToRadians(setpoint * canCodertoTurretGearRatio)));
 
-    m_loop.correct(VecBuilder.fill(Units.degreesToRadians(getTurretAngle() * canCodertoTurretGearRatio)));
+    m_loop.correct(
+        VecBuilder.fill(Units.degreesToRadians(getTurretAngle() * canCodertoTurretGearRatio)));
 
     m_loop.predict(0.020);
 
