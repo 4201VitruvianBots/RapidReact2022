@@ -12,7 +12,7 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
-public class SetRpmSetpoint extends CommandBase {
+public class SetAndHoldRpmSetpoint extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Flywheel m_flywheel;
 
@@ -20,20 +20,16 @@ public class SetRpmSetpoint extends CommandBase {
   private final double m_RPM;
 
   /** Creates a new ExampleCommand. */
-  public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
+  public SetAndHoldRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_flywheel = flywheel;
     m_RPM = RPM;
     m_vision = vision;
-    addRequirements(flywheel);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    System.out.print("RpmSetpoint is running");
-  }
-
+  public void initialize() {}
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
@@ -43,13 +39,11 @@ public class SetRpmSetpoint extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_flywheel.setRPM(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

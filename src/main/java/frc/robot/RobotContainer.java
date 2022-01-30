@@ -25,6 +25,7 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
+import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -59,6 +60,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
+  private final Turret m_turret = new Turret(m_driveTrain);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -117,10 +119,11 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    xBoxLeftTrigger =
-        new Button(
-            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
+    xBoxLeftTrigger = new Button(() -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
+
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+
     xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
     xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
