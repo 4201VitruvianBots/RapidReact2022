@@ -7,10 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
 
-/**
- * Sets the LED based on the subsystems' statuses
- */
-
+/** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // TODO: make sure the correct subsystems are used
