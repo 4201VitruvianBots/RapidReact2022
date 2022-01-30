@@ -84,6 +84,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
+        new SetIntakePiston(intake, false),
         new ConditionalCommand(
             new FeedAll(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
