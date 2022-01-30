@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -12,9 +13,9 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.FeedAll;
-import frc.robot.commands.intake.AutoControlledIntake;
-import frc.robot.commands.intake.SetIntakePiston;
+import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.IntakePiston;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
@@ -71,26 +72,26 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
-        new SetIntakePiston(intake, true),
+        new IntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoControlledIntake(intake, indexer)),
+            new RunIntake(intake, indexer)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new FeedAll(indexer),
+            new RunIndexer(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoControlledIntake(intake, indexer)),
-        new SetIntakePiston(intake, false),
+            new RunIntake(intake, indexer)),
+        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new FeedAll(indexer),
+            new RunIndexer(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
