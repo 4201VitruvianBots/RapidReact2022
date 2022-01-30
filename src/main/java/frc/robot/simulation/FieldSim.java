@@ -16,7 +16,7 @@ public class FieldSim {
   private final DriveTrain m_driveTrain;
   private final Intake m_intake;
   // Exclude 5 cargo in other robots and 2 with human players
-  private final Cargo[] m_cargo = new Cargo[15]; 
+  private final Cargo[] m_cargo = new Cargo[15];
 
   private int ballCount = 0;
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
@@ -35,14 +35,19 @@ public class FieldSim {
     m_cargo[0].setBallState(BallState.IN_ROBOT);
 
     // Places and sets the position of all the cargo on the field
-    
+
     for (int i = 0; i < Constants.Sim.blueHubBallPos.length; i++) {
-      m_cargo[i + 1] = new Cargo(String.format("BlueCargo_" + (i + 1)), BallColor.BLUE, Constants.Sim.blueHubBallPos[i]);
+      m_cargo[i + 1] =
+          new Cargo(
+              String.format("BlueCargo_" + (i + 1)),
+              BallColor.BLUE,
+              Constants.Sim.blueHubBallPos[i]);
       m_cargo[i + 1].setBallState(BallState.ON_FIELD);
     }
-      
+
     for (int i = 0; i < Constants.Sim.redHubBallPos.length; i++) {
-      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length] = new Cargo(String.format("RedCargo_" + i), BallColor.RED, Constants.Sim.redHubBallPos[i]);
+      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length] =
+          new Cargo(String.format("RedCargo_" + i), BallColor.RED, Constants.Sim.redHubBallPos[i]);
       m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length].setBallState(BallState.ON_FIELD);
     }
 
@@ -139,7 +144,7 @@ public class FieldSim {
                 Rotation2d.fromDegrees(getIdealAngleToHub())));
 
     updateIntakePoses();
-    
+
     if (m_intake.getIntakePistonExtendStatus()) {
       m_field2d.getObject("Intake A").setPose(intakePose[0]);
       m_field2d.getObject("Intake B").setPose(intakePose[1]);
@@ -151,7 +156,6 @@ public class FieldSim {
       m_field2d.getObject("Intake C").setPose(intakePoseHidden);
       m_field2d.getObject("Intake D").setPose(intakePoseHidden);
     }
-
 
     for (Cargo p : m_cargo) {
       updateBallState(p);
@@ -187,10 +191,9 @@ public class FieldSim {
 
     switch (cargo.getBallState()) {
       case IN_AIR:
-
         if (Math.pow(ballPose.getX() - Constants.Sim.hubPoseMeters.getX(), 2)
                 + Math.pow(ballPose.getY() - Constants.Sim.hubPoseMeters.getY(), 2)
-            < Math.pow(0.1,2)) { /// If the ball has gone into the hub
+            < Math.pow(0.1, 2)) { // / If the ball has gone into the hub
           cargo.setBallState(BallState.ON_FIELD);
           break;
         }
@@ -219,7 +222,10 @@ public class FieldSim {
         break;
       case ON_FIELD:
       default:
-        if (m_intake.getIntakeState() && m_intake.getIntakePistonExtendStatus() && isBallInIntakeZone(ballPose) && ballCount < 2) {
+        if (m_intake.getIntakeState()
+            && m_intake.getIntakePistonExtendStatus()
+            && isBallInIntakeZone(ballPose)
+            && ballCount < 2) {
           ballCount++;
           cargo.setBallState(BallState.IN_ROBOT);
         }
@@ -233,31 +239,31 @@ public class FieldSim {
     private Pose2d ballPose = new Pose2d();
     private double m_lastTimestamp;
     private BallState ballState = BallState.ON_FIELD;
-  
+
     String m_name;
-  
+
     public Cargo(String name, BallColor color, Pose2d pose) {
       m_name = name;
       m_color = color;
       ballPose = pose;
     }
-  
+
     public String getName() {
       return m_name;
     }
-  
+
     public BallState getBallState() {
       return ballState;
     }
-  
+
     public boolean getBallShotState() {
       return wasShot;
     }
-  
+
     public void setBallState(BallState state) {
       ballState = state;
     }
-  
+
     public void setBallShotState(boolean shotState) {
       wasShot = shotState;
     }
@@ -265,15 +271,15 @@ public class FieldSim {
     public void setBallPose(Pose2d pose) {
       ballPose = pose;
     }
-  
+
     public Pose2d getBallPose() {
       return ballPose;
     }
-  
+
     public void setLastTimestamp(double timestamp) {
       m_lastTimestamp = timestamp;
     }
-  
+
     public double getLastTimestamp() {
       return m_lastTimestamp;
     }
