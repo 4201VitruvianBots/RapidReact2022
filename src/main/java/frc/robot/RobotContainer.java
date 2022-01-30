@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -33,6 +31,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
+import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -74,6 +73,8 @@ public class RobotContainer {
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
+  TCA9548AcolorSensor tca9548AcolorSensor = new TCA9548AcolorSensor(I2C.Port.kOnboard);
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
@@ -90,6 +91,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    SmartDashboard.putData("Select Port 0", new InstantCommand(()-> tca9548AcolorSensor.selectMuxChannel(0)));
+    SmartDashboard.putData("Select Port 2", new InstantCommand(()-> tca9548AcolorSensor.selectMuxChannel(2)));
   }
 
   /**
@@ -133,7 +137,12 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    SmartDashboard.putNumber("Color Sensor Mux Channel", tca9548AcolorSensor.getMuxChannel());
+    SmartDashboard.putNumber("Color Sensor Blue", tca9548AcolorSensor.getColorSensor().getColor().blue);
+    SmartDashboard.putNumber("Color Sensor Red", tca9548AcolorSensor.getColorSensor().getColor().red);
+    SmartDashboard.putNumber("Color Sensor Green", tca9548AcolorSensor.getColorSensor().getColor().green);
+  }
 
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
