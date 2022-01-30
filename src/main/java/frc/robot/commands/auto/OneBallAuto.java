@@ -15,6 +15,10 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.List;
 
@@ -26,29 +30,27 @@ public class OneBallAuto extends SequentialCommandGroup {
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
    */
-  public OneBallAuto(DriveTrain driveTrain, FieldSim fieldSim) {
-    // Drive backward maximum distance to ball
-    // While dirivng backward, intake is running
-    // Stop (now with 2 cargo) and aim for high goal
-    // Shoot 2 cargo into high goal
+  public OneBallAuto(
+      DriveTrain driveTrain,
+      FieldSim fieldSim,
+      Indexer indexer,
+      Flywheel flywheel,
+      Turret turret,
+      Vision vision) {
+    // Drive backward
+    // Stop and aim for high goal
+    // Shoot 1 cargo into high goal
+    Trajectory trajectory1 =
+        PathPlanner.loadPath("OneBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
 
-    int[][]
-        waypointsRaw = { // x, y, and z coordinates of the robot (x and y in inches, z is degrees of
-      // rotation)
-      {250, 170, 0},
-      {130, 170, 0}
-    };
+    VitruvianRamseteCommand command1 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    /*
-     * Runs through each of the set of x, y and z values in the list below one at a
-     * time.
-     * At each set (starting at 0), it merges the x and y values of that set into on
-     * Pose2d coordinate
-     * The varibale j is used to represent which set in the list is currently
-     * processing (starting at 0)
-     * The [0] and [1] specify the values being merged are from the x [0] and y [1]
-     * columns of the list.
-     */
+    Trajectory trajectory2 =
+        PathPlanner.loadPath("OneBallAuto-2", Units.feetToMeters(2), Units.feetToMeters(2), true);
+
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Pose2d[] waypoints = new Pose2d[waypointsRaw.length];
     for (int j = 0; j < waypointsRaw.length; j++) {
@@ -83,29 +85,20 @@ public class OneBallAuto extends SequentialCommandGroup {
     // speed)
 
     addCommands(
-        new SetOdometry(driveTrain, fieldSim, startPosition),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE));
-
-    double[] startVelocities = {
-      0, // starting velocity from point 0 to point 1
-      2 * configA.getMaxVelocity() / 3, // starting velocity from point 1 to point 2
-    };
-    double[] endVelocities = {
-      2 * configA.getMaxVelocity() / 3, // ending velocity at point 1 from point 0
-    };
-
-    for (int i = 0; i < waypoints.length - 1; i++) {
-      configA.setStartVelocity(startVelocities[i]);
-      configA.setEndVelocity(endVelocities[i]);
-
-      Trajectory trajectory =
-          TrajectoryGenerator.generateTrajectory(
-              waypoints[i],
-              List.of(),
-              waypoints[i + 1], // makes a path from one waypoint to the next
-              configA); // makes sure that path fits under the constraints
-      var command = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
-      addCommands(command);
-    }
+        new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
+        command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        new ConditionalCommand(
+            new FeedAll(indexer),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal)
+        // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0))
+        // Rev up flywheel while driving backwards
+        // Once finish driving, feed indexer
+        // After that, stop indexer and flywheel
+        );
   }
 }

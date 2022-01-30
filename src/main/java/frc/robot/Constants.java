@@ -57,25 +57,39 @@ public final class Constants {
   }
 
   public static final class DriveTrain {
-    public static final int[] kLeftEncoderPorts = new int[] {10, 11};
-    public static final int[] kRightEncoderPorts = new int[] {12, 13};
-    public static final boolean kLeftEncoderReversed = false;
-    public static final boolean kRightEncoderReversed = true;
+    // Number identification for the CAN motors
+    public static final int leftFrontDriveMotor = 20;
+    public static final int leftRearDriveMotor = 21;
+    public static final int rightFrontDriveMotor = 22;
+    public static final int rightRearDriveMotor = 23;
+
+    public enum MotorPosition {
+      LEFT_FRONT,
+      LEFT_REAR,
+      RIGHT_FRONT,
+      RIGHT_REAR
+    }
+
+    public enum DriveTrainNeutralMode {
+      BRAKE,
+      COAST,
+      /** Master motors brake, follower motors coast */
+      HALF_BRAKE
+    }
 
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.5);
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
-    public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
+    public static final double kMaxVelocityMetersPerSecond = 2.0;
     public static final double kDriveGearing = 9.05;
+    public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 
-    public static final int kMagEncoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
-        // ratio
-        (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
 
@@ -93,28 +107,6 @@ public final class Constants {
             kaVoltSecondsSquaredPerMeter,
             kvVoltSecondsPerRadian,
             kaVoltSecondsSquaredPerRadian);
-
-    public static final double kMaxVelocityMetersPerSecond = 2.0;
-
-    // Number identification for the CAN motors
-    public static final int leftFrontDriveMotor = 20;
-    public static final int leftRearDriveMotor = 21;
-    public static final int rightFrontDriveMotor = 22;
-    public static final int rightRearDriveMotor = 23;
-
-    public static enum MotorPosition {
-      LEFT_FRONT,
-      LEFT_REAR,
-      RIGHT_FRONT,
-      RIGHT_REAR
-    }
-
-    public static enum DriveTrainNeutralMode {
-      BRAKE,
-      COAST,
-      /** Master motors brake, follower motors coast */
-      HALF_BRAKE
-    }
   }
 
   public static final class Sim {
