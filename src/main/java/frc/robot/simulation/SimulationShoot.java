@@ -5,61 +5,60 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.indexer;
+package frc.robot.simulation;
 
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Indexer;
+import frc.robot.Constants.Sim.BallState;
+import frc.robot.simulation.FieldSim.Cargo;
 
 /** An example command that uses an example subsystem. */
-public class IndexerCommand extends CommandBase {
+public class SimulationShoot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Indexer m_indexer;
+  FieldSim m_fieldSim;
+
+  private static double lastShotTime;
+
+  private boolean m_continuous;
+
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param RobotContainer.m_shooter The subsystem used by this command.
    */
-  int tripped = 0;
-
-  double setpoint, startTime;
-
-  public IndexerCommand(Indexer indexer) {
-    m_indexer = indexer;
-
+  public SimulationShoot(FieldSim fieldSim, boolean continuous) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(indexer);
+    m_fieldSim = fieldSim;
+    m_continuous = continuous;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  /**
-   * Called every time the scheduler runs while the command is scheduled. creates an instance of
-   * IncrementIndexer
-   */
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_indexer.getIntakeSensor() && tripped == 0) {
-      tripped = 1;
-      startTime = Timer.getFPGATimestamp();
-    }
-    if (tripped == 1) CommandScheduler.getInstance().schedule(new IncrementIndexer(m_indexer));
-
-    if (Timer.getFPGATimestamp() - startTime > 0.1 && tripped == 1) {
-      tripped = 0;
+    double currentTime = RobotController.getFPGATime();
+    // Shoot only every 80ms
+    if (((currentTime - lastShotTime) / 1e6) > 0.080) {
+      for (Cargo p : m_fieldSim.getCargo()) {
+        if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
+          p.setBallShotState(true);
+          lastShotTime = currentTime;
+          break;
+        }
+      }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {}
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_continuous;
   }
 }

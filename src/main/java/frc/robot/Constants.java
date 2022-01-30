@@ -12,7 +12,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.I2C.Port;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -38,17 +37,23 @@ public final class Constants {
 
   public final class Indexer {
     public static final int indexerMotor = 35;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
+    // public static final int indexerTopSensor = 1;
+    // public static final int indexerBottomSensor = 2;
+    
+    // public static final enum CARGO_COLOR {
+    //   RED,
+    //   BLUE,
+    //   UNKNOWN
+    // }
   }
 
   public final class Intake {
     public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 47;
-    public static final int intakeSensor = 0;
+    public static final int intakePistonForward = 2;
+    public static final int intakePistonReverse = 3;
+    public static final int intakeMotor = 30;
+    // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
@@ -62,7 +67,7 @@ public final class Constants {
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-    public static final double kDriveGearing = 8.0;
+    public static final double kDriveGearing = 9.05;
 
     public static final int kMagEncoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
@@ -70,9 +75,6 @@ public final class Constants {
     public static final double kEncoderDistancePerPulseMeters =
         // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
         (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
-    public static final double kEncoderDistancePerPulseMetersSim =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kMagEncoderCPR * kDriveGearing;
 
     public static final boolean kGyroReversed = true;
 
@@ -93,37 +95,46 @@ public final class Constants {
 
     public static final double kMaxVelocityMetersPerSecond = 2.0;
 
+    // Number identification for the CAN motors
     public static final int leftFrontDriveMotor = 20;
     public static final int leftRearDriveMotor = 21;
     public static final int rightFrontDriveMotor = 22;
     public static final int rightRearDriveMotor = 23;
 
+    public static enum MotorPosition {
+      LEFT_FRONT,
+      LEFT_REAR,
+      RIGHT_FRONT,
+      RIGHT_REAR
+    }
+
     public static enum DriveTrainNeutralMode {
-      ALL_BRAKE,
-      ALL_COAST,
-      FOLLOWER_COAST
+      BRAKE,
+      COAST,
+      /** Master motors brake, follower motors coast */
+      HALF_BRAKE
     }
   }
 
   public static final class Sim {
     public static final Pose2d[] redHubBallPos = {
-      new Pose2d(Units.inchesToMeters(438), Units.inchesToMeters(240), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(348), Units.inchesToMeters(297), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(245), Units.inchesToMeters(274), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(188), Units.inchesToMeters(132), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(355), Units.inchesToMeters(29), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(442), Units.inchesToMeters(89), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(580), Units.inchesToMeters(270), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(362), Units.inchesToMeters(13), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(178), Units.inchesToMeters(128), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(239), Units.inchesToMeters(288), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(354), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(453), Units.inchesToMeters(251), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(457), Units.inchesToMeters(80), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(612), Units.inchesToMeters(280), new Rotation2d())
     };
 
     public static final Pose2d[] blueHubBallPos = {
-      new Pose2d(Units.inchesToMeters(460), Units.inchesToMeters(192), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(296), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(206), Units.inchesToMeters(235), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(83), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(301), Units.inchesToMeters(27), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(405), Units.inchesToMeters(50), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(478), Units.inchesToMeters(196), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(300), Units.inchesToMeters(12), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(199), Units.inchesToMeters(76), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(418), Units.inchesToMeters(39), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(200), Units.inchesToMeters(249), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(44), Units.inchesToMeters(42), new Rotation2d())
     };
 
     public static final double fieldWidthMeters = Units.feetToMeters(54);
@@ -136,20 +147,23 @@ public final class Constants {
     public static final double shotSpeedMetersPerSecond = 10;
 
     public static final Pose2d hubPoseMeters =
-        new Pose2d(12.557047, 7.275692, new Rotation2d(Units.degreesToRadians(0)));
+        new Pose2d(
+            fieldWidthMeters / 2, fieldHieghtMeters / 2, new Rotation2d(Units.degreesToRadians(0)));
     public static final Pose2d startPositionMeters = new Pose2d();
 
     public enum BallState {
       ON_FIELD,
       IN_ROBOT,
-      IN_AIR,
-      OUT_OF_BOUNDS
+      IN_AIR
+    }
+
+    public enum BallColor {
+      RED,
+      BLUE
     }
   }
 
-  public final class LED {
-    public static final int ledPort = 0;
-  }
+  public final class LED {}
 
   public final class Flywheel {
     public static final int flywheelMotorA = 40;
