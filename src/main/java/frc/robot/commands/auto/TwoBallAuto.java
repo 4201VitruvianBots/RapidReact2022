@@ -29,7 +29,7 @@ import frc.vitruvianlib.utils.TrajectoryUtils;
 /** Intakes one cargo and shoots two cargo into the high goal. */
 public class TwoBallAuto extends SequentialCommandGroup {
   /**
-   *    * Intakes one cargo and shoots two cargo into the high goal.
+   * * Intakes one cargo and shoots two cargo into the high goal.
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -38,7 +38,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
    * @param flywheel Rev flywheel to shoot.
    * @param turret Turn turret to goal.
    * @param vision Find target.
-  */
+   */
   public TwoBallAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
@@ -66,9 +66,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
-     * (except for vision) run indexer & flywheel until indexer stops end sequence
-     * Turn and move forward to line up with blue ball on other side of the line (NOT running intake, indexer, shooter or vision)
-     * End path
+     * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
+     * forward to line up with blue ball on other side of the line (NOT running intake, indexer,
+     * shooter or vision) End path
      */
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -79,7 +79,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoControlledIntake(intake, indexer)
             // TODO implement indexer
-        ),
+            ),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
@@ -87,10 +87,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(
             new FeedAll(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal
-        ),
+            RobotBase::isReal),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
-        
-
   }
 }

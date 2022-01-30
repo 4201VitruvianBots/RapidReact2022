@@ -21,7 +21,6 @@ public class TestPath extends SequentialCommandGroup {
    */
   public TestPath(DriveTrain driveTrain, FieldSim fieldSim) {
 
-
     Trajectory trajectory =
         PathPlanner.loadPath("Testpath", Units.feetToMeters(1), Units.feetToMeters(1), true);
 

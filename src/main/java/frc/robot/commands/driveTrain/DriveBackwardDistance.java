@@ -13,13 +13,11 @@ import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.ArrayList;
 
-/**
- * Drives the robot backward a distance in meters
- */
-public class DriveBackwardDistance extends SequentialCommandGroup {    
+/** Drives the robot backward a distance in meters */
+public class DriveBackwardDistance extends SequentialCommandGroup {
   /**
    * Drives the robot backward a distance in meters
-   * 
+   *
    * @param driveTrain The driveTrain used by this command
    * @param fieldSim The fieldSim used by this command
    * @param distanceMeters The distance in meters to travel
@@ -31,21 +29,20 @@ public class DriveBackwardDistance extends SequentialCommandGroup {
     configA.setReversed(true);
     configA.setEndVelocity(0);
     configA.addConstraint(
-      new DifferentialDriveKinematicsConstraint(
-        driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
+        new DifferentialDriveKinematicsConstraint(
+            driveTrain.getDriveTrainKinematics(), configA.getMaxVelocity()));
     configA.addConstraint(
-      new DifferentialDriveVoltageConstraint(
-        driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(), 10));
+        new DifferentialDriveVoltageConstraint(
+            driveTrain.getFeedforward(), driveTrain.getDriveTrainKinematics(), 10));
     ArrayList<Pose2d> driveBackwardPath = new ArrayList<Pose2d>();
     driveBackwardPath.add(startPosition);
     driveBackwardPath.add(endPosition);
     var driveBackwardCommand =
-      TrajectoryUtils.generateRamseteCommand(driveTrain, driveBackwardPath, configA);
+        TrajectoryUtils.generateRamseteCommand(driveTrain, driveBackwardPath, configA);
 
     addCommands(
-      new SetOdometry(driveTrain, fieldSim, startPosition),
-      new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
-      driveBackwardCommand
-    );
+        new SetOdometry(driveTrain, fieldSim, startPosition),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        driveBackwardCommand);
   }
 }

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import static java.util.Map.entry;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -13,17 +11,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.PostAutoIntake;
-import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
+import frc.robot.commands.auto.OneBallAuto;
+import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
@@ -34,7 +29,6 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
-import java.util.Map;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -50,7 +44,7 @@ public class RobotContainer {
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
-  
+
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
@@ -64,17 +58,28 @@ public class RobotContainer {
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
 
-  private final SendableChooser<Command> m_autoChooser =
-      new SendableChooser<Command>();
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
-    m_autoChooser.setDefaultOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 2));
-    m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto (m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Group Three Ball Auto", new GroupThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));
-    m_autoChooser.addOption("Individual Three Ball Auto", new IndividualThreeBallAuto(m_driveTrain,m_fieldSim,m_intake,m_indexer,m_flywheel,m_turret,m_vision));
+    m_autoChooser.setDefaultOption(
+        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    m_autoChooser.addOption(
+        "One Ball Auto",
+        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto",
+        new TwoBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Group Three Ball Auto",
+        new GroupThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Individual Three Ball Auto",
+        new IndividualThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);

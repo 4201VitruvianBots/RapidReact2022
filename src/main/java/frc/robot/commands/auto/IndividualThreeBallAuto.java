@@ -40,7 +40,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
    * @param vision Find target.
    */
   public IndividualThreeBallAuto(
-    DriveTrain driveTrain,
+      DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
       Indexer indexer,
@@ -48,15 +48,11 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
       Turret turret,
       Vision vision) {
     /**
-     * Shoots cargo the ball started with
-     * Drives backwards, intake running, picks up second cargo
-     * Shoots second cargo
-     * Drives backward, intake running, picks up third cargo
-     * Shoots third cargo
-     * Drives back to the terminal and lines up with the ball there, to pick up at the start of tele-op
+     * Shoots cargo the ball started with Drives backwards, intake running, picks up second cargo
+     * Shoots second cargo Drives backward, intake running, picks up third cargo Shoots third cargo
+     * Drives back to the terminal and lines up with the ball there, to pick up at the start of
+     * tele-op
      */
-
-
     Trajectory trajectory1 =
         PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command1 =
@@ -101,6 +97,6 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
             new FeedAll(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));  
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }
