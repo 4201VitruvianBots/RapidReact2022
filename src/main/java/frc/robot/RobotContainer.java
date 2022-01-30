@@ -114,7 +114,7 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
     xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
     xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake,m_indexer));
+    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxButtons[7].whileHeld(new RunIndexer(m_indexer));
   }
 

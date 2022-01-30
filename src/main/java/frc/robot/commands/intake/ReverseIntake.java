@@ -12,6 +12,7 @@ import frc.robot.subsystems.Intake;
 public class ReverseIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
+
   private final Indexer m_indexer;
 
   /**
