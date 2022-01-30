@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.turret.SetTurretRobotRelativeAngle;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
@@ -79,9 +78,14 @@ public class RobotContainer {
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+    int baseRPM = 3000;
 
-    xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 50));
+    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 100));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 150));
+    xBoxButtons[4].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 200));
+    xBoxButtons[5].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 250));
   }
 
   public void initializeSubsystems() {
