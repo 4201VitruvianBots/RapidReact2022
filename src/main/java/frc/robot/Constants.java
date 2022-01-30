@@ -32,7 +32,7 @@ public final class Constants {
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 8;
+    public static final int climbPistonReverse = 5;
   }
 
   public final class Indexer {
@@ -40,13 +40,18 @@ public final class Constants {
     public static final int indexerTopSensor = 1;
     public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
+    // public static final enum CARGO_COLOR {
+    //   RED,
+    //   BLUE,
+    //   UNKNOWN
+    // }
   }
 
   public final class Intake {
     public static final int pcmOne = 11;
     public static final int intakePistonForward = 0;
     public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 47;
+    public static final int intakeMotor = 0;
     public static final int intakeSensor = 0;
   }
 
@@ -67,7 +72,8 @@ public final class Constants {
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
+        // ratio
         (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
     public static final double kEncoderDistancePerPulseMetersSim =
         // Assumes the encoders are directly mounted on the wheel shafts
@@ -147,7 +153,7 @@ public final class Constants {
   }
 
   public final class LED {
-    public static final int ledPort = 0;
+    public static final int CANdleID = 0;
   }
 
   public final class Flywheel {
@@ -173,5 +179,21 @@ public final class Constants {
     public static final int turretHomeSensor = 3;
   }
 
-  public final class Vision {}
+  public static final class Vision {
+    public enum CAMERA_TYPE {
+      OAK_D,
+      LIMELIGHT,
+      PHOTONVISION
+    }
+
+    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+
+    /*
+     * Co-Processor IP Addresses
+     * 10.42.1.100: Goal Camera
+     * 10.42.1.101: Intake Camera
+     */
+    public static String goalCameraIP = "10.42.1.100";
+    public static String intakeCameraIP = "10.42.1.101";
+  }
 }

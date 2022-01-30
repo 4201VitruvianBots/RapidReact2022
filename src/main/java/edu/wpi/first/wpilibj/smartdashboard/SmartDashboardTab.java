@@ -12,11 +12,7 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,12 +27,6 @@ public final class SmartDashboardTab {
   /** The {@link NetworkTable} used by {@link SmartDashboard}. */
   private static final NetworkTable table = NetworkTableInstance.getDefault().getTable("");
 
-  /**
-   * A table linking tables in the SmartDashboard to the {@link Sendable} objects they came from.
-   */
-  @SuppressWarnings("PMD.UseConcurrentHashMap")
-  private static final Map<String, Sendable> tablesToData = new HashMap<>();
-
   /** The executor for listener tasks; calls listener tasks synchronously from main thread. */
   private static final ListenerExecutor listenerExecutor = new ListenerExecutor();
 
@@ -46,23 +36,6 @@ public final class SmartDashboardTab {
 
   private SmartDashboardTab() {
     throw new UnsupportedOperationException("This is a utility class!");
-  }
-
-  /**
-   * Returns the value at the specified key.
-   *
-   * @param key the key
-   * @return the value
-   * @throws IllegalArgumentException if the key is null
-   */
-  public static synchronized Sendable getData(String tabName, String key) {
-    String tableKey = tabName + "-" + key;
-    Sendable data = tablesToData.get(tableKey);
-    if (data == null) {
-      throw new IllegalArgumentException("SmartDashboard data does not exist: " + tableKey);
-    } else {
-      return data;
-    }
   }
 
   /**
@@ -496,24 +469,5 @@ public final class SmartDashboardTab {
    */
   public static byte[] getRaw(String tabName, String key, byte[] defaultValue) {
     return getEntry(tabName, key).getRaw(defaultValue);
-  }
-
-  /**
-   * Posts a task from a listener to the ListenerExecutor, so that it can be run synchronously from
-   * the main loop on the next call to {@link SmartDashboard#updateValues()}.
-   *
-   * @param task The task to run synchronously from the main thread.
-   */
-  public static void postListenerTask(Runnable task) {
-    listenerExecutor.execute(task);
-  }
-
-  /** Puts all sendable data to the dashboard. */
-  public static synchronized void updateValues() {
-    for (Sendable data : tablesToData.values()) {
-      SendableRegistry.update(data);
-    }
-    // Execute posted listener tasks
-    listenerExecutor.runListenerTasks();
   }
 }
