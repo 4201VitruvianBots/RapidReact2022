@@ -2,25 +2,28 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.indexer;
+package frc.robot.commands.intake;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class FeedAll extends CommandBase {
+public class RunIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Intake m_intake;
+
   private final Indexer m_indexer;
 
   /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
+   * @param intake The intake used by this command
+   * @param indexer The indexer used by this command
    */
-  public FeedAll(Indexer indexer) {
+  public RunIntake(Intake intake, Indexer indexer) {
+    m_intake = intake;
     m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intake);
     addRequirements(indexer);
   }
 
@@ -29,29 +32,28 @@ public class FeedAll extends CommandBase {
   public void initialize() {}
 
   /**
-   * Called every time the scheduler runs while the command is scheduled. Spins the Indexer and the
-   * Kicker forward
+   * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
+   * Indexer forward
    */
   @Override
   public void execute() {
-    m_indexer.setIndexerOutput(0.6);
-    m_indexer.setKickerOutput(0.5);
+    //  m_indexer.setIndexerPercentOutput(0.5);
+    m_intake.setIntakePercentOutput(0.8);
+    m_indexer.setIndexerPercentOutput(0.8);
   }
 
-  /** Called once the command ends or is interrupted. Sets the Indexer and Kicker to a speed of 0 */
+  /**
+   * Called once the command ends or is interrupted. Sets the speed of the Intake and Indexer to 0
+   */
   @Override
   public void end(boolean interrupted) {
-    m_indexer.setKickerOutput(0);
-    m_indexer.setIndexerOutput(0);
+    //  m_indexer.setIndexerPercentOutput(0);
+    m_intake.setIntakePercentOutput(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    double time = Timer.getFPGATimestamp();
-    if (m_indexer.getIndexerTopSensor()) {
-      time = Timer.getFPGATimestamp();
-    }
-    return time >= 2;
+    return false;
   }
 }

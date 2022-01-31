@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Climber.*;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -12,95 +14,93 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.Constants.Climber.*;
-
 /**
- * climber will only be making for a mid-climb as of 1/11/22 in the future I
- * hope that the climber
- * will use some more advanced capability to get a traversal run climb in the
- * future.
+ * climber will only be making for a mid-climb as of 1/11/22 in the future I hope that the climber
+ * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
-    private final DoubleSolenoid climbBrakeSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward,
-            climbPistonReverse);
-    private final TalonFX[] climbMotors = {new TalonFX(climbMotorA), new TalonFX(climbMotorB)};
-    private boolean climbState;
+  private final DoubleSolenoid climbBrakeSolenoid =
+      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
+  private final TalonFX[] climbMotors = {new TalonFX(climbMotorA), new TalonFX(climbMotorB)};
+  private boolean climbState;
 
-    /**
-     * Creates a new Climber.
-     */
-    public Climber() {
-        // Set up climber motor
-        for (int i = 0; i < 1; i++) {
-            this.climbMotors[i].configFactoryDefault();
-            this.climbMotors[i].setSelectedSensorPosition(0);
-            this.climbMotors[i].setNeutralMode(NeutralMode.Brake);
-            this.climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-        }
+  /** Creates a new Climber. */
+  public Climber() {
+    // Set up climber motor
+    for (int i = 0; i < 1; i++) {
+      this.climbMotors[i].configFactoryDefault();
+      this.climbMotors[i].setSelectedSensorPosition(0);
+      this.climbMotors[i].setNeutralMode(NeutralMode.Brake);
+      this.climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
+  }
 
-    /**
-     * return the state of the climber brake
-     *
-     * @return the climber state the climb brake (true is engaged)
-     */
-    public ClimbBrakeStatus getClimbBrakeStatus() {
-        return this.climbBrakeSolenoid.get() == DoubleSolenoid.Value.kForward ? ClimbBrakeStatus.ENGAGED : ClimbBrakeStatus.DISENGAGED;
-    }
+  public boolean getClimbState() {
+    return climbState;
+  }
 
-    /**
-     * sets the state of the climb piston
-     */
-    public void engagePistonBrake() {
-        if (getClimbBrakeStatus() != ClimbBrakeStatus.ENGAGED) {
-            this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kForward);
-        }
-    }
+  public void setClimbState(boolean climbState) {
+    this.climbState = climbState;
+  }
 
-    /**
-     * sets the state of the climb piston
-     */
-    public void disengagePistonBrake() {
-        if (getClimbBrakeStatus() != ClimbBrakeStatus.DISENGAGED) {
-            this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-        }
-    }
+  /**
+   * return the state of the climber brake
+   *
+   * @return the climber state the climb brake (true is engaged)
+   */
+  public ClimbBrakeStatus getClimbBrakeStatus() {
+    return this.climbBrakeSolenoid.get() == DoubleSolenoid.Value.kForward
+        ? ClimbBrakeStatus.ENGAGED
+        : ClimbBrakeStatus.DISENGAGED;
+  }
 
-    /**
-     * sets the climber motor's power with a percent (0.0 - 1.0)
-     *
-     * @param value output value
-     */
-    public void setClimberPercentOutput(final double value) {
-        for (int i = 0; i < 1; i++) {
-            this.climbMotors[i].set(ControlMode.PercentOutput, value);
-        }
+  /** sets the state of the climb piston */
+  public void engagePistonBrake() {
+    if (getClimbBrakeStatus() != ClimbBrakeStatus.ENGAGED) {
+      this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kForward);
     }
+  }
 
-    /**
-     * get the climber position
-     *
-     * @return the climber position (in raw sensor units)
-     */
-    public double getClimberPosition() {
-        return this.climbMotors[0].getSelectedSensorPosition();
+  /** sets the state of the climb piston */
+  public void disengagePistonBrake() {
+    if (getClimbBrakeStatus() != ClimbBrakeStatus.DISENGAGED) {
+      this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
+  }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
+  /**
+   * sets the climber motor's power with a percent (0.0 - 1.0)
+   *
+   * @param value output value
+   */
+  public void setClimberPercentOutput(final double value) {
+    for (int i = 0; i < 1; i++) {
+      this.climbMotors[i].set(ControlMode.PercentOutput, value);
     }
+  }
 
-    @Override
-    public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
-    }
+  /**
+   * get the climber position
+   *
+   * @return the climber position (in raw sensor units)
+   */
+  public double getClimberPosition() {
+    return this.climbMotors[0].getSelectedSensorPosition();
+  }
 
-    /**
-     * The different states that the climber can be in
-     */
-    private enum ClimbBrakeStatus {
-        ENGAGED,
-        DISENGAGED
-    }
+  @Override
+  public void periodic() {
+    // This method will be called once per scheduler run
+  }
+
+  @Override
+  public void simulationPeriodic() {
+    // This method will be called once per scheduler run during simulation
+  }
+
+  /** The different states that the climber can be in */
+  private enum ClimbBrakeStatus {
+    ENGAGED,
+    DISENGAGED
+  }
 }

@@ -7,71 +7,69 @@
 
 package frc.robot.commands.climber;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import java.util.function.DoubleSupplier;
 
-/**
- * Raises/lowers the climber based on joystick input
- */
+/** Raises/lowers the climber based on joystick input */
 public class SetClimberOutput extends CommandBase {
-    @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-    private final Climber m_climber;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private Climber m_climber;
 
-    private final Joystick m_controller;
+  private DoubleSupplier m_input;
 
-    /**
-     * Creates a new SetClimberOutput.
-     *
-     * @param climber    The climber used by this command.
-     * @param controller The joystick controller used by this command.
-     */
-    public SetClimberOutput(final Climber climber, final Joystick controller) {
-        this.m_climber = climber;
-        this.m_controller = controller;
-        // Use addRequirements() here to declare subsystem dependencies.
-        this.addRequirements(climber);
-    }
+  /**
+   * Creates a new SetClimberOutput.
+   *
+   * @param climber The climber used by this command.
+   * @param input The input used to control the climber output.
+   */
+  public SetClimberOutput(Climber climber, DoubleSupplier input) {
+    this.m_climber = climber;
+    this.m_input = input;
 
-    // Called when the command is initially scheduled.
-    @Override
-    public void initialize() {
-    }
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.addRequirements(climber);
+  }
 
-    @Override
-    public void execute() {
-        final double input = Math.abs(this.m_controller.getRawAxis(5)) > 0.2 ? this.m_controller.getRawAxis(5) : 0;
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-        final climberState desiredDirection = input == 0 ? climberState.STILL : climberState.MOVING;
+  @Override
+  public void execute() {
+    double input = Math.abs(m_input.getAsDouble()) > 0.2 ? m_input.getAsDouble() : 0;
 
-        switch (desiredDirection) {
-            case MOVING:
-                this.m_climber.disengagePistonBrake();
-                this.m_climber.setClimberPercentOutput(input);
-                break;
-            case STILL:
-                this.m_climber.engagePistonBrake();
-                break;
-            default:
-                break;
-        }
-    }
+    climberState desiredDirection = (input == 0 ? climberState.STILL : climberState.MOVING);
 
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(final boolean interrupted) {
-        this.m_climber.setClimberPercentOutput(0.0);
+    switch (desiredDirection) {
+      case MOVING:
+        this.m_climber.disengagePistonBrake();
+        this.m_climber.setClimberPercentOutput(input);
+        break;
+      case STILL:
         this.m_climber.engagePistonBrake();
+        break;
+      default:
+        break;
     }
+  }
 
-    // Returns true when the command should end.
-    @Override
-    public boolean isFinished() {
-        return false;
-    }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(final boolean interrupted) {
+    this.m_climber.setClimberPercentOutput(0.0);
+    this.m_climber.engagePistonBrake();
+  }
 
-    private enum climberState {
-        MOVING,
-        STILL
-    }
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+
+  private enum climberState {
+    MOVING,
+    STILL
+  }
 }

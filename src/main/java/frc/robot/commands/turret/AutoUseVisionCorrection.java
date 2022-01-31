@@ -6,31 +6,26 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
-public class SetTurretControlMode extends CommandBase {
+public class AutoUseVisionCorrection extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Turret m_turret;
 
-  private final int m_mode;
+  private final Vision m_vision;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public SetTurretControlMode(Turret turret, int mode) {
+  /** Temporary; add actual code when vision and turret work */
+  public AutoUseVisionCorrection(Turret turret, Vision vision) {
     m_turret = turret;
-    m_mode = mode;
+    m_vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_turret.setControlMode(m_mode);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

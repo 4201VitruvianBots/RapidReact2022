@@ -5,39 +5,52 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.intake;
+package frc.robot.simulation;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.Constants.Sim.BallState;
+import frc.robot.simulation.FieldSim.Cargo;
 
 /** An example command that uses an example subsystem. */
-public class ToggleIntakePistons extends CommandBase {
+public class SimulationShoot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake intake;
+  FieldSim m_fieldSim;
+
+  private static double lastShotTime;
+
+  private boolean m_continuous;
 
   /**
    * Creates a new ExampleCommand.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param RobotContainer.m_shooter The subsystem used by this command.
    */
-  public ToggleIntakePistons(Intake subsystem) {
-    intake = subsystem;
+  public SimulationShoot(FieldSim fieldSim, boolean continuous) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    m_fieldSim = fieldSim;
+    m_continuous = continuous;
   }
 
-  /**
-   * Called when the command is initially scheduled. Doesn't Set the Intake Piston to the intake
-   * status TODO: Check With Jacob About Line 37
-   */
+  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    intake.setIntakePiston(!intake.getIntakePistonExtendStatus());
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    double currentTime = RobotController.getFPGATime();
+    // Shoot only every 80ms
+    if (((currentTime - lastShotTime) / 1e6) > 0.080) {
+      for (Cargo p : m_fieldSim.getCargo()) {
+        if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
+          p.setBallShotState(true);
+          lastShotTime = currentTime;
+          break;
+        }
+      }
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -46,6 +59,6 @@ public class ToggleIntakePistons extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return !m_continuous;
   }
 }

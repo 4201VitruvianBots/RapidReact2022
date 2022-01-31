@@ -5,61 +5,45 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.indexer;
+package frc.robot.commands.flywheel;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Indexer;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
-public class IndexerCommand extends CommandBase {
+public class SetAndHoldRpmSetpoint extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Indexer m_indexer;
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  int tripped = 0;
+  private final Flywheel m_flywheel;
 
-  double setpoint, startTime;
+  private final Vision m_vision;
+  private final double m_RPM;
 
-  public IndexerCommand(Indexer indexer) {
-    m_indexer = indexer;
-
+  /** Creates a new ExampleCommand. */
+  public SetAndHoldRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(indexer);
+    m_flywheel = flywheel;
+    m_RPM = RPM;
+    m_vision = vision;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-
-  /**
-   * Called every time the scheduler runs while the command is scheduled. creates an instance of
-   * IncrementIndexer
-   */
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_indexer.getIntakeSensor() && tripped == 0) {
-      tripped = 1;
-      startTime = Timer.getFPGATimestamp();
-    }
-    if (tripped == 1) CommandScheduler.getInstance().schedule(new IncrementIndexer(m_indexer));
-
-    if (Timer.getFPGATimestamp() - startTime > 0.1 && tripped == 1) {
-      tripped = 0;
-    }
+    m_vision.setGoalCameraLedState(true);
+    m_flywheel.setRPM(m_RPM);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {}
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
