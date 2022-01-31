@@ -8,70 +8,47 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
-import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
-public class SetClimberOutput extends CommandBase {
+public class SetClimbState extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
-
-  private DoubleSupplier m_input;
+  private boolean m_state;
 
   /**
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
-   * @param input The input used to control the climber output.
+   * @param state The climb state to use
    */
-  public SetClimberOutput(Climber climber, DoubleSupplier input) {
-    this.m_climber = climber;
-    this.m_input = input;
+  public SetClimbState(Climber climber, boolean state) {
+    m_climber = climber;
+    m_state = state;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(climber);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_climber.setClimbState(m_state);
+  }
 
   @Override
   public void execute() {
-    if(m_climber.getClimbState()) {
-      double input = Math.abs(m_input.getAsDouble()) > 0.2 ? m_input.getAsDouble() : 0;
-
-      climberState desiredDirection = (input == 0 ? climberState.STILL : climberState.MOVING);
-
-      switch (desiredDirection) {
-        case MOVING:
-          this.m_climber.disengagePistonBrake();
-          this.m_climber.setClimberPercentOutput(input);
-          break;
-        case STILL:
-          this.m_climber.engagePistonBrake();
-          break;
-        default:
-          break;
-      }
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(final boolean interrupted) {
-    this.m_climber.setClimberPercentOutput(0.0);
-    this.m_climber.engagePistonBrake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     return false;
-  }
-
-  private enum climberState {
-    MOVING,
-    STILL
   }
 }
