@@ -25,11 +25,11 @@ public class SetClimberOutput extends CommandBase {
    * @param input The input used to control the climber output.
    */
   public SetClimberOutput(Climber climber, DoubleSupplier input) {
-    this.m_climber = climber;
-    this.m_input = input;
+    m_climber = climber;
+    m_input = input;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(climber);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
@@ -41,17 +41,15 @@ public class SetClimberOutput extends CommandBase {
     if(m_climber.getClimbState()) {
       double input = Math.abs(m_input.getAsDouble()) > 0.2 ? m_input.getAsDouble() : 0;
 
-      climberState desiredDirection = (input == 0 ? climberState.STILL : climberState.MOVING);
-
+      climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
       switch (desiredDirection) {
         case MOVING:
-          this.m_climber.disengagePistonBrake();
-          this.m_climber.setClimberPercentOutput(input);
+          m_climber.disengagePistonBrake();
+          m_climber.setClimberPercentOutput(input);
           break;
         case STILL:
-          this.m_climber.engagePistonBrake();
-          break;
         default:
+          m_climber.engagePistonBrake();
           break;
       }
     }
@@ -59,9 +57,9 @@ public class SetClimberOutput extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {
-    this.m_climber.setClimberPercentOutput(0.0);
-    this.m_climber.engagePistonBrake();
+  public void end(boolean interrupted) {
+    m_climber.setClimberPercentOutput(0.0);
+    m_climber.engagePistonBrake();
   }
 
   // Returns true when the command should end.

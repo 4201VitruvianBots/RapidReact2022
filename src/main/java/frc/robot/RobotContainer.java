@@ -128,8 +128,8 @@ public class RobotContainer {
     xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
 
-    xBoxButtons[6].whileHeld(new SetClimbState(m_climber, true));
-    xBoxButtons[7].whileHeld(new SetClimbState(m_climber, false));
+    xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {

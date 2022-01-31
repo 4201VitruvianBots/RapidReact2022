@@ -9,9 +9,11 @@ import static frc.robot.Constants.Climber.*;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /**
@@ -28,11 +30,12 @@ public class Climber extends SubsystemBase {
   public Climber() {
     // Set up climber motor
     for (int i = 0; i < 1; i++) {
-      this.climbMotors[i].configFactoryDefault();
-      this.climbMotors[i].setSelectedSensorPosition(0);
-      this.climbMotors[i].setNeutralMode(NeutralMode.Brake);
-      this.climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+      climbMotors[i].configFactoryDefault();
+      climbMotors[i].setSelectedSensorPosition(0);
+      climbMotors[i].setNeutralMode(NeutralMode.Brake);
+      climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
+    climbMotors[1].set(TalonFXControlMode.Follower, climbMotors[0].getDeviceID());
   }
 
   public boolean getClimbState() {
@@ -49,7 +52,7 @@ public class Climber extends SubsystemBase {
    * @return the climber state the climb brake (true is engaged)
    */
   public ClimbBrakeStatus getClimbBrakeStatus() {
-    return this.climbBrakeSolenoid.get() == DoubleSolenoid.Value.kForward
+    return climbBrakeSolenoid.get() == DoubleSolenoid.Value.kForward
         ? ClimbBrakeStatus.ENGAGED
         : ClimbBrakeStatus.DISENGAGED;
   }
@@ -57,14 +60,14 @@ public class Climber extends SubsystemBase {
   /** sets the state of the climb piston */
   public void engagePistonBrake() {
     if (getClimbBrakeStatus() != ClimbBrakeStatus.ENGAGED) {
-      this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kForward);
+      climbBrakeSolenoid.set(DoubleSolenoid.Value.kForward);
     }
   }
 
   /** sets the state of the climb piston */
   public void disengagePistonBrake() {
     if (getClimbBrakeStatus() != ClimbBrakeStatus.DISENGAGED) {
-      this.climbBrakeSolenoid.set(DoubleSolenoid.Value.kReverse);
+      climbBrakeSolenoid.set(DoubleSolenoid.Value.kReverse);
     }
   }
 
@@ -73,10 +76,8 @@ public class Climber extends SubsystemBase {
    *
    * @param value output value
    */
-  public void setClimberPercentOutput(final double value) {
-    for (int i = 0; i < 1; i++) {
-      this.climbMotors[i].set(ControlMode.PercentOutput, value);
-    }
+  public void setClimberPercentOutput(double value) {
+      climbMotors[0].set(ControlMode.PercentOutput, value);
   }
 
   /**
@@ -85,12 +86,18 @@ public class Climber extends SubsystemBase {
    * @return the climber position (in raw sensor units)
    */
   public double getClimberPosition() {
-    return this.climbMotors[0].getSelectedSensorPosition();
+    return climbMotors[0].getSelectedSensorPosition();
+  }
+
+  private void updateSmartDashboard() {
+    SmartDashboardTab.putBoolean("Climber", "Climb Mode", getClimbState());
+    SmartDashboardTab.putNumber("Climber", "Climb Output", climbMotors[0].getMotorOutputPercent());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateSmartDashboard();
   }
 
   @Override
