@@ -128,15 +128,15 @@ public class RobotContainer {
     xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
 
-    xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
-    xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
+    // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    m_climber.setDefaultCommand(
-        new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    // m_climber.setDefaultCommand(
+    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
