@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -18,6 +19,7 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
+import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
@@ -57,6 +59,9 @@ public class RobotContainer {
   public Button[] xBoxButtons = new Button[10];
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
+  // public static boolean allianceColorBlue;
+  // public static boolean allianceColorRed;
+  private final Command m_postAutoIntake = new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake);
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
@@ -108,6 +113,7 @@ public class RobotContainer {
 
     xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+    leftButtons[0].cancelWhenPressed(m_postAutoIntake);
   }
 
   public void initializeSubsystems() {
@@ -135,6 +141,7 @@ public class RobotContainer {
   public void disabledPeriodic() {}
 
   public void teleopInit() {
+    CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
   }
 
