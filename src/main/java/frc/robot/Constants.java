@@ -29,10 +29,16 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
+  public final class Pneumatics {
+    public static final int pcmOne = 11;
+    public static final int intakePistonForward = 0;
+    public static final int intakePistonReverse = 1;
+    public static final int climbPistonForward = 2;
+    public static final int climbPistonReverse = 3;
+  }
+
   public final class Climber {
     public static final int climbMotorA = 50;
-    public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 5;
   }
 
   public final class Indexer {
@@ -49,18 +55,16 @@ public final class Constants {
   }
 
   public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 2;
-    public static final int intakePistonReverse = 3;
     public static final int intakeMotor = 30;
     // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
-    public static final int[] kLeftEncoderPorts = new int[] {10, 11};
-    public static final int[] kRightEncoderPorts = new int[] {12, 13};
-    public static final boolean kLeftEncoderReversed = false;
-    public static final boolean kRightEncoderReversed = true;
+    // Number identification for the CAN motors
+    public static final int leftFrontDriveMotor = 20;
+    public static final int leftRearDriveMotor = 21;
+    public static final int rightFrontDriveMotor = 22;
+    public static final int rightRearDriveMotor = 23;
 
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.5);
     public static final DifferentialDriveKinematics kDriveKinematics =
@@ -69,7 +73,7 @@ public final class Constants {
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
     public static final double kDriveGearing = 9.05;
 
-    public static final int kMagEncoderCPR = 4096;
+    public static final int kCANcoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
@@ -95,12 +99,6 @@ public final class Constants {
             kaVoltSecondsSquaredPerRadian);
 
     public static final double kMaxVelocityMetersPerSecond = 2.0;
-
-    // Number identification for the CAN motors
-    public static final int leftFrontDriveMotor = 20;
-    public static final int leftRearDriveMotor = 21;
-    public static final int rightFrontDriveMotor = 22;
-    public static final int rightRearDriveMotor = 23;
 
     public static enum MotorPosition {
       LEFT_FRONT,
@@ -184,11 +182,11 @@ public final class Constants {
   }
 
   public final class Turret {
+    public static final int turretMotor = 60;
+    public static final int turretEncoder = 61;
 
     // TODO: might not need kErrorBand, need to confirm
     public static final int kErrorBand = 50;
-    public static final int turretMotor = 60;
-    public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
     public static final double kTurretKs = 1.3661;

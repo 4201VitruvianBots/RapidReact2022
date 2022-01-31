@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.Climber.*;
+import static frc.robot.Constants.Pneumatics.climbPistonForward;
+import static frc.robot.Constants.Pneumatics.climbPistonReverse;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
