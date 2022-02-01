@@ -49,6 +49,7 @@ public class RunIntake extends CommandBase {
   public void end(boolean interrupted) {
     //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
+    m_indexer.setIndexerPercentOutput(0);
   }
 
   // Returns true when the command should end.
