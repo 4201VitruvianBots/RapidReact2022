@@ -29,10 +29,20 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
+  public final class Pneumatics {
+    public static final int pcmOne = 11;
+    public static final int intakePistonForward = 0;
+    public static final int intakePistonReverse = 1;
+    public static final int climbPistonForward = 2;
+    public static final int climbPistonReverse = 3;
+  }
+
   public final class Climber {
     public static final int climbMotorA = 50;
-    public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 5;
+    public static final int climbMotorB = 51;
+
+    public static final double climberBottomOutValue = 0;
+    public static final double climberTopOutValue = 1;
   }
 
   public final class Indexer {
@@ -49,9 +59,6 @@ public final class Constants {
   }
 
   public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 2;
-    public static final int intakePistonReverse = 3;
     public static final int intakeMotor = 30;
     // public static final int intakeSensor = 0;
   }
@@ -85,6 +92,7 @@ public final class Constants {
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 
+    public static final int kCANcoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
@@ -176,11 +184,11 @@ public final class Constants {
   }
 
   public final class Turret {
+    public static final int turretMotor = 60;
+    public static final int turretEncoder = 61;
 
     // TODO: might not need kErrorBand, need to confirm
     public static final int kErrorBand = 50;
-    public static final int turretMotor = 60;
-    public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
     public static final double kTurretKs = 1.3661;
