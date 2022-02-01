@@ -4,9 +4,7 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Climber.*;
-import static frc.robot.Constants.Pneumatics.climbPistonForward;
-import static frc.robot.Constants.Pneumatics.climbPistonReverse;
+import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
@@ -24,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbBrakeSolenoid =
-      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
-  private final TalonFX[] climbMotors = {new TalonFX(climbMotorA), new TalonFX(climbMotorB)};
+      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.Pneumatics.climbPistonForward, Constants.Pneumatics.climbPistonReverse);
+  private final TalonFX[] climbMotors = {new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)};
   private boolean climbState;
 
   /** Creates a new Climber. */
