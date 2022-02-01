@@ -19,8 +19,6 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.climber.SetClimbState;
-import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;

@@ -8,13 +8,13 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /** Raises/lowers the climber based on joystick input */
 public class SetClimbState extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
+
   private boolean m_state;
 
   /**
@@ -38,13 +38,11 @@ public class SetClimbState extends CommandBase {
   }
 
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {
-  }
+  public void end(final boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
