@@ -29,7 +29,7 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
     // Set up climber motor
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < climbMotors.length; i++) {
       climbMotors[i].configFactoryDefault();
       climbMotors[i].setSelectedSensorPosition(0);
       climbMotors[i].setNeutralMode(NeutralMode.Brake);
