@@ -102,7 +102,7 @@ public class DriveTrain extends SubsystemBase {
 
       motor.configOpenloopRamp(0.1);
       motor.configClosedloopRamp(0.1);
-      motor.setNeutralMode(NeutralMode.Coast);
+      motor.setNeutralMode(NeutralMode.Brake);
       motor.configForwardSoftLimitEnable(false);
       motor.configReverseSoftLimitEnable(false);
 

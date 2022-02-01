@@ -29,25 +29,38 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
+  public final class Pneumatics {
+    public static final int pcmOne = 11;
+    public static final int intakePistonForward = 0;
+    public static final int intakePistonReverse = 1;
+    public static final int climbPistonForward = 2;
+    public static final int climbPistonReverse = 3;
+  }
+
   public final class Climber {
     public static final int climbMotorA = 50;
-    public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 8;
+    public static final int climbMotorB = 51;
+
+    public static final double climberBottomOutValue = 0;
+    public static final double climberTopOutValue = 1;
   }
 
   public final class Indexer {
     public static final int indexerMotor = 35;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
+    // public static final int indexerTopSensor = 1;
+    // public static final int indexerBottomSensor = 2;
+
+    // public static final enum CARGO_COLOR {
+    //   RED,
+    //   BLUE,
+    //   UNKNOWN
+    // }
   }
 
   public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 47;
-    public static final int intakeSensor = 0;
+    public static final int intakeMotor = 30;
+    // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
@@ -79,6 +92,7 @@ public final class Constants {
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 
+    public static final int kCANcoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
@@ -151,7 +165,7 @@ public final class Constants {
   }
 
   public final class LED {
-    public static final int ledPort = 0;
+    public static final int CANdleID = 0;
   }
 
   public final class Flywheel {
@@ -160,22 +174,49 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
-    // Volts per (radian per second)
-    public static final double kFlywheelKv = 0.017092;
-
-    // Volts per (radian per second squared)
-    public static final double kFlywheelKa = 0.0083035;
-
-    public static final double kFlywheelKs = 0.53456;
+    public static final double kFlywheelKs = 0.53456; // 0.63348; // Jamgo: 0.53456;
+    public static final double kFlywheelKv = 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
+    public static final double kFlywheelKa = 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
     public static final double rpmTolerance = 25.0;
+
+    public static final double gearRatio = 1.0; // 2.0 / 3.0;
   }
 
   public final class Turret {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
+
+    // TODO: might not need kErrorBand, need to confirm
+    public static final int kErrorBand = 50;
     public static final int turretHomeSensor = 3;
+
+    public static final double kTurretKs = 1.3661;
+    public static final double kTurretKv = 0.068821;
+    public static final double kTurretKa = 0.0063138;
+
+    public static final double degreeTolerance = 1.0;
+
+    public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
+
+    public static final double toTurretGearRatio = 27.0 / 1.0;
   }
 
-  public final class Vision {}
+  public static final class Vision {
+    public enum CAMERA_TYPE {
+      OAK_D,
+      LIMELIGHT,
+      PHOTONVISION
+    }
+
+    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+
+    /*
+     * Co-Processor IP Addresses
+     * 10.42.1.100: Goal Camera
+     * 10.42.1.101: Intake Camera
+     */
+    public static String goalCameraIP = "10.42.1.100";
+    public static String intakeCameraIP = "10.42.1.101";
+  }
 }

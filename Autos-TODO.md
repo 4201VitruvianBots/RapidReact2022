@@ -14,11 +14,13 @@
   - [x] Decide Path
   - [x] Write waypoints
   - [x] Test in sim
-- [ ] Add ball alignment 
-  - [ ] One ball
-  - [ ] Two ball
-  - [ ] Three ball
-- [ ] Add Post-Auto intake command
+- [x] Add ball alignment
+  - [x] One ball
+  - [x] Two ball
+  - [x] Three ball
+- [x] Add Post-Auto intake command
+- [ ] Schedule Post-Auto intake
+- [ ] Make Post-Auto intake interruptible
 
 ## When jango is ready
 - [x] Test drivetrain code on jango
@@ -47,7 +49,7 @@
 - [x] Fix distance issues
 
 ## When field is ready
-- [ ] Test a robot on the field
+- [x] Test a robot on the field
   - [ ] Fix errors
 
 ## When testbed is ready
@@ -57,4 +59,7 @@
 ## When comp robot is ready
 - [x] Test drivetrain code on new robot
 - [x] Test paths on new robot
-- [ ] Test on field
+- [x] Test on field
+- [ ] Make autos more accurate and consistent
+- [ ] Make a better way to align robot for autos
+- [ ] Test other subsystem code in autos

@@ -30,13 +30,10 @@ public class SetAndHoldRpmSetpoint extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
-  // TODO uncomment execute once vision is made
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*    m_vision.ledsOn();
-        m_vision.setLastValidTargetTime();
-    */
+    m_vision.setGoalCameraLedState(true);
     m_flywheel.setRPM(m_RPM);
   }
 
