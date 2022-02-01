@@ -13,22 +13,27 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.auto.GroupThreeBallAuto;
+import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
-import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
+import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TCA9548AcolorSensor;
@@ -48,6 +53,8 @@ public class RobotContainer {
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
+  private final LED m_led = new LED();
+  private final Climber m_climber = new Climber();
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
 
@@ -79,10 +86,22 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 2));
-    m_autoChooser.addOption("One Ball Auto", new OneBallAuto(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption("Two Ball Auto", new TwoBallAuto(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption("Three Ball Auto", new ThreeBallAuto(m_driveTrain, m_fieldSim));
+        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    m_autoChooser.addOption(
+        "One Ball Auto",
+        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto",
+        new TwoBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Group Three Ball Auto",
+        new GroupThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Individual Three Ball Auto",
+        new IndividualThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
@@ -116,15 +135,25 @@ public class RobotContainer {
         new Button(
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
-    xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
+
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+
+    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
     xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake,m_indexer));
-    xBoxButtons[7].whileHeld(new RunIndexer(m_indexer));
+    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
+    xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
+
+    // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    // m_climber.setDefaultCommand(
+    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    m_led.setDefaultCommand(
+        new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
 
   /**

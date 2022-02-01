@@ -25,10 +25,10 @@ public class Intake extends SubsystemBase {
   // Intake piston setup
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
-          Constants.Intake.pcmOne,
-          PneumaticsModuleType.REVPH,
-          Constants.Intake.intakePistonForward,
-          Constants.Intake.intakePistonReverse);
+          Constants.Pneumatics.pcmOne,
+          PneumaticsModuleType.CTREPCM,
+          Constants.Pneumatics.intakePistonForward,
+          Constants.Pneumatics.intakePistonReverse);
 
   public Intake() {
     // Motor configuration

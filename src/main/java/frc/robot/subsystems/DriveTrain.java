@@ -43,8 +43,6 @@ public class DriveTrain extends SubsystemBase {
   private final double kI = 0;
   private final double kD = 0;
 
-  private final DifferentialDriveKinematics kinematics =
-      new DifferentialDriveKinematics(Constants.DriveTrain.kTrackWidthMeters);
   private final DifferentialDriveOdometry odometry;
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
@@ -104,7 +102,7 @@ public class DriveTrain extends SubsystemBase {
 
       motor.configOpenloopRamp(0.1);
       motor.configClosedloopRamp(0.1);
-      motor.setNeutralMode(NeutralMode.Coast);
+      motor.setNeutralMode(NeutralMode.Brake);
       motor.configForwardSoftLimitEnable(false);
       motor.configReverseSoftLimitEnable(false);
 
@@ -399,7 +397,7 @@ public class DriveTrain extends SubsystemBase {
    * @return The {@link DifferentialDriveKinematics}
    */
   public DifferentialDriveKinematics getDriveTrainKinematics() {
-    return kinematics;
+    return Constants.DriveTrain.kDriveKinematics;
   }
 
   /**
