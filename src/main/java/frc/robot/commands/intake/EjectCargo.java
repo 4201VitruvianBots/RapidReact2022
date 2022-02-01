@@ -8,45 +8,38 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
-/** An example command that uses an example subsystem. */
-public class SetIntakeManual extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class EjectCargo extends CommandBase {
+  /** Creates a new EjectCargo. */
   private final Intake m_intake;
 
   private final Indexer m_indexer;
 
-  /**
-   * @param intake The intake used by this command
-   * @param indexer The indexer used by this command
-   */
-  public SetIntakeManual(Intake intake, Indexer indexer) {
-    m_intake = intake;
+  public EjectCargo(Intake intake, Indexer indexer) {
+    // Use addRequirements() here to declare subsystem dependencies.    m_intake = intake;
     m_indexer = indexer;
+    m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    addRequirements(intake);
+    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
 
-  /**
-   * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
-   * Indexer forward
-   */
+  // Called every time the scheduler runs while the command is scheduled.
+  // TODO: Use ColorSensors to detect if a there is a bad ball, if so, reverse until there is a
+  // correct ball
   @Override
   public void execute() {
-    m_indexer.setIndexerOutput(1);
-    m_intake.setIntakePercentOutput(0.5);
+    m_indexer.setIndexerPercentOutput(-0.8);
+    m_intake.setIntakePercentOutput(-0.5);
   }
 
-  /**
-   * Called once the command ends or is interrupted. Sets the speed of the Intake and Indexer to 0
-   */
+  // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_indexer.setIndexerOutput(0);
+    m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
   }
 

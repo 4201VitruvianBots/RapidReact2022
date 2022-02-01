@@ -29,49 +29,75 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
+  public final class Pneumatics {
+    public static final int pcmOne = 11;
+    public static final int intakePistonForward = 0;
+    public static final int intakePistonReverse = 1;
+    public static final int climbPistonForward = 2;
+    public static final int climbPistonReverse = 3;
+  }
+
   public final class Climber {
     public static final int climbMotorA = 50;
-    public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 8;
+    public static final int climbMotorB = 51;
+
+    public static final double climberBottomOutValue = 0;
+    public static final double climberTopOutValue = 1;
   }
 
   public final class Indexer {
     public static final int indexerMotor = 35;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
+    // public static final int indexerTopSensor = 1;
+    // public static final int indexerBottomSensor = 2;
+
+    // public static final enum CARGO_COLOR {
+    //   RED,
+    //   BLUE,
+    //   UNKNOWN
+    // }
   }
 
   public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 47;
-    public static final int intakeSensor = 0;
+    public static final int intakeMotor = 30;
+    // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
-    public static final int[] kLeftEncoderPorts = new int[] {10, 11};
-    public static final int[] kRightEncoderPorts = new int[] {12, 13};
-    public static final boolean kLeftEncoderReversed = false;
-    public static final boolean kRightEncoderReversed = true;
+    // Number identification for the CAN motors
+    public static final int leftFrontDriveMotor = 20;
+    public static final int leftRearDriveMotor = 21;
+    public static final int rightFrontDriveMotor = 22;
+    public static final int rightRearDriveMotor = 23;
+
+    public enum MotorPosition {
+      LEFT_FRONT,
+      LEFT_REAR,
+      RIGHT_FRONT,
+      RIGHT_REAR
+    }
+
+    public enum DriveTrainNeutralMode {
+      BRAKE,
+      COAST,
+      /** Master motors brake, follower motors coast */
+      HALF_BRAKE
+    }
 
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.5);
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
+    public static final double kMaxVelocityMetersPerSecond = 2.0;
+    public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-    public static final double kDriveGearing = 8.0;
 
-    public static final int kMagEncoderCPR = 4096;
+    public static final int kCANcoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
         // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
-        (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
-    public static final double kEncoderDistancePerPulseMetersSim =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kMagEncoderCPR * kDriveGearing;
+        (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
 
@@ -89,40 +115,27 @@ public final class Constants {
             kaVoltSecondsSquaredPerMeter,
             kvVoltSecondsPerRadian,
             kaVoltSecondsSquaredPerRadian);
-
-    public static final double kMaxVelocityMetersPerSecond = 2.0;
-
-    public static final int leftFrontDriveMotor = 20;
-    public static final int leftRearDriveMotor = 21;
-    public static final int rightFrontDriveMotor = 22;
-    public static final int rightRearDriveMotor = 23;
-
-    public static enum DriveTrainNeutralMode {
-      ALL_BRAKE,
-      ALL_COAST,
-      FOLLOWER_COAST
-    }
   }
 
   public static final class Sim {
     public static final Pose2d[] redHubBallPos = {
-      new Pose2d(Units.inchesToMeters(438), Units.inchesToMeters(240), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(348), Units.inchesToMeters(297), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(245), Units.inchesToMeters(274), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(188), Units.inchesToMeters(132), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(355), Units.inchesToMeters(29), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(442), Units.inchesToMeters(89), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(580), Units.inchesToMeters(270), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(362), Units.inchesToMeters(13), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(178), Units.inchesToMeters(128), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(239), Units.inchesToMeters(288), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(354), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(453), Units.inchesToMeters(251), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(457), Units.inchesToMeters(80), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(612), Units.inchesToMeters(280), new Rotation2d())
     };
 
     public static final Pose2d[] blueHubBallPos = {
-      new Pose2d(Units.inchesToMeters(460), Units.inchesToMeters(192), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(296), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(206), Units.inchesToMeters(235), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(83), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(301), Units.inchesToMeters(27), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(405), Units.inchesToMeters(50), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(478), Units.inchesToMeters(196), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(300), Units.inchesToMeters(12), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(199), Units.inchesToMeters(76), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(418), Units.inchesToMeters(39), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(200), Units.inchesToMeters(249), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(44), Units.inchesToMeters(42), new Rotation2d())
     };
 
     public static final double fieldWidthMeters = Units.feetToMeters(54);
@@ -135,19 +148,24 @@ public final class Constants {
     public static final double shotSpeedMetersPerSecond = 10;
 
     public static final Pose2d hubPoseMeters =
-        new Pose2d(12.557047, 7.275692, new Rotation2d(Units.degreesToRadians(0)));
+        new Pose2d(
+            fieldWidthMeters / 2, fieldHieghtMeters / 2, new Rotation2d(Units.degreesToRadians(0)));
     public static final Pose2d startPositionMeters = new Pose2d();
 
     public enum BallState {
       ON_FIELD,
       IN_ROBOT,
-      IN_AIR,
-      OUT_OF_BOUNDS
+      IN_AIR
+    }
+
+    public enum BallColor {
+      RED,
+      BLUE
     }
   }
 
   public final class LED {
-    public static final int ledPort = 0;
+    public static final int CANdleID = 0;
   }
 
   public final class Flywheel {
@@ -157,11 +175,7 @@ public final class Constants {
     public static final int encoderUnitsPerRotation = 2048;
 
     public static final double kFlywheelKs = 0.53456; // 0.63348; // Jamgo: 0.53456;
-
-    // Volts per (radian per second)
     public static final double kFlywheelKv = 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
-
-    // Volts per (radian per second squared)
     public static final double kFlywheelKa = 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
     public static final double rpmTolerance = 25.0;
@@ -170,19 +184,16 @@ public final class Constants {
   }
 
   public final class Turret {
+    public static final int turretMotor = 60;
+    public static final int turretEncoder = 61;
 
     // TODO: might not need kErrorBand, need to confirm
     public static final int kErrorBand = 50;
-    public static final int turretMotor = 60;
-    public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKv = 0.068821;
-
-    // Volts per (radian per second squared)
-    public static final double kTurretKa = 0.0063138;
-
     public static final double kTurretKs = 1.3661;
+    public static final double kTurretKv = 0.068821;
+    public static final double kTurretKa = 0.0063138;
 
     public static final double degreeTolerance = 1.0;
 
@@ -200,10 +211,11 @@ public final class Constants {
 
     public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
 
-    /* Co-Processor IP Addresses
-       10.42.1.100: Goal Camera
-       10.42.1.101: Intake Camera
-    */
+    /*
+     * Co-Processor IP Addresses
+     * 10.42.1.100: Goal Camera
+     * 10.42.1.101: Intake Camera
+     */
     public static String goalCameraIP = "10.42.1.100";
     public static String intakeCameraIP = "10.42.1.101";
   }

@@ -5,43 +5,44 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.intake;
+package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Climber;
 
-/** An example command that uses an example subsystem. */
-public class ToggleIntakePistons extends CommandBase {
+/** Raises/lowers the climber based on joystick input */
+public class SetClimbState extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Intake intake;
+  private Climber m_climber;
+
+  private boolean m_state;
 
   /**
-   * Creates a new ExampleCommand.
+   * Creates a new SetClimberOutput.
    *
-   * @param subsystem The subsystem used by this command.
+   * @param climber The climber used by this command.
+   * @param state The climb state to use
    */
-  public ToggleIntakePistons(Intake subsystem) {
-    intake = subsystem;
+  public SetClimbState(Climber climber, boolean state) {
+    m_climber = climber;
+    m_state = state;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(climber);
   }
 
-  /**
-   * Called when the command is initially scheduled. Doesn't Set the Intake Piston to the intake
-   * status TODO: Check With Jacob About Line 37
-   */
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setIntakePiston(!intake.getIntakePistonExtendStatus());
+    m_climber.setClimbState(m_state);
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(final boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

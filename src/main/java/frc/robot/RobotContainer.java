@@ -6,21 +6,36 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.auto.GroupThreeBallAuto;
+import frc.robot.commands.auto.IndividualThreeBallAuto;
+import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.turret.SetTurretRobotRelativeAngle;
+import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.ToggleIntakePiston;
+import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
@@ -33,27 +48,63 @@ import frc.robot.subsystems.Vision;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final DriveTrain m_driveTrain = new DriveTrain();
-  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain);
   private final Controls m_controls = new Controls();
+  private final Turret m_turret = new Turret(m_driveTrain);
   private final Vision m_vision = new Vision(m_controls);
   private final Flywheel m_flywheel = new Flywheel(m_vision);
-  private final Indexer m_indexer = new Indexer();
   private final Intake m_intake = new Intake();
-  private final Turret m_turret = new Turret(m_driveTrain);
+  private final Indexer m_indexer = new Indexer();
+  private final LED m_led = new LED();
+  private final Climber m_climber = new Climber();
+
+  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
-  static Joystick xBoxController = new Joystick(Constants.USB.xBoxController);
-  static Joystick testController = new Joystick(3);
+  static XboxController xBoxController = new XboxController(Constants.USB.xBoxController);
 
   public Button[] leftButtons = new Button[2];
   public Button[] rightButtons = new Button[2];
   public Button[] xBoxButtons = new Button[10];
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
+  // public static boolean allianceColorBlue;
+  // public static boolean allianceColorRed;
+
+  public static enum CommandSelector {
+    BLUE_ALLIANCE, // 01
+    RED_ALLIANCE
+  }
+
+  public final SendableChooser<CommandSelector> m_allianceChooser =
+      new SendableChooser<CommandSelector>();
+
+  private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Setup auto chooser
+    m_autoChooser.setDefaultOption(
+        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    m_autoChooser.addOption(
+        "One Ball Auto",
+        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto",
+        new TwoBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Group Three Ball Auto",
+        new GroupThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Individual Three Ball Auto",
+        new IndividualThreeBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
+
+    SmartDashboard.putData("Selected Auto", m_autoChooser);
+
     initializeSubsystems();
 
     // Configure the button bindings
@@ -76,24 +127,29 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    xBoxLeftTrigger = new Button(() -> xBoxController.getRawButton(2));
-    xBoxRightTrigger = new Button(() -> xBoxController.getRawButton(3));
+    xBoxLeftTrigger =
+        new Button(
+            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
+    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    int baseRPM = 3000;
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 50));
-    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 100));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 150));
-    xBoxButtons[4].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 200));
-    xBoxButtons[5].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 250));
+    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
+    xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
+    xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
 
-    xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
+    // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    // m_climber.setDefaultCommand(
+    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    m_led.setDefaultCommand(
+        new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
 
   /**
@@ -103,20 +159,38 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return new TestPath(m_driveTrain, m_fieldSim);
+    return m_autoChooser.getSelected();
   }
 
   public void robotPeriodic() {}
 
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    m_driveTrain.setMotorTankDrive(0, 0);
+  }
 
   public void disabledPeriodic() {}
 
-  public void teleopInit() {}
+  public void teleopInit() {
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+  }
 
   public void teleopPeriodic() {}
 
-  public void autonomousInit() {}
+  public void autonomousInit() {
+    if (RobotBase.isReal()) {
+      m_driveTrain.resetEncoderCounts();
+      m_driveTrain.resetOdometry(
+          m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetAngle();
+    } else {
+      m_fieldSim.initSim();
+      m_driveTrain.resetEncoderCounts();
+      m_driveTrain.resetOdometry(
+          m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
+      m_driveTrain.resetAngle();
+    }
+  }
 
   public void autonomousPeriodic() {}
 

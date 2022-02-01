@@ -2,35 +2,35 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.turret;
+package frc.robot.commands.controls;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Turret.TurretControlMode;
+import frc.robot.subsystems.Controls;
 
 /** An example command that uses an example subsystem. */
-public class ToggleTurretControlMode extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Turret m_turret;
+public class SetAllianceColor extends CommandBase {
+  private final Controls m_controls;
+  private DriverStation.Alliance m_color;
 
   /**
    * Creates a new ExampleCommand.
    *
    * @param subsystem The subsystem used by this command.
    */
-  public ToggleTurretControlMode(Turret turret) {
-    m_turret = turret;
+  public SetAllianceColor(Controls controls, DriverStation.Alliance color) {
+    m_controls = controls;
+    m_color = color;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(turret);
+    addRequirements(m_controls);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_turret.setControlMode(
-        m_turret.getControlMode() != TurretControlMode.CLOSEDLOOP
-            ? TurretControlMode.CLOSEDLOOP
-            : TurretControlMode.OPENLOOP);
+    m_controls.setOverrideFmsAlliance(true);
+    m_controls.setOverrideFmsAllianceColor(m_color);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,7 +39,10 @@ public class ToggleTurretControlMode extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_controls.setOverrideFmsAlliance(false);
+    m_controls.setOverrideFmsAllianceColor(DriverStation.Alliance.Invalid);
+  }
 
   // Returns true when the command should end.
   @Override
