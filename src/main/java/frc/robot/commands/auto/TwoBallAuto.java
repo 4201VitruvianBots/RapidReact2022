@@ -66,9 +66,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
-     * (except for vision) run indexer & flywheel until indexer stops end sequence
-     * Turn and move forward to line up with blue ball on other side of the line (NOT running intake, indexer, shooter or vision)
-     * End path
+     * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
+     * forward to line up with blue ball on other side of the line (NOT running intake, indexer,
+     * shooter or vision) End path
      */
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -86,7 +86,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         // driving?)
         new IntakePiston(intake, false),
         new ConditionalCommand(
-            new RunIndexer(indexer). withTimeout(1),
+            new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));

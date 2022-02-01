@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;

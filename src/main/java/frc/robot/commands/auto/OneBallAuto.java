@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -63,11 +62,10 @@ public class OneBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(
             new RunIndexer(indexer).withTimeout(0.5),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal)
-            );
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0));
-        // Rev up flywheel while driving backwards
-        // Once finish driving, feed indexer
-        // After that, stop indexer and flywheel
+            RobotBase::isReal));
+    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0));
+    // Rev up flywheel while driving backwards
+    // Once finish driving, feed indexer
+    // After that, stop indexer and flywheel
   }
 }
