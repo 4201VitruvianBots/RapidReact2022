@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbPiston =
-      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
+      new DoubleSolenoid(PneumaticsModuleType.REVPH, climbPistonForward, climbPistonReverse);
   // TODO: Ask the design team about how the climber functions will work and if they will work
   // similarly or different than what the climber did on jango
   private final TalonFX climbMotor = new TalonFX(climbMotorA);
