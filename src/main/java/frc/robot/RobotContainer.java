@@ -111,8 +111,10 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    SmartDashboard.putData("Select Port 0", new InstantCommand(()-> tca9548AcolorSensor.selectMuxChannel(0)));
-    SmartDashboard.putData("Select Port 2", new InstantCommand(()-> tca9548AcolorSensor.selectMuxChannel(2)));
+    SmartDashboard.putData(
+        "Select Port 0", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(0)));
+    SmartDashboard.putData(
+        "Select Port 2", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(2)));
   }
 
   /**
@@ -139,9 +141,9 @@ public class RobotContainer {
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
 
     xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
-    xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
-    xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
@@ -168,9 +170,12 @@ public class RobotContainer {
 
   public void robotPeriodic() {
     SmartDashboard.putNumber("Color Sensor Mux Channel", tca9548AcolorSensor.getMuxChannel());
-    SmartDashboard.putNumber("Color Sensor Blue", tca9548AcolorSensor.getColorSensor().getColor().blue);
-    SmartDashboard.putNumber("Color Sensor Red", tca9548AcolorSensor.getColorSensor().getColor().red);
-    SmartDashboard.putNumber("Color Sensor Green", tca9548AcolorSensor.getColorSensor().getColor().green);
+    SmartDashboard.putNumber(
+        "Color Sensor Blue", tca9548AcolorSensor.getColorSensor().getColor().blue);
+    SmartDashboard.putNumber(
+        "Color Sensor Red", tca9548AcolorSensor.getColorSensor().getColor().red);
+    SmartDashboard.putNumber(
+        "Color Sensor Green", tca9548AcolorSensor.getColorSensor().getColor().green);
   }
 
   public void disabledInit() {
