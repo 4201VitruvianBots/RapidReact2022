@@ -28,7 +28,7 @@ public class DriveForwardDistance extends SequentialCommandGroup {
       DriveTrain driveTrain, FieldSim fieldSim, double distanceMeters) { // Distance in meters
     Pose2d startPosition = new Pose2d();
     Pose2d endPosition = new Pose2d(distanceMeters, 0, new Rotation2d());
-    TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(1));
+    TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(3), Units.feetToMeters(2));
     configA.setReversed(false);
     configA.setEndVelocity(0);
     configA.addConstraint(
