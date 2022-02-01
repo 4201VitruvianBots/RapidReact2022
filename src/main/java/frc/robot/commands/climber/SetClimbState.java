@@ -12,44 +12,43 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /** Raises/lowers the climber based on joystick input */
-public class RetractClimber extends CommandBase {
+public class SetClimbState extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Climber m_climber;
+  private Climber m_climber;
+  private boolean m_state;
 
   /**
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
+   * @param state The climb state to use
    */
-  public RetractClimber(final Climber climber) {
-    this.m_climber = climber;
+  public SetClimbState(Climber climber, boolean state) {
+    m_climber = climber;
+    m_state = state;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(climber);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.m_climber.disengagePistonBrake();
+    m_climber.setClimbState(m_state);
   }
 
   @Override
   public void execute() {
-    while (this.m_climber.getClimberPosition() > Constants.Climber.climberBottomOutValue) {
-      this.m_climber.setClimberPercentOutput(-0.5);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(final boolean interrupted) {
-    this.m_climber.setClimberPercentOutput(0.0);
-    this.m_climber.engagePistonBrake();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

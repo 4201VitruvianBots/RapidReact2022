@@ -19,6 +19,8 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.ThreeBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.climber.SetClimbState;
+import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -121,15 +123,20 @@ public class RobotContainer {
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
 
-    xBoxButtons[5].whenPressed(new ToggleIntakePiston(m_intake));
+    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
     xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
-    xBoxButtons[7].whileHeld(new RunIndexer(m_indexer));
+    xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
+
+    // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    // m_climber.setDefaultCommand(
+    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
