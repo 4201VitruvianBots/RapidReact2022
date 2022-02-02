@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -26,9 +25,12 @@ public class Climber extends SubsystemBase {
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
-    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
+    new TalonFX(Constants.Climber.climbMotorA) // , new TalonFX(Constants.Climber.climbMotorB)
   };
   private boolean climbState;
+
+  private final double upperLimit = 150000.0;
+  private final double lowerLimit = 1000.0;
 
   /** Creates a new Climber. */
   public Climber() {
@@ -39,7 +41,7 @@ public class Climber extends SubsystemBase {
       climbMotors[i].setNeutralMode(NeutralMode.Brake);
       climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
-    climbMotors[1].set(TalonFXControlMode.Follower, climbMotors[0].getDeviceID());
+    // climbMotors[1].set(TalonFXControlMode.Follower, climbMotors[0].getDeviceID());
   }
 
   public boolean getClimbState() {
@@ -81,7 +83,10 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setClimberPercentOutput(double value) {
-    climbMotors[0].set(ControlMode.PercentOutput, value);
+    if ((getClimberPosition() > lowerLimit || value > 0)
+        && (getClimberPosition() < upperLimit || value < 0))
+      climbMotors[0].set(ControlMode.PercentOutput, value * 0.2);
+    else climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   /**
@@ -96,12 +101,17 @@ public class Climber extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboardTab.putBoolean("Climber", "Climb Mode", getClimbState());
     SmartDashboardTab.putNumber("Climber", "Climb Output", climbMotors[0].getMotorOutputPercent());
+    SmartDashboardTab.putNumber("Climber", "Climb Position", getClimberPosition());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
+
+    if ((getClimberPosition() <= lowerLimit && climbMotors[0].getMotorOutputPercent() < 0)
+        || (getClimberPosition() >= upperLimit && climbMotors[0].getMotorOutputPercent() > 0))
+      climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   @Override
