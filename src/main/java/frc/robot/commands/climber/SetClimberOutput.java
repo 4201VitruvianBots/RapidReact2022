@@ -38,7 +38,7 @@ public class SetClimberOutput extends CommandBase {
 
   @Override
   public void execute() {
-    if(m_climber.getClimbState()) {
+    if (m_climber.getClimbState()) {
       double input = Math.abs(m_input.getAsDouble()) > 0.2 ? m_input.getAsDouble() : 0;
 
       climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);

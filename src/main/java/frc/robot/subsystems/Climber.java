@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Climber.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -15,6 +13,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * climber will only be making for a mid-climb as of 1/11/22 in the future I hope that the climber
@@ -22,14 +21,19 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbBrakeSolenoid =
-      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
-  private final TalonFX[] climbMotors = {new TalonFX(climbMotorA), new TalonFX(climbMotorB)};
+      new DoubleSolenoid(
+          PneumaticsModuleType.CTREPCM,
+          Constants.Pneumatics.climbPistonForward,
+          Constants.Pneumatics.climbPistonReverse);
+  private final TalonFX[] climbMotors = {
+    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
+  };
   private boolean climbState;
 
   /** Creates a new Climber. */
   public Climber() {
     // Set up climber motor
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < climbMotors.length; i++) {
       climbMotors[i].configFactoryDefault();
       climbMotors[i].setSelectedSensorPosition(0);
       climbMotors[i].setNeutralMode(NeutralMode.Brake);
@@ -77,7 +81,7 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setClimberPercentOutput(double value) {
-      climbMotors[0].set(ControlMode.PercentOutput, value);
+    climbMotors[0].set(ControlMode.PercentOutput, value);
   }
 
   /**
