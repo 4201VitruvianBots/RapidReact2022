@@ -84,11 +84,16 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
-        new IntakePiston(intake, false),
         new ConditionalCommand(
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        new ParallelDeadlineGroup(
+            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new RunIntake(intake, indexer)).withTimeout(5),
+        new ConditionalCommand(
+            new RunIndexer(indexer).withTimeout(1),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal));
   }
 }

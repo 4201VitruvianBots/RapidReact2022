@@ -190,7 +190,7 @@ public class RobotContainer {
   public void disabledPeriodic() {}
 
   public void teleopInit() {
-    CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
+    // CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
   }
 
