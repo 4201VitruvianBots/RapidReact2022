@@ -20,6 +20,7 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -96,6 +97,10 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Group Three Ball Auto",
