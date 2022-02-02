@@ -29,7 +29,7 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Pneumatics {
+  public static final class Pneumatics {
     public static final int pcmOne = 11;
     public static final int intakePistonForward = 10;
     public static final int intakePistonReverse = 8;
@@ -45,17 +45,17 @@ public final class Constants {
     public static final double climberTopOutValue = 1;
   }
 
-  public final class Indexer {
+  public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
-    // public static final int indexerTopSensor = 1;
-    // public static final int indexerBottomSensor = 2;
+    public static final int indexerTopSensor = 1;
+    public static final int indexerBottomSensor = 2;
 
-    // public static final enum CARGO_COLOR {
-    //   RED,
-    //   BLUE,
-    //   UNKNOWN
-    // }
+    public static enum CARGO_COLOR {
+      RED,
+      BLUE,
+      UNKNOWN
+    }
   }
 
   public final class Intake {
