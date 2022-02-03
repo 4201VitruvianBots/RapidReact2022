@@ -225,12 +225,8 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    setMotorPercentOutput(leftOutput, rightOutput);
-    // setMotorVelocityMetersPerSecond(leftOutput *
-    // Constants.DriveTrain.kMaxVelocityMetersPerSecond,
-    // rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
-    // setVoltageOutput(leftOutput * RobotController.getBatteryVoltage(), rightOutput *
-    // RobotController.getBatteryVoltage());
+    //setMotorPercentOutput(leftOutput, rightOutput);
+    setMotorTankDrive(leftOutput, rightOutput);
   }
 
   /**
@@ -297,22 +293,22 @@ public class DriveTrain extends SubsystemBase {
    * @param rightSpeed The velocity for the right side of the drivetrain
    */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
-    m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
-    m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     driveMotors
         .get(MotorPosition.LEFT_FRONT)
         .set(
             ControlMode.Velocity,
-            m_leftOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
-            feedforward.calculate(m_leftOutput));
+            feedforward.calculate(leftSpeed));
     driveMotors
         .get(MotorPosition.RIGHT_FRONT)
         .set(
             ControlMode.Velocity,
-            m_rightOutput / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
-            feedforward.calculate(m_rightOutput));
+            feedforward.calculate(rightSpeed));
+    m_leftOutput = leftSpeed / kMaxVelocityMetersPerSecond;
+    m_rightOutput = rightSpeed / kMaxVelocityMetersPerSecond;
   }
 
   /**

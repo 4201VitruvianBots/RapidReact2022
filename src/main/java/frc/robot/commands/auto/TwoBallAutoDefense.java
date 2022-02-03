@@ -89,8 +89,9 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new ParallelDeadlineGroup(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new RunIntake(intake, indexer)).withTimeout(5),
+                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new RunIntake(intake, indexer))
+            .withTimeout(5),
         new ConditionalCommand(
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
