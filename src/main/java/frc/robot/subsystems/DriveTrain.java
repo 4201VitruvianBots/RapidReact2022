@@ -225,7 +225,7 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    //setMotorPercentOutput(leftOutput, rightOutput);
+    // setMotorPercentOutput(leftOutput, rightOutput);
     setMotorTankDrive(leftOutput, rightOutput);
   }
 
@@ -307,8 +307,8 @@ public class DriveTrain extends SubsystemBase {
             rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
             feedforward.calculate(rightSpeed));
-    m_leftOutput = leftSpeed / kMaxVelocityMetersPerSecond;
-    m_rightOutput = rightSpeed / kMaxVelocityMetersPerSecond;
+    m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
+    m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
   }
 
   /**
