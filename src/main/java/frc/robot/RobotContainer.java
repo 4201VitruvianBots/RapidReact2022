@@ -24,9 +24,6 @@ import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
-import frc.robot.commands.intake.ReverseIntake;
-import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -133,10 +130,6 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
-
-    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
-    xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
