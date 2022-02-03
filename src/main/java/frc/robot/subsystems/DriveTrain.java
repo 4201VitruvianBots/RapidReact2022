@@ -240,9 +240,10 @@ public class DriveTrain extends SubsystemBase {
    * @param rightOutput The output for the right side of the drivetrain
    */
   public void setMotorTankDrive(double leftOutput, double rightOutput) {
-    setMotorVelocityMetersPerSecond(
-        leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
-        rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    // setMotorVelocityMetersPerSecond(
+    //     leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
+    //     rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    setMotorPercentOutput(leftOutput, rightOutput);
   }
 
   /**

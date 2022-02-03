@@ -20,6 +20,7 @@ import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
+import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -90,7 +91,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 2));
     m_autoChooser.addOption(
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
@@ -196,7 +197,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     // CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
   }
 
   public void teleopPeriodic() {}
