@@ -8,15 +8,14 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.revrobotics.ColorSensorV3;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Indexer.CARGO_COLOR;
-import frc.robot.commands.intake.ReverseIntake;
 
 public class Indexer extends SubsystemBase {
   private final double kI_Zone = 1;
@@ -30,9 +29,9 @@ public class Indexer extends SubsystemBase {
   TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
 
   // Indexer sensors setup
-  DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
-  DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerBottomSensor);
-  
+  DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
+  DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerFrontSensor);
+
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
@@ -76,39 +75,32 @@ public class Indexer extends SubsystemBase {
   public Color getColor() {
     return sensor.getColor();
   }
-  
-  /**
-   * Returns int based on color detection
-   * @return none = 0; red = 1; blue = 3
-   */
-  public int panelColor() { 
-    if(getColor().red > getColor().blue * 3 && getColor().red > getColor().green * 1.33) {           
-       return 1;
-     } else if(getColor().blue < getColor().green * 1.15 && getColor().green < getColor().blue * 1.15 && getColor().blue > getColor().red * 2.5) {
-      return 3;
-    } else
-       return 0;
-  }
 
   /**
-   * Checks cargo color based on panel color value
-   * @return Cargo Color
+   * Returns int based on color detection
+   *
+   * @return Color of cargo
    */
   public DriverStation.Alliance getCargoColor() {
-    if(panelColor() == 1) {
+    if (getColor().red > getColor().blue * 3 && getColor().red > getColor().green * 1.33) {
       return DriverStation.Alliance.Red;
-    } else if (panelColor() == 3) {
+    } else if (getColor().green < getColor().blue * 1.15
+        && getColor().blue > getColor().red * 2.5) {
       return DriverStation.Alliance.Blue;
-    } else {
-      return DriverStation.Alliance.Invalid;
-    }
+    } else return DriverStation.Alliance.Invalid;
   }
 
   @Override
   public void periodic() {
+    SmartDashboardTab.putNumber("Indexer", "Red", getColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Blue", getColor().blue);
+    SmartDashboardTab.putNumber("Indexer", "Green", getColor().green);
+    SmartDashboardTab.putString("Indexer", "Color", getCargoColor().toString());
+    SmartDashboardTab.putBoolean("Indexer", "BeanBreakFront", getIndexerFrontSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeanBreakRear", getIndexerRearSensorTripped());
     // This method will be called once per scheduler run
   }
-    
+
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation

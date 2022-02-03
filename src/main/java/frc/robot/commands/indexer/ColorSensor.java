@@ -34,33 +34,27 @@ public class ColorSensor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /**
-     * Uses intake if cargo color is wrong
-     */
-    if(m_indexer.getIndexerFrontSensorTripped()) {
-      if(m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
+    /** Uses intake if cargo color is wrong */
+    if (m_indexer.getIndexerFrontSensorTripped()) {
+      if (m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
         new ReverseIntake(m_intake, m_indexer);
       } else if (m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
         new ReverseIntake(m_intake, m_indexer);
       }
     }
-    /**
-     * Uses outtake if cargo color is wrong
-     */
-    if(m_indexer.getIndexerFrontSensorTripped()) {
-      if(m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
-        //TODO: add outtake method
+    /** Uses outtake if cargo color is wrong */
+    if (m_indexer.getIndexerFrontSensorTripped()) {
+      if (m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
+        // TODO: add outtake method
       } else if (m_controls.getAllianceColor() != m_indexer.getCargoColor()) {
-        //TODO: add outtake method
+        // TODO: add outtake method
       }
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

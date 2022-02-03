@@ -48,8 +48,8 @@ public final class Constants {
   public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
+    public static final int indexerRearSensor = 1;
+    public static final int indexerFrontSensor = 2;
 
     public static enum CARGO_COLOR {
       RED,
