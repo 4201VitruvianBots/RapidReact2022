@@ -21,7 +21,7 @@
 - [x] Add Post-Auto intake command
 - [x] Schedule Post-Auto intake
 - [x] Make Post-Auto intake interruptible
-  - [ ] Test this
+  - [x] Test this
 
 ## When jango is ready
 - [x] Test drivetrain code on jango
@@ -60,4 +60,7 @@
 - [ ] Make autos more accurate and consistent
 - [ ] Make a better way to align robot for autos
 - [ ] Test other subsystem code in autos
+  - [x] Intake
+  - [ ] Indexer
+  - [ ] Shooter
 - [ ] Characterize robot

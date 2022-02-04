@@ -14,7 +14,7 @@ import frc.robot.subsystems.Intake;
 
 public class PostAutoIntake extends SequentialCommandGroup {
   /** Order of operations: Run intake Drive forward End sequence (end both) Retract intake */
-  // TODO: Make interruptable by button
+
   /**
    * Drives backward while running intake to pick up another ball after alignment during auto.
    *
