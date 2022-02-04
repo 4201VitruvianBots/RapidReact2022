@@ -19,8 +19,9 @@
   - [x] Two ball
   - [x] Three ball
 - [x] Add Post-Auto intake command
-- [ ] Schedule Post-Auto intake
-- [ ] Make Post-Auto intake interruptible
+- [x] Schedule Post-Auto intake
+- [x] Make Post-Auto intake interruptible
+  - [ ] Test this
 
 ## When jango is ready
 - [x] Test drivetrain code on jango
@@ -52,14 +53,11 @@
 - [x] Test a robot on the field
   - [ ] Fix errors
 
-## When testbed is ready
-- [ ] Test drivetrain code on new robot
-- [ ] Test paths on new robot
-
-## When comp robot is ready
+## When robot is ready
 - [x] Test drivetrain code on new robot
 - [x] Test paths on new robot
 - [x] Test on field
 - [ ] Make autos more accurate and consistent
 - [ ] Make a better way to align robot for autos
 - [ ] Test other subsystem code in autos
+- [ ] Characterize robot
