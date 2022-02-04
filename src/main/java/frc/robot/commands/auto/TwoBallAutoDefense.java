@@ -5,10 +5,12 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.RobotContainer;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -38,6 +40,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
    * @param flywheel Rev flywheel to shoot.
    * @param turret Turn turret to goal.
    * @param vision Find target.
+   * @param robotContainer to run post auto intake.
    */
   public TwoBallAutoDefense(
       DriveTrain driveTrain,
@@ -46,7 +49,8 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
       Indexer indexer,
       Flywheel flywheel,
       Turret turret,
-      Vision vision) {
+      Vision vision,
+      RobotContainer robotContainer) {
     // Drive backward maximum distance to ball
     // While dirivng backward, intake is running
     // Stop (now with 2 cargo) and aim for high goal
@@ -95,6 +99,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         new ConditionalCommand(
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal));
+            RobotBase::isReal),
+        new InstantCommand().andThen(robotContainer::setAutoAligned));
   }
 }

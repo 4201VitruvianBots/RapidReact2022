@@ -5,10 +5,12 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.RobotContainer;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -38,6 +40,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
    * @param flywheel Rev flywheel to shoot.
    * @param turret Turn turret to goal.
    * @param vision Find target.
+   * @param robotContainer to run post auto intake.
    */
   public GroupThreeBallAuto(
       DriveTrain driveTrain,
@@ -46,7 +49,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
       Indexer indexer,
       Flywheel flywheel,
       Turret turret,
-      Vision vision) {
+      Vision vision,
+      RobotContainer robotContainer) {
     /**
      * Shoots cargo the ball started with Drives backwards, intake running, picks up second cargo
      * Shoots second cargo Drives backward, intake running, picks up third cargo Shoots third cargo
@@ -93,7 +97,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new InstantCommand().andThen(robotContainer::setAutoAligned));
   }
   // class ToastAuto {
 }

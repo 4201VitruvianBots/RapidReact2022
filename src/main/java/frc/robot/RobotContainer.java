@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -73,6 +74,7 @@ public class RobotContainer {
   // public static boolean allianceColorRed;
   private final Command m_postAutoIntake =
       new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake);
+  private boolean autoAligned = false;
 
   public static enum CommandSelector {
     BLUE_ALLIANCE, // 01
@@ -97,19 +99,19 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision, this));
     m_autoChooser.addOption(
         "Two Ball Auto Defense",
         new TwoBallAutoDefense(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision, this));
     m_autoChooser.addOption(
         "Group Three Ball Auto",
         new GroupThreeBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision, this));
     m_autoChooser.addOption(
         "Individual Three Ball Auto",
         new IndividualThreeBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision, this));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
@@ -158,6 +160,10 @@ public class RobotContainer {
     leftButtons[0].cancelWhenPressed(m_postAutoIntake);
   }
 
+  public void setAutoAligned() {
+    autoAligned = true;
+  }
+
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
@@ -195,8 +201,11 @@ public class RobotContainer {
   public void disabledPeriodic() {}
 
   public void teleopInit() {
-    // CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    if (autoAligned) {
+      CommandScheduler.getInstance().schedule(true, m_postAutoIntake);
+      autoAligned = false;
+    }
   }
 
   public void teleopPeriodic() {}
