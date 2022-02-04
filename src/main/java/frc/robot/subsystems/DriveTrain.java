@@ -50,6 +50,12 @@ public class DriveTrain extends SubsystemBase {
           Constants.DriveTrain.kvVoltSecondsPerMeter,
           Constants.DriveTrain.kaVoltSecondsSquaredPerMeter);
 
+  private final SimpleMotorFeedforward feedforwardCtre =
+      new SimpleMotorFeedforward(
+          Constants.DriveTrain.ksVolts / 12,
+          Constants.DriveTrain.kvVoltSecondsPerMeter / 12,
+          Constants.DriveTrain.kaVoltSecondsSquaredPerMeter / 12);
+
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
 
@@ -105,8 +111,11 @@ public class DriveTrain extends SubsystemBase {
       motor.setNeutralMode(NeutralMode.Brake);
       motor.configForwardSoftLimitEnable(false);
       motor.configReverseSoftLimitEnable(false);
+      motor.config_kP(0, 0.1);
+      motor.configOpenloopRamp(0.25);
+      motor.configClosedloopRamp(0.1);
 
-      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
@@ -127,9 +136,6 @@ public class DriveTrain extends SubsystemBase {
         .set(ControlMode.Follower, driveMotors.get(MotorPosition.RIGHT_FRONT).getDeviceID());
     driveMotors.get(MotorPosition.LEFT_REAR).setNeutralMode(NeutralMode.Brake);
     driveMotors.get(MotorPosition.RIGHT_REAR).setNeutralMode(NeutralMode.Brake);
-
-    driveMotors.get(MotorPosition.LEFT_REAR).configOpenloopRamp(0);
-    driveMotors.get(MotorPosition.RIGHT_REAR).configOpenloopRamp(0);
   }
 
   /**
@@ -240,10 +246,10 @@ public class DriveTrain extends SubsystemBase {
    * @param rightOutput The output for the right side of the drivetrain
    */
   public void setMotorTankDrive(double leftOutput, double rightOutput) {
-    // setMotorVelocityMetersPerSecond(
-    //     leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
-    //     rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
-    setMotorPercentOutput(leftOutput, rightOutput);
+    setMotorVelocityMetersPerSecond(
+        leftOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond,
+        rightOutput * Constants.DriveTrain.kMaxVelocityMetersPerSecond);
+    //    setMotorPercentOutput(leftOutput, rightOutput);
   }
 
   /**
@@ -300,16 +306,29 @@ public class DriveTrain extends SubsystemBase {
             ControlMode.Velocity,
             leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
-            feedforward.calculate(leftSpeed));
+            feedforwardCtre.calculate(leftSpeed));
     driveMotors
         .get(MotorPosition.RIGHT_FRONT)
         .set(
             ControlMode.Velocity,
             rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
-            feedforward.calculate(rightSpeed));
+            feedforwardCtre.calculate(rightSpeed));
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
+
+    //    m_leftOutput =
+    //        (leftPIDController.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond,
+    // leftSpeed)
+    //                + feedforward.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond))
+    //            / 12.0;
+    //    m_rightOutput =
+    //        rightPIDController.calculate(
+    //                getSpeedsMetersPerSecond().rightMetersPerSecond
+    //                    + feedforward.calculate(getSpeedsMetersPerSecond().rightMetersPerSecond))
+    //            / 12.0;
+    //    driveMotors.get(MotorPosition.LEFT_FRONT).set(ControlMode.PercentOutput, m_leftOutput);
+    //    driveMotors.get(MotorPosition.RIGHT_FRONT).set(ControlMode.PercentOutput, m_rightOutput);
   }
 
   /**
