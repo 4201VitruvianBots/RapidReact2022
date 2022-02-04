@@ -3,7 +3,6 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.controls.SetAllianceColor;
 
@@ -13,20 +12,6 @@ public class Controls extends SubsystemBase {
 
   public Controls() {
     initSmartDashboard();
-  }
-  /**
-   * Updates the alliance color from the driverstation API. If no valid color is returned, it will default to Red.
-   *
-   */
-  public void updateAllianceColor() {
-    if(!overrideAllianceColor) {
-      allianceColor = DriverStation.getAlliance();
-      if (allianceColor != DriverStation.Alliance.Blue || allianceColor != DriverStation.Alliance.Red) {
-        System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
-        allianceColor = DriverStation.Alliance.Red;
-      }
-    } else
-      allianceColor = allianceColorOverride;
   }
   /**
    * Returns the robot's current alliance color
@@ -45,20 +30,7 @@ public class Controls extends SubsystemBase {
       }
     }
 
-  /**
-   * Sets the robot's current alliance color
-   *
-   */
-  public void overrideAllianceColor(DriverStation.Alliance alliance) {
-    this.allianceColorOverride = alliance;
-    this.overrideAllianceColor = true;
-  }
-  /**
-   * Sets the robot's current alliance color
-   *
-   */
-  public void setAllianceColorOverrideState(boolean state) {
-    this.overrideAllianceColor = state;
+    return alliance;
   }
 
   /** Sets whether or not to ignore the FMS to determine alliance color. */
@@ -90,9 +62,6 @@ public class Controls extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-
-    if(DriverStation.getAlliance() == DriverStation.Alliance.Invalid)
-      updateAllianceColor();
   }
 
   @Override

@@ -214,11 +214,6 @@ public final class Constants {
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
-    /* Co-Processor IP Addresses
-       10.42.1.100: Goal Camera
-       10.42.1.101: Intake Camera
-    */
-    public static String goalCameraIP = "10.42.1.100";
-    public static String intakeCameraIP = "10.42.1.101";
+    public static String visionServerIP = "10.42.1.100";
   }
 }
