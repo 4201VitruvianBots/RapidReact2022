@@ -5,48 +5,50 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class SetIntakeOutput extends CommandBase {
+public class ReverseIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
-  private final double m_output;
+  private final Indexer m_indexer;
 
   /**
-   * Creates a new SetIntake
-   *
    * @param intake The intake used by this command
-   * @param output creates an instance of the subsystem
+   * @param indexer The indexer used by this command
    */
-  public SetIntakeOutput(Intake intake, double output) {
+  public ReverseIntake(Intake intake, Indexer indexer) {
     m_intake = intake;
-    m_output = output;
+    m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
+    addRequirements(indexer);
   }
 
-  /** Called when the command is initially scheduled. Sets the Intake state to true */
+  // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_intake.setIntakeState(true);
-  }
+  public void initialize() {}
 
-  /** Called every time the scheduler runs while the command is scheduled. Sets the Intake speed */
+  /**
+   * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
+   * Indexer forward
+   */
   @Override
   public void execute() {
-    m_intake.setIntakePercentOutput(m_output);
+    //  m_indexer.setIndexerPercentOutput(0.5);
+    m_intake.setIntakePercentOutput(-0.8);
+    m_indexer.setIndexerPercentOutput(-0.8);
   }
 
   /**
-   * Called once the command ends or is interrupted. Sets the speed of the Intake to 0 and sets the
-   * intake state to false
+   * Called once the command ends or is interrupted. Sets the speed of the Intake and Indexer to 0
    */
   @Override
   public void end(boolean interrupted) {
+    //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
-    m_intake.setIntakeState(false);
   }
 
   // Returns true when the command should end.

@@ -9,13 +9,15 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 // import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 public class Intake extends SubsystemBase {
   /** Creates a new Intake. */
-  private boolean intaking = false; // is robot intaking
+  private boolean isIntaking = false; // is robot intaking
 
   // Intake motor setup
   private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor);
@@ -23,31 +25,33 @@ public class Intake extends SubsystemBase {
   // Intake piston setup
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
-          Constants.Intake.pcmOne,
-          PneumaticsModuleType.CTREPCM,
-          Constants.Intake.intakePistonForward,
-          Constants.Intake.intakePistonReverse);
+          Constants.Pneumatics.pcmOne,
+          PneumaticsModuleType.REVPH,
+          Constants.Pneumatics.intakePistonForward,
+          Constants.Pneumatics.intakePistonReverse);
 
   public Intake() {
     // Motor configuration
     intakeMotor.configFactoryDefault();
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
+    intakeMotor.setNeutralMode(NeutralMode.Coast);
     intakeMotor.setInverted(false);
+
+    SmartDashboard.putData("Intake Subsystem", this);
   }
 
   /** @return Gets a boolean for the intake's actuation */
   public boolean getIntakeState() {
-    return intaking;
+    return isIntaking;
   }
 
   /** Sets a boolean for the intake's actuation */
   public void setIntakeState(boolean state) {
-    intaking = state;
+    isIntaking = state;
   }
 
   /** @return A boolean value based on the intake's piston status (up or down) */
   public boolean getIntakePistonExtendStatus() {
-    return intakePiston.get() == DoubleSolenoid.Value.kForward ? true : false;
+    return intakePiston.get() == DoubleSolenoid.Value.kForward;
   }
 
   /** Sets intake piston's states to forward and backward */
@@ -60,19 +64,10 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(ControlMode.PercentOutput, value);
   }
 
-  /**
-   * @param intaking is used in this method
-   * @param intakePiston is used in this method
-   * @return Returns the state of the Intake and the intakePiston
-   */
-  public boolean getIntakeStatus(boolean intaking, boolean intakePiston) {
-    return intaking && intakePiston;
-  }
-
   /** updates intake data on to the dashboard */
   public void updateSmartDashboard() {
-    // SmartDashboardTab.putBoolean("Intake", "Intake State", getIntakeState());
-    // SmartDashboardTab.putBoolean("Intake", "Pistons", getIntakePistonExtendStatus());
+    SmartDashboardTab.putBoolean("Intake", "Intake State", getIntakeState());
+    SmartDashboardTab.putBoolean("Intake", "Pistons", getIntakePistonExtendStatus());
   }
 
   @Override

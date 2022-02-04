@@ -5,51 +5,60 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.flywheel;
+package frc.robot.simulation;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Flywheel;
-import frc.robot.subsystems.Vision;
+import frc.robot.Constants.Sim.BallState;
+import frc.robot.simulation.FieldSim.Cargo;
 
 /** An example command that uses an example subsystem. */
-public class SetRpmSetpoint extends CommandBase {
+public class SimulationShoot extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Flywheel m_flywheel;
+  FieldSim m_fieldSim;
 
-  private final Vision m_vision;
-  private final double m_RPM;
+  private static double lastShotTime;
 
-  /** Creates a new ExampleCommand. */
-  public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
+  private boolean m_continuous;
+
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param RobotContainer.m_shooter The subsystem used by this command.
+   */
+  public SimulationShoot(FieldSim fieldSim, boolean continuous) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_flywheel = flywheel;
-    m_RPM = RPM;
-    m_vision = vision;
-    addRequirements(flywheel);
+    m_fieldSim = fieldSim;
+    m_continuous = continuous;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    System.out.print("RpmSetpoint is running");
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_vision.setGoalCameraLedState(true);
-    m_flywheel.setRPM(m_RPM);
+    double currentTime = RobotController.getFPGATime();
+    // Shoot only every 80ms
+    if (((currentTime - lastShotTime) / 1e6) > 0.080) {
+      for (Cargo p : m_fieldSim.getCargo()) {
+        if (p.getBallState() == BallState.IN_ROBOT && !p.getBallShotState()) {
+          p.setBallShotState(true);
+          lastShotTime = currentTime;
+          break;
+        }
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_flywheel.setRPM(0);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !m_continuous;
   }
 }

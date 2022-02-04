@@ -136,7 +136,7 @@ $RECYCLE.BIN/
 *.lnk
 
 ### Gradle ###
-.gradle
+.gradle/
 /build/
 
 # Ignore Gradle GUI config
@@ -162,4 +162,3 @@ bin/
 *-window.json
 
 .idea/
-/.vscode/

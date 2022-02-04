@@ -1,22 +1,19 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.controls.OverrideAllianceColor;
+import frc.robot.commands.controls.SetAllianceColor;
 
 public class Controls extends SubsystemBase {
-  private DriverStation.Alliance allianceColor;
-  private DriverStation.Alliance allianceColorOverride;
-
-  private boolean overrideAllianceColor = false;
+  private boolean overrideFmsAlliance;
+  private DriverStation.Alliance overrideFmsAllianceColor;
 
   public Controls() {
-    updateAllianceColor();
+    initSmartDashboard();
   }
-
   /**
    * Updates the alliance color from the driverstation API. If no valid color is returned, it will default to Red.
    *
@@ -37,11 +34,16 @@ public class Controls extends SubsystemBase {
    * @return Returns the current alliance color.
    */
   public DriverStation.Alliance getAllianceColor() {
-    if(overrideAllianceColor)
-      return allianceColorOverride;
-    else
-      return allianceColor;
-  }
+    DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
+    if (overrideFmsAlliance) {
+      alliance = overrideFmsAllianceColor;
+    } else if (DriverStation.isFMSAttached()) {
+      alliance = DriverStation.getAlliance();
+      if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
+        // System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
+        alliance = DriverStation.Alliance.Red;
+      }
+    }
 
   /**
    * Sets the robot's current alliance color
@@ -57,6 +59,26 @@ public class Controls extends SubsystemBase {
    */
   public void setAllianceColorOverrideState(boolean state) {
     this.overrideAllianceColor = state;
+  }
+
+  /** Sets whether or not to ignore the FMS to determine alliance color. */
+  public void setOverrideFmsAlliance(boolean state) {
+    overrideFmsAlliance = state;
+  }
+
+  /** Sets the alliance color to use */
+  public void setOverrideFmsAllianceColor(DriverStation.Alliance color) {
+    overrideFmsAllianceColor = color;
+  }
+
+  /** Initializes values on SmartDashboard */
+  private void initSmartDashboard() {
+    Shuffleboard.getTab("Controls")
+        .add("Set Alliance Red", new SetAllianceColor(this, DriverStation.Alliance.Red));
+    Shuffleboard.getTab("Controls")
+        .add("Set Alliance Blue", new SetAllianceColor(this, DriverStation.Alliance.Blue));
+
+    Shuffleboard.getTab("Controls").add("Alliance", getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */
