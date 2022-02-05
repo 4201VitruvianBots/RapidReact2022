@@ -7,10 +7,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
 
-/**
- * Sets the LED based on the subsystems' statuses
- */
-
+/** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   // TODO: make sure the correct subsystems are used
@@ -44,14 +41,16 @@ public class GetSubsystemStates extends CommandBase {
   @Override
   public void execute() {
     // the prioritized state to be expressed to the LEDs
-    // TODO: There should be disabled (not ready) and disabled (ready) like what we have on jango.
+    // TODO: There should be disabled (not ready) and disabled (ready) like what we
+    // have on jango.
     boolean Disabled = DriverStation.isDisabled();
     boolean Enabled = true; // Reevaluate what is "Enabled"
     boolean Intaking = m_intake.getIntakeState();
     boolean VisionLock = m_vision.getGoalValidTarget();
     boolean Climbing = m_climber.getClimbState();
 
-    // set in order of priority to be expressed from the least priority to the highest priority
+    // set in order of priority to be expressed from the least priority to the
+    // highest priority
     if (Disabled) {
       m_led.expressState(LED.robotState.Disabled);
     }
