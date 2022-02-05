@@ -152,7 +152,7 @@ public class RobotContainer {
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
-    leftButtons[0].cancelWhenPressed(m_driveTrain.getPostAutoCommand());
+    // leftButtons[0].cancelWhenPressed(m_driveTrain.getPostAutoCommand());
     // TODO Try this if the above does not work
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
   }
