@@ -23,7 +23,6 @@ import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -129,8 +128,11 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
-    xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
+    int baseRPM = 2850;
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 50));
+    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 100));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 150));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
