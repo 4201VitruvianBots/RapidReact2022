@@ -309,14 +309,14 @@ public class DriveTrain extends SubsystemBase {
         .get(MotorPosition.LEFT_FRONT)
         .set(
             ControlMode.Velocity,
-            leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 200),
+            leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
             feedforwardCtre.calculate(leftSpeed));
     driveMotors
         .get(MotorPosition.RIGHT_FRONT)
         .set(
             ControlMode.Velocity,
-            rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 200),
+            rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
             DemandType.ArbitraryFeedForward,
             feedforwardCtre.calculate(rightSpeed));
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
@@ -466,21 +466,21 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "X Coordinate",
-          Units.metersToFeet(getRobotPoseMeters().getTranslation().getX()));
+         getRobotPoseMeters().getTranslation().getX());
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "Y Coordinate",
-          Units.metersToFeet(getRobotPoseMeters().getTranslation().getY()));
+          getRobotPoseMeters().getTranslation().getY());
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "Left Speed",
-          Units.metersToFeet(getSpeedsMetersPerSecond().leftMetersPerSecond));
+         getSpeedsMetersPerSecond().leftMetersPerSecond);
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "Right Speed",
-          Units.metersToFeet(getSpeedsMetersPerSecond().rightMetersPerSecond));
+          getSpeedsMetersPerSecond().rightMetersPerSecond);
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
@@ -499,7 +499,7 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
-          "DriveTrain",
+          "DriveTrain", 
           "Right Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(

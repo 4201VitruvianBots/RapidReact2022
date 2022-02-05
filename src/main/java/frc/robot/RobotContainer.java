@@ -88,7 +88,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveBackwardDistance(m_driveTrain, m_fieldSim, 2));
+        "Drive Forward", new DriveBackwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption(
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
