@@ -234,7 +234,7 @@ public class DriveTrain extends SubsystemBase {
       leftOutput /= magnitude;
       rightOutput /= magnitude;
     }
-
+    
     // setMotorPercentOutput(leftOutput, rightOutput);
     setMotorTankDrive(leftOutput, rightOutput);
   }
@@ -304,18 +304,19 @@ public class DriveTrain extends SubsystemBase {
    * @param rightSpeed The velocity for the right side of the drivetrain
    */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
+    
     driveMotors
         .get(MotorPosition.LEFT_FRONT)
         .set(
             ControlMode.Velocity,
-            leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            leftSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 200),
             DemandType.ArbitraryFeedForward,
             feedforwardCtre.calculate(leftSpeed));
     driveMotors
         .get(MotorPosition.RIGHT_FRONT)
         .set(
             ControlMode.Velocity,
-            rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10),
+            rightSpeed / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 200),
             DemandType.ArbitraryFeedForward,
             feedforwardCtre.calculate(rightSpeed));
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;

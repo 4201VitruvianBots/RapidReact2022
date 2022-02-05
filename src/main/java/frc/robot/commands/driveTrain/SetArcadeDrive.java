@@ -45,17 +45,14 @@ public class SetArcadeDrive extends CommandBase {
     double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
     double throttle = joystickY;
-    throttle =
-        throttle < 0
-            ? Math.max(-0.7, throttle)
-            : throttle; // TODO: Should backwards speed still be limited?
-    double turn = -0.7 * joystickX;
+   
+    double turn = -0.5 * joystickX;
 
     m_driveTrain.setMotorArcadeDrive(throttle, turn);
   }
 
   // Called once the command ends or is interrupted.
-  @Override
+  @Override 
   public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
