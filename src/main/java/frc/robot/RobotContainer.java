@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -22,7 +21,6 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
@@ -111,9 +109,7 @@ public class RobotContainer {
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
     m_autoChooser.addOption(
-        "PostAutoIntake",
-        new PostAutoIntake(
-            m_driveTrain, m_fieldSim, m_indexer, m_intake));
+        "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);

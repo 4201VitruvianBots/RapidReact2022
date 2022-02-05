@@ -20,7 +20,6 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SerialPort;
@@ -75,9 +74,6 @@ public class DriveTrain extends SubsystemBase {
   double m_leftOutput, m_rightOutput;
 
   private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
-
-  /** Simulation Gyro */
-  private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
@@ -158,10 +154,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
-    if (RobotBase.isReal()) return Math.IEEEremainder(-navX.getAngle(), 360);
-    else
-      return Math.IEEEremainder(m_gyro.getAngle(), 360)
-          * (Constants.DriveTrain.kGyroReversed ? -1.0 : 1.0);
+    return Math.IEEEremainder(-navX.getAngle(), 360);
   }
 
   public void resetAngle() {
@@ -234,7 +227,7 @@ public class DriveTrain extends SubsystemBase {
       leftOutput /= magnitude;
       rightOutput /= magnitude;
     }
-    
+
     // setMotorPercentOutput(leftOutput, rightOutput);
     setMotorTankDrive(leftOutput, rightOutput);
   }
@@ -304,7 +297,7 @@ public class DriveTrain extends SubsystemBase {
    * @param rightSpeed The velocity for the right side of the drivetrain
    */
   public void setMotorVelocityMetersPerSecond(double leftSpeed, double rightSpeed) {
-    
+
     driveMotors
         .get(MotorPosition.LEFT_FRONT)
         .set(
@@ -464,23 +457,15 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
       SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "X Coordinate",
-         getRobotPoseMeters().getTranslation().getX());
+          "DriveTrain", "X Coordinate", getRobotPoseMeters().getTranslation().getX());
       SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Y Coordinate",
-          getRobotPoseMeters().getTranslation().getY());
+          "DriveTrain", "Y Coordinate", getRobotPoseMeters().getTranslation().getY());
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Left Speed",
-         getSpeedsMetersPerSecond().leftMetersPerSecond);
+          "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
       SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Right Speed",
-          getSpeedsMetersPerSecond().rightMetersPerSecond);
+          "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
@@ -499,7 +484,7 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
-          "DriveTrain", 
+          "DriveTrain",
           "Right Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(

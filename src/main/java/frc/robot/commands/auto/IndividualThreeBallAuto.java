@@ -71,7 +71,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
