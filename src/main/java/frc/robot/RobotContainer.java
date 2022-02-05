@@ -81,8 +81,6 @@ public class RobotContainer {
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
-  TCA9548AcolorSensor tca9548AcolorSensor = new TCA9548AcolorSensor(I2C.Port.kOnboard);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
@@ -118,11 +116,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
-    SmartDashboard.putData(
-        "Select Port 0", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(0)));
-    SmartDashboard.putData(
-        "Select Port 2", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(2)));
   }
 
   /**
@@ -180,13 +173,6 @@ public class RobotContainer {
   }
 
   public void robotPeriodic() {
-    SmartDashboard.putNumber("Color Sensor Mux Channel", tca9548AcolorSensor.getMuxChannel());
-    SmartDashboard.putNumber(
-        "Color Sensor Blue", tca9548AcolorSensor.getColorSensor().getColor().blue);
-    SmartDashboard.putNumber(
-        "Color Sensor Red", tca9548AcolorSensor.getColorSensor().getColor().red);
-    SmartDashboard.putNumber(
-        "Color Sensor Green", tca9548AcolorSensor.getColorSensor().getColor().green);
   }
 
   public void disabledInit() {
