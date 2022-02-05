@@ -54,7 +54,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto", Units.feetToMeters(2), Units.feetToMeters(2), true);
+        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
