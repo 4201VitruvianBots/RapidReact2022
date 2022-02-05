@@ -16,13 +16,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
   private final double kI_Zone = 1;
   private final double maxVel = 1.1e4;
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
-  public ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
+  public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
+  // public ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   // Setup indexer motor controller (SparkMaxs)
   TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor);
@@ -72,8 +74,10 @@ public class Indexer extends SubsystemBase {
     return !rearBeamBreak.get();
   }
 
-  public Color getColor() {
-    return sensor.getColor();
+  public Color getColor(int channel) {
+    if (colorSensor.getMuxChannel() != channel)
+      colorSensor.selectMuxChannel(channel);
+    return colorSensor.getColorSensor().getColor();
   }
 
   /**
@@ -81,24 +85,32 @@ public class Indexer extends SubsystemBase {
    *
    * @return Color of cargo
    */
-  public DriverStation.Alliance getCargoColor() {
-    if (getColor().red > getColor().blue * 3 && getColor().red > getColor().green * 1.33) {
+  public DriverStation.Alliance getCargoColor(int channel) {
+    if (getColor(channel).red > getColor(channel).blue * 3 /*&& getColor(channel).red > getColor(channel).green * 1.33*/) {
       return DriverStation.Alliance.Red;
-    } else if (getColor().green < getColor().blue * 1.15
-        && getColor().blue > getColor().red * 2.5) {
+    } else if (/*getColor(channel).green < getColor(channel).blue * 1.15 && */getColor(channel).blue > getColor(channel).red * 2.5) {
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }
 
   @Override
   public void periodic() {
-    SmartDashboardTab.putNumber("Indexer", "Red", getColor().red);
-    SmartDashboardTab.putNumber("Indexer", "Blue", getColor().blue);
-    SmartDashboardTab.putNumber("Indexer", "Green", getColor().green);
-    SmartDashboardTab.putString("Indexer", "Color", getCargoColor().toString());
-    SmartDashboardTab.putBoolean("Indexer", "BeanBreakFront", getIndexerFrontSensorTripped());
-    SmartDashboardTab.putBoolean("Indexer", "BeanBreakRear", getIndexerRearSensorTripped());
-    // This method will be called once per scheduler run
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
+
+    if (getIndexerFrontSensorTripped()) {
+      SmartDashboardTab.putString("Indexer", "Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
+      SmartDashboardTab.putNumber("Indexer", "Red", getColor(Constants.Indexer.colorSensorFront).red);
+      SmartDashboardTab.putNumber("Indexer", "Green", getColor(Constants.Indexer.colorSensorFront).green);
+      SmartDashboardTab.putNumber("Indexer", "Blue", getColor(Constants.Indexer.colorSensorFront).blue);
+    } else if (getIndexerRearSensorTripped()) {
+      SmartDashboardTab.putString("Indexer", "Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
+      SmartDashboardTab.putNumber("Indexer", "Red", getColor(Constants.Indexer.colorSensorRear).red);
+      SmartDashboardTab.putNumber("Indexer", "Green", getColor(Constants.Indexer.colorSensorRear).green);
+      SmartDashboardTab.putNumber("Indexer", "Blue", getColor(Constants.Indexer.colorSensorRear).blue);
+    } else {
+      SmartDashboardTab.putString("Indexer", "Color", "Beam Brake Not Tripped");
+    }
   }
 
   @Override
