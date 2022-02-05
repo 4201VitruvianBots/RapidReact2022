@@ -20,6 +20,7 @@ import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
@@ -139,6 +140,8 @@ public class RobotContainer {
     xBoxRightTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxButtons[5].whileHeld(new RunIndexer(m_indexer));
+
+    xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));

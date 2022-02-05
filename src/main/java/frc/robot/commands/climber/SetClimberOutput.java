@@ -34,14 +34,12 @@ public class SetClimberOutput extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_climber.setClimbState(true);
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
     if (m_climber.getClimbState()) {
-      double input = Math.abs(m_input.getAsDouble()) > 0.2 ? m_input.getAsDouble() : 0;
+      double input = Math.abs(m_input.getAsDouble()) > 0.2 ? -m_input.getAsDouble() * 0.25 : 0;
 
       climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
       switch (desiredDirection) {
@@ -51,6 +49,7 @@ public class SetClimberOutput extends CommandBase {
           break;
         case STILL:
         default:
+          m_climber.setClimberPercentOutput(0);
           m_climber.engagePistonBrake();
           break;
       }

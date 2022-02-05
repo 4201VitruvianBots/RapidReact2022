@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -25,12 +26,12 @@ public class Climber extends SubsystemBase {
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
-    new TalonFX(Constants.Climber.climbMotorA) // , new TalonFX(Constants.Climber.climbMotorB)
+    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
   };
   private boolean climbState;
 
-  private final double upperLimit = 150000.0;
-  private final double lowerLimit = 1000.0;
+  private final double upperLimit = 205_000.0;
+  private final double lowerLimit = 0.0;
 
   /** Creates a new Climber. */
   public Climber() {
@@ -41,7 +42,7 @@ public class Climber extends SubsystemBase {
       climbMotors[i].setNeutralMode(NeutralMode.Brake);
       climbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
-    // climbMotors[1].set(TalonFXControlMode.Follower, climbMotors[0].getDeviceID());
+    climbMotors[1].set(TalonFXControlMode.Follower, climbMotors[0].getDeviceID());
   }
 
   public boolean getClimbState() {
@@ -85,7 +86,7 @@ public class Climber extends SubsystemBase {
   public void setClimberPercentOutput(double value) {
     if ((getClimberPosition() > lowerLimit || value > 0)
         && (getClimberPosition() < upperLimit || value < 0))
-      climbMotors[0].set(ControlMode.PercentOutput, value * 0.2);
+      climbMotors[0].set(ControlMode.PercentOutput, value);
     else climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
