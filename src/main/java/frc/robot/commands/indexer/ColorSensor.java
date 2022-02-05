@@ -4,14 +4,12 @@
 
 package frc.robot.commands.indexer;
 
-import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Flywheel;
 
 public class ColorSensor extends CommandBase {
 
@@ -42,7 +40,8 @@ public class ColorSensor extends CommandBase {
   public void execute() {
     /** Uses intake if cargo color is wrong */
     if (m_indexer.getIndexerFrontSensorTripped()) {
-      if (m_controls.getAllianceColor() != m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)) {
+      if (m_controls.getAllianceColor()
+          != m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)) {
         m_intake.setIntakePercentOutput(-0.8);
         m_indexer.setIndexerPercentOutput(-0.8);
       }
@@ -50,10 +49,11 @@ public class ColorSensor extends CommandBase {
       m_intake.setIntakePercentOutput(0);
       m_indexer.setIndexerPercentOutput(0);
     }
-    
+
     /** Uses outtake if cargo color is wrong */
     if (m_indexer.getIndexerRearSensorTripped()) {
-      if (m_controls.getAllianceColor() != m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)) {
+      if (m_controls.getAllianceColor()
+          != m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)) {
         m_indexer.setIndexerPercentOutput(0.5);
         m_indexer.setKickerPercentOutput(0.5);
         m_flywheel.setRPM(600);
