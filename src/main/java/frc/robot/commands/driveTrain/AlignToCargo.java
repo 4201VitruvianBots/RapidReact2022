@@ -8,6 +8,8 @@
 package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
@@ -15,9 +17,9 @@ import java.util.function.DoubleSupplier;
 
 public class AlignToCargo extends CommandBase {
 
-  private final double P_TERM = 0.02;
+  private final double P_TERM = 0.01;
   private final double I_TERM = 0;
-  private final double D_TERM = 0;
+  private final double D_TERM = 0.0;
 
   private final DriveTrain m_driveTrain;
   private final Vision m_vision;
@@ -47,15 +49,13 @@ public class AlignToCargo extends CommandBase {
     double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
     double throttle = joystickY;
-    throttle = throttle < 0 ? Math.max(-0.7, throttle) : throttle;
-    //        double turn = /*(m_driveTrain.getDriveShifterStatus() ? 0.5 : 0.50.35) **/ joystickX;
-    double turn = 0;
+    double turn = joystickX;
     if (m_vision.getIntakeTargetsValid() > 0) {
       double setpoint = m_driveTrain.getHeadingDegrees() + m_vision.getIntakeTargetAngle(0);
 
       double turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
 
-      turn += turnAdjustment;
+      turn = turnAdjustment;
       //            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
     }
 

@@ -2,11 +2,13 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/Controls": "Subsystem",
       "/LiveWindow/DriveTrain": "Subsystem",
       "/LiveWindow/Flywheel": "Subsystem",
       "/LiveWindow/Indexer": "Subsystem",
       "/LiveWindow/Intake": "Subsystem",
+      "/LiveWindow/LED": "Subsystem",
       "/LiveWindow/Turret": "Subsystem",
       "/LiveWindow/Ungrouped/ADXRS450_Gyro[0]": "Gyro",
       "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
@@ -18,11 +20,15 @@
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/LiveWindow/Ungrouped/navX-Sensor[1]": "Gyro",
       "/LiveWindow/Vision": "Subsystem",
+      "/Shuffleboard/Controls/Set Alliance Blue": "Command",
+      "/Shuffleboard/Controls/Set Alliance Red": "Command",
       "/SmartDashboard/DT Subsystem": "Subsystem",
       "/SmartDashboard/Field2d": "Field2d",
+      "/SmartDashboard/Intake Subsystem": "Subsystem",
       "/SmartDashboard/NeutralMode": "Command",
       "/SmartDashboard/Selected Auto": "String Chooser",
-      "/SmartDashboard/Set Neutral": "Command"
+      "/SmartDashboard/Set Neutral": "Command",
+      "/SmartDashboard/indexer Subsystem": "Subsystem"
     },
     "windows": {
       "/SmartDashboard/Field2d": {

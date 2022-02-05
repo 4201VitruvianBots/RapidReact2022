@@ -105,7 +105,7 @@ public class Vision extends SubsystemBase {
    * @return true: Intake Camera has a target. false: Intake Camera does not have a target.
    */
   public int getIntakeTargetsValid() {
-    return (int) goal_camera.getEntry("tv").getDouble(0);
+    return (int) intake_camera.getEntry("tv").getDouble(0);
   }
 
   /**
@@ -117,7 +117,7 @@ public class Vision extends SubsystemBase {
    */
   public double getIntakeTargetAngle(int targetIndex) {
     double[] nullValue = {-99};
-    var intakeAngles = goal_camera.getEntry("tx").getDoubleArray(nullValue);
+    var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
     try {
       return intakeAngles[0] == -99 ? 0 : intakeAngles[targetIndex];
     } catch (Exception e) {
