@@ -310,19 +310,6 @@ public class DriveTrain extends SubsystemBase {
             feedforwardCtre.calculate(rightSpeed));
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
-
-    //    m_leftOutput =
-    //        (leftPIDController.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond,
-    // leftSpeed)
-    //                + feedforward.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond))
-    //            / 12.0;
-    //    m_rightOutput =
-    //        rightPIDController.calculate(
-    //                getSpeedsMetersPerSecond().rightMetersPerSecond
-    //                    + feedforward.calculate(getSpeedsMetersPerSecond().rightMetersPerSecond))
-    //            / 12.0;
-    //    driveMotors.get(MotorPosition.LEFT_FRONT).set(ControlMode.PercentOutput, m_leftOutput);
-    //    driveMotors.get(MotorPosition.RIGHT_FRONT).set(ControlMode.PercentOutput, m_rightOutput);
   }
 
   /**

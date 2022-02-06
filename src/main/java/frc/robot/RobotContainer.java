@@ -18,9 +18,8 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.AlignToCargo;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
+import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
@@ -129,7 +128,8 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    rightButtons[0].whileHeld(new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    rightButtons[0].whileHeld(
+        new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
     xBoxLeftTrigger =
         new Button(
@@ -145,9 +145,6 @@ public class RobotContainer {
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
-    // leftButtons[0].cancelWhenPressed(m_driveTrain.getPostAutoCommand());
-    // TODO Try this if the above does not work
-    // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
   }
 
   public void initializeSubsystems() {
