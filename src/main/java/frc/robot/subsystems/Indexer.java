@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -23,11 +24,16 @@ public class Indexer extends SubsystemBase {
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
   public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
-  // public ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
+  public ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   // Setup indexer motor controller (SparkMaxs)
-  TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor);
-  TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
+
+  TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
+  TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor); // RapidReact
+
+  // CANSparkMax indexerMotor =
+  //     new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless); // Jango
+  // VictorSPX kickerMotor = new VictorSPX(Constants.Indexer.kickerMotor); // Jango
 
   // Indexer sensors setup
   DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
@@ -36,10 +42,14 @@ public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
-    indexerMotor.configFactoryDefault();
-    indexerMotor.setInverted(true);
 
-    indexerMotor.setNeutralMode(NeutralMode.Brake);
+    indexerMotor.setNeutralMode(NeutralMode.Brake); // RapidReact
+    indexerMotor.configFactoryDefault(); // RapidReact
+
+    // indexerMotor.restoreFactoryDefaults(); // Jango
+    // indexerMotor.setIdleMode(IdleMode.kBrake); // Jango
+
+    indexerMotor.setInverted(true);
 
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(true);
@@ -62,7 +72,9 @@ public class Indexer extends SubsystemBase {
    * @param output value for the power of the indexer motor
    */
   public void setIndexerPercentOutput(double output) {
-    indexerMotor.set(ControlMode.PercentOutput, output);
+    indexerMotor.set(ControlMode.PercentOutput, output); // RapidReact
+
+    // indexerMotor.set(output); // Jango
   }
 
   public boolean getIndexerFrontSensorTripped() {
@@ -84,13 +96,10 @@ public class Indexer extends SubsystemBase {
    * @return Color of cargo
    */
   public DriverStation.Alliance getCargoColor(int channel) {
-    if (getColor(channel).red
-        > getColor(channel).blue
-            * 3 /*&& getColor(channel).red > getColor(channel).green * 1.33*/) {
+    Color color = getColor(channel);
+    if (color.red > color.blue * 1.5) {
       return DriverStation.Alliance.Red;
-    } else if (
-    /*getColor(channel).green < getColor(channel).blue * 1.15 && */ getColor(channel).blue
-        > getColor(channel).red * 2.5) {
+    } else if (color.blue > color.red * 2) {
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }
@@ -100,27 +109,25 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
-    if (getIndexerFrontSensorTripped()) {
-      SmartDashboardTab.putString(
-          "Indexer", "Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
-      SmartDashboardTab.putNumber(
-          "Indexer", "Red", getColor(Constants.Indexer.colorSensorFront).red);
-      SmartDashboardTab.putNumber(
-          "Indexer", "Green", getColor(Constants.Indexer.colorSensorFront).green);
-      SmartDashboardTab.putNumber(
-          "Indexer", "Blue", getColor(Constants.Indexer.colorSensorFront).blue);
-    } else if (getIndexerRearSensorTripped()) {
-      SmartDashboardTab.putString(
-          "Indexer", "Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
-      SmartDashboardTab.putNumber(
-          "Indexer", "Red", getColor(Constants.Indexer.colorSensorRear).red);
-      SmartDashboardTab.putNumber(
-          "Indexer", "Green", getColor(Constants.Indexer.colorSensorRear).green);
-      SmartDashboardTab.putNumber(
-          "Indexer", "Blue", getColor(Constants.Indexer.colorSensorRear).blue);
-    } else {
-      SmartDashboardTab.putString("Indexer", "Color", "Beam Brake Not Tripped");
-    }
+    // SmartDashboardTab.putString(
+    //     "Indexer", "Front Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Front Red", Math.round(getColor(Constants.Indexer.colorSensorFront).red *
+    // 100) / 100.0);
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Front Green", (double)
+    // Math.round(getColor(Constants.Indexer.colorSensorFront).green * 100) / 100.0);
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Front Blue", (double)
+    // Math.round(getColor(Constants.Indexer.colorSensorFront).blue * 100) / 100.0);
+    // SmartDashboardTab.putString(
+    //     "Indexer", "Rear Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Rear Red", getColor(Constants.Indexer.colorSensorRear).red);
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Rear Green", getColor(Constants.Indexer.colorSensorRear).green);
+    // SmartDashboardTab.putNumber(
+    //     "Indexer", "Rear Blue", getColor(Constants.Indexer.colorSensorRear).blue);
   }
 
   @Override

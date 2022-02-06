@@ -21,7 +21,7 @@ import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.ColorSensor;
 import frc.robot.commands.intake.ReverseIntake;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
@@ -133,7 +133,7 @@ public class RobotContainer {
     xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
+    // xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
@@ -144,7 +144,8 @@ public class RobotContainer {
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
     // m_climber.setDefaultCommand(
     //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
-    // m_indexer.setDefaultCommand(new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel));
+    m_indexer.setDefaultCommand(
+        new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxRightTrigger.get()));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }

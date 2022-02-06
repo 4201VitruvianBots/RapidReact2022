@@ -20,7 +20,11 @@ public class Intake extends SubsystemBase {
   private boolean isIntaking = false; // is robot intaking
 
   // Intake motor setup
-  private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor);
+
+  private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor); // RapidReact
+
+  // private final CANSparkMax intakeMotor =
+  // new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless); // Jango
 
   // Intake piston setup
   DoubleSolenoid intakePiston =
@@ -32,8 +36,13 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     // Motor configuration
-    intakeMotor.configFactoryDefault();
-    intakeMotor.setNeutralMode(NeutralMode.Coast);
+
+    intakeMotor.configFactoryDefault(); // RapidReact
+    intakeMotor.setNeutralMode(NeutralMode.Coast); // RapidReact
+
+    // intakeMotor.restoreFactoryDefaults(); // Jango
+    // intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake); // Jango
+
     intakeMotor.setInverted(false);
 
     SmartDashboard.putData("Intake Subsystem", this);
@@ -61,7 +70,9 @@ public class Intake extends SubsystemBase {
 
   /** sets the amount of power going to the intake */
   public void setIntakePercentOutput(double value) {
-    intakeMotor.set(ControlMode.PercentOutput, value);
+    intakeMotor.set(ControlMode.PercentOutput, value); // RapidReact
+
+    // intakeMotor.set(value); // Jango
   }
 
   /** updates intake data on to the dashboard */
