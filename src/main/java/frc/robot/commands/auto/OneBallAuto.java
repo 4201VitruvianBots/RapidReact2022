@@ -54,7 +54,7 @@ public class OneBallAuto extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
