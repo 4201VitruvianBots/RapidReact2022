@@ -128,11 +128,11 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    int baseRPM = 2850;
+    int baseRPM = 1000;
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 50));
-    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 100));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 150));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 500));
+    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 1000));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 1500));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
