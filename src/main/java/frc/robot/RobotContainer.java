@@ -20,6 +20,7 @@ import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -126,6 +127,8 @@ public class RobotContainer {
       xBoxButtons[i] = new JoystickButton(xBoxController, (i + 1));
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
+
+    rightButtons[0].whileHeld(new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
     xBoxLeftTrigger =
         new Button(
