@@ -28,7 +28,7 @@ public class Indexer extends SubsystemBase {
   public Indexer() {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
-    indexerMotor.setInverted(true);
+    indexerMotor.setInverted(false);
 
     indexerMotor.setNeutralMode(NeutralMode.Brake);
 
