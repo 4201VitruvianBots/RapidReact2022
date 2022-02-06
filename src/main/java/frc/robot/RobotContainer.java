@@ -38,7 +38,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
-import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
