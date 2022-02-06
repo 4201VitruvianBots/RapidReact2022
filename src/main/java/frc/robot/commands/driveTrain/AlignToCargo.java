@@ -17,7 +17,7 @@ import java.util.function.DoubleSupplier;
 
 public class AlignToCargo extends CommandBase {
 
-  private final double P_TERM = 0.01;
+  private final double P_TERM = 0.016;
   private final double I_TERM = 0;
   private final double D_TERM = 0.0;
 
