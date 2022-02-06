@@ -31,10 +31,10 @@ public final class Constants {
 
   public final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final int intakePistonForward = 8;
-    public static final int intakePistonReverse = 9;
-    public static final int climbPistonForward = 10;
-    public static final int climbPistonReverse = 11;
+    public static final int intakePistonForward = 0;
+    public static final int intakePistonReverse = 1;
+    public static final int climbPistonForward = 2;
+    public static final int climbPistonReverse = 3;
   }
 
   public final class Climber {
