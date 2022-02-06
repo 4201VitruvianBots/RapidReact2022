@@ -59,8 +59,6 @@ public class DriveTrain extends SubsystemBase {
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
 
-  /** Will run when enabled in teleop, unless null */
-  private Command m_postAutoCommand = null;
 
   private final HashMap<MotorPosition, TalonFX> driveMotors =
       new HashMap<MotorPosition, TalonFX>(
@@ -521,24 +519,6 @@ public class DriveTrain extends SubsystemBase {
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
   }
 
-  /**
-   * Sets a command to run when enabled in teleop Does not run any command if {@code command} is
-   * null
-   *
-   * @param command The command to run
-   */
-  public void setPostAutoCommand(Command command) {
-    m_postAutoCommand = command;
-  }
-
-  /**
-   * Gets the command to run when enabled in teleop
-   *
-   * @return The command to run
-   */
-  public Command getPostAutoCommand() {
-    return m_postAutoCommand;
-  }
 
   @Override
   public void periodic() {

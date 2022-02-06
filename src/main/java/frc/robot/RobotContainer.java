@@ -19,7 +19,6 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -91,10 +90,6 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Two Ball Auto Defense",
-        new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Group Three Ball Auto",
@@ -177,17 +172,13 @@ public class RobotContainer {
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
-    m_driveTrain.setPostAutoCommand(null);
   }
 
   public void disabledPeriodic() {}
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
-    if (m_driveTrain.getPostAutoCommand() != null) {
-      m_driveTrain.getPostAutoCommand().schedule(true);
     }
-  }
 
   public void teleopPeriodic() {}
 
