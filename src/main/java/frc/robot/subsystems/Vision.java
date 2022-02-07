@@ -19,7 +19,8 @@ public class Vision extends SubsystemBase {
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
 
-  private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK_D;
+  private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK;
+  private int red_offset, blue_offset;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls) {
@@ -28,10 +29,18 @@ public class Vision extends SubsystemBase {
         NetworkTableInstance.getDefault().getTable(goal_camera_type.toString().toLowerCase());
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
-    PortForwarder.add(5800, goalCameraIP, 5800);
-    PortForwarder.add(5801, goalCameraIP, 5801);
-    PortForwarder.add(5802, intakeCameraIP, 5800);
-    PortForwarder.add(5803, intakeCameraIP, 5801);
+    PortForwarder.add(5802, VISION_SERVER_IP, 5802);
+  }
+  /**
+   * Returns a boolean value based on checks to determine if the robot can shoot.
+   *
+   * @return true: All shooting parameters passed, so the robot can shoot false: One or more
+   *     parameters failed, so the robot shouldn't shoot
+   */
+  public boolean canShoot() {
+    return MIN_SHOOTING_DISTANCE < getGoalTargetHorizontalDistance()
+        && getGoalTargetHorizontalDistance() < MAX_SHOOTING_DISTANCE
+        && getGoalValidTarget();
   }
 
   /**
@@ -86,7 +95,8 @@ public class Vision extends SubsystemBase {
    * @return Horizontal Distance to goal target (0-30 meters)
    */
   public double getGoalTargetHorizontalDistance() {
-    return Math.cos(Units.degreesToRadians(CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
+    return Math.cos(
+            Units.degreesToRadians(INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
         * getGoalTargetDirectDistance();
   }
 
@@ -96,7 +106,7 @@ public class Vision extends SubsystemBase {
    * @return true: Intake Camera has a target. false: Intake Camera does not have a target.
    */
   public int getIntakeTargetsValid() {
-    return (int) goal_camera.getEntry("tv").getDouble(0);
+    return (int) intake_camera.getEntry("tv").getDouble(0);
   }
 
   /**
@@ -108,7 +118,7 @@ public class Vision extends SubsystemBase {
    */
   public double getIntakeTargetAngle(int targetIndex) {
     double[] nullValue = {-99};
-    var intakeAngles = goal_camera.getEntry("tx").getDoubleArray(nullValue);
+    var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
     try {
       return intakeAngles[0] == -99 ? 0 : intakeAngles[targetIndex];
     } catch (Exception e) {
@@ -133,7 +143,7 @@ public class Vision extends SubsystemBase {
         case PHOTONVISION:
           ledMode = 1;
           break;
-        case OAK_D:
+        case OAK:
         default:
           ledMode = 0;
           break;
@@ -144,7 +154,7 @@ public class Vision extends SubsystemBase {
           ledMode = 1;
           break;
         case PHOTONVISION:
-        case OAK_D:
+        case OAK:
         default:
           ledMode = 0;
           break;
@@ -152,6 +162,28 @@ public class Vision extends SubsystemBase {
     }
 
     goal_camera.getEntry("ledMode").setNumber(ledMode);
+  }
+
+  /** Returns the total count of red cargo detected by the intake camera. */
+  public double getRedCount() {
+    return intake_camera.getEntry("red_count").getDouble(0);
+  }
+
+  /** Returns the total count of blue cargo detected by the intake camera. */
+  public double getBlueCount() {
+    return intake_camera.getEntry("blue_count").getDouble(0);
+  }
+
+  /** Updates the offset value for the red counter display on the intake video feed. */
+  public void updateRedOffset() {
+    red_offset += getRedCount();
+    intake_camera.getEntry("red_counter_offset").setDouble(red_offset);
+  }
+
+  /** Updates the offset value for the blue counter display on the intake video feed. */
+  public void updateBlueOffset() {
+    blue_offset += getBlueCount();
+    intake_camera.getEntry("blue_counter_offset").setDouble(blue_offset);
   }
 
   /** Sends values to SmartDashboard */

@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Controls;
 
 /** An example command that uses an example subsystem. */
-public class SetAllianceColor extends CommandBase {
+public class OverrideAllianceColor extends CommandBase {
   private final Controls m_controls;
   private DriverStation.Alliance m_color;
 
@@ -18,12 +18,17 @@ public class SetAllianceColor extends CommandBase {
    *
    * @param subsystem The subsystem used by this command.
    */
-  public SetAllianceColor(Controls controls, DriverStation.Alliance color) {
+  public OverrideAllianceColor(Controls controls, DriverStation.Alliance color) {
     m_controls = controls;
     m_color = color;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_controls);
+  }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
   }
 
   // Called when the command is initially scheduled.

@@ -31,10 +31,12 @@ public final class Constants {
 
   public final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final int intakePistonForward = 8;
-    public static final int intakePistonReverse = 9;
-    public static final int climbPistonForward = 2;
-    public static final int climbPistonReverse = 3;
+    public static final int pcmType = 0; // 0: CTREPCM, 1: REVPH
+
+    public static final int intakePistonForward = pcmType == 0 ? 0 : 8;
+    public static final int intakePistonReverse = pcmType == 0 ? 1 : 9;
+    public static final int climbPistonForward = pcmType == 0 ? 2 : 10;
+    public static final int climbPistonReverse = pcmType == 0 ? 3 : 11;
   }
 
   public final class Climber {
@@ -197,26 +199,28 @@ public final class Constants {
 
     public static final double degreeTolerance = 1.0;
 
-    public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
+    public static final double canCoderToTurretGearRatio = 120.0 / 18.0;
 
     public static final double toTurretGearRatio = 27.0 / 1.0;
   }
 
   public static final class Vision {
     public enum CAMERA_TYPE {
-      OAK_D,
+      OAK,
       LIMELIGHT,
       PHOTONVISION
     }
 
-    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double UPPER_HUB_HEIGHT_METERS = 1.0;
+    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
 
-    /*
-     * Co-Processor IP Addresses
-     * 10.42.1.100: Goal Camera
-     * 10.42.1.101: Intake Camera
-     */
-    public static String goalCameraIP = "10.42.1.100";
-    public static String intakeCameraIP = "10.42.1.101";
+    public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
+    public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
+
+    public static String VISION_SERVER_IP = "10.42.1.100";
   }
 }
