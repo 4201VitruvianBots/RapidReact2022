@@ -9,14 +9,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Turret;
 
 /** An example command that uses an example subsystem. */
-public class SetTurretRobotRelativeAngle extends CommandBase {
+public class SetTurretAbsoluteSetpointDegrees extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Turret m_turret;
 
   private final double m_setpoint;
   private double startTime;
 
-  public SetTurretRobotRelativeAngle(Turret turret, double setpoint) {
+  public SetTurretAbsoluteSetpointDegrees(Turret turret, double setpoint) {
     m_turret = turret;
     m_setpoint = setpoint;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -27,7 +27,7 @@ public class SetTurretRobotRelativeAngle extends CommandBase {
   @Override
   public void initialize() {
     startTime = Timer.getFPGATimestamp();
-    m_turret.setRobotCentricSetpoint(m_setpoint);
+    m_turret.setAbsoluteSetpointDegrees(m_setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -41,6 +41,6 @@ public class SetTurretRobotRelativeAngle extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(m_turret.getTurretAngle() - m_setpoint) < 1;
+    return m_turret.onTarget();
   }
 }

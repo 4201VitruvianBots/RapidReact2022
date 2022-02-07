@@ -77,7 +77,7 @@ public class AutoUseVisionCorrection extends CommandBase {
         setpoint = m_turret.getTurretAngle();
       }
 
-      m_turret.setRobotCentricSetpoint(setpoint);
+      m_turret.setAbsoluteSetpointDegrees(setpoint);
     }
   }
 

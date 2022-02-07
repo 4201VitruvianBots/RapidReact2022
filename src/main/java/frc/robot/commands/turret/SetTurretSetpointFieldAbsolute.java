@@ -139,7 +139,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         }
         // if the controlmode is 1, set the current setpoint as the turret setpoint
         // else set the percent output of the turret to the movement of the left joystick * 0.2
-        m_turret.setRobotCentricSetpoint(setpoint);
+        m_turret.setAbsoluteSetpointDegrees(setpoint);
       } else {
         m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.2);
       }

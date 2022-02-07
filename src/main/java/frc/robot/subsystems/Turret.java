@@ -6,26 +6,17 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Turret.*;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.LinearQuadraticRegulator;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.estimator.KalmanFilter;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.LinearSystemLoop;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
+import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Conversions;
 
 public class Turret extends SubsystemBase {
   private final int encoderUnitsPerRotation = 4096;
@@ -36,7 +27,9 @@ public class Turret extends SubsystemBase {
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
   double minAngle = -90;
   double maxAngle = 90;
+  private double m_angleOffset = -329.150;
   private double turretSetpointDegrees = 0; // angle
+
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
   public enum TurretControlMode {
     OPENLOOP,
@@ -48,58 +41,38 @@ public class Turret extends SubsystemBase {
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
 
-  private final LinearSystem<N1, N1, N1> m_turretPlant =
-      LinearSystemId.identifyVelocitySystem(kTurretKv, kTurretKa);
-
-  // The observer fuses our encoder data and voltage inputs to reject noise.
-  private final KalmanFilter<N1, N1, N1> m_observer =
-      new KalmanFilter<>(
-          Nat.N1(),
-          Nat.N1(),
-          m_turretPlant,
-          VecBuilder.fill(3.0), // How accurate we think our model is
-          VecBuilder.fill(0.01), // How accurate we think our encoder
-          // data is
-          0.020);
-
-  // A LQR uses feedback to create voltage commands.
-  private final LinearQuadraticRegulator<N1, N1, N1> m_controller =
-      new LinearQuadraticRegulator<>(
-          m_turretPlant,
-          VecBuilder.fill(
-              Conversions.DegreestoRadPerSec(degreeTolerance)), // Velocity error tolerance
-          VecBuilder.fill(12.0), // Control effort (voltage) tolerance
-          0.020);
-
-  // The state-space loop combines a controller, observer, feedforward and plant for easy control.
-  private final LinearSystemLoop<N1, N1, N1> m_loop =
-      new LinearSystemLoop<>(m_turretPlant, m_controller, m_observer, 12.0, 0.020);
-
-  private final SimpleMotorFeedforward m_feedforward =
-      new SimpleMotorFeedforward(Constants.Turret.kTurretKs, Constants.Turret.kTurretKv);
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
+
+    turretMotor.configFactoryDefault();
+    turretMotor.setInverted(true);
+    turretMotor.setNeutralMode(NeutralMode.Brake);
+    turretMotor.configVoltageCompSaturation(12.0);
+    turretMotor.configRemoteFeedbackFilter(61, RemoteSensorSource.CANCoder, 0);
+    turretMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
+    turretMotor.config_kP(0, kF);
+    turretMotor.config_kP(0, kP);
+    turretMotor.config_kI(0, kI);
+    turretMotor.config_IntegralZone(0, kI_Zone);
+    turretMotor.configMaxIntegralAccumulator(0, kMaxIAccum);
+    turretMotor.config_kD(0, kD);
+    turretMotor.configMotionCruiseVelocity(kCruiseVelocity);
+    turretMotor.configMotionAcceleration(kMotionAcceleration);
+    turretMotor.configAllowableClosedloopError(0, kErrorBand);
+    turretMotor.setSensorPhase(true);
+
     encoder.configFactoryDefault();
-    encoder.setPositionToAbsolute();
-    encoder.configSensorDirection(true);
+    encoder.configAllSettings(new CANCoderConfiguration());
+    encoder.setPosition(0);
   }
 
-  private void updateDegreesSetpoint() {
-    double setpoint = getTurretSetpointDegrees();
-    setpoint = Math.max(Math.min(setpoint, 90), -90);
+  private void updateClosedLoopPosition() {
+    double setpoint = Math.min(Math.max(turretSetpointDegrees, -90), 90);
 
-    m_loop.setNextR(VecBuilder.fill(Units.degreesToRadians(setpoint * canCodertoTurretGearRatio)));
-
-    m_loop.correct(
-        VecBuilder.fill(Units.degreesToRadians(getTurretAngle() * canCodertoTurretGearRatio)));
-
-    m_loop.predict(0.020);
-
-    double nextVoltage = m_loop.getU(0);
-
-    setPercentOutput(nextVoltage / 12.0 + Constants.Turret.kTurretKs / 12.0);
+    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * canCodertoTurretGearRatio);
   }
+
 
   public void resetEncoder() {
     turretMotor.setSelectedSensorPosition(0);
@@ -116,7 +89,22 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
-    return encoderUnitsToDegrees(encoder.getPosition());
+    return encoder.getPosition() / canCodertoTurretGearRatio;
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getTurretVelocity() {
+    return encoder.getVelocity() / canCodertoTurretGearRatio;
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getEncoderAngle() {
+    return encoder.getPosition();
+  }
+
+  /** double returns encoder units of turret into degrees */
+  public double getEncoderVelocity() {
+    return encoder.getVelocity();
   }
 
   /**
@@ -152,7 +140,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getTurretSetpointDegrees() {
-    return turretSetpointDegrees;
+    return encoderUnitsToDegrees(turretMotor.getClosedLoopTarget()) / canCodertoTurretGearRatio;
   }
 
   public boolean getInitialHome() {
@@ -164,7 +152,7 @@ public class Turret extends SubsystemBase {
     turretMotor.set(ControlMode.PercentOutput, output);
   }
 
-  public void setRobotCentricSetpoint(double turretSetpointDegrees) {
+  public void setAbsoluteSetpointDegrees(double turretSetpointDegrees) {
     this.turretSetpointDegrees = turretSetpointDegrees;
   }
 
@@ -173,12 +161,12 @@ public class Turret extends SubsystemBase {
     turretSetpointDegrees = getTurretAngle();
   }
 
-  public int degreestoEncoderunits(double degrees) {
-    return (int) (degrees * (1.0 / canCodertoTurretGearRatio) * (encoderUnitsPerRotation / 360.0));
+  public int degreesToEncoderUnits(double degrees) {
+    return (int) (degrees * (encoderUnitsPerRotation / 360.0));
   }
 
   public double encoderUnitsToDegrees(double encoderUnits) {
-    return encoderUnits / canCodertoTurretGearRatio;
+    return encoderUnits * (360.0 / encoderUnitsPerRotation);
   }
 
   public boolean getTurretLatch() {
@@ -187,14 +175,16 @@ public class Turret extends SubsystemBase {
 
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
-    return Math.abs(turretMotor.getClosedLoopError()) < kErrorBand;
+    return Math.abs(getTurretAngle() - getTurretSetpointDegrees()) < kErrorBand;
   }
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("Angle", getTurretAngle());
+      SmartDashboard.putNumber("Turret Angle", getTurretAngle());
 
-      SmartDashboard.putNumber("Setpoint", turretSetpointDegrees);
+      SmartDashboard.putNumber("Turret Setpoint", getTurretSetpointDegrees());
+      SmartDashboard.putNumber("Turret Error", turretMotor.getClosedLoopError());
+      SmartDashboard.putNumber("Turret Victor Angle", turretMotor.getSelectedSensorPosition());
     }
   }
 
@@ -206,7 +196,8 @@ public class Turret extends SubsystemBase {
     } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
       turretHomeSensorLatch = false;
     }
-    updateDegreesSetpoint();
+
+    //updateClosedLoopPosition();
     updateShuffleboard();
   }
 }
