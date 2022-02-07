@@ -7,7 +7,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
 import com.revrobotics.ColorSensorV3;
+import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -24,7 +29,6 @@ public class Indexer extends SubsystemBase {
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
   public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
-  public ColorSensorV3 sensor = new ColorSensorV3(I2C.Port.kOnboard);
 
   // Setup indexer motor controller (SparkMaxs)
 
@@ -97,9 +101,9 @@ public class Indexer extends SubsystemBase {
    */
   public DriverStation.Alliance getCargoColor(int channel) {
     Color color = getColor(channel);
-    if (color.red > color.blue * 1.5) {
+    if (color.red > color.blue * 1.5 && color.red > color.green * 1.4) { 
       return DriverStation.Alliance.Red;
-    } else if (color.blue > color.red * 2) {
+    } else if (color.blue > color.red * 2 && color.blue > color.green * 0.7) {
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }
@@ -109,25 +113,22 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
-    // SmartDashboardTab.putString(
-    //     "Indexer", "Front Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Front Red", Math.round(getColor(Constants.Indexer.colorSensorFront).red *
-    // 100) / 100.0);
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Front Green", (double)
-    // Math.round(getColor(Constants.Indexer.colorSensorFront).green * 100) / 100.0);
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Front Blue", (double)
-    // Math.round(getColor(Constants.Indexer.colorSensorFront).blue * 100) / 100.0);
-    // SmartDashboardTab.putString(
-    //     "Indexer", "Rear Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Rear Red", getColor(Constants.Indexer.colorSensorRear).red);
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Rear Green", getColor(Constants.Indexer.colorSensorRear).green);
-    // SmartDashboardTab.putNumber(
-    //     "Indexer", "Rear Blue", getColor(Constants.Indexer.colorSensorRear).blue);
+    SmartDashboardTab.putString(
+        "Indexer", "Rear Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
+    SmartDashboardTab.putNumber(
+        "Indexer", "Rear Red", getColor(Constants.Indexer.colorSensorRear).red);
+    SmartDashboardTab.putNumber(
+        "Indexer", "Rear Green", getColor(Constants.Indexer.colorSensorRear).green);
+    SmartDashboardTab.putNumber(
+        "Indexer", "Rear Blue", getColor(Constants.Indexer.colorSensorRear).blue);
+    SmartDashboardTab.putString(
+        "Indexer", "Front Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
+    SmartDashboardTab.putNumber(
+        "Indexer", "Front Red", getColor(Constants.Indexer.colorSensorFront).red);
+    SmartDashboardTab.putNumber(
+        "Indexer", "Front Green", getColor(Constants.Indexer.colorSensorFront).green);
+    SmartDashboardTab.putNumber(
+        "Indexer", "Front Blue", getColor(Constants.Indexer.colorSensorFront).blue);
   }
 
   @Override
