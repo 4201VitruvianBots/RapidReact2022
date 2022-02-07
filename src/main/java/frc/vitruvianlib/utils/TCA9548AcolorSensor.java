@@ -2,7 +2,6 @@ package frc.vitruvianlib.utils;
 
 import com.revrobotics.ColorSensorV3;
 import edu.wpi.first.wpilibj.I2C;
-import frc.robot.Constants;
 
 public class TCA9548AcolorSensor extends I2C {
   private Port port;
@@ -23,7 +22,7 @@ public class TCA9548AcolorSensor extends I2C {
   public void selectMuxChannel(int channel) {
     this.channel = channel;
     write(0, 1 << channel);
-    if(colorSensors[channel] == null) {
+    if (colorSensors[channel] == null) {
       colorSensors[channel] = new ColorSensorV3(Port.kMXP);
     }
     activeColorSensor = colorSensors[channel];

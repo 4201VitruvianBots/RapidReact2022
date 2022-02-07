@@ -7,12 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -101,7 +95,7 @@ public class Indexer extends SubsystemBase {
    */
   public DriverStation.Alliance getCargoColor(int channel) {
     Color color = getColor(channel);
-    if (color.red > color.blue * 1.5 && color.red > color.green * 1.4) { 
+    if (color.red > color.blue * 1.5 && color.red > color.green * 1.4) {
       return DriverStation.Alliance.Red;
     } else if (color.blue > color.red * 2 && color.blue > color.green * 0.7) {
       return DriverStation.Alliance.Blue;
