@@ -12,7 +12,6 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean

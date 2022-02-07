@@ -128,7 +128,8 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    rightButtons[0].whileHeld(new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    rightButtons[0].whileHeld(
+        new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
     xBoxLeftTrigger =
         new Button(
