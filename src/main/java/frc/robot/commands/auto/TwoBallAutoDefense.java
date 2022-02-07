@@ -99,6 +99,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         new ConditionalCommand(
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal));
-  }
+            RobotBase::isReal),
+        new TurnInPlace(driveTrain, 30));
+    }
 }
