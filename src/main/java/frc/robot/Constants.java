@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -12,7 +11,6 @@ import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -190,11 +188,14 @@ public final class Constants {
   }
 
   public static final class Turret {
-
-    // TODO: might not need kErrorBand, need to confirm
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
     public static final int turretHomeSensor = 3;
+
+    public static final int encoderUnitsPerRotation = 4096;
+    public static final double canCoderAngleOffset = -329.150;
+    public static final double minAngle = -90;
+    public static final double maxAngle = 90;
 
     public static final double kF = 0.07;
     public static final double kP = 0.2;
@@ -217,7 +218,6 @@ public final class Constants {
     public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
 
     public static final double motorToTurretGearRatio = 1.0 / 27.0;
-
   }
 
   public static final class Vision {
@@ -237,4 +237,10 @@ public final class Constants {
     public static String goalCameraIP = "10.42.1.100";
     public static String intakeCameraIP = "10.42.1.101";
   }
+
+  // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
+  public enum CONTROL_MODE {
+    OPENLOOP,
+    CLOSEDLOOP
+  };
 }

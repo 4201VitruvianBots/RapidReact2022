@@ -9,8 +9,8 @@ package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Turret.TurretControlMode;
 import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
@@ -41,7 +41,7 @@ public class AutoUseVisionCorrection extends CommandBase {
   @Override
   public void execute() {
     //// if the turret is using sensor feedback
-    if (m_turret.getControlMode() == TurretControlMode.CLOSEDLOOP) {
+    if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
       // if vision has a valid target to shoot at then set usingVisinoSetpoint to true
       if (m_vision.getGoalValidTarget()) {
         usingVisionSetpoint = true;

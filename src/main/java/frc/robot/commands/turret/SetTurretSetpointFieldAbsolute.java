@@ -10,8 +10,8 @@ package frc.robot.commands.turret;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.Turret.TurretControlMode;
 
 /** An example command that uses an example subsystem. */
 public class SetTurretSetpointFieldAbsolute extends CommandBase {
@@ -60,7 +60,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
     // If we are not climbing
     if (!m_climber.getClimbState()) {
       //// If the turret is using sensor feedback
-      if (m_turret.getControlMode() == TurretControlMode.CLOSEDLOOP) {
+      if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
         // if the joystick sensors report movement greater than the deadzone it runs these methods
         if ((Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))
             >= Math.pow(deadZone, 2)) {

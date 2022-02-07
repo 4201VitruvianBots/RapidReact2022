@@ -10,33 +10,22 @@ import com.ctre.phoenix.motorcontrol.*;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.ctre.phoenix.sensors.CANCoder;
 import com.ctre.phoenix.sensors.CANCoderConfiguration;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Turret extends SubsystemBase {
-  private final int encoderUnitsPerRotation = 4096;
   private final DriveTrain m_driveTrain;
-  private final Timer timeout = new Timer();
+
   private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
   private final VictorSPX turretMotor = new VictorSPX(Constants.Turret.turretMotor);
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
-  double minAngle = -90;
-  double maxAngle = 90;
-  private double m_angleOffset = -329.150;
+
   private double turretSetpointDegrees = 0; // angle
 
-  // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
-  public enum TurretControlMode {
-    OPENLOOP,
-    CLOSEDLOOP
-  };
-
-  private TurretControlMode TurretControlMode;
+  private Constants.CONTROL_MODE controlMode;
 
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
@@ -68,23 +57,23 @@ public class Turret extends SubsystemBase {
   }
 
   private void updateClosedLoopPosition() {
-    double setpoint = Math.min(Math.max(turretSetpointDegrees, -90), 90);
+    double setpoint = Math.min(Math.max(turretSetpointDegrees, minAngle), maxAngle);
 
-    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * canCodertoTurretGearRatio);
+    turretMotor.set(
+        ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * canCodertoTurretGearRatio);
   }
-
 
   public void resetEncoder() {
     turretMotor.setSelectedSensorPosition(0);
     encoder.setPosition(0);
   }
 
-  public TurretControlMode getControlMode() {
-    return TurretControlMode;
+  public Constants.CONTROL_MODE getControlMode() {
+    return controlMode;
   }
 
-  public void setControlMode(TurretControlMode mode) {
-    TurretControlMode = mode;
+  public void setControlMode(Constants.CONTROL_MODE mode) {
+    controlMode = mode;
   }
 
   /** double returns encoder units of turret into degrees */
@@ -197,7 +186,7 @@ public class Turret extends SubsystemBase {
       turretHomeSensorLatch = false;
     }
 
-    //updateClosedLoopPosition();
+    // updateClosedLoopPosition();
     updateShuffleboard();
   }
 }
