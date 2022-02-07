@@ -94,9 +94,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new SchedulePostAutoCommand(
-            driveTrain, new PostAutoIntake(driveTrain, fieldSim, indexer, intake)));
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
   // class ToastAuto {
 }

@@ -54,13 +54,13 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(2), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
@@ -80,7 +80,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)
             // TODO implement indexer
-            ),
+        ),
+        new WaitCommand(1),
+        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
@@ -90,11 +92,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal),
-        new SchedulePostAutoCommand(
-            driveTrain, new PostAutoIntake(driveTrain, fieldSim, indexer, intake)));
+       new SchedulePostAutoCommand(
+            driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
 }

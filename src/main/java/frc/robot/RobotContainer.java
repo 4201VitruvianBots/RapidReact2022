@@ -16,7 +16,7 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.PostAutoIntake;
+import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
@@ -106,9 +106,7 @@ public class RobotContainer {
         new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption(
-        "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
-    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
+    m_autoChooser.addOption("Post Two Ball Intake", new PostTwoBallIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 

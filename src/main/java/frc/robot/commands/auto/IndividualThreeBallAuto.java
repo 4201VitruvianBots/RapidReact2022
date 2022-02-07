@@ -98,8 +98,6 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new SchedulePostAutoCommand(
-            driveTrain, new PostAutoIntake(driveTrain, fieldSim, indexer, intake)));
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }
