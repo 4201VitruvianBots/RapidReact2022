@@ -23,7 +23,7 @@ public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbBrakeSolenoid =
       new DoubleSolenoid(
           Constants.Pneumatics.pcmOne,
-          PneumaticsModuleType.values()[Constants.Pneumatics.pcmType],
+          Constants.Pneumatics.pcmType,
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
