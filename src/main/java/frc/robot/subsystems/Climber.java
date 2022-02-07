@@ -9,8 +9,6 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -20,13 +18,10 @@ import frc.robot.Constants;
  * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
-  private final DoubleSolenoid climbBrakeSolenoid =
-      new DoubleSolenoid(
-          PneumaticsModuleType.CTREPCM,
-          Constants.Pneumatics.climbPistonForward,
-          Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
-    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
+    new TalonFX(Constants.Climber.climbMotorA),
+    new TalonFX(Constants.Climber.climbMotorB),
+    new TalonFX(Constants.Climber.highClimbMotor)
   };
   private boolean climbState;
 
@@ -54,31 +49,6 @@ public class Climber extends SubsystemBase {
   }
 
   /**
-   * return the state of the climber brake
-   *
-   * @return the climber state the climb brake (true is engaged)
-   */
-  public ClimbBrakeStatus getClimbBrakeStatus() {
-    return climbBrakeSolenoid.get() == DoubleSolenoid.Value.kForward
-        ? ClimbBrakeStatus.ENGAGED
-        : ClimbBrakeStatus.DISENGAGED;
-  }
-
-  /** sets the state of the climb piston */
-  public void engagePistonBrake() {
-    if (getClimbBrakeStatus() != ClimbBrakeStatus.ENGAGED) {
-      climbBrakeSolenoid.set(DoubleSolenoid.Value.kForward);
-    }
-  }
-
-  /** sets the state of the climb piston */
-  public void disengagePistonBrake() {
-    if (getClimbBrakeStatus() != ClimbBrakeStatus.DISENGAGED) {
-      climbBrakeSolenoid.set(DoubleSolenoid.Value.kReverse);
-    }
-  }
-
-  /**
    * sets the climber motor's power with a percent (0.0 - 1.0)
    *
    * @param value output value
@@ -90,6 +60,10 @@ public class Climber extends SubsystemBase {
     else climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
+  public void setHighClimberPercentOutput(double value) {
+    climbMotors[2].set(ControlMode.PercentOutput, value);
+  }
+
   /**
    * get the climber position
    *
@@ -97,6 +71,15 @@ public class Climber extends SubsystemBase {
    */
   public double getClimberPosition() {
     return climbMotors[0].getSelectedSensorPosition();
+  }
+
+  /**
+   * get the high climber position
+   *
+   * @return the climber position (in raw sensor units)
+   */
+  public double getHighClimberPosition() {
+    return climbMotors[2].getSelectedSensorPosition();
   }
 
   private void updateSmartDashboard() {
@@ -118,11 +101,5 @@ public class Climber extends SubsystemBase {
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
-  }
-
-  /** The different states that the climber can be in */
-  private enum ClimbBrakeStatus {
-    ENGAGED,
-    DISENGAGED
   }
 }

@@ -12,11 +12,13 @@ import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
-public class SetClimberOutput extends CommandBase {
+public class EngageHighClimb extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
 
   private DoubleSupplier m_input;
+
+  private final int highClimberUpperLimit = 100_000;
 
   /**
    * Creates a new SetClimberOutput.
@@ -24,9 +26,8 @@ public class SetClimberOutput extends CommandBase {
    * @param climber The climber used by this command.
    * @param input The input used to control the climber output.
    */
-  public SetClimberOutput(Climber climber, DoubleSupplier input) {
+  public EngageHighClimb(Climber climber) {
     m_climber = climber;
-    m_input = input;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climber);
@@ -39,31 +40,24 @@ public class SetClimberOutput extends CommandBase {
   @Override
   public void execute() {
     if (m_climber.getClimbState()) {
-      double input = Math.abs(m_input.getAsDouble()) > 0.2 ? -m_input.getAsDouble() : 0;
-
-      climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
-      switch (desiredDirection) {
-        case MOVING:
-          m_climber.setClimberPercentOutput(input);
-          break;
-        case STILL:
-        default:
-          m_climber.setClimberPercentOutput(0);
-          break;
-      }
+      m_climber.setHighClimberPercentOutput(.5); // 50% power
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setClimberPercentOutput(0.0);
+    m_climber.setHighClimberPercentOutput(0.0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (m_climber.getHighClimberPosition() > highClimberUpperLimit) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private enum climberState {

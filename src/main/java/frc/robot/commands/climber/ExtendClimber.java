@@ -29,9 +29,7 @@ public class ExtendClimber extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    this.m_climber.disengagePistonBrake();
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {
@@ -44,7 +42,6 @@ public class ExtendClimber extends CommandBase {
   @Override
   public void end(final boolean interrupted) {
     this.m_climber.setClimberPercentOutput(0.0);
-    this.m_climber.engagePistonBrake();
   }
 
   // Returns true when the command should end.

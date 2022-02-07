@@ -40,6 +40,7 @@ public final class Constants {
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
+    public static final int highClimbMotor = 52;
 
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
@@ -52,9 +53,9 @@ public final class Constants {
     // public static final int indexerBottomSensor = 2;
 
     // public static final enum CARGO_COLOR {
-    //   RED,
-    //   BLUE,
-    //   UNKNOWN
+    // RED,
+    // BLUE,
+    // UNKNOWN
     // }
   }
 
@@ -96,7 +97,8 @@ public final class Constants {
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
+        // ratio
         (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
