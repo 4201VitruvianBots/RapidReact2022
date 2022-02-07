@@ -22,7 +22,8 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbBrakeSolenoid =
       new DoubleSolenoid(
-          PneumaticsModuleType.REVPH,
+          Constants.Pneumatics.pcmOne,
+          PneumaticsModuleType.values()[Constants.Pneumatics.pcmType],
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
