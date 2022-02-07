@@ -199,7 +199,7 @@ public final class Constants {
 
     public static final double degreeTolerance = 1.0;
 
-    public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
+    public static final double canCoderToTurretGearRatio = 120.0 / 18.0;
 
     public static final double toTurretGearRatio = 27.0 / 1.0;
   }
@@ -211,11 +211,16 @@ public final class Constants {
       PHOTONVISION
     }
 
-    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double UPPER_HUB_HEIGHT_METERS = 1.0;
+    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
-    public static String visionServerIP = "10.42.1.100";
+    public static String VISION_SERVER_IP = "10.42.1.100";
   }
 }
