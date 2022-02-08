@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
@@ -57,6 +58,9 @@ public class DriveTrain extends SubsystemBase {
 
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
+
+  /** Will run when enabled in teleop, unless null */
+  private Command m_postAutoCommand = null;
 
   private final HashMap<MotorPosition, TalonFX> driveMotors =
       new HashMap<MotorPosition, TalonFX>(
@@ -502,6 +506,25 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
+  }
+
+  /**
+   * Sets a command to run when enabled in teleop Does not run any command if {@code command} is
+   * null
+   *
+   * @param command The command to run
+   */
+  public void setPostAutoCommand(Command command) {
+    m_postAutoCommand = command;
+  }
+
+  /**
+   * Gets the command to run when enabled in teleop
+   *
+   * @return The command to run
+   */
+  public Command getPostAutoCommand() {
+    return m_postAutoCommand;
   }
 
   @Override
