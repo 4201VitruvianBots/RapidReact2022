@@ -33,7 +33,7 @@ public class TestPath extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         command,
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE));
   }

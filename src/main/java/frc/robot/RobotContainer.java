@@ -96,6 +96,10 @@ public class RobotContainer {
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
         "Group Three Ball Auto",
         new GroupThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
