@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.SchedulePostAutoCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -91,8 +90,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-       new SchedulePostAutoCommand(
-            driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+    //    new SchedulePostAutoCommand(
+    //         driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
 }
