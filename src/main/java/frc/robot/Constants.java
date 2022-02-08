@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -29,12 +30,14 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Pneumatics {
+  public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int climbPistonForward = 2;
-    public static final int climbPistonReverse = 3;
+    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
+
+    public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 8;
+    public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 9;
+    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 10;
+    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 11;
   }
 
   public final class Climber {
@@ -88,7 +91,7 @@ public final class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
-    public static final double kMaxVelocityMetersPerSecond = 2.0;
+    public static final double kMaxVelocityMetersPerSecond = 3.5;
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 
@@ -197,26 +200,28 @@ public final class Constants {
 
     public static final double degreeTolerance = 1.0;
 
-    public static final double canCodertoTurretGearRatio = 120.0 / 18.0;
+    public static final double canCoderToTurretGearRatio = 120.0 / 18.0;
 
     public static final double toTurretGearRatio = 27.0 / 1.0;
   }
 
   public static final class Vision {
     public enum CAMERA_TYPE {
-      OAK_D,
+      OAK,
       LIMELIGHT,
       PHOTONVISION
     }
 
-    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double UPPER_HUB_HEIGHT_METERS = 1.0;
+    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
 
-    /*
-     * Co-Processor IP Addresses
-     * 10.42.1.100: Goal Camera
-     * 10.42.1.101: Intake Camera
-     */
-    public static String goalCameraIP = "10.42.1.100";
-    public static String intakeCameraIP = "10.42.1.101";
+    public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
+    public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
+
+    public static String VISION_SERVER_IP = "10.42.1.100";
   }
 }

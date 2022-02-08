@@ -38,8 +38,8 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.8);
-    m_indexer.setIndexerPercentOutput(0.8);
+    m_intake.setIntakePercentOutput(0.4);
+    m_indexer.setIndexerPercentOutput(0.4);
   }
 
   /**
@@ -49,6 +49,7 @@ public class RunIntake extends CommandBase {
   public void end(boolean interrupted) {
     //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
+    m_indexer.setIndexerPercentOutput(0);
   }
 
   // Returns true when the command should end.
