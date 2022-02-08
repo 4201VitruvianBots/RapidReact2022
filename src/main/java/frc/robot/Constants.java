@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -29,14 +30,15 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Pneumatics {
+  public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final int pcmType = 0; // 0: CTREPCM, 1: REVPH
+    public static final PneumaticsModuleType pcmType =
+        PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
 
-    public static final int intakePistonForward = pcmType == 0 ? 0 : 8;
-    public static final int intakePistonReverse = pcmType == 0 ? 1 : 9;
-    public static final int climbPistonForward = pcmType == 0 ? 2 : 10;
-    public static final int climbPistonReverse = pcmType == 0 ? 3 : 11;
+    public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 8;
+    public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 9;
+    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 10;
+    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 11;
   }
 
   public final class Climber {

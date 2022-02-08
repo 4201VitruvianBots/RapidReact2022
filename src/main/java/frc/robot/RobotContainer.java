@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -21,7 +20,10 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
+import frc.robot.commands.climber.SetClimbState;
+import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.AlignToCargo;
+import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
@@ -94,10 +96,6 @@ public class RobotContainer {
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto Defense",
-        new TwoBallAutoDefense(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
         "Group Three Ball Auto",
         new GroupThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
@@ -147,18 +145,17 @@ public class RobotContainer {
     xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
 
+    xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
+
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
-    // leftButtons[0].cancelWhenPressed(m_driveTrain.getPostAutoCommand());
-    // TODO Try this if the above does not work
-    // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    // m_climber.setDefaultCommand(
-    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    m_climber.setDefaultCommand(
+        new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
@@ -173,22 +170,17 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {
-  }
+  public void robotPeriodic() {}
 
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
-    m_driveTrain.setPostAutoCommand(null);
   }
 
   public void disabledPeriodic() {}
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
-    if (m_driveTrain.getPostAutoCommand() != null) {
-      m_driveTrain.getPostAutoCommand().schedule(true);
-    }
   }
 
   public void teleopPeriodic() {}

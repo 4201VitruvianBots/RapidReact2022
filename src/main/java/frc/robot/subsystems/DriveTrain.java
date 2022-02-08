@@ -26,7 +26,6 @@ import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
@@ -58,9 +57,6 @@ public class DriveTrain extends SubsystemBase {
 
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
-
-  /** Will run when enabled in teleop, unless null */
-  private Command m_postAutoCommand = null;
 
   private final HashMap<MotorPosition, TalonFX> driveMotors =
       new HashMap<MotorPosition, TalonFX>(
@@ -314,19 +310,6 @@ public class DriveTrain extends SubsystemBase {
             feedforwardCtre.calculate(rightSpeed));
     m_leftOutput = leftSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
     m_rightOutput = rightSpeed / Constants.DriveTrain.kMaxVelocityMetersPerSecond;
-
-    //    m_leftOutput =
-    //        (leftPIDController.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond,
-    // leftSpeed)
-    //                + feedforward.calculate(getSpeedsMetersPerSecond().leftMetersPerSecond))
-    //            / 12.0;
-    //    m_rightOutput =
-    //        rightPIDController.calculate(
-    //                getSpeedsMetersPerSecond().rightMetersPerSecond
-    //                    + feedforward.calculate(getSpeedsMetersPerSecond().rightMetersPerSecond))
-    //            / 12.0;
-    //    driveMotors.get(MotorPosition.LEFT_FRONT).set(ControlMode.PercentOutput, m_leftOutput);
-    //    driveMotors.get(MotorPosition.RIGHT_FRONT).set(ControlMode.PercentOutput, m_rightOutput);
   }
 
   /**
@@ -519,25 +502,6 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
-  }
-
-  /**
-   * Sets a command to run when enabled in teleop Does not run any command if {@code command} is
-   * null
-   *
-   * @param command The command to run
-   */
-  public void setPostAutoCommand(Command command) {
-    m_postAutoCommand = command;
-  }
-
-  /**
-   * Gets the command to run when enabled in teleop
-   *
-   * @return The command to run
-   */
-  public Command getPostAutoCommand() {
-    return m_postAutoCommand;
   }
 
   @Override
