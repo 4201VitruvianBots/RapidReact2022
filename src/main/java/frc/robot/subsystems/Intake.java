@@ -26,7 +26,7 @@ public class Intake extends SubsystemBase {
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
           Constants.Pneumatics.pcmOne,
-          PneumaticsModuleType.values()[Constants.Pneumatics.pcmType],
+          Constants.Pneumatics.pcmType,
           Constants.Pneumatics.intakePistonForward,
           Constants.Pneumatics.intakePistonReverse);
 
