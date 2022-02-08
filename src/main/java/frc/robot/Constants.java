@@ -90,7 +90,7 @@ public final class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
-    public static final double kMaxVelocityMetersPerSecond = 2.0;
+    public static final double kMaxVelocityMetersPerSecond = 3.5;
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 
