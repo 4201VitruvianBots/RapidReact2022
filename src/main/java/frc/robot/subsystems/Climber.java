@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,6 +19,14 @@ import frc.robot.Constants;
  * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
+  private DigitalInput climberLowerLimitOverride =
+      new DigitalInput(Constants.Climber.climberLowerLimitOverrideID);
+
+  private DigitalInput climberUpperLimitOverride =
+      new DigitalInput(Constants.Climber.climberUpperLimitOverrideID);
+
+  private boolean Overridelatched = false;
+
   private final TalonFX[] climbMotors = {
     new TalonFX(Constants.Climber.climbMotorA),
     new TalonFX(Constants.Climber.climbMotorB),
@@ -82,10 +91,30 @@ public class Climber extends SubsystemBase {
     return climbMotors[2].getSelectedSensorPosition();
   }
 
+  private void updateClimberLimits() {
+    if (!Overridelatched) {
+      if (!climberLowerLimitOverride.get()) {
+        climbMotors[0].setSelectedSensorPosition(lowerLimit);
+        Overridelatched = true;
+      } else if (!climberUpperLimitOverride.get()) {
+        climbMotors[0].setSelectedSensorPosition(upperLimit);
+        Overridelatched = true;
+      }
+    } else if (Overridelatched
+        && climberLowerLimitOverride.get()
+        && climberUpperLimitOverride.get()) {
+      Overridelatched = false;
+    }
+  }
+
   private void updateSmartDashboard() {
     SmartDashboardTab.putBoolean("Climber", "Climb Mode", getClimbState());
     SmartDashboardTab.putNumber("Climber", "Climb Output", climbMotors[0].getMotorOutputPercent());
     SmartDashboardTab.putNumber("Climber", "Climb Position", getClimberPosition());
+    SmartDashboardTab.putBoolean(
+        "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
+    SmartDashboardTab.putBoolean(
+        "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
   }
 
   @Override
@@ -96,6 +125,8 @@ public class Climber extends SubsystemBase {
     if ((getClimberPosition() <= lowerLimit && climbMotors[0].getMotorOutputPercent() < 0)
         || (getClimberPosition() >= upperLimit && climbMotors[0].getMotorOutputPercent() > 0))
       climbMotors[0].set(ControlMode.PercentOutput, 0);
+
+    updateClimberLimits();
   }
 
   @Override
