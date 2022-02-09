@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.unmanaged.Unmanaged;
-import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,10 +19,8 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
@@ -64,10 +61,10 @@ public class DriveTrain extends SubsystemBase {
   /** To hold on to the values to set the simulation motors */
   double m_leftOutput, m_rightOutput;
 
-  private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
+  // private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
 
   /** Simulation Gyro */
-  private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
+  // private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
 
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
@@ -78,7 +75,7 @@ public class DriveTrain extends SubsystemBase {
     // Set up DriveTrain motors
     configureCtreMotors();
 
-    navX.reset();
+    // navX.reset();
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
@@ -148,14 +145,15 @@ public class DriveTrain extends SubsystemBase {
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
-    if (RobotBase.isReal()) return Math.IEEEremainder(-navX.getAngle(), 360);
-    else
-      return Math.IEEEremainder(m_gyro.getAngle(), 360)
-          * (Constants.DriveTrain.kGyroReversed ? -1.0 : 1.0);
+    return 0;
+    // if (RobotBase.isReal()) return Math.IEEEremainder(-navX.getAngle(), 360);
+    // else
+    //   return Math.IEEEremainder(m_gyro.getAngle(), 360)
+    //       * (Constants.DriveTrain.kGyroReversed ? -1.0 : 1.0);
   }
 
   public void resetAngle() {
-    navX.zeroYaw();
+    // navX.zeroYaw();
   }
 
   /**
@@ -164,7 +162,7 @@ public class DriveTrain extends SubsystemBase {
    * @param angle the offset angle
    */
   public void setNavXOffsetDegrees(double angle) {
-    navX.setAngleAdjustment(angle);
+    // navX.setAngleAdjustment(angle);
   }
 
   /**
@@ -427,7 +425,7 @@ public class DriveTrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
     resetEncoderCounts();
-    navX.reset();
+    // navX.reset();
     odometry.resetPosition(pose, rotation);
     if (RobotBase.isSimulation()) {
       // resetEncoderCounts();
