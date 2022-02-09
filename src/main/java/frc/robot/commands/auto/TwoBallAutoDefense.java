@@ -59,7 +59,8 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAutoDefense-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath(
+            "TwoBallAutoDefense-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
@@ -90,7 +91,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new RunIndexer(indexer).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-            new IntakePiston(intake, true),
+        new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
                 command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new RunIntake(intake, indexer))
@@ -100,5 +101,5 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new TurnInPlace(driveTrain, 30));
-    }
+  }
 }

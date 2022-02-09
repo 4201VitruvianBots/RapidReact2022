@@ -1,16 +1,10 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
-
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.simulation.FieldSim;
@@ -30,7 +24,8 @@ public class PostTwoBallIntake extends SequentialCommandGroup {
    * @param indexer
    * @param intake
    */
-public PostTwoBallIntake(DriveTrain driveTrain, FieldSim fieldSim, Indexer indexer, Intake intake) {
+  public PostTwoBallIntake(
+      DriveTrain driveTrain, FieldSim fieldSim, Indexer indexer, Intake intake) {
     Trajectory trajectory =
         PathPlanner.loadPath("TwoBallAuto-3", Units.feetToMeters(3), Units.feetToMeters(3), true);
 

@@ -79,7 +79,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)
             // TODO implement indexer
-        ),
+            ),
         new WaitCommand(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
