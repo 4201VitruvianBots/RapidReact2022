@@ -7,24 +7,23 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
 import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
 public class EngageHighClimb extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private Climber m_climber;
 
   private DoubleSupplier m_input;
-
-  private final int highClimberUpperLimit = 100_000;
 
   /**
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
-   * @param input The input used to control the climber output.
+   * @param input   The input used to control the climber output.
    */
   public EngageHighClimb(Climber climber) {
     m_climber = climber;
@@ -35,29 +34,26 @@ public class EngageHighClimb extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   @Override
   public void execute() {
-    if (m_climber.getClimbState()) {
-      m_climber.setHighClimberPercentOutput(.5); // 50% power
+    if (m_climber.getElevatorClimbState()) {
+      m_climber.setHighClimbPiston(Value.kForward);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setHighClimberPercentOutput(0.0);
+    m_climber.setHighClimbPiston(Value.kOff);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_climber.getHighClimberPosition() > highClimberUpperLimit) {
-      return true;
-    } else {
-      return false;
-    }
+    return false;
   }
 
   private enum climberState {

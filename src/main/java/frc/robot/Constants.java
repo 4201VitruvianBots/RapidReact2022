@@ -40,7 +40,6 @@ public final class Constants {
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
-    public static final int highClimbMotor = 52;
 
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
