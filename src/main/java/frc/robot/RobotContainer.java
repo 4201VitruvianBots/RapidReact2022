@@ -26,7 +26,7 @@ import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
-import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -111,7 +111,7 @@ public class RobotContainer {
         "Post Two Ball Intake",
         new PostTwoBallIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
 
-    SmartDashboard.putData("Selected Auto", m_autoChooser);
+    SmartDashboard.putData("Selected Auto", m_autoChooser); 
 
     initializeSubsystems();
 
@@ -143,12 +143,13 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2300));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2900));
 
-    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
+    xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
