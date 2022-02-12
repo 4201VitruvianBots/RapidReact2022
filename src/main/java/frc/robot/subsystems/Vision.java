@@ -25,11 +25,22 @@ public class Vision extends SubsystemBase {
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls) {
     m_controls = controls;
-    goal_camera =
-        NetworkTableInstance.getDefault().getTable(goal_camera_type.toString().toLowerCase());
+
+    switch (goal_camera_type) {
+      case PHOTONVISION:
+        goal_camera = NetworkTableInstance.getDefault().getTable("photonvision");
+        break;
+      case LIMELIGHT:
+        goal_camera = NetworkTableInstance.getDefault().getTable("limelight");
+        break;
+      case OAK:
+      default:
+        goal_camera = NetworkTableInstance.getDefault().getTable("OAK-D_Goal");
+        break;
+    }
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
-    PortForwarder.add(5802, visionServerIP, 5802);
+    PortForwarder.add(5802, VISION_SERVER_IP, 5802);
   }
   /**
    * Returns a boolean value based on checks to determine if the robot can shoot.
@@ -95,7 +106,8 @@ public class Vision extends SubsystemBase {
    * @return Horizontal Distance to goal target (0-30 meters)
    */
   public double getGoalTargetHorizontalDistance() {
-    return Math.cos(Units.degreesToRadians(CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
+    return Math.cos(
+            Units.degreesToRadians(INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
         * getGoalTargetDirectDistance();
   }
 

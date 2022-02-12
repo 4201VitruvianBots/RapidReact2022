@@ -33,7 +33,7 @@ public class Indexer extends SubsystemBase {
     indexerMotor.setNeutralMode(NeutralMode.Brake);
 
     kickerMotor.configFactoryDefault();
-    kickerMotor.setInverted(true);
+    kickerMotor.setInverted(false);
 
     SmartDashboard.putData("indexer Subsystem", this);
   }
