@@ -20,6 +20,7 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
+import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
@@ -141,6 +142,10 @@ public class RobotContainer {
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
     xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2300));
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2900));
+
+    xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));

@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.unmanaged.Unmanaged;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.controller.PIDController;
@@ -69,7 +70,7 @@ public class DriveTrain extends SubsystemBase {
   /** To hold on to the values to set the simulation motors */
   double m_leftOutput, m_rightOutput;
 
-  private final AHRS navX = new AHRS(SerialPort.Port.kMXP);
+  private final Pigeon2 pigeon = new Pigeon2(Constants.DriveTrain.pigeonID, "rio");
 
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
@@ -80,7 +81,8 @@ public class DriveTrain extends SubsystemBase {
     // Set up DriveTrain motors
     configureCtreMotors();
 
-    navX.reset();
+    // navX.reset();
+    pigeon.setYaw(0);
 
     odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
 
@@ -150,11 +152,11 @@ public class DriveTrain extends SubsystemBase {
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
-    return Math.IEEEremainder(-navX.getAngle(), 360);
+    return Math.IEEEremainder(-pigeon.getYaw(), 360);
   }
 
   public void resetAngle() {
-    navX.zeroYaw();
+    pigeon.setYaw(0);
   }
 
   /**
@@ -163,7 +165,7 @@ public class DriveTrain extends SubsystemBase {
    * @param angle the offset angle
    */
   public void setNavXOffsetDegrees(double angle) {
-    navX.setAngleAdjustment(angle);
+    pigeon.addYaw(angle);
   }
 
   /**
@@ -424,7 +426,7 @@ public class DriveTrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
     resetEncoderCounts();
-    navX.reset();
+    pigeon.setYaw(0);
     odometry.resetPosition(pose, rotation);
     if (RobotBase.isSimulation()) {
       // resetEncoderCounts();
