@@ -79,7 +79,7 @@ public class LED extends SubsystemBase {
         m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, LedCount);
         break;
       case Twinkle:
-        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
+        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent100);
         break;
       case TwinkleOff:
         m_toAnimate = new TwinkleOffAnimation(
@@ -101,41 +101,6 @@ public class LED extends SubsystemBase {
     }
   }
 
-  /**
-   * Interpret a robot state and set the LEDs to express that state
-   *
-   * @param state the dominant robot state that the LEDs will express
-   */
-  public void expressState(robotState state) {
-    if (state != currentRobotState) {
-      // setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
-      // if(currentRobotState == robotState.Twinkle){
-      // setPattern(0,0,0,0,0,AnimationTypes.TwinkleOff);
-      // }
-      switch (state) {
-        case Intaking: // Solid Blue
-          setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
-          break;
-        case Enabled: // Green larson animation
-          setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
-          break;
-        case Climbing: // Rainbow
-          setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
-          break;
-        case Disabled: // solid red
-          setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
-          break;
-        case VisionLock: // strobing yellow
-          setPattern(255, 255, 0, 0, 0.5, AnimationTypes.Strobe);
-          break;
-        default:
-          setPattern(106, 90, 205, 0, 0.4, AnimationTypes.Twinkle);
-          break;
-      }
-      currentRobotState = state;
-    }
-  }
-
   public void increaseTestingState(boolean increaseState) {
     if (increaseState) {
       LEDTestingIndex++;
@@ -148,8 +113,8 @@ public class LED extends SubsystemBase {
   public void expressTestingState() {
     int testingState = LEDTestingIndex % 5;
     switch (testingState) {
-      case 0: // Solid Blue
-        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
+      case 0: // strobing yellow
+        setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
         break;
       case 1: // Green larson animation
         setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
@@ -158,10 +123,10 @@ public class LED extends SubsystemBase {
         setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
         break;
       case 3: // solid red
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
+        setPattern(255, 0, 0, 0, 0, AnimationTypes.ColorFlow);
         break;
-      case 4: // strobing yellow
-        setPattern(255, 255, 0, 0, 0.5, AnimationTypes.Strobe);
+      case 4: // strobing blue
+        setPattern(50, 0, 255, 0, 0, AnimationTypes.ColorFlow);
         break;
       default:
         setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
