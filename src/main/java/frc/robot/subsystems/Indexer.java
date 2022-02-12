@@ -24,6 +24,11 @@ public class Indexer extends SubsystemBase {
   private final double gearRatio = 1.0 / 27.0;
   public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
 
+  private DriverStation.Alliance frontColorType = DriverStation.Alliance.Invalid;
+  private DriverStation.Alliance rearColorType = DriverStation.Alliance.Invalid;
+  private Color frontColor = new Color(0, 0, 0);
+  private Color rearColor = new Color(0, 0, 0);
+
   // Setup indexer motor controller (SparkMaxs)
 
   TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
@@ -102,27 +107,55 @@ public class Indexer extends SubsystemBase {
     } else return DriverStation.Alliance.Invalid;
   }
 
+  public void pollColorSensors() {
+    if(getIndexerFrontSensorTripped()) {
+      frontColorType = getCargoColor(0);
+      frontColor = getColor(0);
+    }
+    if(getIndexerRearSensorTripped()) {
+      rearColorType = getCargoColor(2);
+      rearColor = getColor(2);
+    }
+  }
+
+  public DriverStation.Alliance getFrontColorType() {
+    return frontColorType;
+  }
+
+  public DriverStation.Alliance getRearColorType() {
+    return rearColorType;
+  }
+
+  public Color getFrontColor() {
+    return frontColor;
+  }
+
+  public Color getRearColor() {
+    return rearColor;
+  }
+
+
   @Override
   public void periodic() {
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
     SmartDashboardTab.putString(
-        "Indexer", "Rear Color", getCargoColor(Constants.Indexer.colorSensorRear).toString());
+        "Indexer", "Rear Color", getFrontColorType().toString());
     SmartDashboardTab.putNumber(
-        "Indexer", "Rear Red", getColor(Constants.Indexer.colorSensorRear).red);
+        "Indexer", "Rear Red", getFrontColor().red);
     SmartDashboardTab.putNumber(
-        "Indexer", "Rear Green", getColor(Constants.Indexer.colorSensorRear).green);
+        "Indexer", "Rear Green", getFrontColor().green);
     SmartDashboardTab.putNumber(
-        "Indexer", "Rear Blue", getColor(Constants.Indexer.colorSensorRear).blue);
+        "Indexer", "Rear Blue", getFrontColor().blue);
     SmartDashboardTab.putString(
-        "Indexer", "Front Color", getCargoColor(Constants.Indexer.colorSensorFront).toString());
+        "Indexer", "Front Color", getRearColorType().toString());
     SmartDashboardTab.putNumber(
-        "Indexer", "Front Red", getColor(Constants.Indexer.colorSensorFront).red);
+        "Indexer", "Front Red", getRearColor().red);
     SmartDashboardTab.putNumber(
-        "Indexer", "Front Green", getColor(Constants.Indexer.colorSensorFront).green);
+        "Indexer", "Front Green", getRearColor().green);
     SmartDashboardTab.putNumber(
-        "Indexer", "Front Blue", getColor(Constants.Indexer.colorSensorFront).blue);
+        "Indexer", "Front Blue", getRearColor().blue);
   }
 
   @Override

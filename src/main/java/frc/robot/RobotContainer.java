@@ -150,6 +150,10 @@ public class RobotContainer {
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
 
+  public Indexer getIndexer() {
+    return m_indexer;
+  }
+
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
