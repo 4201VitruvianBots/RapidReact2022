@@ -30,8 +30,7 @@ public class RunIntake extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (!m_intake.getIntakePistonExtendStatus())
-      m_intake.setIntakePiston(true);
+    m_intake.setIntakePiston(true);
   }
 
   /**
@@ -41,8 +40,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.9);
-    m_indexer.setIndexerPercentOutput(0.35);
+    m_intake.setIntakePercentOutput(0.7);
   }
 
   /**
@@ -53,7 +51,6 @@ public class RunIntake extends CommandBase {
     //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePiston(false);
     m_intake.setIntakePercentOutput(0);
-    m_indexer.setIndexerPercentOutput(0);
   }
 
   // Returns true when the command should end.
