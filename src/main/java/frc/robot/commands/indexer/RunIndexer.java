@@ -30,7 +30,7 @@ public class RunIndexer extends CommandBase {
   public void execute() {
     m_indexer.setIndexerPercentOutput(0.35);
     if(m_flywheel.canShoot()){
-    m_indexer.setKickerPercentOutput(0.9);
+      m_indexer.setKickerPercentOutput(0.9);
     }
     else m_indexer.setKickerPercentOutput(0);
   }

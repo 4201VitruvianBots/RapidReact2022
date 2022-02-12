@@ -76,7 +76,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new ParallelDeadlineGroup(
@@ -85,7 +85,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer),
+            new RunIndexer(indexer, flywheel),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new ParallelDeadlineGroup(
@@ -94,7 +94,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
