@@ -11,21 +11,12 @@ import frc.robot.subsystems.*;
 public class GetSubsystemStates extends CommandBase {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final LED m_led;
-
-  private final Vision m_vision;
-  private final Intake m_intake;
-  private final Flywheel m_flywheel;
-  private final Climber m_climber;
   // private final Controls m_controls;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(
-      LED led, Intake intake, Vision vision, Flywheel flywheel, Climber climber) {
+  public GetSubsystemStates(LED led) {
     m_led = led;
-    m_vision = vision;
-    m_climber = climber;
-    m_flywheel = flywheel;
-    m_intake = intake;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(led);
   }
@@ -39,30 +30,7 @@ public class GetSubsystemStates extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // the prioritized state to be expressed to the LEDs
-    boolean Disabled = DriverStation.isDisabled();
-    boolean Enabled = true; // Reevaluate what is "Enabled"
-    boolean Intaking = m_intake.getIntakeState();
-    boolean VisionLock = m_vision.getGoalValidTarget();
-    boolean Climbing = m_climber.getClimbState();
 
-    // set in order of priority to be expressed from the least priority to the
-    // highest priority
-    if (Disabled) {
-      m_led.expressState(LED.robotState.Disabled);
-    }
-    if (Enabled) {
-      m_led.expressState(LED.robotState.Enabled);
-    }
-    if (Intaking) {
-      m_led.expressState(LED.robotState.Intaking);
-    }
-    if (VisionLock) {
-      m_led.expressState(LED.robotState.VisionLock);
-    }
-    if (Climbing) {
-      m_led.expressState(LED.robotState.Climbing);
-    }
   }
 
   // Called once the command ends or is interrupted.
