@@ -32,8 +32,7 @@ public final class Constants {
 
   public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final PneumaticsModuleType pcmType =
-        PneumaticsModuleType.REVPH; // CTREPCM, REVPH
+    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.REVPH; // CTREPCM, REVPH
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
