@@ -74,6 +74,8 @@ public final class Constants {
     public static final int rightFrontDriveMotor = 22;
     public static final int rightRearDriveMotor = 23;
 
+    public static final int pigeonID = 9;
+
     public enum MotorPosition {
       LEFT_FRONT,
       LEFT_REAR,
