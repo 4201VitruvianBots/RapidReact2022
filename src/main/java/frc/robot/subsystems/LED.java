@@ -19,7 +19,7 @@ import frc.robot.Constants;
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
-  private final int LedCount = 8;
+  private final int LedCount = 296;
   private AnimationTypes m_currentAnimation;
   private robotState currentRobotState;
   int red = 0;
