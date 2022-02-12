@@ -104,7 +104,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return ( Math.abs(getRPM(0) - getSetpointRPM()) <= 50);
+    return (Math.abs(getRPM(0) - getSetpointRPM()) <= 50);
   }
 
   /** flywheelSetpoint if setpoint else setPower to 0 */
