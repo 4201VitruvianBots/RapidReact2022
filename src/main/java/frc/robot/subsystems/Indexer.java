@@ -7,12 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.ColorSensorV3;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -88,6 +82,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * front sensor tripped status
+   *
    * @return boolean
    */
   public boolean getIndexerFrontSensorTripped() {
@@ -96,6 +91,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * rear sensor tripped status
+   *
    * @return boolean
    */
   public boolean getIndexerRearSensorTripped() {
@@ -104,8 +100,9 @@ public class Indexer extends SubsystemBase {
 
   /**
    * color value from mux channel
+   *
    * @param channel
-   * @return color 
+   * @return color
    */
   public Color getColor(int channel) {
     if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
@@ -119,22 +116,20 @@ public class Indexer extends SubsystemBase {
    */
   public DriverStation.Alliance getCargoColor(int channel) {
     Color color = getColor(channel);
-    if (color.red > color.blue * 1.5 && color.red > color.green * 1.4) { 
+    if (color.red > color.blue * 1.5 && color.red > color.green * 1.4) {
       return DriverStation.Alliance.Red;
     } else if (color.blue > color.red * 2 && color.blue > color.green * 0.7) {
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }
 
-  /**
-   * Calls cargo color from tripped sensor
-   */
+  /** Calls cargo color from tripped sensor */
   public void pollColorSensors() {
-    if(getIndexerFrontSensorTripped()) {
+    if (getIndexerFrontSensorTripped()) {
       frontColorType = getCargoColor(0);
       frontColor = getColor(0);
     }
-    if(getIndexerRearSensorTripped()) {
+    if (getIndexerRearSensorTripped()) {
       rearColorType = getCargoColor(2);
       rearColor = getColor(2);
     }
@@ -142,6 +137,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * color from front sensor
+   *
    * @return color
    */
   public DriverStation.Alliance getFrontColorType() {
@@ -150,6 +146,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * color from rear sensor
+   *
    * @return color
    */
   public DriverStation.Alliance getRearColorType() {
@@ -158,6 +155,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * rgb from front sensor
+   *
    * @return rgb value
    */
   public Color getFrontColor() {
@@ -166,34 +164,26 @@ public class Indexer extends SubsystemBase {
 
   /**
    * rgb from rear sensor
+   *
    * @return rgb value
    */
   public Color getRearColor() {
     return rearColor;
   }
 
-
   @Override
   public void periodic() {
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
-    SmartDashboardTab.putString(
-        "Indexer", "Rear Color", getFrontColorType().toString());
-    SmartDashboardTab.putNumber(
-        "Indexer", "Rear Red", getFrontColor().red);
-    SmartDashboardTab.putNumber(
-        "Indexer", "Rear Green", getFrontColor().green);
-    SmartDashboardTab.putNumber(
-        "Indexer", "Rear Blue", getFrontColor().blue);
-    SmartDashboardTab.putString(
-        "Indexer", "Front Color", getRearColorType().toString());
-    SmartDashboardTab.putNumber(
-        "Indexer", "Front Red", getRearColor().red);
-    SmartDashboardTab.putNumber(
-        "Indexer", "Front Green", getRearColor().green);
-    SmartDashboardTab.putNumber(
-        "Indexer", "Front Blue", getRearColor().blue);
+    SmartDashboardTab.putString("Indexer", "Rear Color", getFrontColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Rear Red", getFrontColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Rear Green", getFrontColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Rear Blue", getFrontColor().blue);
+    SmartDashboardTab.putString("Indexer", "Front Color", getRearColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Front Red", getRearColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Front Green", getRearColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Front Blue", getRearColor().blue);
   }
 
   @Override
