@@ -211,8 +211,8 @@ public class Vision extends SubsystemBase {
    *  0: Cargo
    *  1: Launchpads
    * */
-  public void setIntakeTargetLock(){
-    SmartDashboardTab.putBoolean("Vision", "intake_target_lock", true);
+  public void setIntakeTargetLock(boolean state){
+    SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
   }
 
   /** Sends values to SmartDashboard */
