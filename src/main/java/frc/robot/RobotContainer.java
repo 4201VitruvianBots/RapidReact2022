@@ -106,7 +106,7 @@ public class RobotContainer {
         "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
-    SmartDashboard.putData("Selected Auto", m_autoChooser);
+    SmartDashboard.putData("Selected Auto", m_autoChooser); 
 
     initializeSubsystems();
 
