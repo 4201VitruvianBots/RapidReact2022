@@ -4,10 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,11 +15,19 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
+import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
+import frc.robot.commands.climber.SetClimbState;
+import frc.robot.commands.climber.SetClimberOutput;
+import frc.robot.commands.driveTrain.AlignToCargo;
+import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.ReverseIntakeIndexer;
+import frc.robot.commands.intake.RunIntake;
+import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
@@ -67,7 +72,6 @@ public class RobotContainer {
   public Button xBoxLeftTrigger, xBoxRightTrigger;
   // public static boolean allianceColorBlue;
   // public static boolean allianceColorRed;
-
   public static enum CommandSelector {
     BLUE_ALLIANCE, // 01
     RED_ALLIANCE
@@ -82,7 +86,7 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+        "Drive Forward", new DriveBackwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption(
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
@@ -99,8 +103,11 @@ public class RobotContainer {
         new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
+    m_autoChooser.addOption(
+        "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
+    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
-    SmartDashboard.putData("Selected Auto", m_autoChooser);
+    SmartDashboard.putData("Selected Auto", m_autoChooser); 
 
     initializeSubsystems();
 
@@ -124,29 +131,33 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
+    rightButtons[0].whileHeld(
+        new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+
     xBoxLeftTrigger =
         new Button(
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    int baseRPM = 1000;
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 500));
-    xBoxButtons[2].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 1000));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, baseRPM + 1500));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2300));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2900));
 
-    // xBoxButtons[6].whileHeld(new SetTurretRobotRelativeAngle(m_turret, 90));
-    xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
-    xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 0));
-    xBoxButtons[8].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
-    xBoxButtons[9].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
+    xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+
+    xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
+
+    // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
+    // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    // m_climber.setDefaultCommand(
-    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    m_climber.setDefaultCommand(
+        new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
@@ -171,7 +182,7 @@ public class RobotContainer {
   public void disabledPeriodic() {}
 
   public void teleopInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
   }
 
   public void teleopPeriodic() {}
