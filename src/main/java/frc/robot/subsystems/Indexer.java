@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,18 +22,20 @@ public class Indexer extends SubsystemBase {
   TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
 
   // Indexer sensors setup
-  DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
-  DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerBottomSensor);
+  // DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerTopSensor);
+  // DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerBottomSensor);
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
-    indexerMotor.setInverted(true);
+    indexerMotor.setInverted(false);
 
     indexerMotor.setNeutralMode(NeutralMode.Brake);
 
     kickerMotor.configFactoryDefault();
-    kickerMotor.setInverted(true);
+    kickerMotor.setInverted(false);
+
+    SmartDashboard.putData("indexer Subsystem", this);
   }
 
   /**
@@ -54,13 +56,13 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(ControlMode.PercentOutput, output);
   }
 
-  public boolean getIndexerFrontSensorTripped() {
-    return !frontBeamBreak.get();
-  }
+  // public boolean getIndexerFrontSensorTripped() {
+  //   return !frontBeamBreak.get();
+  // }
 
-  public boolean getIndexerRearSensorTripped() {
-    return !rearBeamBreak.get();
-  }
+  // public boolean getIndexerRearSensorTripped() {
+  //   return !rearBeamBreak.get();
+  // }
 
   /*
     public void getFrontCargoColor() {
