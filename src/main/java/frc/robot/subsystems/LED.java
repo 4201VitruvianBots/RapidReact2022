@@ -123,10 +123,10 @@ public class LED extends SubsystemBase {
         setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
         break;
       case 3: // solid red
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.ColorFlow);
+        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
         break;
       case 4: // strobing blue
-        setPattern(50, 0, 255, 0, 0, AnimationTypes.ColorFlow);
+        setPattern(50, 0, 255, 0, 0, AnimationTypes.Solid);
         break;
       default:
         setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
@@ -137,7 +137,7 @@ public class LED extends SubsystemBase {
   @Override
   public void periodic() {
     if (m_toAnimate == null) {
-      m_candle.setLEDs(red, green, blue, 255, 0, LedCount);
+      m_candle.setLEDs(red, green, blue, 0, 0, 1024);
     } else {
       m_candle.animate(m_toAnimate);
     }
