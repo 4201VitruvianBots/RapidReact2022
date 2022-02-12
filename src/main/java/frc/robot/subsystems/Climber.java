@@ -12,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -21,9 +22,9 @@ import frc.robot.Constants;
  * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
-  private final TalonFX[] elevatorClimbMotors = {
-    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB),
-  };
+  // private final TalonFX[] elevatorClimbMotors = {
+  //   new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB),
+  // };
 
   DoubleSolenoid highClimbPiston =
       new DoubleSolenoid(
@@ -40,13 +41,15 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber() {
     // Set up climber motor
-    for (int i = 0; i < elevatorClimbMotors.length; i++) {
-      elevatorClimbMotors[i].configFactoryDefault();
-      elevatorClimbMotors[i].setSelectedSensorPosition(0);
-      elevatorClimbMotors[i].setNeutralMode(NeutralMode.Brake);
-      elevatorClimbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-    }
-    elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
+    // for (int i = 0; i < elevatorClimbMotors.length; i++) {
+    //   elevatorClimbMotors[i].configFactoryDefault();
+    //   elevatorClimbMotors[i].setSelectedSensorPosition(0);
+    //   elevatorClimbMotors[i].setNeutralMode(NeutralMode.Brake);
+    //   elevatorClimbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    // }
+    // elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
+
+    SmartDashboard.putData("Climber subsystem", this);
   }
 
   public boolean getElevatorClimbState() {
@@ -63,14 +66,18 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setElevatorClimberPercentOutput(double value) {
-    if ((getElevatorClimbPosition() > elevatorClimbLowerLimit || value > 0)
-        && (getElevatorClimbPosition() < elevatorClimbUpperLimit || value < 0))
-      elevatorClimbMotors[0].set(ControlMode.PercentOutput, value);
-    else elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
+    // if ((getElevatorClimbPosition() > elevatorClimbLowerLimit || value > 0)
+    //     && (getElevatorClimbPosition() < elevatorClimbUpperLimit || value < 0))
+    //   elevatorClimbMotors[0].set(ControlMode.PercentOutput, value);
+    // else elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   public void setHighClimbPiston(DoubleSolenoid.Value kValue) {
     highClimbPiston.set(kValue);
+  }
+
+  public DoubleSolenoid.Value getHighClimbPiston() {
+    return highClimbPiston.get();
   }
 
   /**
@@ -79,7 +86,7 @@ public class Climber extends SubsystemBase {
    * @return the climber position (in raw sensor units)
    */
   public double getElevatorClimbPosition() {
-    return elevatorClimbMotors[0].getSelectedSensorPosition();
+    return 0;//elevatorClimbMotors[0].getSelectedSensorPosition();
   }
 
   /**
@@ -92,14 +99,14 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateSmartDashboard() {
-    SmartDashboardTab.putBoolean(
-        "Climber",
-        "High Climb Piston Position",
-        getHighClimbPistonPosition() == Value.kForward ? true : false);
-    SmartDashboardTab.putBoolean("Climber", "Climb Mode", getElevatorClimbState());
-    SmartDashboardTab.putNumber(
-        "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
-    SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber",
+    //     "High Climb Piston Position",
+    //     getHighClimbPistonPosition() == Value.kForward ? true : false);
+    // SmartDashboardTab.putBoolean("Climber", "Climb Mode", getElevatorClimbState());
+    // SmartDashboardTab.putNumber(
+    //     "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
+    // SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
   }
 
   @Override
@@ -107,11 +114,11 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
 
-    if ((getElevatorClimbPosition() <= elevatorClimbLowerLimit
-            && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
-        || (getElevatorClimbPosition() >= elevatorClimbUpperLimit
-            && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
-      elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
+    // if ((getElevatorClimbPosition() <= elevatorClimbLowerLimit
+    //         && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
+    //     || (getElevatorClimbPosition() >= elevatorClimbUpperLimit
+    //         && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
+    //   elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   @Override

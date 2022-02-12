@@ -14,7 +14,7 @@ import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
 public class EngageHighClimb extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
 
   private DoubleSupplier m_input;
@@ -23,7 +23,7 @@ public class EngageHighClimb extends CommandBase {
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
-   * @param input   The input used to control the climber output.
+   * @param input The input used to control the climber output.
    */
   public EngageHighClimb(Climber climber) {
     m_climber = climber;
@@ -35,25 +35,25 @@ public class EngageHighClimb extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_climber.setHighClimbPiston((m_climber.getHighClimbPiston() == Value.kForward) ? Value.kReverse : Value.kForward);
   }
 
   @Override
   public void execute() {
-    if (m_climber.getElevatorClimbState()) {
-      m_climber.setHighClimbPiston(Value.kForward);
-    }
+    // if (m_climber.getElevatorClimbState()) {
+    // }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setHighClimbPiston(Value.kOff);
+    // m_climber.setHighClimbPiston(Value.kOff);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 
   private enum climberState {

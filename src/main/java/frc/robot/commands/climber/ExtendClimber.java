@@ -8,7 +8,6 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
 /** Raises/lowers the climber based on joystick input */
@@ -33,10 +32,10 @@ public class ExtendClimber extends CommandBase {
 
   @Override
   public void execute() {
-    while (this.m_climber.climbMotors[0].getSelectedSensorPosition()
-        < Constants.Climber.climberTopOutValue) {
-      this.m_climber.setElevatorClimberPercentOutput(0.5);
-    }
+    // while (this.m_climber.climbMotors[0].getSelectedSensorPosition()
+    //     < Constants.Climber.climberTopOutValue) {
+    //   this.m_climber.setElevatorClimberPercentOutput(0.5);
+    // /
   }
 
   // Called once the command ends or is interrupted.
