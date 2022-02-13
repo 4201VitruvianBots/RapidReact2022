@@ -9,7 +9,7 @@ import frc.robot.subsystems.*;
 
 /** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LED m_led;
 
   private final Vision m_vision;
@@ -67,8 +67,7 @@ public class GetSubsystemStates extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

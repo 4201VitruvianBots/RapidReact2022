@@ -43,11 +43,11 @@ public class LED extends SubsystemBase {
   /**
    * Set the LEDs with a color and animation type
    *
-   * @param red      the red value of the color
-   * @param green    the green value of the color
-   * @param blue     the blue value of the color
-   * @param white    the white value of the color
-   * @param speed    the speed of the animation
+   * @param red the red value of the color
+   * @param green the green value of the color
+   * @param blue the blue value of the color
+   * @param white the white value of the color
+   * @param speed the speed of the animation
    * @param toChange the animation mode of the LEDs
    */
   public void setPattern(
@@ -56,13 +56,15 @@ public class LED extends SubsystemBase {
 
     switch (toChange) {
       case ColorFlow:
-        m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
+        m_toAnimate =
+            new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
         break;
       case Fire:
         m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
         break;
       case Larson: // a line bouncing back and forth with its width determined by size
-        m_toAnimate = new LarsonAnimation(red, green, blue, white, 0.001, LedCount, BounceMode.Front, 1);
+        m_toAnimate =
+            new LarsonAnimation(red, green, blue, white, 0.001, LedCount, BounceMode.Front, 1);
         break;
       case Rainbow: // neon cat type beat
         m_toAnimate = new RainbowAnimation(1, speed, LedCount);
@@ -77,11 +79,13 @@ public class LED extends SubsystemBase {
         m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, LedCount);
         break;
       case Twinkle:
-        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
+        m_toAnimate =
+            new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
         break;
       case TwinkleOff:
-        m_toAnimate = new TwinkleOffAnimation(
-            red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
+        m_toAnimate =
+            new TwinkleOffAnimation(
+                red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
         break;
       case Solid:
         this.red = red;

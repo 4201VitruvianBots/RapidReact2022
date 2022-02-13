@@ -28,7 +28,6 @@ import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -107,7 +106,7 @@ public class RobotContainer {
         "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
-    SmartDashboard.putData("Selected Auto", m_autoChooser); 
+    SmartDashboard.putData("Selected Auto", m_autoChooser);
 
     initializeSubsystems();
 
@@ -140,8 +139,8 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2300));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2900));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2800));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
