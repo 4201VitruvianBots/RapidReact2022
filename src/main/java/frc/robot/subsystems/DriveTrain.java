@@ -159,6 +159,7 @@ public class DriveTrain extends SubsystemBase {
 
   public void resetAngle() {
     pigeon.setYaw(0);
+    pigeon.setAccumZAngle(0);
   }
 
   /**

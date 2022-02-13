@@ -27,7 +27,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
-public class GroupThreeBallAuto extends SequentialCommandGroup {
+public class FourBallAuto extends SequentialCommandGroup {
   /**
    * Intakes one cargo, shoots two, then intakes and shoots a third cargo
    *
@@ -39,7 +39,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public GroupThreeBallAuto(
+  public FourBallAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -54,14 +54,20 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
      * tele-op
      */
     Trajectory trajectory1 =
-        PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
+        PathPlanner.loadPath("FourBallAuto-1", Units.feetToMeters(3.5), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "ThreeBallAuto-2", Units.feetToMeters(2.5), Units.feetToMeters(2), false);
+            "FourBallAuto-2", Units.feetToMeters(3.5), Units.feetToMeters(2), false);
     VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+    Trajectory trajectory3 =
+        PathPlanner.loadPath(
+            "FourBallAuto-3", Units.feetToMeters(3.5), Units.feetToMeters(2), true);
+    VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     // Trajectory trajectory3 =
@@ -90,6 +96,10 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
         new RunIntake(intake, indexer).withTimeout(1),
+        new ParallelDeadlineGroup(
+            command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new RunIntake(intake, indexer)),
+        new RunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
@@ -97,7 +107,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
     // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
   // class ToastAuto {

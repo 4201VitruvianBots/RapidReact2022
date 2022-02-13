@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
@@ -106,6 +107,10 @@ public class RobotContainer {
         "Individual Three Ball Auto",
         new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+              "Four Ball Auto",
+              new FourBallAuto(
+                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
     m_autoChooser.addOption(
         "Post Two Ball Intake",

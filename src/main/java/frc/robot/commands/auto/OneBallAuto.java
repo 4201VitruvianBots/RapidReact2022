@@ -63,8 +63,7 @@ public class OneBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer, flywheel).withTimeout(0.5),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
-    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0),
-    new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0));
     // Rev up flywheel while driving backwards
     // Once finish driving, feed indexer
     // After that, stop indexer and flywheel

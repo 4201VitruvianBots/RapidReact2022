@@ -53,13 +53,13 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
+        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(2), Units.feetToMeters(2), true);
+        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
@@ -74,13 +74,13 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)
             // TODO implement indexer
             ),
-        new WaitCommand(1),
+        new RunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
