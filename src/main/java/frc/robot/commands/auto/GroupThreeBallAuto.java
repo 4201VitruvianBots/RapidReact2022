@@ -54,7 +54,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
      * tele-op
      */
     Trajectory trajectory1 =
-        PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
+        PathPlanner.loadPath(
+            "ThreeBallAuto-1", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
@@ -97,7 +98,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
     // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
   // class ToastAuto {

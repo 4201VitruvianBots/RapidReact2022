@@ -54,7 +54,8 @@ public class FourBallAuto extends SequentialCommandGroup {
      * tele-op
      */
     Trajectory trajectory1 =
-        PathPlanner.loadPath("FourBallAuto-1", Units.feetToMeters(3.5), Units.feetToMeters(2), true);
+        PathPlanner.loadPath(
+            "FourBallAuto-1", Units.feetToMeters(3.5), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
@@ -68,7 +69,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         PathPlanner.loadPath(
             "FourBallAuto-3", Units.feetToMeters(3.5), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command3 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     // Trajectory trajectory3 =
     // PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
