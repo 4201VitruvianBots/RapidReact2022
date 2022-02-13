@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,16 +24,18 @@ public class Intake extends SubsystemBase {
   // Intake piston setup
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
-          Constants.Intake.pcmOne,
-          PneumaticsModuleType.CTREPCM,
-          Constants.Intake.intakePistonForward,
-          Constants.Intake.intakePistonReverse);
+          Constants.Pneumatics.pcmOne,
+          Constants.Pneumatics.pcmType,
+          Constants.Pneumatics.intakePistonForward,
+          Constants.Pneumatics.intakePistonReverse);
 
   public Intake() {
     // Motor configuration
     intakeMotor.configFactoryDefault();
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
+    intakeMotor.setNeutralMode(NeutralMode.Coast);
     intakeMotor.setInverted(false);
+
+    SmartDashboard.putData("Intake Subsystem", this);
   }
 
   /** @return Gets a boolean for the intake's actuation */

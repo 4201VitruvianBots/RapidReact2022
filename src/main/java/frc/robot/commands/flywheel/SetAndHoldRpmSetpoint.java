@@ -5,51 +5,45 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.climber;
+package frc.robot.commands.flywheel;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Vision;
 
-/** Raises/lowers the climber based on joystick input */
-public class RetractClimber extends CommandBase {
+/** An example command that uses an example subsystem. */
+public class SetAndHoldRpmSetpoint extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Climber m_climber;
+  private final Flywheel m_flywheel;
 
-  /**
-   * Creates a new SetClimberOutput.
-   *
-   * @param climber The climber used by this command.
-   */
-  public RetractClimber(final Climber climber) {
-    this.m_climber = climber;
+  private final Vision m_vision;
+  private final double m_RPM;
+
+  /** Creates a new ExampleCommand. */
+  public SetAndHoldRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(climber);
+    m_flywheel = flywheel;
+    m_RPM = RPM;
+    m_vision = vision;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    this.m_climber.disengagePistonBrake();
-  }
-
+  public void initialize() {}
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    while (this.m_climber.getClimberPosition() > Constants.Climber.climberBottomOutValue) {
-      this.m_climber.setClimberPercentOutput(-0.5);
-    }
+    m_vision.setGoalCameraLedState(true);
+    m_flywheel.setRPM(m_RPM);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {
-    this.m_climber.setClimberPercentOutput(0.0);
-    this.m_climber.engagePistonBrake();
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

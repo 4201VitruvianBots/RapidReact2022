@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------------*/
-/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Copyright (c) 2019 FIRST. All Rights Reserved.                             */
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
@@ -7,31 +7,33 @@
 
 package frc.robot.commands.driveTrain;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
 
-/** Sets the drivetrain based on joystick inputs for forward and turning */
-public class SetArcadeDrive extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+public class AlignToCargo extends CommandBase {
+
+  private final double P_TERM = 0.016;
+  private final double I_TERM = 0;
+  private final double D_TERM = 0.0;
+
   private final DriveTrain m_driveTrain;
+  private final Vision m_vision;
+  private final DoubleSupplier m_throttle;
+  private final DoubleSupplier m_turn;
+  private final PIDController pid = new PIDController(P_TERM, I_TERM, D_TERM);
 
-  private final DoubleSupplier m_throttle, m_turn;
-
-  /**
-   * Sets the drivetrain based on joystick inputs for forward and turning
-   *
-   * @param driveTrain drivetrain to set
-   * @param throttle Percent output to drive forward.
-   * @param turn Percent output to turn (positive = turn right, negative = turn left)
-   */
-  public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
-    m_driveTrain = driveTrain;
-    m_throttle = throttle;
-    m_turn = turn;
-
+  public AlignToCargo(
+      DriveTrain driveTrain, Vision vision, DoubleSupplier throttle, DoubleSupplier turn) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveTrain);
+    this.m_driveTrain = driveTrain;
+    this.m_vision = vision;
+    this.m_throttle = throttle;
+    this.m_turn = turn;
+    addRequirements(this.m_driveTrain);
+    addRequirements(this.m_vision);
   }
 
   // Called when the command is initially scheduled.
@@ -45,8 +47,15 @@ public class SetArcadeDrive extends CommandBase {
     double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
     double throttle = joystickY;
+    double turn = joystickX;
+    if (m_vision.getIntakeTargetsValid() > 0) {
+      double setpoint = m_driveTrain.getHeadingDegrees() + m_vision.getIntakeTargetAngle(0);
 
-    double turn = -0.5 * joystickX;
+      double turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
+
+      turn = turnAdjustment;
+      //            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
+    }
 
     m_driveTrain.setMotorArcadeDrive(throttle, turn);
   }

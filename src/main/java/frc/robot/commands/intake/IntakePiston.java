@@ -9,7 +9,7 @@ import frc.robot.subsystems.Intake;
 
 public class IntakePiston extends CommandBase {
   public final Intake m_intake;
-  boolean extend;
+  public boolean extend;
 
   /** Creates a new IntakePiston. */
   public IntakePiston(Intake intake, boolean extend) {
@@ -25,7 +25,6 @@ public class IntakePiston extends CommandBase {
     if (m_intake.getIntakePistonExtendStatus() != extend) {
       m_intake.setIntakePiston(extend);
     }
-    m_intake.setIntakePiston(!m_intake.getIntakePistonExtendStatus());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +38,6 @@ public class IntakePiston extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

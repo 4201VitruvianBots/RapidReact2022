@@ -2,25 +2,25 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.flywheel;
+package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 
 /** An example command that uses an example subsystem. */
-public class ExampleCommand extends CommandBase {
+public class AutoUseVisionCorrection extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final ExampleSubsystem m_subsystem;
+  private final Turret m_turret;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public ExampleCommand(ExampleSubsystem subsystem) {
-    m_subsystem = subsystem;
+  private final Vision m_vision;
+
+  /** Temporary; add actual code when vision and turret work */
+  public AutoUseVisionCorrection(Turret turret, Vision vision) {
+    m_turret = turret;
+    m_vision = vision;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(subsystem);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
