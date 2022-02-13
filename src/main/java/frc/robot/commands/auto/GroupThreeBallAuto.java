@@ -59,7 +59,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(1), Units.feetToMeters(1), false);
+        PathPlanner.loadPath(
+            "ThreeBallAuto-2", Units.feetToMeters(1), Units.feetToMeters(1), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
@@ -79,7 +80,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
@@ -90,7 +91,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
     // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));

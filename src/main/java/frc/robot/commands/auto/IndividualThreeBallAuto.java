@@ -64,7 +64,8 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     // Trajectory trajectory3 =
-    //     PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
+    //     PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4),
+    // true);
     // VitruvianRamseteCommand command3 =
     //     TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
@@ -97,6 +98,6 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
-        // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+    // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }

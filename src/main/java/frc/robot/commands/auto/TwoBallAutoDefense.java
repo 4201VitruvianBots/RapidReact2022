@@ -88,7 +88,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new IntakePiston(intake, true),
@@ -97,7 +97,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
                 new RunIntake(intake, indexer))
             .withTimeout(5),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new TurnInPlace(driveTrain, 30));
