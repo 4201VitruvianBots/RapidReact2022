@@ -20,14 +20,14 @@ import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
+import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
-import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -139,14 +139,16 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2550));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2800));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
 
-    xBoxButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
-    // xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
-    xBoxLeftTrigger.whileHeld(new ToggleIntakePiston(m_intake));
-    // xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
+    xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
+
+    xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 

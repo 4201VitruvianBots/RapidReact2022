@@ -73,6 +73,8 @@ public final class Constants {
     public static final int rightFrontDriveMotor = 22;
     public static final int rightRearDriveMotor = 23;
 
+    public static final int pigeonID = 9;
+
     public enum MotorPosition {
       LEFT_FRONT,
       LEFT_REAR,
@@ -91,7 +93,7 @@ public final class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
-    public static final double kMaxVelocityMetersPerSecond = 3.5;
+    public static final double kMaxVelocityMetersPerSecond = Units.feetToMeters(16);
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 

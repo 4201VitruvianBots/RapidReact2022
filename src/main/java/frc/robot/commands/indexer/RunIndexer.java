@@ -5,15 +5,17 @@
 package frc.robot.commands.indexer;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 
 public class RunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
-
+  private final Flywheel m_flywheel;
   /** Creates a new RunIndexer. */
-  public RunIndexer(Indexer indexer) {
+  public RunIndexer(Indexer indexer, Flywheel flywheel) {
     m_indexer = indexer;
+    m_flywheel = flywheel;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
@@ -27,7 +29,9 @@ public class RunIndexer extends CommandBase {
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(0.35);
-    m_indexer.setKickerPercentOutput(0.8);
+    if (m_flywheel.canShoot()) {
+      m_indexer.setKickerPercentOutput(0.9);
+    } else m_indexer.setKickerPercentOutput(0);
   }
 
   // Called once the command ends or is interrupted.

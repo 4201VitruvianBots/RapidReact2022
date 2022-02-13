@@ -86,7 +86,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         // driving?)
         new IntakePiston(intake, false),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(1),
+            new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
