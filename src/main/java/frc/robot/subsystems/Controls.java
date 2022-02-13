@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -9,6 +11,7 @@ import frc.robot.commands.controls.OverrideAllianceColor;
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
+  private PowerDistribution pdh = new PowerDistribution(23, ModuleType.kRev);
 
   public Controls() {
     initSmartDashboard();
@@ -49,6 +52,10 @@ public class Controls extends SubsystemBase {
   /** Sets the alliance color to use */
   public void setOverrideFmsAllianceColor(DriverStation.Alliance color) {
     overrideFmsAllianceColor = color;
+  }
+
+  public void setPDHChannel(boolean on) {
+    pdh.setSwitchableChannel(on);
   }
 
   /** Initializes values on SmartDashboard */
