@@ -64,7 +64,7 @@ public class Controls extends SubsystemBase {
         .add("Set Alliance Blue", new OverrideAllianceColor(this, DriverStation.Alliance.Blue));
 
     Shuffleboard.getTab("Controls")
-        .addString("Alliance String", () -> getAllianceColor().toString());
+        .addString("alliance_string", () -> getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */
