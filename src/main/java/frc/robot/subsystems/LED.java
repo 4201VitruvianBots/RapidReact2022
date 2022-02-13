@@ -19,8 +19,9 @@ import frc.robot.Constants;
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
-  private final int LedCount = 8;
+  private final int LedCount = 296;
   private AnimationTypes m_currentAnimation;
+  private robotState currentRobotState;
   int red = 0;
   int green = 0;
   int blue = 0;
@@ -42,11 +43,11 @@ public class LED extends SubsystemBase {
   /**
    * Set the LEDs with a color and animation type
    *
-   * @param red the red value of the color
-   * @param green the green value of the color
-   * @param blue the blue value of the color
-   * @param white the white value of the color
-   * @param speed the speed of the animation
+   * @param red      the red value of the color
+   * @param green    the green value of the color
+   * @param blue     the blue value of the color
+   * @param white    the white value of the color
+   * @param speed    the speed of the animation
    * @param toChange the animation mode of the LEDs
    */
   public void setPattern(
@@ -55,15 +56,13 @@ public class LED extends SubsystemBase {
 
     switch (toChange) {
       case ColorFlow:
-        m_toAnimate =
-            new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
+        m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
         break;
       case Fire:
         m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
         break;
       case Larson: // a line bouncing back and forth with its width determined by size
-        m_toAnimate =
-            new LarsonAnimation(red, green, blue, white, 1, LedCount, BounceMode.Front, 3);
+        m_toAnimate = new LarsonAnimation(red, green, blue, white, 0.001, LedCount, BounceMode.Front, 1);
         break;
       case Rainbow: // neon cat type beat
         m_toAnimate = new RainbowAnimation(1, speed, LedCount);
@@ -78,13 +77,11 @@ public class LED extends SubsystemBase {
         m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, LedCount);
         break;
       case Twinkle:
-        m_toAnimate =
-            new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
+        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
         break;
       case TwinkleOff:
-        m_toAnimate =
-            new TwinkleOffAnimation(
-                red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
+        m_toAnimate = new TwinkleOffAnimation(
+            red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
         break;
       case Solid:
         this.red = red;
@@ -97,35 +94,43 @@ public class LED extends SubsystemBase {
     }
     if (m_toAnimate == null) {
       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
+    } else {
+      System.out.println("Changed to " + m_currentAnimation.toString());
     }
-    System.out.println("Changed to " + m_currentAnimation.toString());
   }
+
   /**
    * Interpret a robot state and set the LEDs to express that state
    *
    * @param state the dominant robot state that the LEDs will express
    */
   public void expressState(robotState state) {
-    setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
-    switch (state) {
-      case Intaking: // Solid Blue
-        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
-        break;
-      case Enabled: // Fuchsia larson animation
-        setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
-        break;
-      case Climbing: // Rainbow
-        setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
-        break;
-      case Disabled: // solid red
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
-        break;
-      case VisionLock: // strobing yellow
-        setPattern(0, 0, 153, 0, 0.1, AnimationTypes.Twinkle);
-        break;
-      default:
-        setPattern(106, 90, 205, 0, 0.4, AnimationTypes.Twinkle);
-        break;
+    if (state != currentRobotState) {
+      // setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
+      // if(currentRobotState == robotState.Twinkle){
+      // setPattern(0,0,0,0,0,AnimationTypes.TwinkleOff);
+      // }
+      switch (state) {
+        case Intaking: // Solid Blue
+          setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
+          break;
+        case Enabled: // Green larson animation
+          setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
+          break;
+        case Climbing: // Rainbow
+          setPattern(0, 0, 0, 0, .9, AnimationTypes.Rainbow);
+          break;
+        case Disabled: // solid red
+          setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
+          break;
+        case VisionLock: // strobing yellow
+          setPattern(0, 0, 255, 0, 1, AnimationTypes.Strobe);
+          break;
+        default:
+          setPattern(106, 90, 205, 0, 0.4, AnimationTypes.Twinkle);
+          break;
+      }
+      currentRobotState = state;
     }
   }
 

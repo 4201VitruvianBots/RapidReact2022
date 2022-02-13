@@ -9,8 +9,7 @@ import frc.robot.subsystems.*;
 
 /** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  // TODO: make sure the correct subsystems are used
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final LED m_led;
 
   private final Vision m_vision;
@@ -41,14 +40,14 @@ public class GetSubsystemStates extends CommandBase {
   @Override
   public void execute() {
     // the prioritized state to be expressed to the LEDs
-    // TODO: There should be disabled (not ready) and disabled (ready) like what we have on jango.
     boolean Disabled = DriverStation.isDisabled();
     boolean Enabled = true; // Reevaluate what is "Enabled"
     boolean Intaking = m_intake.getIntakeState();
     boolean VisionLock = m_vision.getGoalValidTarget();
     boolean Climbing = m_climber.getClimbState();
 
-    // set in order of priority to be expressed from the least priority to the highest priority
+    // set in order of priority to be expressed from the least priority to the
+    // highest priority
     if (Disabled) {
       m_led.expressState(LED.robotState.Disabled);
     }
@@ -68,7 +67,8 @@ public class GetSubsystemStates extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+  }
 
   // Returns true when the command should end.
   @Override
