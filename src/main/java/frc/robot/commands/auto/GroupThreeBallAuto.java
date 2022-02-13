@@ -93,7 +93,8 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new ConditionalCommand(
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal));
+            RobotBase::isReal),
+            new SetAndHoldRpmSetpoint(flywheel, vision, 0));
     // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
   // class ToastAuto {

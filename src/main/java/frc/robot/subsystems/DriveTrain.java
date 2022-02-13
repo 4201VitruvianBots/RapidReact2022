@@ -154,7 +154,7 @@ public class DriveTrain extends SubsystemBase {
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
-    return Math.IEEEremainder(-pigeon.getYaw(), 360);
+    return Math.IEEEremainder(pigeon.getYaw(), 360);
   }
 
   public void resetAngle() {
