@@ -32,11 +32,10 @@ public final class Constants {
 
   public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final PneumaticsModuleType pcmType =
-        PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
+    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.REVPH; // CTREPCM, REVPH
 
-    public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 8;
-    public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 9;
+    public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
+    public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
     public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 10;
     public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 11;
   }
@@ -74,6 +73,8 @@ public final class Constants {
     public static final int rightFrontDriveMotor = 22;
     public static final int rightRearDriveMotor = 23;
 
+    public static final int pigeonID = 9;
+
     public enum MotorPosition {
       LEFT_FRONT,
       LEFT_REAR,
@@ -92,7 +93,7 @@ public final class Constants {
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
-    public static final double kMaxVelocityMetersPerSecond = 3.5;
+    public static final double kMaxVelocityMetersPerSecond = Units.feetToMeters(16);
     public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
 

@@ -60,7 +60,7 @@ public class OneBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer).withTimeout(0.5),
+            new RunIndexer(indexer, flywheel).withTimeout(0.5),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0));

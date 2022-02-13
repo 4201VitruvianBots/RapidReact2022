@@ -82,8 +82,8 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configVoltageCompSaturation(12);
       flywheelMotor.enableVoltageCompensation(true);
     }
-    flywheelMotors[0].setInverted(false);
-    flywheelMotors[1].setInverted(true);
+    flywheelMotors[0].setInverted(true);
+    flywheelMotors[1].setInverted(false);
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
@@ -104,7 +104,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return canShoot;
+    return (Math.abs(getRPM(0) - getSetpointRPM()) <= 50);
   }
 
   /** flywheelSetpoint if setpoint else setPower to 0 */
