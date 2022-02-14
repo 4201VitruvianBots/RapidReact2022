@@ -7,9 +7,7 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.*;
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +17,7 @@ import frc.robot.Constants;
 public class Turret extends SubsystemBase {
   private final DriveTrain m_driveTrain;
 
-  private final CANCoder encoder = new CANCoder(Constants.Turret.turretEncoder);
-  private final VictorSPX turretMotor = new VictorSPX(Constants.Turret.turretMotor);
+  private final TalonFX turretMotor = new TalonFX(Constants.Turret.turretMotor);
   private final DigitalInput turretHomeSensor = new DigitalInput(Constants.Turret.turretHomeSensor);
 
   private double turretSetpointDegrees = 0; // angle
@@ -50,10 +47,6 @@ public class Turret extends SubsystemBase {
     turretMotor.configMotionAcceleration(kMotionAcceleration);
     turretMotor.configAllowableClosedloopError(0, kErrorBand);
     turretMotor.setSensorPhase(true);
-
-    encoder.configFactoryDefault();
-    encoder.configAllSettings(new CANCoderConfiguration());
-    encoder.setPosition(0);
   }
 
   private void updateClosedLoopPosition() {
@@ -65,7 +58,6 @@ public class Turret extends SubsystemBase {
 
   public void resetEncoder() {
     turretMotor.setSelectedSensorPosition(0);
-    encoder.setPosition(0);
   }
 
   public Constants.CONTROL_MODE getControlMode() {
@@ -78,22 +70,22 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
-    return encoder.getPosition() / canCoderToTurretGearRatio;
+    return turretMotor.getSelectedSensorPosition() / canCoderToTurretGearRatio;
   }
 
   /** double returns encoder units of turret into degrees */
   public double getTurretVelocity() {
-    return encoder.getVelocity() / canCoderToTurretGearRatio;
+    return turretMotor.getSelectedSensorVelocity() / canCoderToTurretGearRatio;
   }
 
   /** double returns encoder units of turret into degrees */
   public double getEncoderAngle() {
-    return encoder.getPosition();
+    return turretMotor.getSelectedSensorPosition();
   }
 
   /** double returns encoder units of turret into degrees */
   public double getEncoderVelocity() {
-    return encoder.getVelocity();
+    return turretMotor.getSelectedSensorVelocity();
   }
 
   /**
@@ -180,7 +172,7 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     if (turretHomeSensor.get() && !turretHomeSensorLatch) {
-      encoder.setPosition(0);
+      turretMotor.setSelectedSensorPosition(0);
       turretHomeSensorLatch = true;
     } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
       turretHomeSensorLatch = false;

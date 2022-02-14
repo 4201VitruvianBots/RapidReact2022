@@ -28,6 +28,7 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -140,6 +141,11 @@ public class RobotContainer {
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
     xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2200)); // 2300
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2800)); // 2900
+
+    xBoxButtons[4].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
+    xBoxButtons[5].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
+    xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -45));
+    xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
