@@ -19,7 +19,7 @@ import frc.robot.Constants;
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
-  private final int LedCount = 8 + 144;
+  private final int LedCount = 8 + 144 + 144;
   private AnimationTypes m_currentAnimation;
   private robotState currentRobotState;
   int red = 0;
@@ -37,7 +37,7 @@ public class LED extends SubsystemBase {
     configAll.statusLedOffWhenActive = true;
     configAll.disableWhenLOS = false;
     configAll.stripType = LEDStripType.GRB;
-    configAll.brightnessScalar = 0.01; // normal scalar is 0.1 || dimmed scalar is 0.01
+    configAll.brightnessScalar = 0.1; // normal scalar is 0.1 || dimmed scalar is 0.01
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
   }
@@ -111,33 +111,41 @@ public class LED extends SubsystemBase {
   }
 
   public void expressTestingState() {
-    int testingState = LEDTestingIndex % 5;
-    switch (testingState) {
-      case 0: // strobing yellow
-        setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
-        break;
-      case 1: // Green larson animation
-        setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
-        break;
-      case 2: // Rainbow
-        setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
-        break;
-      case 3: // solid red
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
-        break;
-      case 4: // strobing blue
-        setPattern(50, 0, 255, 0, 0, AnimationTypes.Solid);
-        break;
-      default:
-        setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
-        break;
-    }
+    // int testingState = LEDTestingIndex % 5;
+    // switch (testingState) {
+    // case 0: // strobing yellow
+    // setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
+    // break;
+    // case 1: // Green larson animation
+    // setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
+    // break;
+    // case 2: // Rainbow
+    // setPattern(0, 0, 0, 0, 0.4, AnimationTypes.Rainbow);
+    // break;
+    // case 3: // solid red
+    // setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
+    // break;
+    // case 4: // strobing blue
+    // setPattern(50, 0, 255, 0, 0, AnimationTypes.Solid);
+    // break;
+    // default:
+    // setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
+    // break;
+    // }
+    setPattern(50, 0, 255, 0, 0, AnimationTypes.Solid);
   }
 
   @Override
   public void periodic() {
+    if
     if (m_toAnimate == null) {
-      m_candle.setLEDs(red, green, blue, 0, 0, 1024);
+      // m_candle.setLEDs(0, 0, 0, 0, 512, 1024);
+      // m_candle.setLEDs(0, 0, 0, 0, 0, 512);
+      // System.out.println("all off");
+
+      m_candle.setLEDs(red, green, blue, 0, 512, 1024);
+      m_candle.setLEDs(red, green, blue, 0, 0, 512);
+      System.out.println("all on");
     } else {
       m_candle.animate(m_toAnimate);
     }
