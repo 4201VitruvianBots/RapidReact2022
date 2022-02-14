@@ -48,7 +48,7 @@ public class RunIntake extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    //  m_indexer.setIndexerPercentOutput(0);
+    m_indexer.setIndexerPercentOutput(0.25);
     m_intake.setIntakePiston(false);
     m_intake.setIntakePercentOutput(0);
   }
