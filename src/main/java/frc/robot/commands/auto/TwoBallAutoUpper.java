@@ -27,7 +27,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class TwoBallAuto extends SequentialCommandGroup {
+public class TwoBallAutoUpper extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -39,7 +39,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public TwoBallAuto(
+  public TwoBallAutoUpper(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -53,16 +53,12 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Simple", Units.feetToMeters(8), Units.feetToMeters(6), true);
+        PathPlanner.loadPath("TwoBallAuto-Upper", Units.feetToMeters(8), Units.feetToMeters(9), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
 
-    VitruvianRamseteCommand command2 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops

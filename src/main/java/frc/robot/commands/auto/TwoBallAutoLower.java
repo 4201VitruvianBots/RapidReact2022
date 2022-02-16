@@ -53,7 +53,7 @@ public class TwoBallAutoLower extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Bottom", Units.feetToMeters(8), Units.feetToMeters(9), true);
+        PathPlanner.loadPath("TwoBallAuto-Lower", Units.feetToMeters(8), Units.feetToMeters(9), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
