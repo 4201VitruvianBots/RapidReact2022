@@ -55,19 +55,19 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
      */
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "ThreeBallAuto-1", Units.feetToMeters(7), Units.feetToMeters(4), true);
+            "ThreeBallAuto-1", Units.feetToMeters(7), Units.feetToMeters(6), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "ThreeBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(4), false);
+            "ThreeBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "ThreeBallAuto-3", Units.feetToMeters(7), Units.feetToMeters(4), true);
+            "ThreeBallAuto-3", Units.feetToMeters(7), Units.feetToMeters(6), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
