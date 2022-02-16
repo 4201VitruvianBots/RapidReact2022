@@ -196,9 +196,26 @@ public final class Constants {
     public static final int kErrorBand = 50;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKs = 1.3661;
-    public static final double kTurretKv = 0.068821;
-    public static final double kTurretKa = 0.0063138;
+    public static final int encoderUnitsPerRotation = 2048;
+    public static final double canCoderAngleOffset = -329.150;
+    public static final double minAngle = -80;
+    public static final double maxAngle = 80;
+
+    public static final double kF = 0.07;
+    // public static final double kP = 7.28E-05;
+    public static final double kP = 0.2;
+    public static final double kI = 0.0015;
+    public static final double kD = 0.0;
+
+    public static final double kErrorBand = 50;
+    public static final double kI_Zone = 900;
+    public static final double kMaxIAccum = 1000000;
+    public static final double kCruiseVelocity = 8000;
+    public static final double kMotionAcceleration = kCruiseVelocity * 10;
+
+    public static final double kS = 0.83016; //0.81464;
+    public static final double kV = 0.012184; //0.16822;
+    public static final double kA = 0.00036802; //0.011642;
 
     public static final double degreeTolerance = 1.0;
 

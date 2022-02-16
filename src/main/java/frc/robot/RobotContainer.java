@@ -146,6 +146,7 @@ public class RobotContainer {
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
+    xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
