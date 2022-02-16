@@ -11,7 +11,7 @@ import frc.robot.commands.controls.OverrideAllianceColor;
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
-  private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+ // private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public Controls() {
     initSmartDashboard();
@@ -55,7 +55,7 @@ public class Controls extends SubsystemBase {
   }
 
   public void setPDHChannel(boolean on) {
-    pdh.setSwitchableChannel(on);
+   // pdh.setSwitchableChannel(on);
   }
 
   /** Initializes values on SmartDashboard */

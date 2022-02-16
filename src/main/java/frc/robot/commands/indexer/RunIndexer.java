@@ -28,9 +28,9 @@ public class RunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_indexer.setIndexerPercentOutput(0.35);
+    m_indexer.setIndexerPercentOutput(0.45);
     if (m_flywheel.canShoot()) {
-      m_indexer.setKickerPercentOutput(0.9);
+      m_indexer.setKickerPercentOutput(0.45);
     } else m_indexer.setKickerPercentOutput(0);
   }
 
