@@ -100,7 +100,6 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        new TurnInPlace(driveTrain, 30),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
   }
 }
