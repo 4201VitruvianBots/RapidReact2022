@@ -64,23 +64,18 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         // if the joystick sensors report movement greater than the deadzone it runs these methods
         if ((Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))
             >= Math.pow(deadZone, 2)) {
-          m_vision.setGoalCameraLedState(true);
+          // m_vision.setGoalCameraLedState(true);
           joystickMoved = true;
           // if the movement of left joystick is greater than zero, set the setpoint with that value
           // but negative
-          if (m_controller.getRawAxis(0) >= 0)
+          // if (m_controller.getRawAxis(0) >= 0)
             setpoint =
-                -Math.toDegrees(
-                    Math.atan2(-m_controller.getRawAxis(0), m_controller.getRawAxis(1)));
-          else
-            setpoint =
-                Math.toDegrees(Math.atan2(m_controller.getRawAxis(0), m_controller.getRawAxis(1)));
-
-          // if setpoint is greater than the max angle of the turret, the max angle of the turret
-          // becomes the setpoint
-          if (setpoint > m_turret.getMaxAngle()) setpoint = m_turret.getMaxAngle();
-          // same thing as above but for minimum angle
-          if (setpoint < m_turret.getMinAngle()) setpoint = m_turret.getMinAngle();
+                Math.toDegrees(
+                    Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
+          // else
+          //   setpoint =
+          //       Math.toDegrees(Math.atan2(m_controller.getRawAxis(1), m_controller.getRawAxis(0)));
+          
           //// if vision has a target and the absolute value of the target is less than 20, make the
           // controller rumble
           if (m_vision.getGoalValidTarget()) {
@@ -95,22 +90,13 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // if we are not turning, set leds to on and make the setpoint the turret angle combined
           // with vision targetx
           if (!turning) {
-            m_vision.setGoalCameraLedState(true);
+            // m_vision.setGoalCameraLedState(true);
             setpoint = m_turret.getTurretAngle() + m_vision.getGoalTargetXAngle();
-
-            // if the setpoint is greater than the max turret angle, make the setpoint the max
-            if (setpoint > m_turret.getMaxAngle()) {
-              setpoint = m_turret.getMaxAngle();
-            }
-            // same as above but for minimum angle
-            else if (setpoint < m_turret.getMinAngle()) {
-              setpoint = m_turret.getMinAngle();
-            }
           }
           // if we are turning, set the led off and if the turret is on target, set turning
           // (variable) to false
           else {
-            m_vision.setGoalCameraLedState(false);
+            // m_vision.setGoalCameraLedState(false);
             if (m_turret.onTarget()) turning = false;
           }
         }

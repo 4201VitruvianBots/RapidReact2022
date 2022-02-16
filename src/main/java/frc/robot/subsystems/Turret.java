@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.CONTROL_MODE;
 
 public class Turret extends SubsystemBase {
   private final DriveTrain m_driveTrain;
@@ -22,7 +23,7 @@ public class Turret extends SubsystemBase {
 
   private double turretSetpointDegrees = 0; // angle
 
-  private Constants.CONTROL_MODE controlMode;
+  private Constants.CONTROL_MODE controlMode = CONTROL_MODE.CLOSEDLOOP;
 
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
@@ -35,8 +36,6 @@ public class Turret extends SubsystemBase {
     turretMotor.setInverted(true);
     turretMotor.setNeutralMode(NeutralMode.Brake);
     turretMotor.configVoltageCompSaturation(12.0);
-    turretMotor.configRemoteFeedbackFilter(61, RemoteSensorSource.CANCoder, 0);
-    turretMotor.configSelectedFeedbackSensor(FeedbackDevice.RemoteSensor0);
     turretMotor.config_kP(0, kF);
     turretMotor.config_kP(0, kP);
     turretMotor.config_kI(0, kI);
@@ -51,6 +50,8 @@ public class Turret extends SubsystemBase {
 
   private void updateClosedLoopPosition() {
     double setpoint = Math.min(Math.max(turretSetpointDegrees, minAngle), maxAngle);
+
+    SmartDashboard.putNumber("Turret Setpoint Test", setpoint);
 
     turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * gearRatio);
   }
@@ -177,7 +178,7 @@ public class Turret extends SubsystemBase {
       turretHomeSensorLatch = false;
     }
 
-    // updateClosedLoopPosition();
+    updateClosedLoopPosition();
     updateShuffleboard();
   }
 }
