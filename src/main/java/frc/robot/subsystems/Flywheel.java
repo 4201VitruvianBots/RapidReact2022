@@ -93,12 +93,11 @@ public class Flywheel extends SubsystemBase {
   public void setPower(double output) {
     flywheelMotors[0].set(TalonFXControlMode.PercentOutput, output);
   }
-  /** @param setpoint set to setpoint */
+  /** @param flywheelSetpointRPM set to setpoint */
   public void setRPM(double flywheelSetpointRPM) {
     this.flywheelSetpointRPM = flywheelSetpointRPM;
   }
 
-  /** @param setpoint set to setpoint */
   public double getSetpointRPM() {
     return flywheelSetpointRPM;
   }
@@ -168,6 +167,14 @@ public class Flywheel extends SubsystemBase {
 
   public void setIdealRPM() {
     flywheelSetpointRPM = idealRPM;
+  }
+
+  public double distanceToBallVelocity(double instantaneousDistance){
+    return (instantaneousDistance*Math.sqrt(-gravity)) / (Math.sin(flywheelAngle) * Math.sqrt(-2 * (targetDistanceFromFlywheel - (instantaneousDistance / Math.tan(flywheelAngle)))));
+  }
+
+  public double ballVelocitytoRPM(double ballVelocity){
+    return 0.0; // create a real function here. maybe ask taube about it.
   }
 
   private void updateShuffleboard() {

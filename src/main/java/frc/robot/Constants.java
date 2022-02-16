@@ -188,6 +188,11 @@ public final class Constants {
     public static final double rpmTolerance = 25.0;
 
     public static final double gearRatio = 1.0; // 2.0 / 3.0;
+
+    public static final double gravity = 9.807; // the gravitatoinal constant in meters per second.
+    public static final double flywheelAngle = 45; // angle the ball shoots relative to the horazontal floor in degrees
+
+    public static final double targetDistanceFromFlywheel = 5; // the vertical distance from the flywheel to the target in meters
   }
 
   public static final class Turret {
