@@ -9,8 +9,9 @@ import frc.robot.subsystems.*;
 
 /** Sets the LED based on the subsystems' statuses */
 public class RunTestingStates extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LED m_led;
+
   double lastRunTime = Timer.getFPGATimestamp();
 
   // private final Controls m_controls;
@@ -25,8 +26,7 @@ public class RunTestingStates extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -46,13 +46,11 @@ public class RunTestingStates extends CommandBase {
       m_led.increaseTestingState(true);
       lastRunTime = curTime;
     }
-
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

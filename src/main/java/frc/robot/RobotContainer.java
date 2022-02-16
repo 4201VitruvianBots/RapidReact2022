@@ -14,12 +14,9 @@ import frc.robot.commands.led.RunTestingStates;
 import frc.robot.subsystems.LED;
 
 /**
- * This class is where the bulk of the robot should be declared. Since
- * Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in
- * the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of
- * the robot (including
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
@@ -43,13 +40,12 @@ public class RobotContainer {
     RED_ALLIANCE
   }
 
-  public final SendableChooser<CommandSelector> m_allianceChooser = new SendableChooser<CommandSelector>();
+  public final SendableChooser<CommandSelector> m_allianceChooser =
+      new SendableChooser<CommandSelector>();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
     initializeSubsystems();
@@ -59,11 +55,9 @@ public class RobotContainer {
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
+   * Use this method to define your button->command mappings. Buttons can be created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-   * it to a {@link
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
@@ -76,13 +70,14 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
-    xBoxLeftTrigger = new Button(
-        () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
+    xBoxLeftTrigger =
+        new Button(
+            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
   }
 
   public void initializeSubsystems() {
-     m_led.setDefaultCommand(new RunTestingStates(m_led));
+    m_led.setDefaultCommand(new RunTestingStates(m_led));
   }
 
   /**
@@ -95,30 +90,21 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {
-  }
+  public void robotPeriodic() {}
 
-  public void disabledInit() {
-  }
+  public void disabledInit() {}
 
-  public void disabledPeriodic() {
-  }
+  public void disabledPeriodic() {}
 
-  public void teleopInit() {
-  }
+  public void teleopInit() {}
 
-  public void teleopPeriodic() {
-  }
+  public void teleopPeriodic() {}
 
-  public void autonomousInit() {
-  }
+  public void autonomousInit() {}
 
-  public void autonomousPeriodic() {
-  }
+  public void autonomousPeriodic() {}
 
-  public void simulationInit() {
-  }
+  public void simulationInit() {}
 
-  public void simulationPeriodic() {
-  }
+  public void simulationPeriodic() {}
 }
