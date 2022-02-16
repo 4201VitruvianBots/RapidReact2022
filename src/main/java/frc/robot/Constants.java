@@ -192,8 +192,6 @@ public final class Constants {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
 
-    // TODO: might not need kErrorBand, need to confirm
-    public static final int kErrorBand = 50;
     public static final int turretHomeSensor = 3;
 
     public static final int encoderUnitsPerRotation = 2048;
@@ -213,9 +211,9 @@ public final class Constants {
     public static final double kCruiseVelocity = 8000;
     public static final double kMotionAcceleration = kCruiseVelocity * 10;
 
-    public static final double kS = 0.83016; //0.81464;
-    public static final double kV = 0.012184; //0.16822;
-    public static final double kA = 0.00036802; //0.011642;
+    public static final double kS = 0.83016; // 0.81464;
+    public static final double kV = 0.012184; // 0.16822;
+    public static final double kA = 0.00036802; // 0.011642;
 
     public static final double degreeTolerance = 1.0;
 
@@ -243,4 +241,10 @@ public final class Constants {
 
     public static String VISION_SERVER_IP = "10.42.1.100";
   }
+
+  // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
+  public enum CONTROL_MODE {
+    OPENLOOP,
+    CLOSEDLOOP
+  };
 }

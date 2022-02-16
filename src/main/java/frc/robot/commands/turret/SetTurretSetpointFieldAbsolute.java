@@ -69,13 +69,13 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // if the movement of left joystick is greater than zero, set the setpoint with that value
           // but negative
           // if (m_controller.getRawAxis(0) >= 0)
-            setpoint =
-                Math.toDegrees(
-                    Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
+          setpoint =
+              Math.toDegrees(Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
           // else
           //   setpoint =
-          //       Math.toDegrees(Math.atan2(m_controller.getRawAxis(1), m_controller.getRawAxis(0)));
-          
+          //       Math.toDegrees(Math.atan2(m_controller.getRawAxis(1),
+          // m_controller.getRawAxis(0)));
+
           //// if vision has a target and the absolute value of the target is less than 20, make the
           // controller rumble
           if (m_vision.getGoalValidTarget()) {

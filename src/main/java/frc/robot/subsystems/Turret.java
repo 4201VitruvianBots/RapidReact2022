@@ -4,6 +4,15 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Flywheel.gearRatio;
+import static frc.robot.Constants.Turret.*;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CONTROL_MODE;
@@ -22,7 +31,8 @@ public class Turret extends SubsystemBase {
   private boolean turretHomeSensorLatch = false;
 
   /** Creates a new Turret. */
-  public Turret(DriveTrain driveTrain) {}
+  public Turret(DriveTrain driveTrain) {
+    m_driveTrain = driveTrain;
 
     turretMotor.configFactoryDefault();
     turretMotor.setInverted(true);
@@ -164,7 +174,6 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
 
     updateClosedLoopPosition();
     updateShuffleboard();
