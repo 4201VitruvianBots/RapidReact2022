@@ -18,8 +18,9 @@ import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
-import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.auto.TwoBallAutoUpper;
 import frc.robot.commands.auto.TwoBallAutoDefense;
+import frc.robot.commands.auto.TwoBallAutoLower;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
@@ -93,8 +94,12 @@ public class RobotContainer {
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto",
-        new TwoBallAuto(
+        "Two Ball Auto - Upper",
+        new TwoBallAutoUpper(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto - Lower",
+        new TwoBallAutoLower(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Two Ball Auto Defense",
