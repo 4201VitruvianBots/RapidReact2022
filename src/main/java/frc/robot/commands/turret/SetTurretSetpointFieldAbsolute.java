@@ -8,7 +8,7 @@
 package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.*;
@@ -22,7 +22,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   private final Vision m_vision;
   private final Flywheel m_flywheel;
   private final Climber m_climber;
-  private final Joystick m_controller;
+  private final XboxController m_controller;
   private final double deadZone = 0.5;
   double setpoint;
   boolean timeout = false;
@@ -36,7 +36,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
       Vision visionSubsystem,
       Flywheel flywheel,
       Climber climber,
-      Joystick controller) {
+      XboxController controller) {
     m_turret = turretSubsystem;
     m_driveTrain = driveTrainSubsystem;
     m_vision = visionSubsystem;

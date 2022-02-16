@@ -29,7 +29,8 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
-import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
+import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
+import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -147,10 +148,12 @@ public class RobotContainer {
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
-    xBoxButtons[4].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
-    xBoxButtons[5].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
-    xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -45));
-    xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
+    // xBoxButtons[4].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
+    // xBoxButtons[5].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
+    // xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -45));
+    // xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
+
+    xBoxButtons[6].whileHeld(new ToggleTurretControlMode(m_turret));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
@@ -169,6 +172,9 @@ public class RobotContainer {
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
+    m_turret.setDefaultCommand(
+        new SetTurretSetpointFieldAbsolute(
+            m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
   }
 
   /**

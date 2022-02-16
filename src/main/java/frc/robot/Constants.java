@@ -220,9 +220,7 @@ public final class Constants {
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
-    public static final double canCoderToTurretGearRatio = 120.0 / 18.0;
-
-    public static final double motorToTurretGearRatio = 1.0 / 27.0;
+    public static final double gearRatio = 10.625 * 3.75;
   }
 
   public static final class Vision {

@@ -52,8 +52,7 @@ public class Turret extends SubsystemBase {
   private void updateClosedLoopPosition() {
     double setpoint = Math.min(Math.max(turretSetpointDegrees, minAngle), maxAngle);
 
-    turretMotor.set(
-        ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * canCoderToTurretGearRatio);
+    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * gearRatio);
   }
 
   public void resetEncoder() {
@@ -70,12 +69,12 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngle() {
-    return turretMotor.getSelectedSensorPosition() / canCoderToTurretGearRatio;
+    return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition()) / gearRatio;
   }
 
   /** double returns encoder units of turret into degrees */
   public double getTurretVelocity() {
-    return turretMotor.getSelectedSensorVelocity() / canCoderToTurretGearRatio;
+    return encoderUnitsToDegrees(turretMotor.getSelectedSensorVelocity()) / gearRatio;
   }
 
   /** double returns encoder units of turret into degrees */
@@ -121,7 +120,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getTurretSetpointDegrees() {
-    return encoderUnitsToDegrees(turretMotor.getClosedLoopTarget()) / canCoderToTurretGearRatio;
+    return encoderUnitsToDegrees(turretMotor.getClosedLoopTarget()) / gearRatio;
   }
 
   public boolean getInitialHome() {
