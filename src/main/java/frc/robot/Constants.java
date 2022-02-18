@@ -214,9 +214,9 @@ public final class Constants {
     public static final double kCruiseVelocity = 8000;
     public static final double kMotionAcceleration = kCruiseVelocity * 10;
 
-    public static final double kS = 0.83016; //0.81464;
-    public static final double kV = 0.012184; //0.16822;
-    public static final double kA = 0.00036802; //0.011642;
+    public static final double kS = 0.83016; // 0.81464;
+    public static final double kV = 0.012184; // 0.16822;
+    public static final double kA = 0.00036802; // 0.011642;
 
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
