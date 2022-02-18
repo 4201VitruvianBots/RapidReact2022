@@ -33,7 +33,7 @@ public class ExtendClimber extends CommandBase {
 
   @Override
   public void execute() {
-    while (this.m_climber.climbMotors[0].getSelectedSensorPosition()
+    while (this.m_climber.elevatorClimbMotors[0].getSelectedSensorPosition()
         < Constants.Climber.climberTopOutValue) {
       this.m_climber.setElevatorClimberPercentOutput(0.5);
     }

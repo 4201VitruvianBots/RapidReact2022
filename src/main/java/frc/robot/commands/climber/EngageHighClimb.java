@@ -14,7 +14,7 @@ import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
 public class EngageHighClimb extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
 
   private DoubleSupplier m_input;
@@ -23,7 +23,7 @@ public class EngageHighClimb extends CommandBase {
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
-   * @param input   The input used to control the climber output.
+   * @param input The input used to control the climber output.
    */
   public EngageHighClimb(Climber climber) {
     m_climber = climber;
@@ -34,8 +34,7 @@ public class EngageHighClimb extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   @Override
   public void execute() {

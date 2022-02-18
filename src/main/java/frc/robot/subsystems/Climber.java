@@ -21,7 +21,7 @@ import frc.robot.Constants;
  * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
-  private final TalonFX[] elevatorClimbMotors = {
+  public final TalonFX[] elevatorClimbMotors = {
     new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB),
   };
 
