@@ -198,6 +198,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_flywheel.updateTestingSession();
   }
 
   public void teleopPeriodic() {}
