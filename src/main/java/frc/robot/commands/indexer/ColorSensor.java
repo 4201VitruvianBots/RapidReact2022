@@ -7,7 +7,6 @@ package frc.robot.commands.indexer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
@@ -74,13 +73,11 @@ public class ColorSensor extends CommandBase {
       if (frontTripped) {
         // Both rear and front cargo
         frontCorrectColor =
-            (allianceColor == m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)
-                || m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)
-                    == DriverStation.Alliance.Invalid);
+            (allianceColor == m_indexer.getFrontColorType()
+                || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
         rearCorrectColor =
-            (allianceColor == m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)
-                || m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)
-                    == DriverStation.Alliance.Invalid);
+            (allianceColor == m_indexer.getRearColorType()
+                || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
         if (!rearCorrectColor) {
           if (!frontCorrectColor) {
             // none are right
@@ -106,9 +103,8 @@ public class ColorSensor extends CommandBase {
       } else {
         // Only rear cargo
         rearCorrectColor =
-            (allianceColor == m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)
-                || m_indexer.getCargoColor(Constants.Indexer.colorSensorRear)
-                    == DriverStation.Alliance.Invalid);
+            (allianceColor == m_indexer.getRearColorType()
+                || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
         if (!rearCorrectColor) {
           // Rear cargo is wrong
           m_indexer.setIndexerPercentOutput(0.2);
@@ -129,9 +125,8 @@ public class ColorSensor extends CommandBase {
       if (m_indexer.getIndexerFrontSensorTripped()) {
         // Only front cargo
         frontCorrectColor =
-            (allianceColor == m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)
-                || m_indexer.getCargoColor(Constants.Indexer.colorSensorFront)
-                    == DriverStation.Alliance.Invalid);
+            (allianceColor == m_indexer.getFrontColorType()
+                || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
         if (!frontCorrectColor) {
           // Front cargo is wrong
           m_indexer.setIndexerPercentOutput(0.2);
