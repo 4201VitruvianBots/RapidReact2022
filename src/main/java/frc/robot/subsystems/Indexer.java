@@ -59,6 +59,24 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(ControlMode.PercentOutput, output);
   }
 
+  /**
+   * Gets the percent output of the indexer motor.
+   * 
+   * @return the percent output of the indexer motor.
+   */
+  public double getIndexerOutput() {
+    return indexerMotor.getMotorOutputPercent();
+  }
+
+  /**
+   * Gets the percent output of the kicker motor.
+   * 
+   * @return the percent output of the kicker motor.
+   */
+  public double getKickerOutput() {
+    return kickerMotor.getMotorOutputPercent();
+  }
+
   // public boolean getIndexerFrontSensorTripped() {
   //   return !frontBeamBreak.get();
   // }

@@ -6,6 +6,11 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Flywheel.*;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -44,6 +49,8 @@ public class Flywheel extends SubsystemBase {
   private double idealRPM;
   private boolean timerStart = false;
   private double timestamp;
+
+  private int testingSession = 0;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
@@ -188,6 +195,30 @@ public class Flywheel extends SubsystemBase {
       SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
     }
+  }
+
+  /**
+   * Returns the session name used for shooter logs.
+   * 
+   * @return The session name
+   */
+  public String getTestingSessionName() {
+    return "session" + testingSession;
+  }
+
+  public void updateTestingSession() {
+    boolean exists = true;
+    while (exists) {
+      File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
+      try {
+        exists = path.mkdirs();
+      } catch (Exception e) {
+        throw e;
+      }
+      testingSession++;
+    }
+    testingSession--;
+
   }
 
   @Override
