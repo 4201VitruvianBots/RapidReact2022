@@ -56,7 +56,8 @@ public class Climber extends SubsystemBase {
       elevatorClimbMotors[i].setSelectedSensorPosition(0);
       elevatorClimbMotors[i].setNeutralMode(NeutralMode.Brake);
       elevatorClimbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-      elevatorClimbMotors[i].configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
+      elevatorClimbMotors[i].configSupplyCurrentLimit(
+          new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     }
     elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
 
