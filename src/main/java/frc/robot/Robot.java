@@ -29,7 +29,7 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    addPeriodic(()-> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
+    addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
   }
 
   /**
