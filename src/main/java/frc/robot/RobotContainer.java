@@ -97,8 +97,16 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Two Ball Auto - Lower",
         new TwoBallAutoLower(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
+        m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+     m_autoChooser.addOption(
+        "Two Ball Auto - UpperLowerHub",
+         new TwoBallAutoUpper(
+         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+     m_autoChooser.addOption(
+              "Two Ball Auto - LowerLowerHub",
+              new TwoBallAutoLower(
+              m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+     m_autoChooser.addOption(
         "Group Three Ball Auto",
         new GroupThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
