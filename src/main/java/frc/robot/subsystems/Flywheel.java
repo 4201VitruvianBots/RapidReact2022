@@ -24,6 +24,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -175,7 +176,7 @@ public class Flywheel extends SubsystemBase {
       SmartDashboard.putNumber(
           "RPM", flywheelMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
 
-      SmartDashboard.putNumber("RPMPrimary", getRPM(0));
+      SmartDashboardTab.putNumber("Flywheel", "RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSecondary", getRPM(1));
       SmartDashboard.putNumber("RPMOutput", rpmOutput);
       SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());

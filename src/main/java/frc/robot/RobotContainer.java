@@ -142,7 +142,7 @@ public class RobotContainer {
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
     xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2700)); // 2300
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3300)); // 2900
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 6000)); // 2900
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
