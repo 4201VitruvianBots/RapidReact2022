@@ -191,6 +191,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
   }
 
   public void teleopPeriodic() {}
@@ -201,6 +202,7 @@ public class RobotContainer {
       m_driveTrain.resetOdometry(
           m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
+      m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     } else {
       m_fieldSim.initSim();
       m_driveTrain.resetEncoderCounts();
