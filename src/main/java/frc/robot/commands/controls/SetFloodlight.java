@@ -4,33 +4,24 @@
 
 package frc.robot.commands.controls;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Controls;
 
-/** An example command that uses an example subsystem. */
-public class SetAllianceColor extends CommandBase {
-  private final Controls m_controls;
-  private DriverStation.Alliance m_color;
+public class SetFloodlight extends CommandBase {
+  public final Controls m_controls;
+  public boolean extend;
 
-  /**
-   * Creates a new ExampleCommand.
-   *
-   * @param subsystem The subsystem used by this command.
-   */
-  public SetAllianceColor(Controls controls, DriverStation.Alliance color) {
+  /** Creates a new IntakePiston. */
+  public SetFloodlight(Controls controls) {
     m_controls = controls;
-    m_color = color;
-
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(m_controls);
+    addRequirements(controls);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_controls.setOverrideFmsAlliance(true);
-    m_controls.setOverrideFmsAllianceColor(m_color);
+    m_controls.setPDHChannel(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,8 +31,7 @@ public class SetAllianceColor extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_controls.setOverrideFmsAlliance(false);
-    m_controls.setOverrideFmsAllianceColor(DriverStation.Alliance.Invalid);
+    m_controls.setPDHChannel(false);
   }
 
   // Returns true when the command should end.

@@ -9,7 +9,7 @@ import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class ReverseIntake extends CommandBase {
+public class ReverseIntakeIndexer extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
@@ -19,7 +19,7 @@ public class ReverseIntake extends CommandBase {
    * @param intake The intake used by this command
    * @param indexer The indexer used by this command
    */
-  public ReverseIntake(Intake intake, Indexer indexer) {
+  public ReverseIntakeIndexer(Intake intake, Indexer indexer) {
     m_intake = intake;
     m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,7 +29,9 @@ public class ReverseIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setIntakePiston(true);
+  }
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
@@ -38,8 +40,9 @@ public class ReverseIntake extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(-0.8);
-    m_indexer.setIndexerPercentOutput(-0.8);
+    m_intake.setIntakePercentOutput(-0.9);
+    m_indexer.setIndexerPercentOutput(-0.35);
+    m_indexer.setKickerPercentOutput(-0.7);
   }
 
   /**
@@ -49,6 +52,9 @@ public class ReverseIntake extends CommandBase {
   public void end(boolean interrupted) {
     //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
+    m_indexer.setIndexerPercentOutput(0);
+    m_indexer.setKickerPercentOutput(0);
+    m_intake.setIntakePiston(false);
   }
 
   // Returns true when the command should end.

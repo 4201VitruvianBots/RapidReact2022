@@ -29,7 +29,9 @@ public class RunIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setIntakePiston(true);
+  }
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
@@ -38,8 +40,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.8);
-    m_indexer.setIndexerPercentOutput(0.8);
+    m_intake.setIntakePercentOutput(0.9);
   }
 
   /**
@@ -48,6 +49,7 @@ public class RunIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     //  m_indexer.setIndexerPercentOutput(0);
+    m_intake.setIntakePiston(false);
     m_intake.setIntakePercentOutput(0);
   }
 

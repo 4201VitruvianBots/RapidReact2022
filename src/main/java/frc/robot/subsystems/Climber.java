@@ -10,8 +10,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,7 +26,7 @@ public class Climber extends SubsystemBase {
   DoubleSolenoid highClimbPiston =
       new DoubleSolenoid(
           Constants.Pneumatics.pcmOne,
-          PneumaticsModuleType.CTREPCM,
+          Constants.Pneumatics.pcmType,
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
 
