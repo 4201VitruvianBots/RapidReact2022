@@ -44,6 +44,9 @@ public final class Constants {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
 
+    public static final int climberLowerLimitOverrideID = 9;
+    public static final int climberUpperLimitOverrideID = 8;
+
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
   }
