@@ -18,6 +18,7 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
@@ -151,6 +152,8 @@ public class RobotContainer {
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+
+    xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 

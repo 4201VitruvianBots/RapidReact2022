@@ -58,7 +58,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
     // TODO: Ask if hastarget=getGoalValidTarget
 
     // If we are not climbing
-    if (!m_climber.getClimbState()) {
+    if (!m_climber.getElevatorClimbState()) {
       //// If the turret is using sensor feedback
       if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
         // if the joystick sensors report movement greater than the deadzone it runs these methods

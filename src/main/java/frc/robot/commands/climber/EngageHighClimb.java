@@ -34,25 +34,26 @@ public class EngageHighClimb extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    if (m_climber.getElevatorClimbState()) {
+      m_climber.setHighClimbPiston((m_climber.getHighClimbPistonPosition() == Value.kReverse ? Value.kForward : Value.kReverse));
+    }
+  }
 
   @Override
   public void execute() {
-    if (m_climber.getElevatorClimbState()) {
-      m_climber.setHighClimbPiston(Value.kForward);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setHighClimbPiston(Value.kOff);
+    // m_climber.setHighClimbPiston(Value.kOff);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 
   private enum climberState {

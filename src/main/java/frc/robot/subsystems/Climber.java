@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -46,6 +47,9 @@ public class Climber extends SubsystemBase {
       elevatorClimbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     }
     elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
+
+    elevatorClimbMotors[0].setInverted(true);
+    elevatorClimbMotors[1].setInverted(true);
   }
 
   public boolean getElevatorClimbState() {
@@ -97,9 +101,7 @@ public class Climber extends SubsystemBase {
 
   private void updateSmartDashboard() {
     SmartDashboardTab.putBoolean(
-        "Climber",
-        "High Climb Piston Position",
-        getHighClimbPistonPosition() == Value.kForward ? true : false);
+        "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
     SmartDashboardTab.putBoolean("Climber", "Climb Mode", getElevatorClimbState());
     SmartDashboardTab.putNumber(
         "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
