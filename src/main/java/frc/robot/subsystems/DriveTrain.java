@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
@@ -56,6 +57,9 @@ public class DriveTrain extends SubsystemBase {
 
   PIDController leftPIDController = new PIDController(kP, kI, kD);
   PIDController rightPIDController = new PIDController(kP, kI, kD);
+
+  /** Will run when enabled in teleop, unless null */
+  private Command m_postAutoCommand = null;
 
   private final HashMap<MotorPosition, TalonFX> driveMotors =
       new HashMap<MotorPosition, TalonFX>(
@@ -150,11 +154,12 @@ public class DriveTrain extends SubsystemBase {
    * @return Clockwise negative heading of the robot in degrees
    */
   public double getHeadingDegrees() {
-    return Math.IEEEremainder(-pigeon.getYaw(), 360);
+    return Math.IEEEremainder(pigeon.getYaw(), 360);
   }
 
   public void resetAngle() {
     pigeon.setYaw(0);
+    pigeon.setAccumZAngle(0);
   }
 
   /**
@@ -502,6 +507,25 @@ public class DriveTrain extends SubsystemBase {
 
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
+  }
+
+  /**
+   * Sets a command to run when enabled in teleop Does not run any command if {@code command} is
+   * null
+   *
+   * @param command The command to run
+   */
+  public void setPostAutoCommand(Command command) {
+    m_postAutoCommand = command;
+  }
+
+  /**
+   * Gets the command to run when enabled in teleop
+   *
+   * @return The command to run
+   */
+  public Command getPostAutoCommand() {
+    return m_postAutoCommand;
   }
 
   @Override
