@@ -127,7 +127,7 @@ public class Flywheel extends SubsystemBase {
 
       double nextVoltage = m_loop.getU(0) + 0.25;
 
-        if(timestamp <= 0.5 && timestamp > 0.3){
+        if(timestamp <= 0.5 && timestamp > 0.4){
         setPower(nextVoltage / 12.0);  
         }
         else 
