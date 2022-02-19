@@ -54,17 +54,20 @@ public final class Constants {
     public static final double climberLowerLimit = 0.0;
   }
 
-  public final class Indexer {
+  public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
-    // public static final int indexerTopSensor = 1;
-    // public static final int indexerBottomSensor = 2;
 
-    // public static final enum CARGO_COLOR {
-    // RED,
-    // BLUE,
-    // UNKNOWN
-    // }
+    public static final int indexerRearSensor = 1; // Rear = closer to shooter
+    public static final int indexerFrontSensor = 2; // Front = closer to intake
+    public static final int colorSensorFront = 2;
+    public static final int colorSensorRear = 0;
+
+    public static enum CARGO_COLOR {
+      RED,
+      BLUE,
+      UNKNOWN
+    }
   }
 
   public final class Intake {
