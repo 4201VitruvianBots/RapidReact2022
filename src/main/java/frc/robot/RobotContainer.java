@@ -173,8 +173,15 @@ public class RobotContainer {
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    // m_indexer.setDefaultCommand(
+    //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+    // xBoxRightTrigger.get()));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
+  }
+
+  public Indexer getIndexer() {
+    return m_indexer;
   }
 
   /**
