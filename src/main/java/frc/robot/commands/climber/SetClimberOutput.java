@@ -18,6 +18,8 @@ public class SetClimberOutput extends CommandBase {
 
   private DoubleSupplier m_input;
 
+  private boolean latch = false;
+
   /**
    * Creates a new SetClimberOutput.
    *
@@ -38,19 +40,22 @@ public class SetClimberOutput extends CommandBase {
 
   @Override
   public void execute() {
-    if (m_climber.getClimbState()) {
+    if (m_climber.getElevatorClimbState()) {
       double input = Math.abs(m_input.getAsDouble()) > 0.2 ? -m_input.getAsDouble() : 0;
 
       climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
       switch (desiredDirection) {
         case MOVING:
-          m_climber.disengagePistonBrake();
-          m_climber.setClimberPercentOutput(input);
+          m_climber.setElevatorClimberPercentOutput(input);
+          latch = false;
           break;
         case STILL:
         default:
-          m_climber.setClimberPercentOutput(0);
-          m_climber.engagePistonBrake();
+          if (!latch) {
+            m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
+            latch = true;
+          }
+          m_climber.holdClimber();
           break;
       }
     }
@@ -59,8 +64,7 @@ public class SetClimberOutput extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_climber.setClimberPercentOutput(0.0);
-    m_climber.engagePistonBrake();
+    m_climber.setElevatorClimberPercentOutput(0.0);
   }
 
   // Returns true when the command should end.

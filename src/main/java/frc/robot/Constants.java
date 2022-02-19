@@ -36,29 +36,38 @@ public final class Constants {
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
-    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 10;
-    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 11;
+    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 2;
+    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 3;
   }
 
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
 
+    public static final int climberLowerLimitOverrideID = 9;
+    public static final int climberUpperLimitOverrideID = 8;
+
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
+
+    public static final double climberUpperLimit = 205_000.0;
+    public static final double climberLowerLimit = 0.0;
   }
 
-  public final class Indexer {
+  public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
-    // public static final int indexerTopSensor = 1;
-    // public static final int indexerBottomSensor = 2;
 
-    // public static final enum CARGO_COLOR {
-    //   RED,
-    //   BLUE,
-    //   UNKNOWN
-    // }
+    public static final int indexerRearSensor = 1; // Rear = closer to shooter
+    public static final int indexerFrontSensor = 2; // Front = closer to intake
+    public static final int colorSensorFront = 2;
+    public static final int colorSensorRear = 0;
+
+    public static enum CARGO_COLOR {
+      RED,
+      BLUE,
+      UNKNOWN
+    }
   }
 
   public final class Intake {
@@ -101,7 +110,8 @@ public final class Constants {
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
+        // ratio
         (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
@@ -192,13 +202,28 @@ public final class Constants {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
 
-    // TODO: might not need kErrorBand, need to confirm
-    public static final int kErrorBand = 50;
     public static final int turretHomeSensor = 3;
 
-    public static final double kTurretKs = 1.3661;
-    public static final double kTurretKv = 0.068821;
-    public static final double kTurretKa = 0.0063138;
+    public static final int encoderUnitsPerRotation = 2048;
+    public static final double canCoderAngleOffset = -329.150;
+    public static final double minAngle = -80;
+    public static final double maxAngle = 80;
+
+    public static final double kF = 0.07;
+    // public static final double kP = 7.28E-05;
+    public static final double kP = 0.2;
+    public static final double kI = 0.0015;
+    public static final double kD = 0.0;
+
+    public static final double kErrorBand = 50;
+    public static final double kI_Zone = 900;
+    public static final double kMaxIAccum = 1000000;
+    public static final double kCruiseVelocity = 8000;
+    public static final double kMotionAcceleration = kCruiseVelocity * 10;
+
+    public static final double kS = 0.83016; // 0.81464;
+    public static final double kV = 0.012184; // 0.16822;
+    public static final double kA = 0.00036802; // 0.011642;
 
     public static final double degreeTolerance = 1.0;
 
@@ -226,4 +251,10 @@ public final class Constants {
 
     public static String VISION_SERVER_IP = "10.42.1.100";
   }
+
+  // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
+  public enum CONTROL_MODE {
+    OPENLOOP,
+    CLOSEDLOOP
+  };
 }

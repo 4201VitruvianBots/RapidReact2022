@@ -12,17 +12,16 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAutoUpper;
 import frc.robot.commands.auto.TwoBallAutoLower;
+import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
-import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -30,6 +29,7 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -156,9 +156,12 @@ public class RobotContainer {
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
+    xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+
+    xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
@@ -174,8 +177,15 @@ public class RobotContainer {
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    // m_indexer.setDefaultCommand(
+    //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+    // xBoxRightTrigger.get()));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
+  }
+
+  public Indexer getIndexer() {
+    return m_indexer;
   }
 
   /**
@@ -200,6 +210,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
@@ -213,6 +224,7 @@ public class RobotContainer {
       m_driveTrain.resetOdometry(
           m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
+      m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     } else {
       m_fieldSim.initSim();
       m_driveTrain.resetEncoderCounts();

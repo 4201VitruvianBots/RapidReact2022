@@ -7,47 +7,59 @@
 
 package frc.robot.commands.climber;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
+import java.util.function.DoubleSupplier;
 
 /** Raises/lowers the climber based on joystick input */
-public class RetractClimber extends CommandBase {
+public class EngageHighClimb extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private final Climber m_climber;
+  private Climber m_climber;
+
+  private DoubleSupplier m_input;
 
   /**
    * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
+   * @param input The input used to control the climber output.
    */
-  public RetractClimber(final Climber climber) {
-    this.m_climber = climber;
+  public EngageHighClimb(Climber climber) {
+    m_climber = climber;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    this.addRequirements(climber);
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
-  @Override
-  public void execute() {
-    while (this.m_climber.elevatorClimbMotors[0].getSelectedSensorPosition()
-        > Constants.Climber.climberBottomOutValue) {
-      this.m_climber.setElevatorClimberPercentOutput(-0.5);
+  public void initialize() {
+    if (m_climber.getElevatorClimbState()) {
+      m_climber.setHighClimbPiston(
+          (m_climber.getHighClimbPistonPosition() == Value.kReverse
+              ? Value.kForward
+              : Value.kReverse));
     }
   }
 
+  @Override
+  public void execute() {}
+
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {
-    this.m_climber.setElevatorClimberPercentOutput(0.0);
+  public void end(boolean interrupted) {
+    // m_climber.setHighClimbPiston(Value.kOff);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
+  }
+
+  private enum climberState {
+    MOVING,
+    STILL
   }
 }

@@ -34,7 +34,7 @@ public class SetClimbState extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climber.setClimbState(m_state);
+    m_climber.setElevatorClimbState(m_state);
   }
 
   @Override
