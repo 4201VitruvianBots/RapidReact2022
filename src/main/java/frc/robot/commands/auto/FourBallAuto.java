@@ -26,10 +26,10 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
+/** Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from the terminal*/
 public class FourBallAuto extends SequentialCommandGroup {
   /**
-   * Intakes one cargo, shoots two, then intakes and shoots a third cargo
+   * Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from the terminal
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -71,18 +71,6 @@ public class FourBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
-    Trajectory trajectory4 =
-        PathPlanner.loadPath(
-            "FourBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(8), false);
-    VitruvianRamseteCommand command4 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
-
-
-    // Trajectory trajectory3 =
-    // PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
-    // VitruvianRamseteCommand command3 =
-    // TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
-
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
@@ -103,10 +91,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new ParallelDeadlineGroup(
-            command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new RunIntake(intake, indexer)),
-        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(

@@ -26,11 +26,16 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Intakes one cargo and shoots two cargo into the high goal. */
+/**
+ * Intakes one cargo and shoots two cargo into the high goal.
+ * Starting from the lower part of the field 
+ */
 public class TwoBallAutoLower extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
-   *
+   * Starting from the lower part of the field 
+   * 
+   * 
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
    * @param intake Runs the intake to pick up new cargo.

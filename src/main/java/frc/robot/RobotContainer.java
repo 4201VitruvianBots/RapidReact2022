@@ -14,12 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.GroupThreeBallAuto;
-import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAutoUpper;
-import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.auto.TwoBallAutoLower;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -102,26 +99,15 @@ public class RobotContainer {
         new TwoBallAutoLower(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto Defense",
-        new TwoBallAutoDefense(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
         "Group Three Ball Auto",
         new GroupThreeBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Individual Three Ball Auto",
-        new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Four Ball Auto",
         new FourBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption(
-        "Post Two Ball Intake",
-        new PostTwoBallIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
-
+   
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
     initializeSubsystems();
