@@ -15,20 +15,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 /**
- * climber will only be making for a mid-climb as of 1/11/22 in the future I hope that the climber
- * will use some more advanced capability to get a traversal run climb in the future.
+ * climber will only be making for a mid-climb as of 1/11/22 in the future I
+ * hope that the climber
+ * will use some more advanced capability to get a traversal run climb in the
+ * future.
  */
 public class Climber extends SubsystemBase {
   public final TalonFX[] elevatorClimbMotors = {
-    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB),
+      new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB),
   };
 
-  DoubleSolenoid highClimbPiston =
-      new DoubleSolenoid(
-          Constants.Pneumatics.pcmOne,
-          Constants.Pneumatics.pcmType,
-          Constants.Pneumatics.climbPistonForward,
-          Constants.Pneumatics.climbPistonReverse);
+  DoubleSolenoid highClimbPiston = new DoubleSolenoid(
+      Constants.Pneumatics.pcmOne,
+      Constants.Pneumatics.pcmType,
+      Constants.Pneumatics.climbPistonForward,
+      Constants.Pneumatics.climbPistonReverse);
 
   private boolean elevatorClimbState;
 
@@ -64,11 +65,16 @@ public class Climber extends SubsystemBase {
     if ((getElevatorClimbPosition() > elevatorClimbLowerLimit || value > 0)
         && (getElevatorClimbPosition() < elevatorClimbUpperLimit || value < 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, value);
-    else elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
+    else
+      elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   public void setHighClimbPiston(DoubleSolenoid.Value kValue) {
     highClimbPiston.set(kValue);
+  }
+
+  public void holdClimber() {
+    elevatorClimbMotors[0].set(ControlMode.Position, getElevatorClimbPosition());
   }
 
   /**
@@ -106,7 +112,7 @@ public class Climber extends SubsystemBase {
     updateSmartDashboard();
 
     if ((getElevatorClimbPosition() <= elevatorClimbLowerLimit
-            && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
+        && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
         || (getElevatorClimbPosition() >= elevatorClimbUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);

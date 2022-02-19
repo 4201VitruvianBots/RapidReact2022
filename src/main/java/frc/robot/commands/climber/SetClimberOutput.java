@@ -32,6 +32,7 @@ public class SetClimberOutput extends CommandBase {
     addRequirements(climber);
   }
 
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
@@ -48,7 +49,7 @@ public class SetClimberOutput extends CommandBase {
           break;
         case STILL:
         default:
-          m_climber.setElevatorClimberPercentOutput(0);
+          m_climber.holdClimber();
           break;
       }
     }
