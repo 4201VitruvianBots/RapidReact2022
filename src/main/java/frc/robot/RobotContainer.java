@@ -158,6 +158,7 @@ public class RobotContainer {
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+    xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
