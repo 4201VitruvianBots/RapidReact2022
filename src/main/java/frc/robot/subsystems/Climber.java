@@ -10,7 +10,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,13 +21,17 @@ import frc.robot.Constants;
 public class Climber extends SubsystemBase {
   private final DoubleSolenoid climbBrakeSolenoid =
       new DoubleSolenoid(
-          PneumaticsModuleType.CTREPCM,
+          Constants.Pneumatics.pcmOne,
+          Constants.Pneumatics.pcmType,
           Constants.Pneumatics.climbPistonForward,
           Constants.Pneumatics.climbPistonReverse);
   private final TalonFX[] climbMotors = {
     new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
   };
   private boolean climbState;
+
+  private final double upperLimit = 205_000.0;
+  private final double lowerLimit = 0.0;
 
   /** Creates a new Climber. */
   public Climber() {
@@ -81,7 +84,10 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setClimberPercentOutput(double value) {
-    climbMotors[0].set(ControlMode.PercentOutput, value);
+    if ((getClimberPosition() > lowerLimit || value > 0)
+        && (getClimberPosition() < upperLimit || value < 0))
+      climbMotors[0].set(ControlMode.PercentOutput, value);
+    else climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   /**
@@ -96,12 +102,17 @@ public class Climber extends SubsystemBase {
   private void updateSmartDashboard() {
     SmartDashboardTab.putBoolean("Climber", "Climb Mode", getClimbState());
     SmartDashboardTab.putNumber("Climber", "Climb Output", climbMotors[0].getMotorOutputPercent());
+    SmartDashboardTab.putNumber("Climber", "Climb Position", getClimberPosition());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
+
+    if ((getClimberPosition() <= lowerLimit && climbMotors[0].getMotorOutputPercent() < 0)
+        || (getClimberPosition() >= upperLimit && climbMotors[0].getMotorOutputPercent() > 0))
+      climbMotors[0].set(ControlMode.PercentOutput, 0);
   }
 
   @Override

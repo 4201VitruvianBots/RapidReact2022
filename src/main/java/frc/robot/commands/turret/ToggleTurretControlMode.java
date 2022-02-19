@@ -2,29 +2,35 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.intake;
+package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Intake;
+import frc.robot.Constants;
+import frc.robot.subsystems.Turret;
 
-public class IntakePiston extends CommandBase {
-  public final Intake m_intake;
-  public boolean extend;
+/** An example command that uses an example subsystem. */
+public class ToggleTurretControlMode extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Turret m_turret;
 
-  /** Creates a new IntakePiston. */
-  public IntakePiston(Intake intake, boolean extend) {
-    m_intake = intake;
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public ToggleTurretControlMode(Turret turret) {
+    m_turret = turret;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
-    this.extend = extend;
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (m_intake.getIntakePistonExtendStatus() != extend) {
-      m_intake.setIntakePiston(extend);
-    }
+    m_turret.setControlMode(
+        m_turret.getControlMode() != Constants.CONTROL_MODE.CLOSEDLOOP
+            ? Constants.CONTROL_MODE.CLOSEDLOOP
+            : Constants.CONTROL_MODE.OPENLOOP);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

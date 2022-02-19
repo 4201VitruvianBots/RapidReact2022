@@ -1,14 +1,17 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.commands.controls.SetAllianceColor;
+import frc.robot.commands.controls.OverrideAllianceColor;
 
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
+  private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public Controls() {
     initSmartDashboard();
@@ -32,6 +35,14 @@ public class Controls extends SubsystemBase {
 
     return alliance;
   }
+  /**
+   * Returns true when the alliance color is not Blue`
+   *
+   * @return Returns the current alliance color.
+   */
+  public boolean getAllianceColorBoolean() {
+    return getAllianceColor() != DriverStation.Alliance.Blue;
+  }
 
   /** Sets whether or not to ignore the FMS to determine alliance color. */
   public void setOverrideFmsAlliance(boolean state) {
@@ -43,19 +54,29 @@ public class Controls extends SubsystemBase {
     overrideFmsAllianceColor = color;
   }
 
+  public void setPDHChannel(boolean on) {
+    pdh.setSwitchableChannel(on);
+  }
+
   /** Initializes values on SmartDashboard */
   private void initSmartDashboard() {
+    //    Shuffleboard.getTab("SmartDashboard")
+    //            .add("Alliance", getAllianceColorBoolean())
+    //            .withWidget(BuiltInWidgets.kBooleanBox)
+    //            .withProperties(Map.of("Color when true", "#FF0000", "Color when false",
+    // "#0000FF"));
     Shuffleboard.getTab("Controls")
-        .add("Set Alliance Red", new SetAllianceColor(this, DriverStation.Alliance.Red));
+        .add("Set Alliance Red", new OverrideAllianceColor(this, DriverStation.Alliance.Red));
     Shuffleboard.getTab("Controls")
-        .add("Set Alliance Blue", new SetAllianceColor(this, DriverStation.Alliance.Blue));
+        .add("Set Alliance Blue", new OverrideAllianceColor(this, DriverStation.Alliance.Blue));
 
-    Shuffleboard.getTab("Controls").add("Alliance", getAllianceColor().toString());
+    Shuffleboard.getTab("Controls")
+        .addString("Alliance String", () -> getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */
   private void updateSmartDashboard() {
-    SmartDashboardTab.putString("Controls", "Alliance", getAllianceColor().toString());
+    SmartDashboard.putBoolean("Alliance", getAllianceColorBoolean());
   }
 
   @Override

@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -16,16 +15,21 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.GroupThreeBallAuto;
 import frc.robot.commands.auto.IndividualThreeBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
+import frc.robot.commands.auto.PostAutoIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
+import frc.robot.commands.climber.SetClimbState;
+import frc.robot.commands.climber.SetClimberOutput;
+import frc.robot.commands.controls.SetFloodlight;
+import frc.robot.commands.driveTrain.AlignToCargo;
+import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.ColorSensor;
-import frc.robot.commands.intake.ReverseIntake;
+import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.intake.ToggleIntakePiston;
 import frc.robot.commands.led.GetSubsystemStates;
+import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -36,7 +40,6 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LED;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
-import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -67,16 +70,23 @@ public class RobotContainer {
   public Button[] xBoxButtons = new Button[10];
   public Button[] xBoxPOVButtons = new Button[8];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
+  // public static boolean allianceColorBlue;
+  // public static boolean allianceColorRed;
+  public static enum CommandSelector {
+    BLUE_ALLIANCE, // 01
+    RED_ALLIANCE
+  }
+
+  public final SendableChooser<CommandSelector> m_allianceChooser =
+      new SendableChooser<CommandSelector>();
 
   private final SendableChooser<Command> m_autoChooser = new SendableChooser<Command>();
-
-  TCA9548AcolorSensor tca9548AcolorSensor = new TCA9548AcolorSensor(I2C.Port.kOnboard);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+        "Drive Forward", new DriveBackwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption(
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
@@ -93,6 +103,9 @@ public class RobotContainer {
         new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
+    m_autoChooser.addOption(
+        "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
+    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
@@ -100,11 +113,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
-    SmartDashboard.putData(
-        "Select Port 0", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(0)));
-    SmartDashboard.putData(
-        "Select Port 2", new InstantCommand(() -> tca9548AcolorSensor.selectMuxChannel(2)));
   }
 
   /**
@@ -123,17 +131,28 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
 
+    rightButtons[0].whileHeld(
+        new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+
     xBoxLeftTrigger =
         new Button(
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3000));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2800));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
 
-    xBoxButtons[4].whenPressed(new ToggleIntakePiston(m_intake));
+    xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
+    xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
+
+    xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
+    xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxPOVButtons[4].whileHeld(new ReverseIntake(m_intake, m_indexer));
-    // xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+
+    xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
@@ -142,8 +161,8 @@ public class RobotContainer {
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    // m_climber.setDefaultCommand(
-    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    m_climber.setDefaultCommand(
+        new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_indexer.setDefaultCommand(
         new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxRightTrigger.get()));
     m_led.setDefaultCommand(
@@ -164,15 +183,7 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {
-    SmartDashboard.putNumber("Color Sensor Mux Channel", tca9548AcolorSensor.getMuxChannel());
-    SmartDashboard.putNumber(
-        "Color Sensor Blue", tca9548AcolorSensor.getColorSensor().getColor().blue);
-    SmartDashboard.putNumber(
-        "Color Sensor Red", tca9548AcolorSensor.getColorSensor().getColor().red);
-    SmartDashboard.putNumber(
-        "Color Sensor Green", tca9548AcolorSensor.getColorSensor().getColor().green);
-  }
+  public void robotPeriodic() {}
 
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
@@ -182,7 +193,7 @@ public class RobotContainer {
   public void disabledPeriodic() {}
 
   public void teleopInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
   }
 
   public void teleopPeriodic() {}

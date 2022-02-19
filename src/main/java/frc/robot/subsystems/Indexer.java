@@ -45,17 +45,13 @@ public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
-
-    indexerMotor.setNeutralMode(NeutralMode.Brake); // RapidReact
-    indexerMotor.configFactoryDefault(); // RapidReact
-
-    // indexerMotor.restoreFactoryDefaults(); // Jango
-    // indexerMotor.setIdleMode(IdleMode.kBrake); // Jango
-
-    indexerMotor.setInverted(true);
+    indexerMotor.configFactoryDefault();
+    indexerMotor.setInverted(false);
 
     kickerMotor.configFactoryDefault();
-    kickerMotor.setInverted(true);
+    kickerMotor.setInverted(false);
+
+    kickerMotor.setNeutralMode(NeutralMode.Brake);
 
     SmartDashboard.putData("indexer Subsystem", this);
   }
