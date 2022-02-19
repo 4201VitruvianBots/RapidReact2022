@@ -104,7 +104,8 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    SmartDashboardTab.putNumber("Indexer", "Indexer Speed", indexerMotor.getSelectedSensorVelocity());
+    SmartDashboardTab.putNumber(
+        "Indexer", "Indexer Speed", indexerMotor.getSelectedSensorVelocity());
     SmartDashboardTab.putNumber("Indexer", "Kicker Speed", kickerMotor.getSelectedSensorVelocity());
   }
 

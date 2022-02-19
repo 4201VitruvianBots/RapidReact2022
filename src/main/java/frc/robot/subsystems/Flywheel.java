@@ -29,6 +29,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -46,7 +47,7 @@ public class Flywheel extends SubsystemBase {
   private double flywheelSetpointRPM;
   private boolean canShoot;
   private double idealRPM;
-  private boolean timerStart;
+  private boolean timerStart = false;
   private double timestamp;
 
   private int testingSession = 0;
@@ -111,7 +112,8 @@ public class Flywheel extends SubsystemBase {
   }
 
   public boolean canShoot() {
-    return (/*Math.abs(getRPM(0) - getSetpointRPM()) <= 300) &&*/ getSetpointRPM() > 0);
+    return (
+    /*Math.abs(getRPM(0) - getSetpointRPM()) <= 300) &&*/ getSetpointRPM() > 0);
   }
 
   /** flywheelSetpoint if setpoint else setPower to 0 */
@@ -125,8 +127,13 @@ public class Flywheel extends SubsystemBase {
 
       double nextVoltage = m_loop.getU(0) + 0.25;
 
-      setPower(nextVoltage / 12.0);
-    } else {
+        if(timestamp <= 0.5 && timestamp > 0.3){
+        setPower(nextVoltage / 12.0);  
+        }
+        else 
+       setPower(nextVoltage / 12.0);
+      }
+     else {
       setPower(0);
     }
   }
@@ -182,7 +189,7 @@ public class Flywheel extends SubsystemBase {
       SmartDashboard.putNumber(
           "RPM", flywheelMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
 
-      SmartDashboard.putNumber("RPMPrimary", getRPM(0));
+      SmartDashboardTab.putNumber("Flywheel", "RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSecondary", getRPM(1));
       SmartDashboard.putNumber("RPMOutput", rpmOutput);
       SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
@@ -220,18 +227,17 @@ public class Flywheel extends SubsystemBase {
     updateRPMSetpoint();
     updateShuffleboard();
 
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())
-        && m_vision.getGoalValidTarget()
-        && (Math.abs(m_vision.getGoalTargetXAngle()) < 1)
-        && !timerStart) {
-      timerStart = true;
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)){
+      timerStart = true; 
       timestamp = Timer.getFPGATimestamp();
-    } else if (((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance())
-            || !m_vision.getGoalValidTarget()
-            || (Math.abs(m_vision.getGoalTargetXAngle()) > 1))
-        && (timerStart)) {
+    }
+    else if(timestamp > 0.5){
+    timestamp = 0;
+    timestamp = Timer.getFPGATimestamp();
+    }
+    else{
       timestamp = 0;
-      timerStart = false;
+      timerStart = false; 
     }
 
     if (timestamp != 0) {
@@ -240,6 +246,7 @@ public class Flywheel extends SubsystemBase {
 
     } else canShoot = false;
   }
+  
 
   @Override
   public void simulationPeriodic() {
