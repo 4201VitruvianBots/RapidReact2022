@@ -132,6 +132,11 @@ public class DriveTrain extends SubsystemBase {
         .set(ControlMode.Follower, driveMotors.get(MotorPosition.RIGHT_FRONT).getDeviceID());
     driveMotors.get(MotorPosition.LEFT_REAR).setNeutralMode(NeutralMode.Brake);
     driveMotors.get(MotorPosition.RIGHT_REAR).setNeutralMode(NeutralMode.Brake);
+    
+    driveMotors.get(MotorPosition.LEFT_REAR).setStatusFramePeriod(1, 255);
+    driveMotors.get(MotorPosition.LEFT_REAR).setStatusFramePeriod(2, 255);
+    driveMotors.get(MotorPosition.RIGHT_REAR).setStatusFramePeriod(1, 255);
+    driveMotors.get(MotorPosition.RIGHT_REAR).setStatusFramePeriod(2, 255);
   }
 
   /**
