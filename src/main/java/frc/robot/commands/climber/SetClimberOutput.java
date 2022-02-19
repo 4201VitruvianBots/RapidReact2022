@@ -45,7 +45,7 @@ public class SetClimberOutput extends CommandBase {
       climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
       switch (desiredDirection) {
         case MOVING:
-          m_climber.setElevatorClimberPercentOutput(input);
+          m_climber.setElevatorClimberPercentOutput(0);
           break;
         case STILL:
         default:

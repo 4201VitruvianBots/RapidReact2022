@@ -50,17 +50,17 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_driveTrain = new DriveTrain();
-  private final Controls m_controls = new Controls();
-  private final Turret m_turret = new Turret(m_driveTrain);
-  private final Vision m_vision = new Vision(m_controls);
-  private final Flywheel m_flywheel = new Flywheel(m_vision);
-  private final Intake m_intake = new Intake();
-  private final Indexer m_indexer = new Indexer();
-  private final LED m_led = new LED();
+  // private final DriveTrain m_driveTrain = new DriveTrain();
+  // private final Controls m_controls = new Controls();
+  // private final Turret m_turret = new Turret(m_driveTrain);
+  // private final Vision m_vision = new Vision(m_controls);
+  // private final Flywheel m_flywheel = new Flywheel(m_vision);
+  // private final Intake m_intake = new Intake();
+  // private final Indexer m_indexer = new Indexer();
+  // private final LED m_led = new LED();
   private final Climber m_climber = new Climber();
 
-  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
+  // private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -108,7 +108,7 @@ public class RobotContainer {
         "PostAutoIntake", new PostAutoIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
-    SmartDashboard.putData("Selected Auto", m_autoChooser);
+    // SmartDashboard.putData("Selected Auto", m_autoChooser);
 
     initializeSubsystems();
 
@@ -157,17 +157,19 @@ public class RobotContainer {
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
+    xBoxButtons[3].whenPressed(new EngageHighClimb(m_climber));
+
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
     // xBoxButtons[7].whenPressed(new SetClimbState(m_climber, false));
   }
 
   public void initializeSubsystems() {
-    m_driveTrain.setDefaultCommand(
-        new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    m_climber.setDefaultCommand(
-        new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
-    m_led.setDefaultCommand(
-        new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
+    // m_driveTrain.setDefaultCommand(
+    //     new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+    // m_climber.setDefaultCommand(
+    //     new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
+    // m_led.setDefaultCommand(
+    //     new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
 
   /**
@@ -183,8 +185,8 @@ public class RobotContainer {
   public void robotPeriodic() {}
 
   public void disabledInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
-    m_driveTrain.setMotorTankDrive(0, 0);
+    // m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    // m_driveTrain.setMotorTankDrive(0, 0);
   }
 
   public void disabledPeriodic() {}
@@ -196,27 +198,27 @@ public class RobotContainer {
   public void teleopPeriodic() {}
 
   public void autonomousInit() {
-    if (RobotBase.isReal()) {
-      m_driveTrain.resetEncoderCounts();
-      m_driveTrain.resetOdometry(
-          m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
-      m_driveTrain.resetAngle();
-    } else {
-      m_fieldSim.initSim();
-      m_driveTrain.resetEncoderCounts();
-      m_driveTrain.resetOdometry(
-          m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
-      m_driveTrain.resetAngle();
-    }
+    // if (RobotBase.isReal()) {
+    //   m_driveTrain.resetEncoderCounts();
+    //   m_driveTrain.resetOdometry(
+    //       m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
+    //   m_driveTrain.resetAngle();
+    // } else {
+    //   m_fieldSim.initSim();
+    //   m_driveTrain.resetEncoderCounts();
+    //   m_driveTrain.resetOdometry(
+    //       m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
+    //   m_driveTrain.resetAngle();
+    // }
   }
 
   public void autonomousPeriodic() {}
 
   public void simulationInit() {
-    m_fieldSim.initSim();
+    // m_fieldSim.initSim();
   }
 
   public void simulationPeriodic() {
-    m_fieldSim.simulationPeriodic();
+    // m_fieldSim.simulationPeriodic();
   }
 }
