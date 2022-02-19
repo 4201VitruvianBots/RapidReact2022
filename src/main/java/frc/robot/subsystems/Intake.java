@@ -34,6 +34,8 @@ public class Intake extends SubsystemBase {
     intakeMotor.configFactoryDefault();
     intakeMotor.setNeutralMode(NeutralMode.Coast);
     intakeMotor.setInverted(false);
+    intakeMotor.setStatusFramePeriod(1, 100);
+    intakeMotor.setStatusFramePeriod(2, 100);
 
     SmartDashboard.putData("Intake Subsystem", this);
   }
