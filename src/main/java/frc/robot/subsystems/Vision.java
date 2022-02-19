@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
@@ -21,6 +22,8 @@ public class Vision extends SubsystemBase {
 
   private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK;
   private int red_offset, blue_offset;
+
+  private INTAKE_TRACKING_TYPE intake_tracking_type = INTAKE_TRACKING_TYPE.CARGO;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls) {
@@ -195,6 +198,21 @@ public class Vision extends SubsystemBase {
   public void updateBlueOffset() {
     blue_offset += getBlueCount();
     intake_camera.getEntry("blue_counter_offset").setDouble(blue_offset);
+  }
+
+  /** Sets the category of objects the intake should track.
+   *  0: Cargo
+   *  1: Launchpads
+   * */
+  public void setIntakeTrackingType(INTAKE_TRACKING_TYPE type){
+    SmartDashboardTab.putNumber("Vision", "intake_tracking_type", type.ordinal());
+  }
+  /** Sets the category of objects the intake should track.
+   *  0: Cargo
+   *  1: Launchpads
+   * */
+  public void setIntakeTargetLock(boolean state){
+    SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
   }
 
   /** Sends values to SmartDashboard */

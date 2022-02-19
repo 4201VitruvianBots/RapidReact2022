@@ -235,6 +235,11 @@ public final class Constants {
       PHOTONVISION
     }
 
+    public enum INTAKE_TRACKING_TYPE {
+      CARGO,
+      LAUNCHPAD
+    }
+
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
