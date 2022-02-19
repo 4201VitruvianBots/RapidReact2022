@@ -60,8 +60,13 @@ public class Indexer extends SubsystemBase {
 
     indexerMotor.setInverted(true);
 
+    indexerMotor.setStatusFramePeriod(1, 100);
+    indexerMotor.setStatusFramePeriod(2, 100);
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(true);
+
+    kickerMotor.setStatusFramePeriod(1, 100);
+    kickerMotor.setStatusFramePeriod(2, 100);
 
     SmartDashboard.putData("indexer Subsystem", this);
   }
