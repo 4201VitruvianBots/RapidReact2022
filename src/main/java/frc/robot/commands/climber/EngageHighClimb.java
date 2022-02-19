@@ -36,13 +36,15 @@ public class EngageHighClimb extends CommandBase {
   @Override
   public void initialize() {
     if (m_climber.getElevatorClimbState()) {
-      m_climber.setHighClimbPiston((m_climber.getHighClimbPistonPosition() == Value.kReverse ? Value.kForward : Value.kReverse));
+      m_climber.setHighClimbPiston(
+          (m_climber.getHighClimbPistonPosition() == Value.kReverse
+              ? Value.kForward
+              : Value.kReverse));
     }
   }
 
   @Override
-  public void execute() {
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

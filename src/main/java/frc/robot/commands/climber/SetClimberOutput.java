@@ -18,6 +18,8 @@ public class SetClimberOutput extends CommandBase {
 
   private DoubleSupplier m_input;
 
+  private boolean latch = false;
+
   /**
    * Creates a new SetClimberOutput.
    *
@@ -32,7 +34,6 @@ public class SetClimberOutput extends CommandBase {
     addRequirements(climber);
   }
 
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {}
@@ -46,9 +47,14 @@ public class SetClimberOutput extends CommandBase {
       switch (desiredDirection) {
         case MOVING:
           m_climber.setElevatorClimberPercentOutput(input);
+          latch = false;
           break;
         case STILL:
         default:
+          if (!latch) {
+            m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
+            latch = true;
+          }
           m_climber.holdClimber();
           break;
       }
