@@ -18,13 +18,12 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.auto.TwoBallAutoDefense;
+import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
-import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
@@ -109,7 +108,7 @@ public class RobotContainer {
         "Individual Three Ball Auto",
         new IndividualThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-   
+
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
     m_autoChooser.addOption(
         "Post Two Ball Intake",

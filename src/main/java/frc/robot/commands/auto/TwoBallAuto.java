@@ -53,7 +53,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Simple", Units.feetToMeters(8), Units.feetToMeters(6), true);
+        PathPlanner.loadPath(
+            "TwoBallAuto-Simple", Units.feetToMeters(8), Units.feetToMeters(6), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
@@ -91,8 +92,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
-       // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-       // new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+    // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+    // new SetAndHoldRpmSetpoint(flywheel, vision, 0));
     //    new SchedulePostAutoCommand(.
     //         driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
