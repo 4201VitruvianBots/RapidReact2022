@@ -35,7 +35,7 @@ public class LogShootingInfo extends CommandBase {
   @Override
   public void initialize() {
     try {
-      File logFile = new File("frc/shooter_log/" + m_flywheel.getTestingSessionName() + "/shooter_log_" + Timer.getFPGATimestamp() + ".csv");
+      File logFile = new File("/home/lvuser/frc/shooter_log/" + m_flywheel.getTestingSessionName() + "/shooter_log_" + Timer.getFPGATimestamp() + ".csv");
       logFile.createNewFile();
       m_logWriter = new FileWriter(logFile);
     } catch (IOException e) {
@@ -48,7 +48,7 @@ public class LogShootingInfo extends CommandBase {
   @Override
   public void execute() {
     try {
-      m_logWriter.write(m_flywheel.getRPM(0) + "," + m_flywheel.getRPM(1) + "," + m_flywheel.getSetpointRPM() + "," + m_indexer.getIndexerOutput() + "," + m_indexer.getKickerOutput());
+      m_logWriter.write(m_flywheel.getRPM(0) + "," + m_flywheel.getRPM(1) + "," + m_flywheel.getSetpointRPM() + "," + m_indexer.getIndexerOutput() + "," + m_indexer.getKickerOutput() + "\n");
     } catch (IOException e) {
       return;
     }

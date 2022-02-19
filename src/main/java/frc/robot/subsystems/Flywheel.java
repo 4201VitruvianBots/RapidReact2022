@@ -49,7 +49,7 @@ public class Flywheel extends SubsystemBase {
   private boolean timerStart;
   private double timestamp;
 
-  private int testingSession = -1; // Gets incremented to 0 on the first loop 
+  private int testingSession = 0;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
@@ -200,13 +200,18 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateTestingSession() {
-    testingSession++;
-    Path path = Paths.get(getTestingSessionName());
-    try {
-      Files.createDirectories(path);
-    } catch (Exception e) {
-      return;
+    boolean exists = true;
+    while (exists) {
+      File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
+      try {
+        exists = path.mkdirs();
+      } catch (Exception e) {
+        throw e;
+      }
+      testingSession++;
     }
+    testingSession--;
+
   }
 
   @Override
