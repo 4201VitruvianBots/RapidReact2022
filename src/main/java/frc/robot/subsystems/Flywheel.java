@@ -42,7 +42,7 @@ public class Flywheel extends SubsystemBase {
   private double flywheelSetpointRPM;
   private boolean canShoot;
   private double idealRPM;
-  private boolean timerStart;
+  private boolean timerStart = false;
   private double timestamp;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
@@ -119,8 +119,13 @@ public class Flywheel extends SubsystemBase {
 
       double nextVoltage = m_loop.getU(0) + 0.25;
 
-      setPower(nextVoltage / 12.0);
-    } else {
+        if(timestamp <= 0.5 && timestamp > 0.3){
+        setPower(nextVoltage / 12.0);  
+        }
+        else 
+       setPower(nextVoltage / 12.0);
+      }
+     else {
       setPower(0);
     }
   }
@@ -190,18 +195,17 @@ public class Flywheel extends SubsystemBase {
     updateRPMSetpoint();
     updateShuffleboard();
 
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())
-        && m_vision.getGoalValidTarget()
-        && (Math.abs(m_vision.getGoalTargetXAngle()) < 1)
-        && !timerStart) {
-      timerStart = true;
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)){
+      timerStart = true; 
       timestamp = Timer.getFPGATimestamp();
-    } else if (((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance())
-            || !m_vision.getGoalValidTarget()
-            || (Math.abs(m_vision.getGoalTargetXAngle()) > 1))
-        && (timerStart)) {
+    }
+    else if(timestamp > 0.5){
+    timestamp = 0;
+    timestamp = Timer.getFPGATimestamp();
+    }
+    else{
       timestamp = 0;
-      timerStart = false;
+      timerStart = false; 
     }
 
     if (timestamp != 0) {
@@ -210,6 +214,7 @@ public class Flywheel extends SubsystemBase {
 
     } else canShoot = false;
   }
+  
 
   @Override
   public void simulationPeriodic() {
