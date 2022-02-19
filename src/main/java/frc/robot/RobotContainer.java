@@ -18,6 +18,7 @@ import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -159,6 +160,8 @@ public class RobotContainer {
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
 
+    xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
+
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
     // xBoxButtons[6].whenPressed(new SetClimbState(m_climber, true));
@@ -206,6 +209,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
@@ -219,6 +223,7 @@ public class RobotContainer {
       m_driveTrain.resetOdometry(
           m_driveTrain.getRobotPoseMeters(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
+      m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     } else {
       m_fieldSim.initSim();
       m_driveTrain.resetEncoderCounts();

@@ -36,21 +36,28 @@ public final class Constants {
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
-    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 10;
-    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 11;
+    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 2;
+    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 3;
   }
 
   public final class Climber {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
 
+    public static final int climberLowerLimitOverrideID = 9;
+    public static final int climberUpperLimitOverrideID = 8;
+
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
+
+    public static final double climberUpperLimit = 205_000.0;
+    public static final double climberLowerLimit = 0.0;
   }
 
   public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
+
     public static final int indexerRearSensor = 1; // Rear = closer to shooter
     public static final int indexerFrontSensor = 2; // Front = closer to intake
     public static final int colorSensorFront = 2;
@@ -103,7 +110,8 @@ public final class Constants {
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
-        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear ratio
+        // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
+        // ratio
         (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
