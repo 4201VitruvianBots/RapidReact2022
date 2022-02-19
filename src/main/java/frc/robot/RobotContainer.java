@@ -25,7 +25,6 @@ import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.ColorSensor;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
@@ -164,8 +163,9 @@ public class RobotContainer {
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
-    m_indexer.setDefaultCommand(
-        new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxRightTrigger.get()));
+    // m_indexer.setDefaultCommand(
+    //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+    // xBoxRightTrigger.get()));
     m_led.setDefaultCommand(
         new GetSubsystemStates(m_led, m_intake, m_vision, m_flywheel, m_climber));
   }
