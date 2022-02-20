@@ -22,8 +22,10 @@ import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
+import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.flywheel.LogShootingInfo;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
@@ -134,6 +136,8 @@ public class RobotContainer {
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    rightButtons[1].whileHeld(
+            new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
     xBoxLeftTrigger =
         new Button(

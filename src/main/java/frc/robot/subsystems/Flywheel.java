@@ -6,11 +6,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Flywheel.*;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -33,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
+import java.io.File;
 
 /** Creates a new Flywheel. */
 public class Flywheel extends SubsystemBase {
@@ -48,6 +44,7 @@ public class Flywheel extends SubsystemBase {
   private boolean canShoot;
   private double idealRPM;
   private boolean timerStart = false;
+  private Timer timer = new Timer();
   private double timestamp;
 
   private int testingSession = 0;
@@ -111,9 +108,25 @@ public class Flywheel extends SubsystemBase {
     return flywheelSetpointRPM;
   }
 
+  public void updateCanShoot() {
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+      timerStart = true;
+      timer.reset();
+      timer.start();
+    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+      timerStart = false;
+      timer.reset();
+      timer.stop();
+      canShoot = false;
+    }
+
+    if (timer.get() > 0.1) {
+      canShoot = true;
+    }
+  }
+
   public boolean canShoot() {
-    return (
-    /*Math.abs(getRPM(0) - getSetpointRPM()) <= 300) &&*/ getSetpointRPM() > 0);
+    return canShoot;
   }
 
   /** flywheelSetpoint if setpoint else setPower to 0 */
@@ -127,13 +140,10 @@ public class Flywheel extends SubsystemBase {
 
       double nextVoltage = m_loop.getU(0) + 0.25;
 
-        if(timestamp <= 0.5 && timestamp > 0.4){
-        setPower(nextVoltage / 12.0);  
-        }
-        else 
-       setPower(nextVoltage / 12.0);
-      }
-     else {
+      if (timestamp <= 0.5 && timestamp > 0.4) {
+        setPower(nextVoltage / 12.0);
+      } else setPower(nextVoltage / 12.0);
+    } else {
       setPower(0);
     }
   }
@@ -199,7 +209,7 @@ public class Flywheel extends SubsystemBase {
 
   /**
    * Returns the session name used for shooter logs.
-   * 
+   *
    * @return The session name
    */
   public String getTestingSessionName() {
@@ -218,35 +228,15 @@ public class Flywheel extends SubsystemBase {
       testingSession++;
     }
     testingSession--;
-
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateRPMSetpoint();
+    updateCanShoot();
     updateShuffleboard();
-
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)){
-      timerStart = true; 
-      timestamp = Timer.getFPGATimestamp();
-    }
-    else if(timestamp > 0.5){
-    timestamp = 0;
-    timestamp = Timer.getFPGATimestamp();
-    }
-    else{
-      timestamp = 0;
-      timerStart = false; 
-    }
-
-    if (timestamp != 0) {
-
-      canShoot = Math.abs(Timer.getFPGATimestamp() - timestamp) > 0.6;
-
-    } else canShoot = false;
   }
-  
 
   @Override
   public void simulationPeriodic() {

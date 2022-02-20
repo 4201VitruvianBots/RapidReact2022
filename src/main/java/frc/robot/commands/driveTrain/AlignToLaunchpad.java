@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
-
 import java.util.function.DoubleSupplier;
 
 public class AlignToLaunchpad extends CommandBase {
@@ -36,14 +35,14 @@ public class AlignToLaunchpad extends CommandBase {
     this.m_turn = turn;
     addRequirements(this.m_driveTrain);
     addRequirements(this.m_vision);
-
-    m_vision.setIntakeTrackingType(Constants.Vision.INTAKE_TRACKING_TYPE.LAUNCHPAD);
-    m_vision.setIntakeTargetLock(true);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_vision.setIntakeTrackingType(Constants.Vision.INTAKE_TRACKING_TYPE.LAUNCHPAD);
+    m_vision.setIntakeTargetLock(true);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

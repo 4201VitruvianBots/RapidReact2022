@@ -63,7 +63,7 @@ public class Vision extends SubsystemBase {
    * @return true: Goal Camera has a target. false: Goal Camera does not have a target.
    */
   public boolean getGoalValidTarget() {
-    return goal_camera.getEntry("tv").getBoolean(false);
+    return goal_camera.getEntry("tv").getDouble(0) == 1;
   }
 
   /**
@@ -73,7 +73,7 @@ public class Vision extends SubsystemBase {
    *     used for distance calculations.
    */
   public boolean getGoalGoodTarget() {
-    return goal_camera.getEntry("tv").getBoolean(false);
+    return goal_camera.getEntry("tg").getDouble(0) == 1;
   }
 
   /**
@@ -200,18 +200,12 @@ public class Vision extends SubsystemBase {
     intake_camera.getEntry("blue_counter_offset").setDouble(blue_offset);
   }
 
-  /** Sets the category of objects the intake should track.
-   *  0: Cargo
-   *  1: Launchpads
-   * */
-  public void setIntakeTrackingType(INTAKE_TRACKING_TYPE type){
+  /** Sets the category of objects the intake should track. 0: Cargo 1: Launchpads */
+  public void setIntakeTrackingType(INTAKE_TRACKING_TYPE type) {
     SmartDashboardTab.putNumber("Vision", "intake_tracking_type", type.ordinal());
   }
-  /** Sets the category of objects the intake should track.
-   *  0: Cargo
-   *  1: Launchpads
-   * */
-  public void setIntakeTargetLock(boolean state){
+  /** Sets the category of objects the intake should track. 0: Cargo 1: Launchpads */
+  public void setIntakeTargetLock(boolean state) {
     SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
   }
 

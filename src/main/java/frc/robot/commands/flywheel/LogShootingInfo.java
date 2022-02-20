@@ -4,19 +4,19 @@
 
 package frc.robot.commands.flywheel;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Flywheel;
-
+import frc.robot.subsystems.Indexer;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import edu.wpi.first.wpilibj.Timer;
 
 /** Logs shooter and indexer information to a log file. */
 public class LogShootingInfo extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Flywheel m_flywheel;
+
   private final Indexer m_indexer;
   private FileWriter m_logWriter;
 
@@ -35,7 +35,13 @@ public class LogShootingInfo extends CommandBase {
   @Override
   public void initialize() {
     try {
-      File logFile = new File("/home/lvuser/frc/shooter_log/" + m_flywheel.getTestingSessionName() + "/shooter_log_" + Timer.getFPGATimestamp() + ".csv");
+      File logFile =
+          new File(
+              "/home/lvuser/frc/shooter_log/"
+                  + m_flywheel.getTestingSessionName()
+                  + "/shooter_log_"
+                  + Timer.getFPGATimestamp()
+                  + ".csv");
       logFile.createNewFile();
       m_logWriter = new FileWriter(logFile);
     } catch (IOException e) {
@@ -48,7 +54,17 @@ public class LogShootingInfo extends CommandBase {
   @Override
   public void execute() {
     try {
-      m_logWriter.write(m_flywheel.getRPM(0) + "," + m_flywheel.getRPM(1) + "," + m_flywheel.getSetpointRPM() + "," + m_indexer.getIndexerOutput() + "," + m_indexer.getKickerOutput() + "\n");
+      m_logWriter.write(
+          m_flywheel.getRPM(0)
+              + ","
+              + m_flywheel.getRPM(1)
+              + ","
+              + m_flywheel.getSetpointRPM()
+              + ","
+              + m_indexer.getIndexerOutput()
+              + ","
+              + m_indexer.getKickerOutput()
+              + "\n");
     } catch (IOException e) {
       return;
     }
@@ -58,13 +74,13 @@ public class LogShootingInfo extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     if (interrupted)
-    try {
-      m_logWriter.close();
-    } catch (IOException e) {
-      return;
-    } catch (NullPointerException e ) { // If file could not be created
-      return;
-    }
+      try {
+        m_logWriter.close();
+      } catch (IOException e) {
+        return;
+      } catch (NullPointerException e) { // If file could not be created
+        return;
+      }
   }
 
   // Returns true when the command should end.
