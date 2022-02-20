@@ -75,9 +75,6 @@ public class Flywheel extends SubsystemBase {
   private final LinearSystemLoop<N1, N1, N1> m_loop =
       new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
 
-  private final SimpleMotorFeedforward feedforward =
-      new SimpleMotorFeedforward(kFlywheelKs, kFlywheelKv, kFlywheelKa);
-
   public Flywheel(Vision vision) {
     // Setup shooter motors (Falcons)
     for (TalonFX flywheelMotor : flywheelMotors) {
@@ -92,7 +89,7 @@ public class Flywheel extends SubsystemBase {
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
-    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
+    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.020);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
   public void setPower(double output) {
@@ -138,7 +135,7 @@ public class Flywheel extends SubsystemBase {
 
       m_loop.predict(0.020);
 
-      double nextVoltage = m_loop.getU(0) + 0.25;
+      double nextVoltage = m_loop.getU(0) + kFlywheelKs;
 
       if (timestamp <= 0.5 && timestamp > 0.4) {
         setPower(nextVoltage / 12.0);
@@ -196,10 +193,7 @@ public class Flywheel extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber(
-          "RPM", flywheelMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
-
-      SmartDashboardTab.putNumber("Flywheel", "RPMPrimary", getRPM(0));
+      SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSecondary", getRPM(1));
       SmartDashboard.putNumber("RPMOutput", rpmOutput);
       SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
