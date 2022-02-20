@@ -4,10 +4,11 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Flywheel.gearRatio;
+import static frc.robot.Constants.Turret.gearRatio;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -38,6 +39,7 @@ public class Turret extends SubsystemBase {
     turretMotor.configFactoryDefault();
     turretMotor.setInverted(true);
     turretMotor.setNeutralMode(NeutralMode.Brake);
+    turretMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
     turretMotor.configVoltageCompSaturation(12.0);
     turretMotor.config_kP(0, kF);
     turretMotor.config_kP(0, kP);
@@ -166,6 +168,7 @@ public class Turret extends SubsystemBase {
     if (RobotBase.isReal()) {
       SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngle());
       SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
+      SmartDashboardTab.putNumber("Turret", "Control Mode", getControlMode().ordinal());
     }
   }
 

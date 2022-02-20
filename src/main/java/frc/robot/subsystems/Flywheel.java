@@ -104,20 +104,25 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
-      timerStart = true;
-      timer.reset();
-      timer.start();
-    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
-      timerStart = false;
-      timer.reset();
-      timer.stop();
-      canShoot = false;
-    }
-
-    if (timer.get() > 0.1) {
+//    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+//      timerStart = true;
+//      timer.reset();
+//      timer.start();
+//    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+//      timerStart = false;
+//      timer.reset();
+//      timer.stop();
+//      canShoot = false;
+//    }
+//
+//    if (timer.get() > 0.1) {
+//      canShoot = true;
+//    }
+//    if(m_vision.getGoalValidTarget() && Math.abs(m_vision.getGoalTargetXAngle()) < 1){
       canShoot = true;
-    }
+//    } else {
+//      canShoot = false
+//    }
   }
 
   public boolean canShoot() {
