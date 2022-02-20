@@ -151,11 +151,6 @@ public class RobotContainer {
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
-    // xBoxButtons[4].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 45));
-    // xBoxButtons[5].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, 90));
-    // xBoxButtons[6].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -45));
-    // xBoxButtons[7].whileHeld(new SetTurretAbsoluteSetpointDegrees(m_turret, -90));
-
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
