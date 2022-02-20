@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.Flywheel.gearRatio;
 import static frc.robot.Constants.Turret.*;
 
-import com.ctre.phoenix.motorcontrol.*;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -163,11 +165,7 @@ public class Turret extends SubsystemBase {
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngle());
-
       SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
-      //      SmartDashboard.putNumber("Turret Error", turretMotor.getClosedLoopError());
-      //      SmartDashboard.putNumber("Turret Victor Angle",
-      // turretMotor.getSelectedSensorPosition());
     }
   }
 

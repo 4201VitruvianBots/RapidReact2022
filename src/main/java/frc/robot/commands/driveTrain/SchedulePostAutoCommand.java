@@ -5,44 +5,42 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.commands.climber;
+package frc.robot.commands.driveTrain;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.DriveTrain;
 
-/** Raises/lowers the climber based on joystick input */
-public class SetClimbState extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
-  private Climber m_climber;
-
-  private boolean m_state;
+/** Schedules a {@link Command} to run upon teleop */
+public class SchedulePostAutoCommand extends CommandBase {
+  private final DriveTrain m_driveTrain;
+  private final Command m_command;
 
   /**
-   * Creates a new SetClimberOutput.
+   * Schedules a {@link Command} to run upon teleop
    *
-   * @param climber The climber used by this command.
-   * @param state The climb state to use
+   * @param driveTrain The drivetrain used by this command
+   * @param command The command to run
    */
-  public SetClimbState(Climber climber, boolean state) {
-    m_climber = climber;
-    m_state = state;
-
+  public SchedulePostAutoCommand(DriveTrain driveTrain, Command command) {
+    m_driveTrain = driveTrain;
+    m_command = command;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_climber.setElevatorClimbState(m_state);
+    m_driveTrain.setPostAutoCommand(m_command);
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(final boolean interrupted) {}
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

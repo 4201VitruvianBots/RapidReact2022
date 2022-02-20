@@ -53,13 +53,14 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath(
+            "TwoBallAuto-Simple", Units.feetToMeters(8), Units.feetToMeters(6), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(2.5), Units.feetToMeters(2), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
@@ -72,23 +73,28 @@ public class TwoBallAuto extends SequentialCommandGroup {
      */
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)
             // TODO implement indexer
             ),
+        new RunIntake(intake, indexer).withTimeout(1),
+        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
-        new IntakePiston(intake, false),
         new ConditionalCommand(
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+    // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+    // new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+    //    new SchedulePostAutoCommand(.
+    //         driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
 }
