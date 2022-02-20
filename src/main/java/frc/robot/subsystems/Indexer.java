@@ -107,7 +107,7 @@ public class Indexer extends SubsystemBase {
   public double getKickerOutput() {
     return kickerMotor.getMotorOutputPercent();
   }
-  
+
   /*
    * rear sensor tripped status
    *
