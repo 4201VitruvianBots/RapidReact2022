@@ -91,6 +91,24 @@ public class Indexer extends SubsystemBase {
   }
 
   /**
+   * Gets the percent output of the indexer motor.
+   *
+   * @return the percent output of the indexer motor.
+   */
+  public double getIndexerOutput() {
+    return indexerMotor.getMotorOutputPercent();
+  }
+
+  /**
+   * Gets the percent output of the kicker motor.
+   *
+   * @return the percent output of the kicker motor.
+   */
+  public double getKickerOutput() {
+    return kickerMotor.getMotorOutputPercent();
+  }
+  
+  /*
    * rear sensor tripped status
    *
    * @return boolean

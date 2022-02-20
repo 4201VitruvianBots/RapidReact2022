@@ -66,15 +66,10 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
             >= Math.pow(deadZone, 2)) {
           // m_vision.setGoalCameraLedState(true);
           joystickMoved = true;
-          // if the movement of left joystick is greater than zero, set the setpoint with that value
-          // but negative
-          // if (m_controller.getRawAxis(0) >= 0)
+
+          // Convert joystick axis values to degrees setpoint
           setpoint =
               Math.toDegrees(Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
-          // else
-          //   setpoint =
-          //       Math.toDegrees(Math.atan2(m_controller.getRawAxis(1),
-          // m_controller.getRawAxis(0)));
 
           //// if vision has a target and the absolute value of the target is less than 20, make the
           // controller rumble
@@ -90,13 +85,13 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // if we are not turning, set leds to on and make the setpoint the turret angle combined
           // with vision targetx
           if (!turning) {
-            // m_vision.setGoalCameraLedState(true);
+            m_vision.setGoalCameraLedState(true);
             setpoint = m_turret.getTurretAngle() + m_vision.getGoalTargetXAngle();
           }
           // if we are turning, set the led off and if the turret is on target, set turning
           // (variable) to false
           else {
-            // m_vision.setGoalCameraLedState(false);
+            m_vision.setGoalCameraLedState(false);
             if (m_turret.onTarget()) turning = false;
           }
         }
