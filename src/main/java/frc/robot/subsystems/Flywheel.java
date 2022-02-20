@@ -15,7 +15,6 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
@@ -27,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
+import java.io.File;
 
 /** Creates a new Flywheel. */
 public class Flywheel extends SubsystemBase {
@@ -41,8 +41,11 @@ public class Flywheel extends SubsystemBase {
   private double flywheelSetpointRPM;
   private boolean canShoot;
   private double idealRPM;
-  private boolean timerStart;
+  private boolean timerStart = false;
+  private Timer timer = new Timer();
   private double timestamp;
+
+  private int testingSession = 0;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
@@ -70,9 +73,6 @@ public class Flywheel extends SubsystemBase {
   private final LinearSystemLoop<N1, N1, N1> m_loop =
       new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
 
-  private final SimpleMotorFeedforward feedforward =
-      new SimpleMotorFeedforward(kFlywheelKs, kFlywheelKv, kFlywheelKa);
-
   public Flywheel(Vision vision) {
     // Setup shooter motors (Falcons)
     for (TalonFX flywheelMotor : flywheelMotors) {
@@ -82,12 +82,12 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configVoltageCompSaturation(12);
       flywheelMotor.enableVoltageCompensation(true);
     }
-    flywheelMotors[0].setInverted(true);
-    flywheelMotors[1].setInverted(false);
+    flywheelMotors[0].setInverted(false);
+    flywheelMotors[1].setInverted(true);
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
-    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
+    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.020);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
   public void setPower(double output) {
@@ -103,8 +103,25 @@ public class Flywheel extends SubsystemBase {
     return flywheelSetpointRPM;
   }
 
+  public void updateCanShoot() {
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+      timerStart = true;
+      timer.reset();
+      timer.start();
+    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+      timerStart = false;
+      timer.reset();
+      timer.stop();
+      canShoot = false;
+    }
+
+    if (timer.get() > 0.1) {
+      canShoot = true;
+    }
+  }
+
   public boolean canShoot() {
-    return (Math.abs(getRPM(0) - getSetpointRPM()) <= 50) && getSetpointRPM() > 0;
+    return canShoot;
   }
 
   /** flywheelSetpoint if setpoint else setPower to 0 */
@@ -116,9 +133,11 @@ public class Flywheel extends SubsystemBase {
 
       m_loop.predict(0.020);
 
-      double nextVoltage = m_loop.getU(0) + 0.25;
+      double nextVoltage = m_loop.getU(0) + kFlywheelKs;
 
-      setPower(nextVoltage / 12.0);
+      if (timestamp <= 0.5 && timestamp > 0.4) {
+        setPower(nextVoltage / 12.0);
+      } else setPower(nextVoltage / 12.0);
     } else {
       setPower(0);
     }
@@ -172,9 +191,6 @@ public class Flywheel extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber(
-          "RPM", flywheelMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
-
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSecondary", getRPM(1));
       SmartDashboard.putNumber("RPMOutput", rpmOutput);
@@ -183,31 +199,36 @@ public class Flywheel extends SubsystemBase {
     }
   }
 
+  /**
+   * Returns the session name used for shooter logs.
+   *
+   * @return The session name
+   */
+  public String getTestingSessionName() {
+    return "session" + testingSession;
+  }
+
+  public void updateTestingSession() {
+    boolean success = false;
+    try {
+      while (!success) {
+        File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
+        success = path.mkdirs();
+        testingSession++;
+      }
+      testingSession--;
+
+    } catch (Exception e) {
+
+    }
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateRPMSetpoint();
+    updateCanShoot();
     updateShuffleboard();
-
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance())
-        && m_vision.getGoalValidTarget()
-        && (Math.abs(m_vision.getGoalTargetXAngle()) < 1)
-        && !timerStart) {
-      timerStart = true;
-      timestamp = Timer.getFPGATimestamp();
-    } else if (((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance())
-            || !m_vision.getGoalValidTarget()
-            || (Math.abs(m_vision.getGoalTargetXAngle()) > 1))
-        && (timerStart)) {
-      timestamp = 0;
-      timerStart = false;
-    }
-
-    if (timestamp != 0) {
-
-      canShoot = Math.abs(Timer.getFPGATimestamp() - timestamp) > 0.6;
-
-    } else canShoot = false;
   }
 
   @Override

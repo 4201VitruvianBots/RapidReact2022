@@ -189,16 +189,16 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
-    public static final double kFlywheelKs = 0.53456; // 0.63348; // Jamgo: 0.53456;
-    public static final double kFlywheelKv = 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
-    public static final double kFlywheelKa = 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
+    public static final double kFlywheelKs = 0;
+    public static final double kFlywheelKv = 0.02001;
+    public static final double kFlywheelKa = 0.002995;
 
-    public static final double rpmTolerance = 25.0;
+    public static final double rpmTolerance = 10.0;
 
-    public static final double gearRatio = 1.0; // 2.0 / 3.0;
+    public static final double gearRatio = 1.0;
   }
 
-  public final class Turret {
+  public static final class Turret {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
 
@@ -211,25 +211,24 @@ public final class Constants {
 
     public static final double kF = 0.07;
     // public static final double kP = 7.28E-05;
-    public static final double kP = 0.2;
-    public static final double kI = 0.0015;
+    public static final double kP = 0.1;
+    public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
     public static final double kErrorBand = 50;
     public static final double kI_Zone = 900;
     public static final double kMaxIAccum = 1000000;
-    public static final double kCruiseVelocity = 8000;
-    public static final double kMotionAcceleration = kCruiseVelocity * 10;
+    public static final double kCruiseVelocity = 18000;
+    public static final double kMotionAcceleration = 12000;
 
     public static final double kS = 0.83016; // 0.81464;
     public static final double kV = 0.012184; // 0.16822;
     public static final double kA = 0.00036802; // 0.011642;
 
     public static final double degreeTolerance = 1.0;
+    public static final double degreesPerSecondTolerance = 10.0;
 
-    public static final double canCoderToTurretGearRatio = 120.0 / 18.0;
-
-    public static final double toTurretGearRatio = 27.0 / 1.0;
+    public static final double gearRatio = 10.625 * 3.75;
   }
 
   public static final class Vision {
@@ -237,6 +236,11 @@ public final class Constants {
       OAK,
       LIMELIGHT,
       PHOTONVISION
+    }
+
+    public enum INTAKE_TRACKING_TYPE {
+      CARGO,
+      LAUNCHPAD
     }
 
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
