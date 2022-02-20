@@ -85,14 +85,13 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // if we are not turning, set leds to on and make the setpoint the turret angle combined
           // with vision targetx
           if (!turning) {
-            // m_vision.setGoalCameraLedState(true);
+            m_vision.setGoalCameraLedState(true);
             setpoint = m_turret.getTurretAngle() + m_vision.getGoalTargetXAngle();
-//            System.out.println("Setpoint: " + setpoint);
           }
           // if we are turning, set the led off and if the turret is on target, set turning
           // (variable) to false
           else {
-            // m_vision.setGoalCameraLedState(false);
+            m_vision.setGoalCameraLedState(false);
             if (m_turret.onTarget()) turning = false;
           }
         }
