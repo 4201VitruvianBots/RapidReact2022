@@ -33,7 +33,7 @@ public final class Constants {
   public static final class Pneumatics {
     public static final int pcmOne = 11;
     public static final PneumaticsModuleType pcmType =
-        PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
+        PneumaticsModuleType.REVPH; // CTREPCM, REVPH
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
@@ -180,20 +180,13 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
-    public static final double kFlywheelKs =
-        0.57844; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
+    public static final double kFlywheelKs = 0;
+    public static final double kFlywheelKv = 0.02001;
+    public static final double kFlywheelKa = 0.002995;
 
-    // Volts per (radian per second)
-    public static final double kFlywheelKv =
-        0.016957; // old flywheel: 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
+    public static final double rpmTolerance = 10.0;
 
-    // Volts per (radian per second squared)
-    public static final double kFlywheelKa =
-        0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
-
-    public static final double rpmTolerance = 25.0;
-
-    public static final double gearRatio = 1.0; // 2.0 / 3.0;
+    public static final double gearRatio = 1.0;
   }
 
   public static final class Turret {

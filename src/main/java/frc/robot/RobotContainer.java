@@ -145,8 +145,8 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2700)); // 2300
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 6000)); // 2900
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1720)); // 2300
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3500)); // 2900
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
@@ -162,7 +162,7 @@ public class RobotContainer {
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
-    xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
+    // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[9].whileHeld(new SetClimbState(m_climber, true));
 
@@ -203,7 +203,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
-    m_flywheel.updateTestingSession();
+    //m_flywheel.updateTestingSession();
   }
 
   public void teleopPeriodic() {}
