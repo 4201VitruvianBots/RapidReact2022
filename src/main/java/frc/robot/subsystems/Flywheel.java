@@ -207,18 +207,19 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateTestingSession() {
-    boolean exists = true;
-    while (exists) {
-      File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
-      try {
-        exists = path.mkdirs();
-      } catch (Exception e) {
-        throw e;
+    boolean success = false;
+    try {
+      while (!success) {
+        File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
+        success = path.mkdirs();
+        testingSession++;
       }
-      testingSession++;
+      testingSession--;
+  
+    } catch (Exception e) {
+      
     }
-    testingSession--;
-
+    
   }
 
   @Override
