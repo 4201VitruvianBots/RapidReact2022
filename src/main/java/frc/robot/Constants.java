@@ -33,7 +33,7 @@ public final class Constants {
   public static final class Pneumatics {
     public static final int pcmOne = 11;
     public static final PneumaticsModuleType pcmType =
-        PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
+        PneumaticsModuleType.REVPH; // CTREPCM, REVPH
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
@@ -208,15 +208,15 @@ public final class Constants {
 
     public static final double kF = 0.07;
     // public static final double kP = 7.28E-05;
-    public static final double kP = 0.2;
-    public static final double kI = 0.0015;
+    public static final double kP = 0.1;
+    public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
     public static final double kErrorBand = 50;
     public static final double kI_Zone = 900;
     public static final double kMaxIAccum = 1000000;
-    public static final double kCruiseVelocity = 8000;
-    public static final double kMotionAcceleration = kCruiseVelocity * 10;
+    public static final double kCruiseVelocity = 18000;
+    public static final double kMotionAcceleration = 12000;
 
     public static final double kS = 0.83016; // 0.81464;
     public static final double kV = 0.012184; // 0.16822;
@@ -233,6 +233,11 @@ public final class Constants {
       OAK,
       LIMELIGHT,
       PHOTONVISION
+    }
+
+    public enum INTAKE_TRACKING_TYPE {
+      CARGO,
+      LAUNCHPAD
     }
 
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;

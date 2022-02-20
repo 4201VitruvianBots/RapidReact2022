@@ -22,6 +22,7 @@ import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
+import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveBackwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.LogShootingInfo;
@@ -135,6 +136,8 @@ public class RobotContainer {
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    rightButtons[1].whileHeld(
+            new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
     xBoxLeftTrigger =
         new Button(
@@ -142,7 +145,7 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2700)); // 2300
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2300)); // 2300
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 6000)); // 2900
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));

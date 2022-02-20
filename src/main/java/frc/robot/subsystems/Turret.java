@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CONTROL_MODE;
@@ -161,11 +162,12 @@ public class Turret extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("Turret Angle", getTurretAngle());
+      SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngle());
 
-      SmartDashboard.putNumber("Turret Setpoint", getTurretSetpointDegrees());
-      SmartDashboard.putNumber("Turret Error", turretMotor.getClosedLoopError());
-      SmartDashboard.putNumber("Turret Victor Angle", turretMotor.getSelectedSensorPosition());
+      SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
+      //      SmartDashboard.putNumber("Turret Error", turretMotor.getClosedLoopError());
+      //      SmartDashboard.putNumber("Turret Victor Angle",
+      // turretMotor.getSelectedSensorPosition());
     }
   }
 

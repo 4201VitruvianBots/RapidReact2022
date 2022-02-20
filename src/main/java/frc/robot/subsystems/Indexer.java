@@ -61,7 +61,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * Gets the percent output of the indexer motor.
-   * 
+   *
    * @return the percent output of the indexer motor.
    */
   public double getIndexerOutput() {
@@ -70,7 +70,7 @@ public class Indexer extends SubsystemBase {
 
   /**
    * Gets the percent output of the kicker motor.
-   * 
+   *
    * @return the percent output of the kicker motor.
    */
   public double getKickerOutput() {
