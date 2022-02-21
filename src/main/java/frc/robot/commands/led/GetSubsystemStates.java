@@ -9,22 +9,18 @@ import frc.robot.subsystems.*;
 
 /** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LED m_led;
 
   private final Vision m_vision;
   private final Intake m_intake;
-  private final Flywheel m_flywheel;
   private final Climber m_climber;
-  // private final Controls m_controls;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(
-      LED led, Intake intake, Vision vision, Flywheel flywheel, Climber climber) {
+  public GetSubsystemStates(LED led, Intake intake, Vision vision, Climber climber) {
     m_led = led;
     m_vision = vision;
     m_climber = climber;
-    m_flywheel = flywheel;
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(led);
@@ -41,7 +37,7 @@ public class GetSubsystemStates extends CommandBase {
   public void execute() {
     // the prioritized state to be expressed to the LEDs
     boolean Disabled = DriverStation.isDisabled();
-    boolean Enabled = true; // Reevaluate what is "Enabled"
+    boolean Enabled = !DriverStation.isDisabled();
     boolean Intaking = m_intake.getIntakeState();
     boolean VisionLock = m_vision.getGoalValidTarget();
     boolean Climbing = m_climber.getClimbState();
@@ -67,8 +63,7 @@ public class GetSubsystemStates extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
