@@ -112,8 +112,8 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         // if the shooter can shoot, set the rumble to 0.4 on both sides of the controller, else set
         // it to zero on both sides
         if (m_flywheel.canShoot()) {
-          m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
-          m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
+          // m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
+          // m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
         } else {
           m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
           m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0);

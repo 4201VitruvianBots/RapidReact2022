@@ -47,6 +47,10 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
+  private double kI = 0.00003;
+  private double errorSum = 0;
+  private double errorRange = 300;
+
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
 
@@ -93,6 +97,7 @@ public class Flywheel extends SubsystemBase {
   public void setPower(double output) {
     flywheelMotors[0].set(TalonFXControlMode.PercentOutput, output);
   }
+
   /** @param setpoint set to setpoint */
   public void setRPM(double flywheelSetpointRPM) {
     this.flywheelSetpointRPM = flywheelSetpointRPM;
@@ -133,11 +138,15 @@ public class Flywheel extends SubsystemBase {
 
       m_loop.predict(0.020);
 
-      double nextVoltage = m_loop.getU(0) + kFlywheelKs;
+      if(Math.abs(getSetpointRPM() - getRPM(0)) < errorRange) {
+        errorSum += getSetpointRPM() - getRPM(0);
+      } else {
+        errorSum = 0;
+      }
 
-      if (timestamp <= 0.5 && timestamp > 0.4) {
-        setPower(nextVoltage / 12.0);
-      } else setPower(nextVoltage / 12.0);
+      double nextVoltage = m_loop.getU(0) + kI * errorSum;
+      
+      setPower(nextVoltage / 11.0);
     } else {
       setPower(0);
     }
