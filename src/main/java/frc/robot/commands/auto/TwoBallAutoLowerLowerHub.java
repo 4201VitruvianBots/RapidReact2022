@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -12,10 +13,11 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
-import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
+import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
@@ -33,9 +35,7 @@ import frc.vitruvianlib.utils.TrajectoryUtils;
 public class TwoBallAutoLowerLowerHub extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
-   * Starting from the lower part of the field 
-   * 
-   * 
+   * Starting from upper part of the field.
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
    * @param intake Runs the intake to pick up new cargo.
@@ -58,10 +58,12 @@ public class TwoBallAutoLowerLowerHub extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Lower", Units.feetToMeters(8), Units.feetToMeters(9), true);
+        PathPlanner.loadPath("TwoBallAuto-Lower", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
+
+
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
@@ -73,20 +75,22 @@ public class TwoBallAutoLowerLowerHub extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
+        new SetTurretAbsoluteSetpointDegrees(turret, 5),
+        new WaitCommand(0.5),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new RunIntake(intake, indexer)
+            new AutoRunIntake(intake)
             // TODO implement indexer
             ),
-        new RunIntake(intake, indexer).withTimeout(1),
+        new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(4),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));

@@ -12,7 +12,9 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
@@ -27,7 +29,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
-public class GroupThreeBallAutoLowerHub extends SequentialCommandGroup {
+public class GroupThreeBallAuto extends SequentialCommandGroup {
   /**
    * Intakes one cargo, shoots two, then intakes and shoots a third cargo
    *
@@ -39,7 +41,7 @@ public class GroupThreeBallAutoLowerHub extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public GroupThreeBallAutoLowerHub(
+  public GroupThreeBallAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -80,29 +82,31 @@ public class GroupThreeBallAutoLowerHub extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
+        //TODO set turret angle 
+        new WaitCommand(.5),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new RunIntake(intake, indexer).withTimeout(1),
+        new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(1),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new RunIntake(intake, indexer).withTimeout(1),
+        new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
