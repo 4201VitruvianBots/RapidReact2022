@@ -193,7 +193,7 @@ public final class Constants {
     //    public static final double kFlywheelKv = 0.02001;
     //    public static final double kFlywheelKa = 0.002995;
     public static final double kFlywheelKs =
-        0.57844; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
+        0.25; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
 
     // Volts per (radian per second)
     public static final double kFlywheelKv =

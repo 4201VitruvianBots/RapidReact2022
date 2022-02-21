@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00003;
+  private double kI = 0;
   private double errorSum = 0;
   private double errorRange = 300;
 
