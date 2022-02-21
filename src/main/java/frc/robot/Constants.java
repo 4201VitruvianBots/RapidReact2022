@@ -189,11 +189,11 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
-    public static final double kFlywheelKs = 0;
+    public static final double kFlywheelKs = 0.65;
     public static final double kFlywheelKv = 0.02001;
     public static final double kFlywheelKa = 0.002995;
 
-    public static final double rpmTolerance = 10.0;
+    public static final double rpmTolerance = 1.0;
 
     public static final double gearRatio = 1.0;
   }

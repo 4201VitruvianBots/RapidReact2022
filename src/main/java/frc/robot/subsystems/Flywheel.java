@@ -22,7 +22,7 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -66,7 +66,7 @@ public class Flywheel extends SubsystemBase {
       new LinearQuadraticRegulator<>(
           m_flywheelPlant,
           VecBuilder.fill(Conversions.RpmToRadPerSec(rpmTolerance)), // Velocity error tolerance
-          VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+          VecBuilder.fill(11.0), // Control effort (voltage) tolerance
           0.020);
 
   // The state-space loop combines a controller, observer, feedforward and plant for easy control.
@@ -79,7 +79,7 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configFactoryDefault();
       flywheelMotor.setNeutralMode(NeutralMode.Coast);
       flywheelMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-      flywheelMotor.configVoltageCompSaturation(12);
+      flywheelMotor.configVoltageCompSaturation(11);
       flywheelMotor.enableVoltageCompensation(true);
     }
     flywheelMotors[0].setInverted(false);
@@ -191,11 +191,10 @@ public class Flywheel extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("RPMPrimary", getRPM(0));
-      SmartDashboard.putNumber("RPMSecondary", getRPM(1));
-      SmartDashboard.putNumber("RPMOutput", rpmOutput);
-      SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
-      SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
+      SmartDashboardTab.putNumber("Flywheel", "RPMPrimary", getRPM(0));
+      SmartDashboardTab.putNumber("Flywheel", "RPMSecondary", getRPM(1));
+      SmartDashboardTab.putNumber("Flywheel", "Power", flywheelMotors[0].getMotorOutputPercent());
+      SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint", flywheelSetpointRPM);
     }
   }
 
