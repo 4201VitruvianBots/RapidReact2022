@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -13,7 +14,6 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
@@ -29,7 +29,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
-public class GroupThreeBallAuto extends SequentialCommandGroup {
+public class GroupThreeBallAutoLowerHub extends SequentialCommandGroup {
   /**
    * Intakes one cargo, shoots two, then intakes and shoots a third cargo
    *
@@ -41,7 +41,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public GroupThreeBallAuto(
+  public GroupThreeBallAutoLowerHub(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -84,7 +84,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         //TODO set turret angle 
         new WaitCommand(.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
@@ -96,7 +96,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(1),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),

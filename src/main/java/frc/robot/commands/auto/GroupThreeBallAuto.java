@@ -1,6 +1,7 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
+
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -13,7 +14,6 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;

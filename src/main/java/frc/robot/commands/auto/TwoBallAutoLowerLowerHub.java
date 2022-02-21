@@ -35,7 +35,9 @@ import frc.vitruvianlib.utils.TrajectoryUtils;
 public class TwoBallAutoLowerLowerHub extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
-   * Starting from upper part of the field.
+   * Starting from the lower part of the field 
+   * 
+   * 
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
    * @param intake Runs the intake to pick up new cargo.

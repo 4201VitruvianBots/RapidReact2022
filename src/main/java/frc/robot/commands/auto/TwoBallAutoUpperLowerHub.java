@@ -28,12 +28,12 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Intakes one cargo and shoots two cargo into the high goal. 
+/** Intakes one cargo and shoots two cargo into the low goal. 
  * Starting from the upper part of the field.
  */
-public class TwoBallAutoUpper extends SequentialCommandGroup {
+public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
   /**
-   * Intakes one cargo and shoots two cargo into the high goal.
+   * Intakes one cargo and shoots two cargo into the low goal.
    * Starting from upper part of the field.
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -43,7 +43,7 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public TwoBallAutoUpper(
+  public TwoBallAutoUpperLowerHub(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -76,7 +76,7 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 5),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntake(intake)
