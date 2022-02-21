@@ -51,13 +51,15 @@ public class LED extends SubsystemBase {
     int ledCount = 296;
     switch (toChange) {
       case ColorFlow: // stripe of color flowing through the led strip
-        m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, ledCount, Direction.Forward);
+        m_toAnimate =
+            new ColorFlowAnimation(red, green, blue, white, speed, ledCount, Direction.Forward);
         break;
       case Fire: // red and orange leds flaming up and down the led strip
         m_toAnimate = new FireAnimation(0.5, 0.7, ledCount, 0.7, 0.5);
         break;
       case Larson: // a line bouncing back and forth with its width determined by size
-        m_toAnimate = new LarsonAnimation(red, green, blue, white, speed, ledCount, BounceMode.Front, 7);
+        m_toAnimate =
+            new LarsonAnimation(red, green, blue, white, speed, ledCount, BounceMode.Front, 7);
         break;
       case Rainbow: // neon cat type beat
         m_toAnimate = new RainbowAnimation(1, speed, ledCount);
@@ -72,11 +74,13 @@ public class LED extends SubsystemBase {
         m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, ledCount);
         break;
       case Twinkle: // random leds turning on and off with certain color
-        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, ledCount, TwinklePercent.Percent6);
+        m_toAnimate =
+            new TwinkleAnimation(red, green, blue, white, speed, ledCount, TwinklePercent.Percent6);
         break;
       case TwinkleOff: // twinkle in reverse
-        m_toAnimate = new TwinkleOffAnimation(
-            red, green, blue, white, speed, ledCount, TwinkleOffPercent.Percent100);
+        m_toAnimate =
+            new TwinkleOffAnimation(
+                red, green, blue, white, speed, ledCount, TwinkleOffPercent.Percent100);
         break;
       case Solid:
         this.red = red;
@@ -87,11 +91,11 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-//     if (m_toAnimate == null) {
-//       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
-//     } else {
-//       System.out.println("Changed to " + toChange);
-//     }
+    //     if (m_toAnimate == null) {
+    //       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
+    //     } else {
+    //       System.out.println("Changed to " + toChange);
+    //     }
   }
 
   /**

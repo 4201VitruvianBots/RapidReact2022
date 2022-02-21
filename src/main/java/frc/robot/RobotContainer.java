@@ -28,7 +28,7 @@ import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -162,7 +162,7 @@ public class RobotContainer {
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+    xBoxRightTrigger.whileHeld(new AutoRunIndexer(m_indexer, m_flywheel));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));

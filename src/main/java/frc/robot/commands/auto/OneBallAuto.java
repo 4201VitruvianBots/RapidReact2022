@@ -11,7 +11,7 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
@@ -60,7 +60,7 @@ public class OneBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(0.5),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(0.5),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal));
     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0));

@@ -12,7 +12,7 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
@@ -87,7 +87,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(1),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
@@ -100,7 +100,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
