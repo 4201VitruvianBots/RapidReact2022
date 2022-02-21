@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.led.*;
-import com.ctre.phoenix.led.Animation;
-import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
 import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
@@ -19,13 +17,10 @@ import frc.robot.Constants;
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
-  private final int LedCount = 296;
-  private AnimationTypes m_currentAnimation;
-  private robotState currentRobotState;
   int red = 0;
   int green = 0;
   int blue = 0;
-
+  private robotState currentRobotState;
   private Animation m_toAnimate = null;
 
   public LED() {
@@ -34,8 +29,8 @@ public class LED extends SubsystemBase {
     CANdleConfiguration configAll = new CANdleConfiguration();
     configAll.statusLedOffWhenActive = true;
     configAll.disableWhenLOS = false;
-    configAll.stripType = LEDStripType.GRB;
-    configAll.brightnessScalar = 0.1;
+    configAll.stripType = LEDStripType.RGBW;
+    configAll.brightnessScalar = 0.1; // 0.1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
   }
@@ -52,40 +47,36 @@ public class LED extends SubsystemBase {
    */
   public void setPattern(
       int red, int green, int blue, int white, double speed, AnimationTypes toChange) {
-    m_currentAnimation = toChange;
 
+    int ledCount = 296;
     switch (toChange) {
-      case ColorFlow:
-        m_toAnimate =
-            new ColorFlowAnimation(red, green, blue, white, speed, LedCount, Direction.Forward);
+      case ColorFlow: // stripe of color flowing through the led strip
+        m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, ledCount, Direction.Forward);
         break;
-      case Fire:
-        m_toAnimate = new FireAnimation(0.5, 0.7, LedCount, 0.7, 0.5);
+      case Fire: // red and orange leds flaming up and down the led strip
+        m_toAnimate = new FireAnimation(0.5, 0.7, ledCount, 0.7, 0.5);
         break;
       case Larson: // a line bouncing back and forth with its width determined by size
-        m_toAnimate =
-            new LarsonAnimation(red, green, blue, white, 0.001, LedCount, BounceMode.Front, 1);
+        m_toAnimate = new LarsonAnimation(red, green, blue, white, speed, ledCount, BounceMode.Front, 7);
         break;
       case Rainbow: // neon cat type beat
-        m_toAnimate = new RainbowAnimation(1, speed, LedCount);
+        m_toAnimate = new RainbowAnimation(1, speed, ledCount);
         break;
       case RgbFade: // cycling between red, greed, and blue
-        m_toAnimate = new RgbFadeAnimation(1, speed, LedCount);
+        m_toAnimate = new RgbFadeAnimation(1, speed, ledCount);
         break;
-      case SingleFade:
-        m_toAnimate = new SingleFadeAnimation(red, green, blue, white, speed, LedCount);
+      case SingleFade: // slowly turn all leds from solid color to off
+        m_toAnimate = new SingleFadeAnimation(red, green, blue, white, speed, ledCount);
         break;
-      case Strobe: // ahhhhhhhhhhhhhh
-        m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, LedCount);
+      case Strobe: // switching between solid color and full off at high speed
+        m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, ledCount);
         break;
-      case Twinkle:
-        m_toAnimate =
-            new TwinkleAnimation(red, green, blue, white, speed, LedCount, TwinklePercent.Percent6);
+      case Twinkle: // random leds turning on and off with certain color
+        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, ledCount, TwinklePercent.Percent6);
         break;
-      case TwinkleOff:
-        m_toAnimate =
-            new TwinkleOffAnimation(
-                red, green, blue, white, speed, LedCount, TwinkleOffPercent.Percent100);
+      case TwinkleOff: // twinkle in reverse
+        m_toAnimate = new TwinkleOffAnimation(
+            red, green, blue, white, speed, ledCount, TwinkleOffPercent.Percent100);
         break;
       case Solid:
         this.red = red;
@@ -96,11 +87,11 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-    // if (m_toAnimate == null) {
-    //   System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
-    // } else {
-    //   System.out.println("Changed to " + m_currentAnimation.toString());
-    // }
+//     if (m_toAnimate == null) {
+//       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
+//     } else {
+//       System.out.println("Changed to " + toChange);
+//     }
   }
 
   /**
@@ -110,28 +101,24 @@ public class LED extends SubsystemBase {
    */
   public void expressState(robotState state) {
     if (state != currentRobotState) {
-      // setPattern(0, 0, 0, 0, 0, AnimationTypes.Solid);
-      // if(currentRobotState == robotState.Twinkle){
-      // setPattern(0,0,0,0,0,AnimationTypes.TwinkleOff);
-      // }
       switch (state) {
         case Intaking: // Solid Blue
           setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
           break;
-        case Enabled: // Green larson animation
-          setPattern(0, 255, 0, 0, 0.1, AnimationTypes.Larson);
+        case Enabled: // Solid Green
+          setPattern(0, 255, 0, 0, 0, AnimationTypes.Solid);
           break;
         case Climbing: // Rainbow
           setPattern(0, 0, 0, 0, .9, AnimationTypes.Rainbow);
           break;
-        case Disabled: // solid red
+        case Disabled: // Solid Red
           setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
           break;
-        case VisionLock: // strobing yellow
-          setPattern(0, 0, 255, 0, 1, AnimationTypes.Strobe);
+        case VisionLock: // Strobing Yellow
+          setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
           break;
-        default:
-          setPattern(106, 90, 205, 0, 0.4, AnimationTypes.Twinkle);
+        default: // Strobing Purple
+          setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
           break;
       }
       currentRobotState = state;
@@ -140,10 +127,11 @@ public class LED extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // null indicates that the animation is "Solid"
     if (m_toAnimate == null) {
-      m_candle.setLEDs(red, green, blue);
+      m_candle.setLEDs(red, green, blue, 0, 0, 1024); // setting all LEDs to color
     } else {
-      m_candle.animate(m_toAnimate);
+      m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
   }
 
