@@ -3,58 +3,57 @@ package frc.robot.simulation;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.Sim.BallColor;
 import frc.robot.Constants.Sim.BallState;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.Intake;
 
 public class FieldSim {
   private final Field2d m_field2d;
   private final DriveTrain m_driveTrain;
-  private final Cargo[] m_cargo = new Cargo[15]; // 5 of the balls will be in other robots
+  private final Intake m_intake;
+  // Exclude 5 cargo in other robots and 2 with human players
+  private final Cargo[] m_cargo = new Cargo[15];
 
-  private int ballCount;
+  private int ballCount = 0;
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
+  private final Pose2d intakePoseHidden = new Pose2d(-50, 50, new Rotation2d());
 
-  private double m_autoStartTime;
-
-  public FieldSim(DriveTrain driveTrain /*, Outtake outtake*/) {
+  public FieldSim(DriveTrain driveTrain, Intake intake) {
     m_driveTrain = driveTrain;
-
-    for (int i = 0; i < m_cargo.length; i++)
-      m_cargo[i] = new Cargo(String.format("Cargo_" + String.format("%02d", i)));
+    m_intake = intake;
 
     m_field2d = new Field2d();
   }
 
   public void initSim() {
-    // Load 3 powercells into the robot
+    // Loads 1 cargo into the robot
+    m_cargo[0] = new Cargo("BlueCargo_0", BallColor.BLUE, new Pose2d());
     m_cargo[0].setBallState(BallState.IN_ROBOT);
-    for (int i = 1; i < m_cargo.length; i++) m_cargo[i].setBallState(BallState.ON_FIELD);
 
-    // Put 3 powercells in the Hub;
-    m_cargo[1].setBallPose(Constants.Sim.blueHubBallPos[0]);
-    m_cargo[2].setBallPose(Constants.Sim.blueHubBallPos[1]);
-    m_cargo[3].setBallPose(Constants.Sim.blueHubBallPos[2]);
-    m_cargo[4].setBallPose(Constants.Sim.blueHubBallPos[3]);
-    m_cargo[5].setBallPose(Constants.Sim.blueHubBallPos[4]);
-    m_cargo[6].setBallPose(Constants.Sim.blueHubBallPos[5]);
-    m_cargo[7].setBallPose(Constants.Sim.blueHubBallPos[6]);
+    // Places and sets the position of all the cargo on the field
 
-    m_cargo[8].setBallPose(Constants.Sim.redHubBallPos[0]);
-    m_cargo[9].setBallPose(Constants.Sim.redHubBallPos[1]);
-    m_cargo[10].setBallPose(Constants.Sim.redHubBallPos[2]);
-    m_cargo[11].setBallPose(Constants.Sim.redHubBallPos[3]);
-    m_cargo[12].setBallPose(Constants.Sim.redHubBallPos[4]);
-    m_cargo[13].setBallPose(Constants.Sim.redHubBallPos[5]);
-    m_cargo[14].setBallPose(Constants.Sim.redHubBallPos[6]);
+    for (int i = 0; i < Constants.Sim.blueHubBallPos.length; i++) {
+      m_cargo[i + 1] =
+          new Cargo(
+              String.format("BlueCargo_" + (i + 1)),
+              BallColor.BLUE,
+              Constants.Sim.blueHubBallPos[i]);
+      m_cargo[i + 1].setBallState(BallState.ON_FIELD);
+    }
+
+    for (int i = 0; i < Constants.Sim.redHubBallPos.length; i++) {
+      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length] =
+          new Cargo(String.format("RedCargo_" + i), BallColor.RED, Constants.Sim.redHubBallPos[i]);
+      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length].setBallState(BallState.ON_FIELD);
+    }
 
     m_field2d.setRobotPose(Constants.Sim.startPositionMeters);
     m_driveTrain.resetOdometry(
         Constants.Sim.startPositionMeters, Constants.Sim.startPositionMeters.getRotation());
-    m_autoStartTime = Timer.getFPGATimestamp();
   }
 
   private void updateIntakePoses() {
@@ -131,20 +130,32 @@ public class FieldSim {
                 <= slope1to2 * (ballPose.getX() - intakePose[1].getX()) + intakePose[1].getY()));
   }
 
-  /*  Sometimes, the auto paths ran will eject the robot out of bounds. This will reset the robot state so you can
-     re-run the auto without restarting the sim
-  */
+  /* TODO Sometimes, the auto paths ran will eject the robot out of bounds. This will reset the robot state so you can
+  re-run the auto without restarting the sim*/
 
   public void simulationPeriodic() {
 
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
+    m_field2d
+        .getObject("Turret")
+        .setPose(
+            new Pose2d(
+                m_driveTrain.getRobotPoseMeters().getTranslation(),
+                Rotation2d.fromDegrees(getIdealAngleToHub())));
 
     updateIntakePoses();
 
-    m_field2d.getObject("Intake A").setPose(intakePose[0]);
-    m_field2d.getObject("Intake B").setPose(intakePose[1]);
-    m_field2d.getObject("Intake C").setPose(intakePose[2]);
-    m_field2d.getObject("Intake D").setPose(intakePose[3]);
+    if (m_intake.getIntakePistonExtendStatus()) {
+      m_field2d.getObject("Intake A").setPose(intakePose[0]);
+      m_field2d.getObject("Intake B").setPose(intakePose[1]);
+      m_field2d.getObject("Intake C").setPose(intakePose[2]);
+      m_field2d.getObject("Intake D").setPose(intakePose[3]);
+    } else {
+      m_field2d.getObject("Intake A").setPose(intakePoseHidden);
+      m_field2d.getObject("Intake B").setPose(intakePoseHidden);
+      m_field2d.getObject("Intake C").setPose(intakePoseHidden);
+      m_field2d.getObject("Intake D").setPose(intakePoseHidden);
+    }
 
     for (Cargo p : m_cargo) {
       updateBallState(p);
@@ -154,8 +165,11 @@ public class FieldSim {
     SmartDashboard.putData("Field2d", m_field2d);
   }
 
-  public double getAutoStartTime() {
-    return m_autoStartTime;
+  public double getIdealAngleToHub() {
+    return Math.toDegrees(
+        Math.atan2(
+            Constants.Sim.hubPoseMeters.getY() - m_driveTrain.getRobotPoseMeters().getY(),
+            Constants.Sim.hubPoseMeters.getX() - m_driveTrain.getRobotPoseMeters().getX()));
   }
 
   public Cargo[] getCargo() {
@@ -166,6 +180,7 @@ public class FieldSim {
     return m_field2d.getRobotPose();
   }
 
+  /** synchronized prevents calling this method simoultaneously */
   public synchronized void resetRobotPose(Pose2d pose) {
     m_field2d.setRobotPose(pose);
     m_driveTrain.resetOdometry(pose, pose.getRotation());
@@ -173,27 +188,22 @@ public class FieldSim {
 
   private void updateBallState(Cargo cargo) {
     Pose2d ballPose = cargo.getBallPose();
-    if (cargo.getBallState() != BallState.IN_ROBOT) {
-      if (ballPose.getX() < 0
-          || ballPose.getX() > Constants.Sim.fieldWidthMeters
-          || ballPose.getY() < 0
-          || ballPose.getY() > Constants.Sim.fieldHieghtMeters)
-        cargo.setBallState(BallState.OUT_OF_BOUNDS);
-    }
 
     switch (cargo.getBallState()) {
-      case OUT_OF_BOUNDS:
-        cargo.setBallState(BallState.ON_FIELD);
-        break;
       case IN_AIR:
-        // Ball is traveling in the air
+        if (Math.pow(ballPose.getX() - Constants.Sim.hubPoseMeters.getX(), 2)
+                + Math.pow(ballPose.getY() - Constants.Sim.hubPoseMeters.getY(), 2)
+            < Math.pow(0.1, 2)) { // / If the ball has gone into the hub
+          cargo.setBallState(BallState.ON_FIELD);
+          break;
+        }
         double currentTime = RobotController.getFPGATime();
         // FPGA time is in microseonds, need to convert it into seconds
         double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
-        // double distanceTraveled = Constants.Sim.shotSpeed * deltaT;
+        double distanceTraveled = Constants.Sim.shotSpeedMetersPerSecond * deltaT;
 
-        double deltaX = cargo.getBallVel().getX() * deltaT;
-        double deltaY = cargo.getBallVel().getY() * deltaT;
+        double deltaX = distanceTraveled * Math.cos(Math.toRadians(getIdealAngleToHub()));
+        double deltaY = distanceTraveled * Math.sin(Math.toRadians(getIdealAngleToHub()));
 
         cargo.setBallPose(
             new Pose2d(deltaX + ballPose.getX(), deltaY + ballPose.getY(), ballPose.getRotation()));
@@ -201,24 +211,81 @@ public class FieldSim {
         cargo.setLastTimestamp(currentTime);
         break;
       case IN_ROBOT:
-        // Ball has been picked up by the robot
-        cargo.setBallPose(m_field2d.getObject("Outtake").getPose());
+        cargo.setBallPose(m_field2d.getObject("Turret").getPose());
 
-        // Ball has been shot;
         if (cargo.getBallShotState()) {
           cargo.setBallShotState(false);
           cargo.setLastTimestamp(RobotController.getFPGATime());
-          cargo.setBallState(BallState.IN_ROBOT);
+          cargo.setBallState(BallState.IN_AIR);
           ballCount--;
         }
         break;
       case ON_FIELD:
       default:
-        if (isBallInIntakeZone(ballPose) && ballCount < 6) {
+        if (m_intake.getIntakeState()
+            && m_intake.getIntakePistonExtendStatus()
+            && isBallInIntakeZone(ballPose)
+            && ballCount < 2) {
           ballCount++;
           cargo.setBallState(BallState.IN_ROBOT);
         }
         break;
+    }
+  }
+
+  public static class Cargo {
+    private BallColor m_color;
+    private boolean wasShot;
+    private Pose2d ballPose = new Pose2d();
+    private double m_lastTimestamp;
+    private BallState ballState = BallState.ON_FIELD;
+
+    String m_name;
+
+    public Cargo(String name, BallColor color, Pose2d pose) {
+      m_name = name;
+      m_color = color;
+      ballPose = pose;
+    }
+
+    public String getName() {
+      return m_name;
+    }
+
+    public BallState getBallState() {
+      return ballState;
+    }
+
+    public boolean getBallShotState() {
+      return wasShot;
+    }
+
+    public void setBallState(BallState state) {
+      ballState = state;
+    }
+
+    public void setBallShotState(boolean shotState) {
+      wasShot = shotState;
+    }
+
+    public void setBallPose(Pose2d pose) {
+      ballPose = pose;
+    }
+
+    public Pose2d getBallPose() {
+      return ballPose;
+    }
+
+    public void setLastTimestamp(double timestamp) {
+      m_lastTimestamp = timestamp;
+    }
+
+    public double getLastTimestamp() {
+      return m_lastTimestamp;
+    }
+
+    public BallColor getColor() {
+      return m_color;
     }
   }
 }

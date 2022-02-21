@@ -40,7 +40,7 @@ public class GetSubsystemStates extends CommandBase {
     boolean Enabled = !DriverStation.isDisabled();
     boolean Intaking = m_intake.getIntakeState();
     boolean VisionLock = m_vision.getGoalValidTarget();
-    boolean Climbing = m_climber.getClimbState();
+    boolean Climbing = m_climber.getElevatorClimbState();
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority

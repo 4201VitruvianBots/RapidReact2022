@@ -38,11 +38,11 @@ public class LED extends SubsystemBase {
   /**
    * Set the LEDs with a color and animation type
    *
-   * @param red      the red value of the color
-   * @param green    the green value of the color
-   * @param blue     the blue value of the color
-   * @param white    the white value of the color
-   * @param speed    the speed of the animation
+   * @param red the red value of the color
+   * @param green the green value of the color
+   * @param blue the blue value of the color
+   * @param white the white value of the color
+   * @param speed the speed of the animation
    * @param toChange the animation mode of the LEDs
    */
   public void setPattern(
@@ -87,11 +87,11 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-    if (m_toAnimate == null) {
-      System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
-    } else {
-      System.out.println("Changed to " + toChange);
-    }
+//     if (m_toAnimate == null) {
+//       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
+//     } else {
+//       System.out.println("Changed to " + toChange);
+//     }
   }
 
   /**

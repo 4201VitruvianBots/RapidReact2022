@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
+import java.io.File;
 
 /** Creates a new Flywheel. */
 public class Flywheel extends SubsystemBase {
@@ -38,11 +39,13 @@ public class Flywheel extends SubsystemBase {
   private final Timer timeout = new Timer();
   public double rpmOutput;
   private double flywheelSetpointRPM;
-  private double turretSetpoint;
-  private int controlMode;
-  private boolean initialHome;
   private boolean canShoot;
   private double idealRPM;
+  private boolean timerStart = false;
+  private Timer timer = new Timer();
+  private double timestamp;
+
+  private int testingSession = 0;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
@@ -79,11 +82,12 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configVoltageCompSaturation(12);
       flywheelMotor.enableVoltageCompensation(true);
     }
-    flywheelMotors[0].setInverted(true);
+    flywheelMotors[0].setInverted(false);
+    flywheelMotors[1].setInverted(true);
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
-    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
+    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.020);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
   public void setPower(double output) {
@@ -99,6 +103,23 @@ public class Flywheel extends SubsystemBase {
     return flywheelSetpointRPM;
   }
 
+  public void updateCanShoot() {
+    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+      timerStart = true;
+      timer.reset();
+      timer.start();
+    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+      timerStart = false;
+      timer.reset();
+      timer.stop();
+      canShoot = false;
+    }
+
+    if (timer.get() > 0.1) {
+      canShoot = true;
+    }
+  }
+
   public boolean canShoot() {
     return canShoot;
   }
@@ -112,9 +133,11 @@ public class Flywheel extends SubsystemBase {
 
       m_loop.predict(0.020);
 
-      double nextVoltage = m_loop.getU(0);
+      double nextVoltage = m_loop.getU(0) + kFlywheelKs;
 
-      setPower(nextVoltage / 12.0);
+      if (timestamp <= 0.5 && timestamp > 0.4) {
+        setPower(nextVoltage / 12.0);
+      } else setPower(nextVoltage / 12.0);
     } else {
       setPower(0);
     }
@@ -150,15 +173,16 @@ public class Flywheel extends SubsystemBase {
    */
   public double getRPM(int motorIndex) {
     return flywheelMotors[motorIndex].getSelectedSensorVelocity()
-        * (600.0 / encoderUnitsPerRotation);
+        * (600.0 / encoderUnitsPerRotation)
+        / gearRatio;
   }
 
   public double FalconUnitstoRPM(double SensorUnits) {
-    return (SensorUnits / 2048.0) * 600.0;
+    return (SensorUnits / 2048.0) * 600.0 / gearRatio;
   }
 
   public double RPMtoFalconUnits(double RPM) {
-    return (RPM / 600.0) * 2048.0;
+    return (RPM / 600.0) * 2048.0 * gearRatio;
   }
 
   public void setIdealRPM() {
@@ -167,14 +191,35 @@ public class Flywheel extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber(
-          "RPM", flywheelMotors[0].getSelectedSensorVelocity() * (600.0 / encoderUnitsPerRotation));
-
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSecondary", getRPM(1));
       SmartDashboard.putNumber("RPMOutput", rpmOutput);
       SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
-      SmartDashboard.putNumber("Setpoint", flywheelSetpointRPM);
+      SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
+    }
+  }
+
+  /**
+   * Returns the session name used for shooter logs.
+   *
+   * @return The session name
+   */
+  public String getTestingSessionName() {
+    return "session" + testingSession;
+  }
+
+  public void updateTestingSession() {
+    boolean success = false;
+    try {
+      while (!success) {
+        File path = new File("/home/lvuser/frc/shooter_log/" + getTestingSessionName());
+        success = path.mkdirs();
+        testingSession++;
+      }
+      testingSession--;
+
+    } catch (Exception e) {
+
     }
   }
 
@@ -182,6 +227,7 @@ public class Flywheel extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateRPMSetpoint();
+    updateCanShoot();
     updateShuffleboard();
   }
 

@@ -37,15 +37,14 @@ public class SetRpmSetpoint extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // m_vision.ledsOn();
-    // m_vision.setLastValidTargetTime();
+    m_vision.setGoalCameraLedState(true);
     m_flywheel.setRPM(m_RPM);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_flywheel.setRPM(-1);
+    m_flywheel.setRPM(0);
   }
 
   // Returns true when the command should end.

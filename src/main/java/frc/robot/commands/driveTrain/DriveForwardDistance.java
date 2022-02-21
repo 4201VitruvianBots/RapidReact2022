@@ -15,12 +15,20 @@ import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.List;
 
+/** Drives the robot forward a distance in meters */
 public class DriveForwardDistance extends SequentialCommandGroup {
+  /**
+   * Drives the robot forward a distance in meters
+   *
+   * @param driveTrain The driveTrain used by this command
+   * @param fieldSim The fieldSim used by this command
+   * @param distanceMeters The distance in meters to travel
+   */
   public DriveForwardDistance(
-      DriveTrain driveTrain, FieldSim fieldSim, double distance) { // Distance in meters
+      DriveTrain driveTrain, FieldSim fieldSim, double distanceMeters) { // Distance in meters
     Pose2d startPosition = new Pose2d();
-    Pose2d endPosition = new Pose2d(distance, 0, new Rotation2d());
-    TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(2), Units.feetToMeters(1));
+    Pose2d endPosition = new Pose2d(distanceMeters, 0, new Rotation2d());
+    TrajectoryConfig configA = new TrajectoryConfig(Units.feetToMeters(3), Units.feetToMeters(2));
     configA.setReversed(false);
     configA.setEndVelocity(0);
     configA.addConstraint(
@@ -36,7 +44,7 @@ public class DriveForwardDistance extends SequentialCommandGroup {
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, startPosition),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.FOLLOWER_COAST),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         driveForwardCommand);
   }
 }

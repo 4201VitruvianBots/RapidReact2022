@@ -12,6 +12,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -29,55 +30,89 @@ public final class Constants {
     public static final int xBoxController = 2;
   }
 
-  public final class Climber {
-    public static final int climbMotorA = 50;
-    public static final int climbPistonForward = 4;
-    public static final int climbPistonReverse = 5;
+  public static final class Pneumatics {
+    public static final int pcmOne = 11;
+    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.REVPH; // CTREPCM, REVPH
+
+    public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
+    public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
+    public static final int climbPistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 2 : 2;
+    public static final int climbPistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 3 : 3;
   }
 
-  public final class Indexer {
+  public final class Climber {
+    public static final int climbMotorA = 50;
+    public static final int climbMotorB = 51;
+
+    public static final int climberLowerLimitOverrideID = 9;
+    public static final int climberUpperLimitOverrideID = 8;
+
+    public static final double climberBottomOutValue = 0;
+    public static final double climberTopOutValue = 1;
+
+    public static final double climberUpperLimit = 205_000.0;
+    public static final double climberLowerLimit = 0.0;
+  }
+
+  public static final class Indexer {
     public static final int indexerMotor = 35;
-    public static final int indexerTopSensor = 1;
-    public static final int indexerBottomSensor = 2;
     public static final int kickerMotor = 36;
-    // public static final enum CARGO_COLOR {
-    //   RED,
-    //   BLUE,
-    //   UNKNOWN
-    // }
+
+    public static final int indexerRearSensor = 1; // Rear = closer to shooter
+    public static final int indexerFrontSensor = 2; // Front = closer to intake
+    public static final int colorSensorFront = 2;
+    public static final int colorSensorRear = 0;
+
+    public static enum CARGO_COLOR {
+      RED,
+      BLUE,
+      UNKNOWN
+    }
   }
 
   public final class Intake {
-    public static final int pcmOne = 11;
-    public static final int intakePistonForward = 0;
-    public static final int intakePistonReverse = 1;
-    public static final int intakeMotor = 0;
-    public static final int intakeSensor = 0;
+    public static final int intakeMotor = 30;
+    // public static final int intakeSensor = 0;
   }
 
   public static final class DriveTrain {
-    public static final int[] kLeftEncoderPorts = new int[] {10, 11};
-    public static final int[] kRightEncoderPorts = new int[] {12, 13};
-    public static final boolean kLeftEncoderReversed = false;
-    public static final boolean kRightEncoderReversed = true;
+    // Number identification for the CAN motors
+    public static final int leftFrontDriveMotor = 20;
+    public static final int leftRearDriveMotor = 21;
+    public static final int rightFrontDriveMotor = 22;
+    public static final int rightRearDriveMotor = 23;
+
+    public static final int pigeonID = 9;
+
+    public enum MotorPosition {
+      LEFT_FRONT,
+      LEFT_REAR,
+      RIGHT_FRONT,
+      RIGHT_REAR
+    }
+
+    public enum DriveTrainNeutralMode {
+      BRAKE,
+      COAST,
+      /** Master motors brake, follower motors coast */
+      HALF_BRAKE
+    }
 
     public static final double kTrackWidthMeters = Units.inchesToMeters(21.5);
     public static final DifferentialDriveKinematics kDriveKinematics =
         new DifferentialDriveKinematics(kTrackWidthMeters);
 
+    public static final double kMaxVelocityMetersPerSecond = Units.feetToMeters(16);
+    public static final double kDriveGearing = 9.05;
     public static final DCMotor kDriveGearbox = DCMotor.getFalcon500(2);
-    public static final double kDriveGearing = 8.0;
 
-    public static final int kMagEncoderCPR = 4096;
+    public static final int kCANcoderCPR = 4096;
     public static final int kFalconEncoderCPR = 2048;
     public static final double kWheelDiameterMeters = Units.feetToMeters(0.5);
     public static final double kEncoderDistancePerPulseMeters =
         // Encoders are not on the wheel shaft for Falcons, so need to multiply by gear
         // ratio
-        (kWheelDiameterMeters * Math.PI) / (double) (kFalconEncoderCPR * kDriveGearing);
-    public static final double kEncoderDistancePerPulseMetersSim =
-        // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) / (double) kMagEncoderCPR * kDriveGearing;
+        (kWheelDiameterMeters * Math.PI) / (kFalconEncoderCPR * kDriveGearing);
 
     public static final boolean kGyroReversed = true;
 
@@ -95,40 +130,27 @@ public final class Constants {
             kaVoltSecondsSquaredPerMeter,
             kvVoltSecondsPerRadian,
             kaVoltSecondsSquaredPerRadian);
-
-    public static final double kMaxVelocityMetersPerSecond = 2.0;
-
-    public static final int leftFrontDriveMotor = 20;
-    public static final int leftRearDriveMotor = 21;
-    public static final int rightFrontDriveMotor = 22;
-    public static final int rightRearDriveMotor = 23;
-
-    public static enum DriveTrainNeutralMode {
-      ALL_BRAKE,
-      ALL_COAST,
-      FOLLOWER_COAST
-    }
   }
 
   public static final class Sim {
     public static final Pose2d[] redHubBallPos = {
-      new Pose2d(Units.inchesToMeters(438), Units.inchesToMeters(240), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(348), Units.inchesToMeters(297), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(245), Units.inchesToMeters(274), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(188), Units.inchesToMeters(132), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(355), Units.inchesToMeters(29), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(442), Units.inchesToMeters(89), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(580), Units.inchesToMeters(270), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(362), Units.inchesToMeters(13), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(178), Units.inchesToMeters(128), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(239), Units.inchesToMeters(288), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(354), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(453), Units.inchesToMeters(251), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(457), Units.inchesToMeters(80), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(612), Units.inchesToMeters(280), new Rotation2d())
     };
 
     public static final Pose2d[] blueHubBallPos = {
-      new Pose2d(Units.inchesToMeters(460), Units.inchesToMeters(192), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(296), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(206), Units.inchesToMeters(235), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(210), Units.inchesToMeters(83), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(301), Units.inchesToMeters(27), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(405), Units.inchesToMeters(50), new Rotation2d()),
-      new Pose2d(Units.inchesToMeters(70), Units.inchesToMeters(55), new Rotation2d())
+      new Pose2d(Units.inchesToMeters(478), Units.inchesToMeters(196), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(300), Units.inchesToMeters(12), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(199), Units.inchesToMeters(76), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(418), Units.inchesToMeters(39), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(200), Units.inchesToMeters(249), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(294), Units.inchesToMeters(313), new Rotation2d()),
+      new Pose2d(Units.inchesToMeters(44), Units.inchesToMeters(42), new Rotation2d())
     };
 
     public static final double fieldWidthMeters = Units.feetToMeters(54);
@@ -141,14 +163,19 @@ public final class Constants {
     public static final double shotSpeedMetersPerSecond = 10;
 
     public static final Pose2d hubPoseMeters =
-        new Pose2d(12.557047, 7.275692, new Rotation2d(Units.degreesToRadians(0)));
+        new Pose2d(
+            fieldWidthMeters / 2, fieldHieghtMeters / 2, new Rotation2d(Units.degreesToRadians(0)));
     public static final Pose2d startPositionMeters = new Pose2d();
 
     public enum BallState {
       ON_FIELD,
       IN_ROBOT,
-      IN_AIR,
-      OUT_OF_BOUNDS
+      IN_AIR
+    }
+
+    public enum BallColor {
+      RED,
+      BLUE
     }
   }
 
@@ -162,38 +189,76 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
 
-    // Volts per (radian per second)
-    public static final double kFlywheelKv = 0.017092;
+    public static final double kFlywheelKs = 0;
+    public static final double kFlywheelKv = 0.02001;
+    public static final double kFlywheelKa = 0.002995;
 
-    // Volts per (radian per second squared)
-    public static final double kFlywheelKa = 0.0083035;
+    public static final double rpmTolerance = 10.0;
 
-    public static final double kFlywheelKs = 0.53456;
-
-    public static final double rpmTolerance = 25.0;
+    public static final double gearRatio = 1.0;
   }
 
-  public final class Turret {
+  public static final class Turret {
     public static final int turretMotor = 60;
     public static final int turretEncoder = 61;
+
     public static final int turretHomeSensor = 3;
+
+    public static final int encoderUnitsPerRotation = 2048;
+    public static final double canCoderAngleOffset = -329.150;
+    public static final double minAngle = -80;
+    public static final double maxAngle = 80;
+
+    public static final double kF = 0.07;
+    // public static final double kP = 7.28E-05;
+    public static final double kP = 0.1;
+    public static final double kI = 0.00001;
+    public static final double kD = 0.0;
+
+    public static final double kErrorBand = 50;
+    public static final double kI_Zone = 900;
+    public static final double kMaxIAccum = 1000000;
+    public static final double kCruiseVelocity = 18000;
+    public static final double kMotionAcceleration = 12000;
+
+    public static final double kS = 0.83016; // 0.81464;
+    public static final double kV = 0.012184; // 0.16822;
+    public static final double kA = 0.00036802; // 0.011642;
+
+    public static final double degreeTolerance = 1.0;
+    public static final double degreesPerSecondTolerance = 10.0;
+
+    public static final double gearRatio = 10.625 * 3.75;
   }
 
   public static final class Vision {
     public enum CAMERA_TYPE {
-      OAK_D,
+      OAK,
       LIMELIGHT,
       PHOTONVISION
     }
 
-    public static double CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public enum INTAKE_TRACKING_TYPE {
+      CARGO,
+      LAUNCHPAD
+    }
 
-    /*
-     * Co-Processor IP Addresses
-     * 10.42.1.100: Goal Camera
-     * 10.42.1.101: Intake Camera
-     */
-    public static String goalCameraIP = "10.42.1.100";
-    public static String intakeCameraIP = "10.42.1.101";
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double UPPER_HUB_HEIGHT_METERS = 1.0;
+    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
+
+    public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
+    public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
+
+    public static String VISION_SERVER_IP = "10.42.1.100";
   }
+
+  // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
+  public enum CONTROL_MODE {
+    OPENLOOP,
+    CLOSEDLOOP
+  };
 }
