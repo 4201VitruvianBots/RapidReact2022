@@ -28,7 +28,7 @@ import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
-import frc.robot.commands.indexer.AutoRunIndexer;
+import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -151,8 +151,8 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1720)); // 2300
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3500)); // 2900
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
@@ -162,7 +162,7 @@ public class RobotContainer {
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new AutoRunIndexer(m_indexer, m_flywheel));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));

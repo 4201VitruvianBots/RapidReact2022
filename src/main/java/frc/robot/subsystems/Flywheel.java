@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0;
+  private double kI = 0.00003;
   private double errorSum = 0;
   private double errorRange = 300;
 
@@ -91,7 +91,7 @@ public class Flywheel extends SubsystemBase {
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
-    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.020);
+    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
   public void setPower(double output) {
