@@ -52,6 +52,8 @@ public class Indexer extends SubsystemBase {
     indexerMotor.setStatusFramePeriod(2, 100);
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(false);
+    kickerMotor.configVoltageCompSaturation(10);
+    kickerMotor.enableVoltageCompensation(true);
 
     kickerMotor.setNeutralMode(NeutralMode.Brake);
 
@@ -203,6 +205,25 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putNumber("Indexer", "Front Red", getRearColor().red);
     SmartDashboardTab.putNumber("Indexer", "Front Green", getRearColor().green);
     SmartDashboardTab.putNumber("Indexer", "Front Blue", getRearColor().blue);
+
+    SmartDashboardTab.putNumber(
+        "Indexer",
+        "Indexer Speed",
+        indexerMotor.getSelectedSensorVelocity()
+            * (10.0
+                * 2.0
+                * Math.PI
+                / (Constants.Flywheel.encoderUnitsPerRotation
+                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+    SmartDashboardTab.putNumber(
+        "Indexer",
+        "Kicker Output",
+        kickerMotor.getSelectedSensorVelocity()
+            * (10.0
+                * 2.0
+                * Math.PI
+                / (Constants.Flywheel.encoderUnitsPerRotation
+                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
   }
 
   @Override
