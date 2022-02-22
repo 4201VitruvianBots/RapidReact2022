@@ -7,49 +7,36 @@
 
 package frc.robot.commands.driveTrain;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
-import java.util.function.DoubleSupplier;
 
-/** Sets the drivetrain based on joystick inputs for forward and turning */
-public class SetArcadeDrive extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+/** Schedules a {@link Command} to run upon teleop */
+public class SchedulePostAutoCommand extends CommandBase {
   private final DriveTrain m_driveTrain;
-
-  private final DoubleSupplier m_throttle, m_turn;
+  private final Command m_command;
 
   /**
-   * Sets the drivetrain based on joystick inputs for forward and turning
+   * Schedules a {@link Command} to run upon teleop
    *
-   * @param driveTrain drivetrain to set
-   * @param throttle Percent output to drive forward.
-   * @param turn Percent output to turn (positive = turn right, negative = turn left)
+   * @param driveTrain The drivetrain used by this command
+   * @param command The command to run
    */
-  public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
+  public SchedulePostAutoCommand(DriveTrain driveTrain, Command command) {
     m_driveTrain = driveTrain;
-    m_throttle = throttle;
-    m_turn = turn;
-
+    m_command = command;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_driveTrain.setPostAutoCommand(m_command);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
-    double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
-
-    double throttle = joystickY;
-
-    double turn = -0.35 * joystickX;
-
-    m_driveTrain.setMotorArcadeDrive(throttle, turn);
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
@@ -58,6 +45,6 @@ public class SetArcadeDrive extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

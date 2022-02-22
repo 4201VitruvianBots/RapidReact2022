@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Flywheel.gearRatio;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -13,6 +12,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.CONTROL_MODE;
@@ -163,17 +163,19 @@ public class Turret extends SubsystemBase {
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboard.putNumber("Turret Angle", getTurretAngle());
-
-      SmartDashboard.putNumber("Turret Setpoint", getTurretSetpointDegrees());
-      SmartDashboard.putNumber("Turret Error", turretMotor.getClosedLoopError());
-      SmartDashboard.putNumber("Turret Victor Angle", turretMotor.getSelectedSensorPosition());
+      SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngle());
+      SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
     }
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    if (turretHomeSensor.get() && !turretHomeSensorLatch) {
+      turretMotor.setSelectedSensorPosition(0);
+      turretHomeSensorLatch = true;
+    } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
+      turretHomeSensorLatch = false;
+    }
 
     updateClosedLoopPosition();
     updateShuffleboard();

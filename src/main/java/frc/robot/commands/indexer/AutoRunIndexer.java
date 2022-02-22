@@ -8,12 +8,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 
-public class RunIndexer extends CommandBase {
+public class AutoRunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
   private final Flywheel m_flywheel;
   /** Creates a new RunIndexer. */
-  public RunIndexer(Indexer indexer, Flywheel flywheel) {
+  public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
     m_indexer = indexer;
     m_flywheel = flywheel;
 
@@ -28,8 +28,10 @@ public class RunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_indexer.setIndexerPercentOutput(0.80); // Base of 0.45
-    m_indexer.setKickerPercentOutput(0.80); // Keep the kicker constant with the indexer
+    m_indexer.setIndexerPercentOutput(0.90);
+    if (m_flywheel.canShoot()) {
+      m_indexer.setKickerPercentOutput(0.40);
+    } else m_indexer.setKickerPercentOutput(0);
   }
 
   // Called once the command ends or is interrupted.

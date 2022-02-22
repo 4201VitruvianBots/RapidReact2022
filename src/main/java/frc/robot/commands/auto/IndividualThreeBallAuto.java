@@ -12,7 +12,7 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
@@ -63,20 +63,21 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
-    Trajectory trajectory3 =
-        PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
-    VitruvianRamseteCommand command3 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+    // Trajectory trajectory3 =
+    //     PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4),
+    // true);
+    // VitruvianRamseteCommand command3 =
+    //     TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new ParallelDeadlineGroup(
@@ -85,7 +86,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel),
+            new AutoRunIndexer(indexer, flywheel),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new ParallelDeadlineGroup(
@@ -94,9 +95,10 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+    // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }

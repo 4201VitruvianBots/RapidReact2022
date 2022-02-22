@@ -28,8 +28,6 @@ public class EjectCargo extends CommandBase {
   public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
-  // TODO: Use ColorSensors to detect if a there is a bad ball, if so, reverse until there is a
-  // correct ball
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(-0.8);

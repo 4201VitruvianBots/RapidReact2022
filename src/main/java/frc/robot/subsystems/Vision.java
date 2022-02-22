@@ -11,6 +11,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Vision extends SubsystemBase {
@@ -21,6 +22,8 @@ public class Vision extends SubsystemBase {
 
   private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK;
   private int red_offset, blue_offset;
+
+  private INTAKE_TRACKING_TYPE intake_tracking_type = INTAKE_TRACKING_TYPE.CARGO;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls) {
@@ -60,7 +63,7 @@ public class Vision extends SubsystemBase {
    * @return true: Goal Camera has a target. false: Goal Camera does not have a target.
    */
   public boolean getGoalValidTarget() {
-    return goal_camera.getEntry("tv").getBoolean(false);
+    return goal_camera.getEntry("tv").getDouble(0) == 1;
   }
 
   /**
@@ -70,7 +73,7 @@ public class Vision extends SubsystemBase {
    *     used for distance calculations.
    */
   public boolean getGoalGoodTarget() {
-    return goal_camera.getEntry("tv").getBoolean(false);
+    return goal_camera.getEntry("tg").getDouble(0) == 1;
   }
 
   /**
@@ -128,14 +131,16 @@ public class Vision extends SubsystemBase {
    * @return +/- 20 degrees
    */
   public double getIntakeTargetAngle(int targetIndex) {
-    double[] nullValue = {-99};
-    var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
-    try {
-      return intakeAngles[0] == -99 ? 0 : intakeAngles[targetIndex];
-    } catch (Exception e) {
-      System.out.println("Vision Subsystem Error: getIntakeTargetAngle() illegal array access");
-      return 0;
-    }
+    if (getIntakeTargetsValid() == 1) {
+      double[] nullValue = {-99};
+      var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
+      try {
+        return intakeAngles[0] == -99 ? 0 : intakeAngles[targetIndex];
+      } catch (Exception e) {
+        System.out.println("Vision Subsystem Error: getIntakeTargetAngle() illegal array access");
+        return 0;
+      }
+    } else return 0;
   }
 
   /**
@@ -195,6 +200,15 @@ public class Vision extends SubsystemBase {
   public void updateBlueOffset() {
     blue_offset += getBlueCount();
     intake_camera.getEntry("blue_counter_offset").setDouble(blue_offset);
+  }
+
+  /** Sets the category of objects the intake should track. 0: Cargo 1: Launchpads */
+  public void setIntakeTrackingType(INTAKE_TRACKING_TYPE type) {
+    SmartDashboardTab.putNumber("Vision", "intake_tracking_type", type.ordinal());
+  }
+  /** Sets the category of objects the intake should track. 0: Cargo 1: Launchpads */
+  public void setIntakeTargetLock(boolean state) {
+    SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
   }
 
   /** Sends values to SmartDashboard */
