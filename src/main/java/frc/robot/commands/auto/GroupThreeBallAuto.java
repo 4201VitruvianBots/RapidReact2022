@@ -18,6 +18,7 @@ import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
+import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
@@ -73,23 +74,17 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
-    // Trajectory trajectory3 =
-    // PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
-    // VitruvianRamseteCommand command3 =
-    // TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
-
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        //TODO set turret angle 
+        new SetTurretAbsoluteSetpointDegrees(turret, 5),
         new WaitCommand(.5),
         new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new RunIntake(intake, indexer)),
+            new AutoRunIntake(intake)),
         new AutoRunIntake(intake).withTimeout(1),
-        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
@@ -98,9 +93,10 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new SetTurretAbsoluteSetpointDegrees(turret, -60),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new RunIntake(intake, indexer)),
+            new AutoRunIntake(intake)),
         new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
