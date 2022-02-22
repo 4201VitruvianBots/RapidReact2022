@@ -63,6 +63,12 @@ public final class Constants {
     public static final int colorSensorFront = 2;
     public static final int colorSensorRear = 0;
 
+    public static final double kKickerKs = 0.53436;
+    public static final double kKickerKv = 0.017544;
+    public static final double kKickerKa = 0.00030392;
+
+    public static final double radiansPerSecondTolerance = 1.0;
+
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
     public static enum CARGO_COLOR {
