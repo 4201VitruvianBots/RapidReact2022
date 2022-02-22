@@ -6,6 +6,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -58,7 +59,7 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
      */
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "ThreeBallAuto-1", Units.feetToMeters(7), Units.feetToMeters(6), true);
+            "ThreeBallAuto-1", Units.feetToMeters(7), Units.feetToMeters(7), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
@@ -78,8 +79,9 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret, 5),
-        new WaitCommand(.5),
+        new ParallelCommandGroup(
+            new SetTurretAbsoluteSetpointDegrees(turret, 5),
+            new WaitCommand(.5)),
         new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -93,10 +95,10 @@ public class GroupThreeBallAuto extends SequentialCommandGroup {
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new SetTurretAbsoluteSetpointDegrees(turret, -60),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntake(intake)),
+            new AutoRunIntake(intake),
+            new SetTurretAbsoluteSetpointDegrees(turret, -60)),
         new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
