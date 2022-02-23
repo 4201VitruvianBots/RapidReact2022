@@ -18,6 +18,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
@@ -31,6 +32,8 @@ public class Indexer extends SubsystemBase {
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
   public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
+
+  private double voltageComp = 12.0;
 
   private DriverStation.Alliance frontColorType = DriverStation.Alliance.Invalid;
   private DriverStation.Alliance rearColorType = DriverStation.Alliance.Invalid;
@@ -89,7 +92,7 @@ public class Indexer extends SubsystemBase {
     indexerMotor.setStatusFramePeriod(2, 100);
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(false);
-    kickerMotor.configVoltageCompSaturation(12);
+    kickerMotor.configVoltageCompSaturation(voltageComp);
     kickerMotor.enableVoltageCompensation(true);
 
     kickerMotor.setNeutralMode(NeutralMode.Brake);
@@ -243,7 +246,7 @@ public class Indexer extends SubsystemBase {
               kickerMotor.getSelectedSensorVelocity()
                   * (10.0 * 2.0 * Math.PI / Constants.Flywheel.encoderUnitsPerRotation)));
       m_loop.predict(0.02);
-      setKickerPower((m_loop.getU(0) + Constants.Indexer.kKickerKs) / 12.0);
+      setKickerPower((m_loop.getU(0) + Constants.Indexer.kKickerKs) / voltageComp);
     } else {
       setKickerPower(0);
     }
@@ -276,7 +279,7 @@ public class Indexer extends SubsystemBase {
                     * Constants.Indexer.falconMaxSpeedRadPerSecond)));
     SmartDashboardTab.putNumber(
         "Indexer",
-        "Kicker Output",
+        "Kicker Speed",
         kickerMotor.getSelectedSensorVelocity()
             * (10.0
                 * 2.0
