@@ -55,21 +55,27 @@ public class FourBallAuto extends SequentialCommandGroup {
      */
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "FourBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(6), true);
+            "FourBallAuto-1", Units.feetToMeters(4), Units.feetToMeters(2), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FourBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(6), false);
+            "FourBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(2), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FourBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(8), true);
+            "FourBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(2), false);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+
+    Trajectory trajectory4 =
+        PathPlanner.loadPath(
+            "FourBallAuto-4", Units.feetToMeters(4), Units.feetToMeters(2), false);
+    VitruvianRamseteCommand command4 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);   
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -81,6 +87,7 @@ public class FourBallAuto extends SequentialCommandGroup {
             new RunIntake(intake, indexer)),
         new RunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
+         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
@@ -89,9 +96,9 @@ public class FourBallAuto extends SequentialCommandGroup {
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
         new ParallelDeadlineGroup(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
