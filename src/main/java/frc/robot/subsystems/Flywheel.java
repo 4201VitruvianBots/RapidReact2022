@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -108,21 +109,26 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-    //    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
-    //      timerStart = true;
-    //      timer.reset();
-    //      timer.start();
-    //    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
-    //      timerStart = false;
-    //      timer.reset();
-    //      timer.stop();
-    //      canShoot = false;
-    //    }
-    //
-    //    if (timer.get() > 0.1) {
-    //      canShoot = true;
-    //    }
-    canShoot = true;
+    //   if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+    //   timerStart = true;
+    //   timer.reset();
+    //   timer.start();
+    //   } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+    //   timerStart = false;
+    //   timer.reset();
+    //   timer.stop();
+    //   canShoot = false;
+    //   }
+
+    //   if (timer.get() > 0.1) {
+    //   canShoot = true;
+    //   }
+    //     canShoot = true;
+    //   }
+    canShoot =
+        m_vision.getGoalValidTarget()
+            && Math.abs(m_vision.getGoalTargetYAngle()) < hubToleranceDegrees
+            && Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance();
   }
 
   public boolean canShoot() {
@@ -145,7 +151,7 @@ public class Flywheel extends SubsystemBase {
       }
       double nextVoltage = m_loop.getU(0) + kFlywheelKs + kI * errorSum;
 
-      setPower(nextVoltage / 12.0);
+      setPower(nextVoltage / RobotController.getBatteryVoltage());
     } else {
       setPower(0);
     }

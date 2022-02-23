@@ -210,6 +210,8 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+    xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
   }
 
   public void disabledPeriodic() {}

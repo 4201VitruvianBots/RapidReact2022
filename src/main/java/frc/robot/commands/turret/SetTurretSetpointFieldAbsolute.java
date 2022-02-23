@@ -71,12 +71,6 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           setpoint =
               Math.toDegrees(Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
 
-          //// if vision has a target and the absolute value of the target is less than 20, make the
-          // controller rumble
-          if (m_vision.getGoalValidTarget()) {
-            m_controller.setRumble(GenericHID.RumbleType.kLeftRumble, 0.4);
-            m_controller.setRumble(GenericHID.RumbleType.kRightRumble, 0.4);
-          }
         }
         // if vision has a target and the joystick has not moved, set visionsetpoint to true and run
         // the if statements below
