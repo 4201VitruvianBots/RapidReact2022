@@ -63,6 +63,12 @@ public final class Constants {
     public static final int colorSensorFront = 2;
     public static final int colorSensorRear = 0;
 
+    public static final double kKickerKs = 0.53436;
+    public static final double kKickerKv = 0.017544;
+    public static final double kKickerKa = 0.00030392;
+
+    public static final double radiansPerSecondTolerance = 1.0;
+
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
     public static enum CARGO_COLOR {
@@ -196,7 +202,7 @@ public final class Constants {
     //    public static final double kFlywheelKv = 0.02001;
     //    public static final double kFlywheelKa = 0.002995;
     public static final double kFlywheelKs =
-        0.25; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
+        0.73456; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
 
     // Volts per (radian per second)
     public static final double kFlywheelKv =
@@ -206,7 +212,7 @@ public final class Constants {
     public static final double kFlywheelKa =
         0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
-    public static final double rpmTolerance = 50.0;
+    public static final double rpmTolerance = 25.0;
 
     public static final double gearRatio = 1.0;
   }
