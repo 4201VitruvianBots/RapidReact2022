@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00003;
+  private double kI = 0.00004;
   private double errorSum = 0;
   private double errorRange = 300;
 
@@ -83,7 +83,7 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configFactoryDefault();
       flywheelMotor.setNeutralMode(NeutralMode.Coast);
       flywheelMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-      flywheelMotor.configVoltageCompSaturation(12);
+      flywheelMotor.configVoltageCompSaturation(10);
       flywheelMotor.enableVoltageCompensation(true);
     }
     flywheelMotors[0].setInverted(false);
@@ -145,7 +145,7 @@ public class Flywheel extends SubsystemBase {
       }
       double nextVoltage = m_loop.getU(0) + kFlywheelKs + kI * errorSum;
 
-      setPower(nextVoltage / 12.0);
+      setPower(nextVoltage / 10.0);
     } else {
       setPower(0);
     }
