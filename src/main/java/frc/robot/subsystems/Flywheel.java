@@ -47,6 +47,10 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
+  private double kI = 0.00007;
+  private double errorSum = 0;
+  private double errorRange = 300;
+
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
 
@@ -79,7 +83,7 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configFactoryDefault();
       flywheelMotor.setNeutralMode(NeutralMode.Coast);
       flywheelMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
-      flywheelMotor.configVoltageCompSaturation(12);
+      flywheelMotor.configVoltageCompSaturation(10);
       flywheelMotor.enableVoltageCompensation(true);
     }
     flywheelMotors[0].setInverted(false);
@@ -87,7 +91,7 @@ public class Flywheel extends SubsystemBase {
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
     m_vision = vision;
-    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.020);
+    m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
   public void setPower(double output) {
@@ -104,20 +108,21 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
-      timerStart = true;
-      timer.reset();
-      timer.start();
-    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
-      timerStart = false;
-      timer.reset();
-      timer.stop();
-      canShoot = false;
-    }
-
-    if (timer.get() > 0.1) {
-      canShoot = true;
-    }
+    //    if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
+    //      timerStart = true;
+    //      timer.reset();
+    //      timer.start();
+    //    } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
+    //      timerStart = false;
+    //      timer.reset();
+    //      timer.stop();
+    //      canShoot = false;
+    //    }
+    //
+    //    if (timer.get() > 0.1) {
+    //      canShoot = true;
+    //    }
+    canShoot = true;
   }
 
   public boolean canShoot() {
@@ -133,11 +138,14 @@ public class Flywheel extends SubsystemBase {
 
       m_loop.predict(0.020);
 
-      double nextVoltage = m_loop.getU(0) + kFlywheelKs;
+      if (Math.abs(getSetpointRPM() - getRPM(0)) < errorRange) {
+        errorSum += getSetpointRPM() - getRPM(0);
+      } else {
+        errorSum = 0;
+      }
+      double nextVoltage = m_loop.getU(0) + kFlywheelKs + kI * errorSum;
 
-      if (timestamp <= 0.5 && timestamp > 0.4) {
-        setPower(nextVoltage / 12.0);
-      } else setPower(nextVoltage / 12.0);
+      setPower(nextVoltage / 10.0);
     } else {
       setPower(0);
     }
