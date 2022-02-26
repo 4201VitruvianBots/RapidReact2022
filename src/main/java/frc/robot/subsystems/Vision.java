@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -82,7 +83,12 @@ public class Vision extends SubsystemBase {
    * @return Vertical angle (+/- 20 degrees)
    */
   public double getGoalTargetXAngle() {
-    return goal_camera.getEntry("tx").getDouble(0);
+    return -goal_camera.getEntry("tx").getDouble(0);
+  }
+
+  public Rotation2d getGoalTargetXRotation2d() {
+      return new Rotation2d(Units.degreesToRadians(getGoalTargetXAngle()));
+//    return new Rotation2d(Units.degreesToRadians(10));
   }
 
   /**

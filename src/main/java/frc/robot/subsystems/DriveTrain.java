@@ -73,7 +73,8 @@ public class DriveTrain extends SubsystemBase {
   double m_leftOutput, m_rightOutput;
 
   private final Pigeon2 pigeon = new Pigeon2(Constants.DriveTrain.pigeonID, "rio");
-
+  private double lastYaw = 0;
+  private double yawPerSecond = 0;
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
@@ -160,6 +161,14 @@ public class DriveTrain extends SubsystemBase {
    */
   public double getHeadingDegrees() {
     return Math.IEEEremainder(pigeon.getYaw(), 360);
+  }
+
+  public double getHeadingRateDegrees() {
+    return yawPerSecond;
+  }
+
+  public Rotation2d getHeadingRotation2d() {
+    return new Rotation2d(Units.degreesToRadians(getHeadingDegrees()));
   }
 
   public void resetAngle() {
@@ -510,12 +519,18 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
-    SmartDashboardTab.putNumber("DriveTrain", "Left follower speed", driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity() 
-    * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-    * 10.0);
-    SmartDashboardTab.putNumber("DriveTrain", "Right follower speed", driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity() 
-    * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-    * 10.0);
+    SmartDashboardTab.putNumber(
+        "DriveTrain",
+        "Left follower speed",
+        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
+            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+            * 10.0);
+    SmartDashboardTab.putNumber(
+        "DriveTrain",
+        "Right follower speed",
+        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
+            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+            * 10.0);
 
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
@@ -549,6 +564,10 @@ public class DriveTrain extends SubsystemBase {
         getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
         getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
     updateSmartDashboard();
+
+    double currentYaw = pigeon.getYaw();
+    yawPerSecond = currentYaw - lastYaw / 0.02;
+    lastYaw = currentYaw;
   }
 
   @Override

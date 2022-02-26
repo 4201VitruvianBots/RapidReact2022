@@ -224,20 +224,23 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;
-    public static final double minAngle = -80;
-    public static final double maxAngle = 80;
+    public static final double minAngle = -60;
+    public static final double maxAngle = 60;
 
-    public static final double kF = 0.07;
-    // public static final double kP = 7.28E-05;
+    //    public static final double kF = 0.07;
+    //    public static final double kP = 0.1;
+    //    public static final double kI = 0.00001;
+    //    public static final double kD = 0.0;
+    public static final double kF = 0.04;
     public static final double kP = 0.1;
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
     public static final double kErrorBand = 50;
     public static final double kI_Zone = 900;
-    public static final double kMaxIAccum = 1000000;
-    public static final double kCruiseVelocity = 18000;
-    public static final double kMotionAcceleration = 12000;
+    public static final double kMaxIAccum = 1000;
+    public static final double kCruiseVelocity = 5000;
+    public static final double kMotionAcceleration = 60000;
 
     public static final double kS = 0.83016; // 0.81464;
     public static final double kV = 0.012184; // 0.16822;

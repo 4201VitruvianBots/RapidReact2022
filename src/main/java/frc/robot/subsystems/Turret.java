@@ -7,8 +7,11 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,7 +38,7 @@ public class Turret extends SubsystemBase {
     m_driveTrain = driveTrain;
 
     turretMotor.configFactoryDefault();
-    turretMotor.setInverted(true);
+    turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
     turretMotor.configVoltageCompSaturation(12.0);
     turretMotor.config_kP(0, kF);
@@ -47,7 +50,7 @@ public class Turret extends SubsystemBase {
     turretMotor.configMotionCruiseVelocity(kCruiseVelocity);
     turretMotor.configMotionAcceleration(kMotionAcceleration);
     turretMotor.configAllowableClosedloopError(0, kErrorBand);
-    turretMotor.setSensorPhase(true);
+    //    turretMotor.setSensorPhase(true);
   }
 
   private void updateClosedLoopPosition() {
@@ -55,7 +58,14 @@ public class Turret extends SubsystemBase {
 
     SmartDashboard.putNumber("Turret Setpoint Test", setpoint);
 
-    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * gearRatio);
+    //    double ff = -m_driveTrain.getHeadingRateDegrees() * 0.0001;
+    double ff = 0;
+
+    turretMotor.set(
+        ControlMode.MotionMagic,
+        degreesToEncoderUnits(setpoint) * gearRatio,
+        DemandType.ArbitraryFeedForward,
+        ff);
   }
 
   public void resetEncoder() {
@@ -71,8 +81,12 @@ public class Turret extends SubsystemBase {
   }
 
   /** double returns encoder units of turret into degrees */
-  public double getTurretAngle() {
+  public double getTurretAngleDegrees() {
     return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition()) / gearRatio;
+  }
+
+  public Rotation2d getTurretRotation2d() {
+    return new Rotation2d(Units.degreesToRadians(getTurretAngleDegrees()));
   }
 
   /** double returns encoder units of turret into degrees */
@@ -96,7 +110,7 @@ public class Turret extends SubsystemBase {
    * @return turret angle - drivetrain angle
    */
   public double getFieldRelativeAngle() {
-    return getTurretAngle() - m_driveTrain.getHeadingDegrees();
+    return getTurretAngleDegrees() - m_driveTrain.getHeadingDegrees();
   }
 
   /**
@@ -141,7 +155,7 @@ public class Turret extends SubsystemBase {
 
   /** TurretSetpoint specifically sets the setpoint to turret angle */
   public void stopTurret() {
-    turretSetpointDegrees = getTurretAngle();
+    turretSetpointDegrees = getTurretAngleDegrees();
   }
 
   public int degreesToEncoderUnits(double degrees) {
@@ -158,12 +172,12 @@ public class Turret extends SubsystemBase {
 
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
-    return Math.abs(getTurretAngle() - getTurretSetpointDegrees()) < kErrorBand;
+    return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees()) < kErrorBand;
   }
 
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
-      SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngle());
+      SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngleDegrees());
       SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
     }
   }

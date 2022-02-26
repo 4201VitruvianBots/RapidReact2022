@@ -40,8 +40,7 @@ public class RunIndexer extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setIndexerPercentOutput(0);
-    if (m_runKicker)
-      m_indexer.setKickerPercentOutput(0);
+    if (m_runKicker) m_indexer.setKickerPercentOutput(0);
   }
 
   // Returns true when the command should end.

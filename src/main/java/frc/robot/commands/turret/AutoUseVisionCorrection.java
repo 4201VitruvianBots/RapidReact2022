@@ -49,7 +49,7 @@ public class AutoUseVisionCorrection extends CommandBase {
         // angle + targetx
         if (!turning) {
           m_vision.setGoalCameraLedState(true);
-          setpoint = m_turret.getTurretAngle() + m_vision.getGoalTargetXAngle();
+          setpoint = m_turret.getTurretAngleDegrees() + m_vision.getGoalTargetXAngle();
           // if the setpoint is greater than the max turret angle then subtract 360 from it
           if (setpoint > m_turret.getMaxAngle()) {
             setpoint -= 360;
@@ -74,7 +74,7 @@ public class AutoUseVisionCorrection extends CommandBase {
         // the setpoint the current turret angle
       } else if (!m_vision.getGoalValidTarget()) {
         usingVisionSetpoint = false;
-        setpoint = m_turret.getTurretAngle();
+        setpoint = m_turret.getTurretAngleDegrees();
       }
 
       m_turret.setAbsoluteSetpointDegrees(setpoint);
