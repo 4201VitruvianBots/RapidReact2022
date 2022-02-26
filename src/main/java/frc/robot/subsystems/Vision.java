@@ -131,7 +131,7 @@ public class Vision extends SubsystemBase {
    * @return +/- 20 degrees
    */
   public double getIntakeTargetAngle(int targetIndex) {
-    if(getIntakeTargetsValid() == 1) {
+    if (getIntakeTargetsValid() == 1) {
       double[] nullValue = {-99};
       var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
       try {
@@ -140,9 +140,7 @@ public class Vision extends SubsystemBase {
         System.out.println("Vision Subsystem Error: getIntakeTargetAngle() illegal array access");
         return 0;
       }
-    }
-    else
-      return 0;
+    } else return 0;
   }
 
   /**
