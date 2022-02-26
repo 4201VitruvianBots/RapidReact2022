@@ -64,7 +64,7 @@ public class Vision extends SubsystemBase {
    * @return true: Goal Camera has a target. false: Goal Camera does not have a target.
    */
   public boolean getGoalValidTarget() {
-    return goal_camera.getEntry("tv").getDouble(0) == 1;
+    return true; //goal_camera.getEntry("tv").getDouble(0) == 1;
   }
 
   /**
@@ -83,11 +83,11 @@ public class Vision extends SubsystemBase {
    * @return Vertical angle (+/- 20 degrees)
    */
   public double getGoalTargetXAngle() {
-    return -goal_camera.getEntry("tx").getDouble(0);
+    return goal_camera.getEntry("tx").getDouble(0);
   }
 
   public Rotation2d getGoalTargetXRotation2d() {
-    return new Rotation2d(Units.degreesToRadians(getGoalTargetXAngle()));
+    return new Rotation2d(Units.degreesToRadians(getGoalTargetXAngle())).unaryMinus();
     //    return new Rotation2d(Units.degreesToRadians(10));
   }
 

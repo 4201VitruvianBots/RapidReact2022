@@ -151,8 +151,8 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 900));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1900));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2650));
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
