@@ -510,6 +510,13 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
+    SmartDashboardTab.putNumber("DriveTrain", "Left follower speed", driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity() 
+    * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    * 10.0);
+    SmartDashboardTab.putNumber("DriveTrain", "Right follower speed", driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity() 
+    * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    * 10.0);
+
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
   }

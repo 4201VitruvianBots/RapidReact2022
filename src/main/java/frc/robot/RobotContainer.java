@@ -150,7 +150,7 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 800));
     xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
 
@@ -161,8 +161,9 @@ public class RobotContainer {
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
+    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
