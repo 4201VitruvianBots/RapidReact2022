@@ -212,7 +212,7 @@ public final class Constants {
     public static final double kFlywheelKa =
         0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
-    public static final double rpmTolerance = 25.0;
+    public static final double rpmTolerance = 15.0;
 
     public static final double gearRatio = 1.0;
   }
