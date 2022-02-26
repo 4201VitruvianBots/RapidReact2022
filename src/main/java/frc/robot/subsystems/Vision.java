@@ -64,7 +64,7 @@ public class Vision extends SubsystemBase {
    * @return true: Goal Camera has a target. false: Goal Camera does not have a target.
    */
   public boolean getGoalValidTarget() {
-    return true; //goal_camera.getEntry("tv").getDouble(0) == 1;
+    return goal_camera.getEntry("tv").getDouble(0) == 1;
   }
 
   /**

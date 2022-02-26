@@ -27,6 +27,7 @@ import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.driveTrain.TestLatency;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
@@ -179,7 +180,8 @@ public class RobotContainer {
 
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
-        new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+        //new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
+        new TestLatency(m_driveTrain, m_vision));
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_vision, m_climber));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
