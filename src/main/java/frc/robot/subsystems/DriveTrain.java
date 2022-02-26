@@ -12,8 +12,11 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.unmanaged.Unmanaged;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -36,13 +39,12 @@ import java.util.Map;
 
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
-
   // PID constants for the drive motors
   private final double kP = 1.2532;
   private final double kI = 0;
   private final double kD = 0;
 
-  private final DifferentialDriveOdometry odometry;
+  private final DifferentialDrivePoseEstimator odometry;
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
           Constants.DriveTrain.ksVolts,
@@ -87,7 +89,10 @@ public class DriveTrain extends SubsystemBase {
     // navX.reset();
     pigeon.setYaw(0);
 
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
+    odometry = new DifferentialDrivePoseEstimator(Rotation2d.fromDegrees(getHeadingDegrees()), new Pose2d(),
+            new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
+            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
+            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)); // Global measurement standard deviations. X, Y, and theta.
 
     if (RobotBase.isSimulation()) {
       m_drivetrainSimulator =
@@ -196,6 +201,9 @@ public class DriveTrain extends SubsystemBase {
         * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
+  public DifferentialDrivePoseEstimator getOdometry() {
+    return odometry;
+  }
   /**
    * Gets the input current of a specified motor.
    *
@@ -401,7 +409,7 @@ public class DriveTrain extends SubsystemBase {
   // does not calculate the speeds correctly (possibly in DriveTrain.simulationPeriodic())
   public Pose2d getRobotPoseMeters() {
     if (RobotBase.isReal()) {
-      return odometry.getPoseMeters();
+      return odometry.getEstimatedPosition();
     } else {
       return m_drivetrainSimulator.getPose();
     }
@@ -558,11 +566,13 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getPoseMeters().getX());
+    SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
+        getSpeedsMetersPerSecond(),
         getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
         getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+
     updateSmartDashboard();
 
     double currentYaw = pigeon.getYaw();

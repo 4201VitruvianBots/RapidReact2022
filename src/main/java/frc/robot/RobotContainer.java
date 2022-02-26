@@ -53,17 +53,17 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_driveTrain = new DriveTrain();
   private final Controls m_controls = new Controls();
+  private final DriveTrain m_driveTrain = new DriveTrain();
   private final Turret m_turret = new Turret(m_driveTrain);
-  private final Vision m_vision = new Vision(m_controls);
+  private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret);
   private final Flywheel m_flywheel = new Flywheel(m_vision);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
   private final LED m_led = new LED();
   private final Climber m_climber = new Climber();
 
-  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
+  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_vision, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -205,7 +205,9 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    m_fieldSim.periodic();
+  }
 
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);

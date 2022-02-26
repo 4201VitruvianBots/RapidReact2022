@@ -85,6 +85,12 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         }
         // if vision has a target and the joystick has not moved, set visionsetpoint to true and run
         // the if statements below
+        else if(m_turret.usePoseEstimation()) {
+          double targetAngleRadians = Math.atan2(Constants.Vision.HUB_POSE.getY() - m_driveTrain.getRobotPoseMeters().getY(),
+                                                  Constants.Vision.HUB_POSE.getX() - m_driveTrain.getRobotPoseMeters().getX());
+          setpoint = Math.toDegrees(targetAngleRadians);
+
+        }
         else if (m_vision.getGoalValidTarget()) {
           usingVisionSetpoint = true;
           m_vision.setGoalCameraLedState(true);

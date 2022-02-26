@@ -249,7 +249,7 @@ public final class Constants {
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
-    public static final double gearRatio = 10.625 * 3.75;
+    public static final double gearRatio = (60.0 / 16) * (170.0 / 16.0);
   }
 
   public static final class Vision {
@@ -264,12 +264,14 @@ public final class Constants {
       LAUNCHPAD
     }
 
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 16.0;
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = 1.0;
     public static double LOWER_HUB_HEIGHT_METERS = 1.0;
+
+    public static Pose2d HUB_POSE = new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);

@@ -5,15 +5,20 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import frc.robot.Constants;
 import frc.robot.Constants.Sim.BallColor;
 import frc.robot.Constants.Sim.BallState;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 
 public class FieldSim {
   private final Field2d m_field2d;
   private final DriveTrain m_driveTrain;
+  private final Turret m_turret;
+  private final Vision m_vision;
   private final Intake m_intake;
   // Exclude 5 cargo in other robots and 2 with human players
   private final Cargo[] m_cargo = new Cargo[15];
@@ -22,11 +27,14 @@ public class FieldSim {
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
   private final Pose2d intakePoseHidden = new Pose2d(-50, 50, new Rotation2d());
 
-  public FieldSim(DriveTrain driveTrain, Intake intake) {
+  public FieldSim(DriveTrain driveTrain, Turret turret, Vision vision, Intake intake) {
     m_driveTrain = driveTrain;
+    m_turret = turret;
+    m_vision = vision;
     m_intake = intake;
 
     m_field2d = new Field2d();
+    SmartDashboard.putData("Field2d", m_field2d);
   }
 
   public void initSim() {
@@ -231,6 +239,12 @@ public class FieldSim {
         }
         break;
     }
+  }
+
+  public void periodic() {
+    m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
+    m_field2d.getObject("Turret").setPose(m_turret.getPose());
+    m_field2d.getObject("Vision").setPose(m_vision.getPoseFromHub());
   }
 
   public static class Cargo {

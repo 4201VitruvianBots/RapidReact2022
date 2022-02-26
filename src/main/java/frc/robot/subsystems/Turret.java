@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -29,6 +30,7 @@ public class Turret extends SubsystemBase {
   private double turretSetpointDegrees = 0; // angle
 
   private Constants.CONTROL_MODE controlMode = CONTROL_MODE.CLOSEDLOOP;
+  private boolean usePoseEstimation = true;
 
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
@@ -80,6 +82,10 @@ public class Turret extends SubsystemBase {
     controlMode = mode;
   }
 
+  public boolean usePoseEstimation() {
+    return usePoseEstimation;
+  }
+
   /** double returns encoder units of turret into degrees */
   public double getTurretAngleDegrees() {
     return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition()) / gearRatio;
@@ -87,6 +93,10 @@ public class Turret extends SubsystemBase {
 
   public Rotation2d getTurretRotation2d() {
     return new Rotation2d(Units.degreesToRadians(getTurretAngleDegrees()));
+  }
+
+  public Pose2d getPose() {
+    return new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(), m_driveTrain.getRobotPoseMeters().getRotation().plus(getTurretRotation2d()));
   }
 
   /** double returns encoder units of turret into degrees */

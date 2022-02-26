@@ -6,18 +6,25 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.Vision.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.net.PortForwarder;
+import edu.wpi.first.wpilibj.DigitalOutput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.utils.VisionData;
 
 public class Vision extends SubsystemBase {
 
   private final Controls m_controls;
+  private final DriveTrain m_drivetrain;
+  private final Turret m_turret;
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
 
@@ -26,9 +33,16 @@ public class Vision extends SubsystemBase {
 
   private INTAKE_TRACKING_TYPE intake_tracking_type = INTAKE_TRACKING_TYPE.CARGO;
 
+  private DigitalOutput rsl = new DigitalOutput(5);
+
+  private VisionData[] dataBuffer = new VisionData[100];
+  private int bufferIdx = 0;
+
   /** Creates a new Vision Subsystem. */
-  public Vision(Controls controls) {
+  public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
     m_controls = controls;
+    m_drivetrain = driveTrain;
+    m_turret = turret;
 
     switch (goal_camera_type) {
       case PHOTONVISION:
@@ -64,7 +78,7 @@ public class Vision extends SubsystemBase {
    * @return true: Goal Camera has a target. false: Goal Camera does not have a target.
    */
   public boolean getGoalValidTarget() {
-    return true; //goal_camera.getEntry("tv").getDouble(0) == 1;
+    return goal_camera.getEntry("tv").getDouble(0) == 1;
   }
 
   /**
@@ -83,7 +97,7 @@ public class Vision extends SubsystemBase {
    * @return Vertical angle (+/- 20 degrees)
    */
   public double getGoalTargetXAngle() {
-    return goal_camera.getEntry("tx").getDouble(0);
+    return -goal_camera.getEntry("tx").getDouble(0);
   }
 
   public Rotation2d getGoalTargetXRotation2d() {
@@ -116,8 +130,25 @@ public class Vision extends SubsystemBase {
    */
   public double getGoalTargetHorizontalDistance() {
     return Math.cos(
-            Units.degreesToRadians(INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
+            Units.degreesToRadians(GOAL_CAMERA_MOUNTING_ANGLE_DEGREES + getGoalTargetYAngle()))
         * getGoalTargetDirectDistance();
+  }
+
+  public Pose2d getPoseFromHub() {
+    double theta = m_drivetrain.getHeadingRotation2d()
+            .plus(m_turret.getTurretRotation2d())
+            .minus(getGoalTargetXRotation2d()).getRadians();
+
+//    Pose2d hubPose = HUB_POSE ? m_controls.getAllianceColor()
+
+    double x = (getGoalTargetHorizontalDistance() * Math.cos(theta)) + HUB_POSE.getX();
+    double y = (getGoalTargetHorizontalDistance() * Math.sin(theta)) + HUB_POSE.getY();
+
+    return new Pose2d(x, y, m_drivetrain.getHeadingRotation2d());
+  }
+
+  public double getDetectionTimestamp() {
+    return goal_camera.getEntry("timestamp").getDouble(0);
   }
 
   /**
@@ -217,6 +248,37 @@ public class Vision extends SubsystemBase {
     SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
   }
 
+  public VisionData getTimestampedData(double timestamp) {
+    int bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
+    for(int i = bufferLength ; i > -1; i--) {
+      VisionData data = dataBuffer[i];
+      if(data.timestamp < timestamp) {
+        return data;
+      }
+    }
+    return dataBuffer[0];
+  }
+
+  private void updateDataQueue() {
+    VisionData item = new VisionData(getDetectionTimestamp(),
+            getGoalTargetXAngle(), getGoalTargetYAngle(), m_drivetrain.getRobotPoseMeters());
+
+    if(bufferIdx > dataBuffer.length - 1) {
+      System.arraycopy(dataBuffer, 0 , dataBuffer, 1, dataBuffer.length - 1);
+      bufferIdx = dataBuffer.length - 1;
+    }
+    dataBuffer[bufferIdx] = item;
+
+    bufferIdx++;
+  }
+
+  private void updateVisionPose(){
+    if(getGoalValidTarget()) {
+      m_drivetrain.getOdometry().addVisionMeasurement(getPoseFromHub(),
+              Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 2.67 ms of latency
+    }
+  }
+
   /** Sends values to SmartDashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putBoolean("Has Goal Target", getGoalValidTarget());
@@ -226,12 +288,18 @@ public class Vision extends SubsystemBase {
 
     SmartDashboard.putBoolean("Has Intake Target", getIntakeTargetsValid() > 0);
     SmartDashboard.putNumber("Intake Angle", getIntakeTargetAngle(0));
+
+    SmartDashboardTab.putNumber("Vision","Hub Horizontal Distance", getGoalTargetHorizontalDistance());
+    SmartDashboardTab.putNumber("Vision","Hub X Angle", getGoalTargetXAngle());
+    SmartDashboardTab.putNumber("Vision","Hub Y Angle", getGoalTargetYAngle());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
+//    updateDataQueue();
+    updateVisionPose();
   }
 
   @Override
