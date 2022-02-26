@@ -107,7 +107,7 @@ public class LED extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case Intaking: // Solid Blue
-          setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
+          setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
           break;
         case Enabled: // Solid Green
           setPattern(0, 255, 0, 0, 0, AnimationTypes.Solid);
@@ -119,7 +119,7 @@ public class LED extends SubsystemBase {
           setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);
           break;
         case CanShoot: // Strobing Yellow
-          setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
+          setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
           break;
         default: // Strobing Purple
           setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
