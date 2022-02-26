@@ -57,11 +57,16 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Upper", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("TwoBallAuto-Upper-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
+        
+    Trajectory trajectory2 =
+        PathPlanner.loadPath("TwoBallAuto-Upper-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
 
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
 
     /**
@@ -74,9 +79,9 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret, 5),
+        new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntake(intake)
@@ -84,7 +89,10 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
             ),
         new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
+        new ParallelDeadlineGroup(
+            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)) // TODO: change this no parallel deadline group
+            ),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
@@ -93,9 +101,5 @@ public class TwoBallAutoUpper extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
-       // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-       // new SetAndHoldRpmSetpoint(flywheel, vision, 0));
-    //    new SchedulePostAutoCommand(.
-    //         driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
 }
