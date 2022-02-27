@@ -135,6 +135,8 @@ public class DriveTrain extends SubsystemBase {
       motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     }
 
     driveMotors.get(MotorPosition.LEFT_FRONT).setInverted(false);
@@ -487,6 +489,23 @@ public class DriveTrain extends SubsystemBase {
           "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
+
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left front temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left rear temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right front temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right rear temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
