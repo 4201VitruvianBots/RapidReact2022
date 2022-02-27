@@ -62,10 +62,10 @@ public class Turret extends SubsystemBase {
     SmartDashboardTab.putNumber("Turret", "Setpoint Test", setpoint);
 
     turretMotor.set(
-        ControlMode.Position,
-        degreesToEncoderUnits(setpoint) * gearRatio,
-        DemandType.ArbitraryFeedForward,
-        getArbitraryFF());
+        ControlMode.MotionMagic,
+        degreesToEncoderUnits(setpoint) * gearRatio);
+//        DemandType.ArbitraryFeedForward,
+//        getArbitraryFF());
   }
 
   public void resetEncoder() {
