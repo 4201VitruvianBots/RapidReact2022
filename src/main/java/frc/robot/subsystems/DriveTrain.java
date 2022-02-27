@@ -20,7 +20,6 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -89,10 +88,21 @@ public class DriveTrain extends SubsystemBase {
     // navX.reset();
     pigeon.setYaw(0);
 
-    odometry = new DifferentialDrivePoseEstimator(Rotation2d.fromDegrees(getHeadingDegrees()), new Pose2d(),
-            new MatBuilder<>(Nat.N5(), Nat.N1()).fill(0.02, 0.02, 0.01, 0.02, 0.02), // State measurement standard deviations. X, Y, theta.
-            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.02, 0.02, 0.01), // Local measurement standard deviations. Left encoder, right encoder, gyro.
-            new MatBuilder<>(Nat.N3(), Nat.N1()).fill(0.1, 0.1, 0.01)); // Global measurement standard deviations. X, Y, and theta.
+    odometry =
+        new DifferentialDrivePoseEstimator(
+            Rotation2d.fromDegrees(getHeadingDegrees()),
+            new Pose2d(),
+            new MatBuilder<>(Nat.N5(), Nat.N1())
+                .fill(
+                    0.02, 0.02, 0.01, 0.02,
+                    0.02), // State measurement standard deviations. X, Y, theta.
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(
+                    0.02, 0.02,
+                    0.01), // Local measurement standard deviations. Left encoder, right encoder,
+            // gyro.
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(0.1, 0.1, 0.01)); // Global measurement standard deviations. X, Y, and theta.
 
     if (RobotBase.isSimulation()) {
       m_drivetrainSimulator =
@@ -124,6 +134,8 @@ public class DriveTrain extends SubsystemBase {
       motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     }
 
     driveMotors.get(MotorPosition.LEFT_FRONT).setInverted(false);
@@ -251,8 +263,8 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    // setMotorPercentOutput(leftOutput, rightOutput);
-    setMotorTankDrive(leftOutput, rightOutput);
+    setMotorPercentOutput(leftOutput, rightOutput);
+    // setMotorTankDrive(leftOutput, rightOutput);
   }
 
   /**
@@ -477,6 +489,23 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
 
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left front temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left rear temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right front temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right rear temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
+
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
       SmartDashboardTab.putNumber(
@@ -566,7 +595,8 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
+    SmartDashboardTab.putNumber(
+        "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
         getSpeedsMetersPerSecond(),

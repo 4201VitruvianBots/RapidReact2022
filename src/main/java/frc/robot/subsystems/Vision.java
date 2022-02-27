@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.utils.VisionData;
 
 public class Vision extends SubsystemBase {
@@ -135,11 +134,14 @@ public class Vision extends SubsystemBase {
   }
 
   public Pose2d getPoseFromHub() {
-    double theta = m_drivetrain.getHeadingRotation2d()
+    double theta =
+        m_drivetrain
+            .getHeadingRotation2d()
             .plus(m_turret.getTurretRotation2d())
-            .minus(getGoalTargetXRotation2d()).getRadians();
+            .minus(getGoalTargetXRotation2d())
+            .getRadians();
 
-//    Pose2d hubPose = HUB_POSE ? m_controls.getAllianceColor()
+    //    Pose2d hubPose = HUB_POSE ? m_controls.getAllianceColor()
 
     double x = (getGoalTargetHorizontalDistance() * Math.cos(theta)) + HUB_POSE.getX();
     double y = (getGoalTargetHorizontalDistance() * Math.sin(theta)) + HUB_POSE.getY();
@@ -250,9 +252,9 @@ public class Vision extends SubsystemBase {
 
   public VisionData getTimestampedData(double timestamp) {
     int bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
-    for(int i = bufferLength ; i > -1; i--) {
+    for (int i = bufferLength; i > -1; i--) {
       VisionData data = dataBuffer[i];
-      if(data.timestamp < timestamp) {
+      if (data.timestamp < timestamp) {
         return data;
       }
     }
@@ -260,11 +262,15 @@ public class Vision extends SubsystemBase {
   }
 
   private void updateDataQueue() {
-    VisionData item = new VisionData(getDetectionTimestamp(),
-            getGoalTargetXAngle(), getGoalTargetYAngle(), m_drivetrain.getRobotPoseMeters());
+    VisionData item =
+        new VisionData(
+            getDetectionTimestamp(),
+            getGoalTargetXAngle(),
+            getGoalTargetYAngle(),
+            m_drivetrain.getRobotPoseMeters());
 
-    if(bufferIdx > dataBuffer.length - 1) {
-      System.arraycopy(dataBuffer, 0 , dataBuffer, 1, dataBuffer.length - 1);
+    if (bufferIdx > dataBuffer.length - 1) {
+      System.arraycopy(dataBuffer, 0, dataBuffer, 1, dataBuffer.length - 1);
       bufferIdx = dataBuffer.length - 1;
     }
     dataBuffer[bufferIdx] = item;
@@ -272,9 +278,12 @@ public class Vision extends SubsystemBase {
     bufferIdx++;
   }
 
-  private void updateVisionPose(){
-    if(getGoalValidTarget()) {
-      m_drivetrain.getOdometry().addVisionMeasurement(getPoseFromHub(),
+  private void updateVisionPose() {
+    if (getGoalValidTarget()) {
+      m_drivetrain
+          .getOdometry()
+          .addVisionMeasurement(
+              getPoseFromHub(),
               Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 2.67 ms of latency
     }
   }
@@ -289,16 +298,17 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putBoolean("Has Intake Target", getIntakeTargetsValid() > 0);
     SmartDashboard.putNumber("Intake Angle", getIntakeTargetAngle(0));
 
-    SmartDashboardTab.putNumber("Vision","Hub Horizontal Distance", getGoalTargetHorizontalDistance());
-    SmartDashboardTab.putNumber("Vision","Hub X Angle", getGoalTargetXAngle());
-    SmartDashboardTab.putNumber("Vision","Hub Y Angle", getGoalTargetYAngle());
+    SmartDashboardTab.putNumber(
+        "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
+    SmartDashboardTab.putNumber("Vision", "Hub X Angle", getGoalTargetXAngle());
+    SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getGoalTargetYAngle());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-//    updateDataQueue();
+    //    updateDataQueue();
     updateVisionPose();
   }
 

@@ -96,7 +96,9 @@ public class Turret extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(), m_driveTrain.getRobotPoseMeters().getRotation().plus(getTurretRotation2d()));
+    return new Pose2d(
+        m_driveTrain.getRobotPoseMeters().getTranslation(),
+        m_driveTrain.getRobotPoseMeters().getRotation().plus(getTurretRotation2d()));
   }
 
   /** double returns encoder units of turret into degrees */

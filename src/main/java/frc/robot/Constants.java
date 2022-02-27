@@ -271,7 +271,8 @@ public final class Constants {
     public static double UPPER_HUB_HEIGHT_METERS = 1.0;
     public static double LOWER_HUB_HEIGHT_METERS = 1.0;
 
-    public static Pose2d HUB_POSE = new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
+    public static Pose2d HUB_POSE =
+        new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
