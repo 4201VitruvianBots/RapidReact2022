@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.controls.OverrideAllianceColor;
 
@@ -23,7 +24,8 @@ public class Controls extends SubsystemBase {
     DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
-    } else if (DriverStation.isFMSAttached()) {
+//    } else if (DriverStation.isFMSAttached()) {
+    } else {
       alliance = DriverStation.getAlliance();
       if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
         // System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
@@ -70,6 +72,7 @@ public class Controls extends SubsystemBase {
 
     Shuffleboard.getTab("Controls")
         .addString("alliance_string", () -> getAllianceColor().toString());
+    SmartDashboardTab.putString("Controls", "Alliance String", getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */

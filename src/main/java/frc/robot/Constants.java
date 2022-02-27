@@ -232,7 +232,7 @@ public final class Constants {
     //    public static final double kI = 0.00001;
     //    public static final double kD = 0.0;
     public static final double kF = 0.04;
-    public static final double kP = 0.1;
+    public static final double kP = 0.15;
     public static final double kI = 0.00001;
     public static final double kD = 0.0;
 
@@ -264,7 +264,7 @@ public final class Constants {
       LAUNCHPAD
     }
 
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 16.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0;
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;

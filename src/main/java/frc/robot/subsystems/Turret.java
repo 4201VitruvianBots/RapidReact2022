@@ -62,7 +62,7 @@ public class Turret extends SubsystemBase {
     SmartDashboardTab.putNumber("Turret", "Setpoint Test", setpoint);
 
     turretMotor.set(
-        ControlMode.MotionMagic,
+        ControlMode.Position,
         degreesToEncoderUnits(setpoint) * gearRatio,
         DemandType.ArbitraryFeedForward,
         getArbitraryFF());
