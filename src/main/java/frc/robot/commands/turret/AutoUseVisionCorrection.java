@@ -48,7 +48,7 @@ public class AutoUseVisionCorrection extends CommandBase {
         // if we are not turning then turn on vision leds and set the turret setpoint to the turret
         // angle + targetx
         if (!turning) {
-          m_vision.setGoalCameraLedState(true);
+          m_vision.setLimelightLEDState(true);
           setpoint =
               m_turret.getTurretAngleDegrees()
                   + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL);
