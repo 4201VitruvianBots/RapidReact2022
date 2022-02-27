@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import static frc.robot.Constants.Turret.*;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -61,11 +60,9 @@ public class Turret extends SubsystemBase {
 
     SmartDashboardTab.putNumber("Turret", "Setpoint Test", setpoint);
 
-    turretMotor.set(
-        ControlMode.MotionMagic,
-        degreesToEncoderUnits(setpoint) * gearRatio);
-//        DemandType.ArbitraryFeedForward,
-//        getArbitraryFF());
+    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * gearRatio);
+    //        DemandType.ArbitraryFeedForward,
+    //        getArbitraryFF());
   }
 
   public void resetEncoder() {

@@ -122,12 +122,14 @@ public class Flywheel extends SubsystemBase {
                 < hubToleranceDegrees;
 
     boolean checkRPM = false;
-    if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
-      timerStart = true;
-      timestamp = Timer.getFPGATimestamp();
-    } else if (Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance() && timerStart) {
-      timerStart = false;
-      timestamp = 0;
+    if (getSetpointRPM() > 0) {
+      if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
+        timerStart = true;
+        timestamp = Timer.getFPGATimestamp();
+      } else if (Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance() && timerStart) {
+        timerStart = false;
+        timestamp = 0;
+      }
     }
 
     if (timestamp != 0) {
