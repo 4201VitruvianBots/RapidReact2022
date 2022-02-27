@@ -8,6 +8,7 @@ import static frc.robot.Constants.Vision.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,7 +18,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.utils.VisionData;
 
 public class Vision extends SubsystemBase {
@@ -134,17 +134,30 @@ public class Vision extends SubsystemBase {
         * getGoalTargetDirectDistance();
   }
 
+  public Pose2d getHubPose() {
+    Pose2d hubPose = HUB_POSE;
+    Rotation2d rotation =
+        new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) : 0);
+    return new Pose2d(hubPose.getTranslation(), rotation);
+  }
+
   public Pose2d getPoseFromHub() {
-    double theta = m_drivetrain.getHeadingRotation2d()
+    double theta =
+        m_drivetrain
+            .getHeadingRotation2d()
             .plus(m_turret.getTurretRotation2d())
-            .minus(getGoalTargetXRotation2d()).getRadians();
+            .minus(getGoalTargetXRotation2d())
+            .getRadians();
 
-//    Pose2d hubPose = HUB_POSE ? m_controls.getAllianceColor()
+    double x = (getGoalTargetHorizontalDistance() * Math.cos(theta));
+    double y = (getGoalTargetHorizontalDistance() * Math.sin(theta));
 
-    double x = (getGoalTargetHorizontalDistance() * Math.cos(theta)) + HUB_POSE.getX();
-    double y = (getGoalTargetHorizontalDistance() * Math.sin(theta)) + HUB_POSE.getY();
+    Translation2d robotPose =
+        new Translation2d(x, y)
+            .rotateBy(getHubPose().getRotation())
+            .plus(getHubPose().getTranslation());
 
-    return new Pose2d(x, y, m_drivetrain.getHeadingRotation2d());
+    return new Pose2d(robotPose, m_drivetrain.getHeadingRotation2d());
   }
 
   public double getDetectionTimestamp() {
@@ -250,9 +263,9 @@ public class Vision extends SubsystemBase {
 
   public VisionData getTimestampedData(double timestamp) {
     int bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
-    for(int i = bufferLength ; i > -1; i--) {
+    for (int i = bufferLength; i > -1; i--) {
       VisionData data = dataBuffer[i];
-      if(data.timestamp < timestamp) {
+      if (data.timestamp < timestamp) {
         return data;
       }
     }
@@ -260,11 +273,15 @@ public class Vision extends SubsystemBase {
   }
 
   private void updateDataQueue() {
-    VisionData item = new VisionData(getDetectionTimestamp(),
-            getGoalTargetXAngle(), getGoalTargetYAngle(), m_drivetrain.getRobotPoseMeters());
+    VisionData item =
+        new VisionData(
+            getDetectionTimestamp(),
+            getGoalTargetXAngle(),
+            getGoalTargetYAngle(),
+            m_drivetrain.getRobotPoseMeters());
 
-    if(bufferIdx > dataBuffer.length - 1) {
-      System.arraycopy(dataBuffer, 0 , dataBuffer, 1, dataBuffer.length - 1);
+    if (bufferIdx > dataBuffer.length - 1) {
+      System.arraycopy(dataBuffer, 0, dataBuffer, 1, dataBuffer.length - 1);
       bufferIdx = dataBuffer.length - 1;
     }
     dataBuffer[bufferIdx] = item;
@@ -272,34 +289,55 @@ public class Vision extends SubsystemBase {
     bufferIdx++;
   }
 
-  private void updateVisionPose(){
-    if(getGoalValidTarget()) {
-      m_drivetrain.getOdometry().addVisionMeasurement(getPoseFromHub(),
+  private void updateVisionPose() {
+    if (getGoalValidTarget()) {
+      m_drivetrain
+          .getOdometry()
+          .addVisionMeasurement(
+              getPoseFromHub(),
               Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 2.67 ms of latency
     }
+  }
+
+  private void updateTurretArbitraryFF() {
+    double angle =
+        Math.sin(
+            m_turret.getTurretRotation2d().minus(m_drivetrain.getHeadingRotation2d()).getRadians());
+    double robotVelocity =
+        (m_drivetrain.getSpeedsMetersPerSecond().leftMetersPerSecond
+                + m_drivetrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
+            / 2.0;
+    double angularVelocity = 0;
+    if(getGoalValidTarget())
+      angularVelocity = angle * robotVelocity / getGoalTargetHorizontalDistance();
+    double tangentalVelocity = Units.degreesToRadians(m_drivetrain.getHeadingRateDegrees());
+    double ff = (angularVelocity + tangentalVelocity) * 0.006;
+    SmartDashboardTab.putNumber("Vision", "Turret FF", ff);
+    m_turret.setArbitraryFF(ff);
   }
 
   /** Sends values to SmartDashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putBoolean("Has Goal Target", getGoalValidTarget());
     SmartDashboard.putNumber("Goal Angle", getGoalTargetXAngle());
-    SmartDashboard.putNumber("Goal Direct Distance", getGoalTargetDirectDistance());
     SmartDashboard.putNumber("Goal Horizontal Distance", getGoalTargetHorizontalDistance());
 
     SmartDashboard.putBoolean("Has Intake Target", getIntakeTargetsValid() > 0);
     SmartDashboard.putNumber("Intake Angle", getIntakeTargetAngle(0));
 
-    SmartDashboardTab.putNumber("Vision","Hub Horizontal Distance", getGoalTargetHorizontalDistance());
-    SmartDashboardTab.putNumber("Vision","Hub X Angle", getGoalTargetXAngle());
-    SmartDashboardTab.putNumber("Vision","Hub Y Angle", getGoalTargetYAngle());
+    SmartDashboardTab.putNumber(
+        "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
+    SmartDashboardTab.putNumber("Vision", "Hub X Angle", getGoalTargetXAngle());
+    SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getGoalTargetYAngle());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-//    updateDataQueue();
+    //    updateDataQueue();
     updateVisionPose();
+    updateTurretArbitraryFF();
   }
 
   @Override

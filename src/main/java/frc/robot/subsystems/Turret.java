@@ -15,7 +15,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -31,6 +30,8 @@ public class Turret extends SubsystemBase {
 
   private Constants.CONTROL_MODE controlMode = CONTROL_MODE.CLOSEDLOOP;
   private boolean usePoseEstimation = true;
+
+  private double arbitraryFF;
 
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
@@ -58,16 +59,13 @@ public class Turret extends SubsystemBase {
   private void updateClosedLoopPosition() {
     double setpoint = Math.min(Math.max(turretSetpointDegrees, minAngle), maxAngle);
 
-    SmartDashboard.putNumber("Turret Setpoint Test", setpoint);
-
-    //    double ff = -m_driveTrain.getHeadingRateDegrees() * 0.0001;
-    double ff = 0;
+    SmartDashboardTab.putNumber("Turret", "Setpoint Test", setpoint);
 
     turretMotor.set(
         ControlMode.MotionMagic,
         degreesToEncoderUnits(setpoint) * gearRatio,
         DemandType.ArbitraryFeedForward,
-        ff);
+        getArbitraryFF());
   }
 
   public void resetEncoder() {
@@ -96,7 +94,9 @@ public class Turret extends SubsystemBase {
   }
 
   public Pose2d getPose() {
-    return new Pose2d(m_driveTrain.getRobotPoseMeters().getTranslation(), m_driveTrain.getRobotPoseMeters().getRotation().plus(getTurretRotation2d()));
+    return new Pose2d(
+        m_driveTrain.getRobotPoseMeters().getTranslation(),
+        m_driveTrain.getRobotPoseMeters().getRotation().plus(getTurretRotation2d()));
   }
 
   /** double returns encoder units of turret into degrees */
@@ -183,6 +183,14 @@ public class Turret extends SubsystemBase {
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
     return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees()) < kErrorBand;
+  }
+
+  public double getArbitraryFF() {
+    return arbitraryFF;
+  }
+
+  public void setArbitraryFF(double arbitraryFF) {
+    this.arbitraryFF = arbitraryFF;
   }
 
   private void updateShuffleboard() {

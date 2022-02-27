@@ -8,6 +8,7 @@
 package frc.robot.commands.turret;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -85,13 +86,20 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         }
         // if vision has a target and the joystick has not moved, set visionsetpoint to true and run
         // the if statements below
-        else if(m_turret.usePoseEstimation()) {
-          double targetAngleRadians = Math.atan2(Constants.Vision.HUB_POSE.getY() - m_driveTrain.getRobotPoseMeters().getY(),
-                                                  Constants.Vision.HUB_POSE.getX() - m_driveTrain.getRobotPoseMeters().getX());
-          setpoint = Math.toDegrees(targetAngleRadians);
+        else if (m_turret.usePoseEstimation()) {
+          Translation2d goalToRobot =
+              m_vision
+                  .getHubPose()
+                  .getTranslation()
+                  .minus(m_driveTrain.getRobotPoseMeters().getTranslation());
+          Rotation2d targetAngleRotation =
+              new Rotation2d(Math.atan2(goalToRobot.getY(), goalToRobot.getX()));
+          targetAngleRotation = targetAngleRotation.minus(m_driveTrain.getHeadingRotation2d());
 
-        }
-        else if (m_vision.getGoalValidTarget()) {
+          setpoint = targetAngleRotation.getDegrees();
+
+          m_turret.setAbsoluteSetpointDegrees(setpoint);
+        } else if (m_vision.getGoalValidTarget() && !m_turret.usePoseEstimation()) {
           usingVisionSetpoint = true;
           m_vision.setGoalCameraLedState(true);
           currentVisionSetpoint = m_vision.getGoalTargetXRotation2d();
@@ -107,7 +115,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
         currentTurretSetpoint = Rotation2d.fromDegrees(m_turret.getTurretAngleDegrees());
 
-        if (!joystickMoved) {
+        if (!joystickMoved && !m_turret.usePoseEstimation()) {
           setpoint =
               currentVisionSetpoint
                   .plus(currentTurretSetpoint)

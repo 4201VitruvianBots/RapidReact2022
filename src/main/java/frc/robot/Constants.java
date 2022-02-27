@@ -239,8 +239,8 @@ public final class Constants {
     public static final double kErrorBand = 50;
     public static final double kI_Zone = 900;
     public static final double kMaxIAccum = 1000;
-    public static final double kCruiseVelocity = 5000;
-    public static final double kMotionAcceleration = 60000;
+    public static final double kCruiseVelocity = 20000;
+    public static final double kMotionAcceleration = 30000;
 
     public static final double kS = 0.83016; // 0.81464;
     public static final double kV = 0.012184; // 0.16822;
@@ -271,7 +271,8 @@ public final class Constants {
     public static double UPPER_HUB_HEIGHT_METERS = 1.0;
     public static double LOWER_HUB_HEIGHT_METERS = 1.0;
 
-    public static Pose2d HUB_POSE = new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
+    public static Pose2d HUB_POSE =
+        new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
