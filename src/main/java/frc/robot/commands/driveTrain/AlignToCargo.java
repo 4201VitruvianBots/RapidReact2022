@@ -9,6 +9,7 @@ package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
@@ -48,8 +49,10 @@ public class AlignToCargo extends CommandBase {
 
     double throttle = joystickY;
     double turn = joystickX;
-    if (m_vision.getIntakeTargetsValid() > 0) {
-      double setpoint = m_driveTrain.getHeadingDegrees() + m_vision.getIntakeTargetAngle(0);
+    if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
+      double setpoint =
+          m_driveTrain.getHeadingDegrees()
+              + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.INTAKE);
 
       double turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
 

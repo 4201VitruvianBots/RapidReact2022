@@ -194,6 +194,7 @@ public final class Constants {
   public final class Flywheel {
     public static final int flywheelMotorA = 40;
     public static final int flywheelMotorB = 41;
+    public static final double hubToleranceDegrees = 1;
 
     public static final int encoderUnitsPerRotation = 2048;
 
@@ -211,7 +212,7 @@ public final class Constants {
     public static final double kFlywheelKa =
         0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
-    public static final double rpmTolerance = 25.0;
+    public static final double rpmTolerance = 15.0;
 
     public static final double gearRatio = 1.0;
   }
@@ -223,20 +224,23 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;
-    public static final double minAngle = -80;
-    public static final double maxAngle = 80;
+    public static final double minAngle = -60;
+    public static final double maxAngle = 60;
 
-    public static final double kF = 0.07;
-    // public static final double kP = 7.28E-05;
-    public static final double kP = 0.1;
-    public static final double kI = 0.00001;
+    //    public static final double kF = 0.07;
+    //    public static final double kP = 0.1;
+    //    public static final double kI = 0.00001;
+    //    public static final double kD = 0.0;
+    public static final double kF = 0.04;
+    public static final double kP = 0.15;
+    public static final double kI = 0.0008;
     public static final double kD = 0.0;
 
     public static final double kErrorBand = 50;
     public static final double kI_Zone = 900;
-    public static final double kMaxIAccum = 1000000;
-    public static final double kCruiseVelocity = 18000;
-    public static final double kMotionAcceleration = 12000;
+    public static final double kMaxIAccum = 1000;
+    public static final double kCruiseVelocity = 20000;
+    public static final double kMotionAcceleration = 30000;
 
     public static final double kS = 0.83016; // 0.81464;
     public static final double kV = 0.012184; // 0.16822;
@@ -245,7 +249,7 @@ public final class Constants {
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
-    public static final double gearRatio = 10.625 * 3.75;
+    public static final double gearRatio = (60.0 / 16.0) * (170.0 / 16.0);
   }
 
   public static final class Vision {
@@ -255,17 +259,25 @@ public final class Constants {
       PHOTONVISION
     }
 
+    public enum CAMERA_POSITION {
+      GOAL,
+      INTAKE
+    }
+
     public enum INTAKE_TRACKING_TYPE {
       CARGO,
       LAUNCHPAD
     }
 
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0;
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = 1.0;
     public static double LOWER_HUB_HEIGHT_METERS = 1.0;
+
+    public static Pose2d HUB_POSE =
+        new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);

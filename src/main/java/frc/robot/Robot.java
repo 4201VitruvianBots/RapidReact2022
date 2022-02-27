@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -30,6 +31,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
+    addPeriodic(() -> NetworkTableInstance.getDefault().flush(), 0.02, 0.01);
   }
 
   /**

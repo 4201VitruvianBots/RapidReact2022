@@ -12,12 +12,14 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.Pigeon2;
 import com.ctre.phoenix.unmanaged.Unmanaged;
+import edu.wpi.first.math.MatBuilder;
+import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -36,13 +38,12 @@ import java.util.Map;
 
 /** A differential drivetrain with two falcon motors on each side */
 public class DriveTrain extends SubsystemBase {
-
   // PID constants for the drive motors
   private final double kP = 1.2532;
   private final double kI = 0;
   private final double kD = 0;
 
-  private final DifferentialDriveOdometry odometry;
+  private final DifferentialDrivePoseEstimator odometry;
   private final SimpleMotorFeedforward feedforward =
       new SimpleMotorFeedforward(
           Constants.DriveTrain.ksVolts,
@@ -73,7 +74,8 @@ public class DriveTrain extends SubsystemBase {
   double m_leftOutput, m_rightOutput;
 
   private final Pigeon2 pigeon = new Pigeon2(Constants.DriveTrain.pigeonID, "rio");
-
+  private double lastYaw = 0;
+  private double yawPerSecond = 0;
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
@@ -86,7 +88,23 @@ public class DriveTrain extends SubsystemBase {
     // navX.reset();
     pigeon.setYaw(0);
 
-    odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeadingDegrees()));
+    odometry =
+        new DifferentialDrivePoseEstimator(
+            Rotation2d.fromDegrees(getHeadingDegrees()),
+            new Pose2d(),
+            new MatBuilder<>(Nat.N5(), Nat.N1())
+                .fill(
+                    0.02, 0.02, 0.01, 0.02,
+                    0.02), // State measurement standard deviations. X, Y, theta.
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(
+                    0.02, 0.02,
+                    0.01), // Local measurement standard deviations. Left encoder, right encoder,
+            // gyro.
+            new MatBuilder<>(Nat.N3(), Nat.N1())
+                .fill(
+                    0.008, 0.008,
+                    0.0001)); // Global measurement standard deviations. X, Y, and theta.
 
     if (RobotBase.isSimulation()) {
       m_drivetrainSimulator =
@@ -118,6 +136,8 @@ public class DriveTrain extends SubsystemBase {
       motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     }
 
     driveMotors.get(MotorPosition.LEFT_FRONT).setInverted(false);
@@ -162,6 +182,14 @@ public class DriveTrain extends SubsystemBase {
     return Math.IEEEremainder(pigeon.getYaw(), 360);
   }
 
+  public double getHeadingRateDegrees() {
+    return yawPerSecond;
+  }
+
+  public Rotation2d getHeadingRotation2d() {
+    return new Rotation2d(Units.degreesToRadians(getHeadingDegrees()));
+  }
+
   public void resetAngle() {
     pigeon.setYaw(0);
     pigeon.setAccumZAngle(0);
@@ -187,6 +215,9 @@ public class DriveTrain extends SubsystemBase {
         * Constants.DriveTrain.kEncoderDistancePerPulseMeters;
   }
 
+  public DifferentialDrivePoseEstimator getOdometry() {
+    return odometry;
+  }
   /**
    * Gets the input current of a specified motor.
    *
@@ -392,7 +423,7 @@ public class DriveTrain extends SubsystemBase {
   // does not calculate the speeds correctly (possibly in DriveTrain.simulationPeriodic())
   public Pose2d getRobotPoseMeters() {
     if (RobotBase.isReal()) {
-      return odometry.getPoseMeters();
+      return odometry.getEstimatedPosition();
     } else {
       return m_drivetrainSimulator.getPose();
     }
@@ -460,6 +491,23 @@ public class DriveTrain extends SubsystemBase {
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
 
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left front temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Left rear temperature (C)",
+          driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right front temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
+      SmartDashboardTab.putNumber(
+          "DriveTrain",
+          "Right rear temperature (C)",
+          driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
+
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
       SmartDashboardTab.putNumber(
@@ -510,6 +558,19 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
+    SmartDashboardTab.putNumber(
+        "DriveTrain",
+        "Left follower speed",
+        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
+            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+            * 10.0);
+    SmartDashboardTab.putNumber(
+        "DriveTrain",
+        "Right follower speed",
+        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
+            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+            * 10.0);
+
     SmartDashboard.putData(
         "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
   }
@@ -536,12 +597,19 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboardTab.putNumber("DriveTrain", "WheelDistance", odometry.getPoseMeters().getX());
+    SmartDashboardTab.putNumber(
+        "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
+        getSpeedsMetersPerSecond(),
         getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
         getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+
     updateSmartDashboard();
+
+    double currentYaw = pigeon.getYaw();
+    yawPerSecond = currentYaw - lastYaw / 0.02;
+    lastYaw = currentYaw;
   }
 
   @Override
