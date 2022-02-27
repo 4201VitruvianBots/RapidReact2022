@@ -16,6 +16,7 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
+import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
 import frc.robot.subsystems.DriveTrain;
@@ -55,25 +56,25 @@ public class FourBallAuto extends SequentialCommandGroup {
      */
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "FourBallAuto-1", Units.feetToMeters(4), Units.feetToMeters(2), true);
+            "FourBallAuto-1", Units.feetToMeters(12), Units.feetToMeters(6), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FourBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(2), false);
+            "FourBallAuto-2", Units.feetToMeters(12), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FourBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(2), false);
+            "FourBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(8), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FourBallAuto-4", Units.feetToMeters(4), Units.feetToMeters(2), false);
+            "FourBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(8), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);   
 
@@ -81,25 +82,27 @@ public class FourBallAuto extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
+        new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
         new RunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
          command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
             new RunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3600),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
+            new SetTurretAbsoluteSetpointDegrees(turret, 0),
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        //new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
             new RunIndexer(indexer, flywheel).withTimeout(2),
