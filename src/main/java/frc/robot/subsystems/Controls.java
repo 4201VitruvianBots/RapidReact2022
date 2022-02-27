@@ -24,8 +24,8 @@ public class Controls extends SubsystemBase {
     DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
-//    } else if (DriverStation.isFMSAttached()) {
-    } else {
+    } else if (DriverStation.isFMSAttached()) {
+      //    } else {
       alliance = DriverStation.getAlliance();
       if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
         // System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");

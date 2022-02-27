@@ -35,6 +35,7 @@ public class Flywheel extends SubsystemBase {
     new TalonFX(Constants.Flywheel.flywheelMotorA), new TalonFX(Constants.Flywheel.flywheelMotorB)
   };
 
+  private final Turret m_turret;
   private final Vision m_vision;
   private final Timer timeout = new Timer();
   public double rpmOutput;
@@ -77,7 +78,9 @@ public class Flywheel extends SubsystemBase {
   private final LinearSystemLoop<N1, N1, N1> m_loop =
       new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
 
-  public Flywheel(Vision vision) {
+  public Flywheel(Vision vision, Turret turret) {
+    m_vision = vision;
+    m_turret = turret;
     // Setup shooter motors (Falcons)
     for (TalonFX flywheelMotor : flywheelMotors) {
       flywheelMotor.configFactoryDefault();
@@ -90,7 +93,6 @@ public class Flywheel extends SubsystemBase {
     flywheelMotors[1].setInverted(true);
     flywheelMotors[1].follow(flywheelMotors[0], FollowerType.PercentOutput);
 
-    m_vision = vision;
     m_controller.latencyCompensate(m_flywheelPlant, 0.02, 0.010);
   }
   /** @param output sets the controlmode percentoutput of outtakemotor0 */
@@ -108,26 +110,31 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-    //   if ((Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart)) {
-    //   timerStart = true;
-    //   timer.reset();
-    //   timer.start();
-    //   } else if ((Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance()) && timerStart) {
-    //   timerStart = false;
-    //   timer.reset();
-    //   timer.stop();
-    //   canShoot = false;
-    //   }
+    boolean checkTurretAngle;
+    if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
+      checkTurretAngle = m_turret.onTarget();
+    } else {
+      checkTurretAngle = true;
+    }
+    boolean checkVisionAngle =
+        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
+            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+                < hubToleranceDegrees;
 
-    //   if (timer.get() > 0.1) {
-    //   canShoot = true;
-    //   }
-    //     canShoot = true;
-    //   }
-    canShoot =
-        m_vision.getGoalValidTarget()
-            && Math.abs(m_vision.getGoalTargetYAngle()) < hubToleranceDegrees
-            && Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance();
+    boolean checkRPM = false;
+    if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
+      timerStart = true;
+      timestamp = Timer.getFPGATimestamp();
+    } else if (Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance() && timerStart) {
+      timerStart = false;
+      timestamp = 0;
+    }
+
+    if (timestamp != 0) {
+      checkRPM = Timer.getFPGATimestamp() - timestamp > 0.6;
+    }
+
+    canShoot = checkTurretAngle && checkVisionAngle && checkRPM;
   }
 
   public boolean canShoot() {

@@ -68,7 +68,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
     // If we are not climbing
     if (!m_climber.getElevatorClimbState()) {
-      //// If the turret is using sensor feedback
+      // If the turret is using sensor feedback
       if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
         currentRobotHeading = m_driveTrain.getHeadingRotation2d();
         joystickMoved =
@@ -84,8 +84,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
         }
-        // if vision has a target and the joystick has not moved, set visionsetpoint to true and run
-        // the if statements below
+        // If we are estimating the hub's location using the pose of the hub and the robot
         else if (m_turret.usePoseEstimation()) {
           Translation2d goalToRobot =
               m_vision
@@ -99,22 +98,27 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           setpoint = targetAngleRotation.getDegrees();
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
-        } else if (m_vision.getGoalValidTarget() && !m_turret.usePoseEstimation()) {
+          // if vision has a target and the joystick has not moved, set visionsetpoint to true and
+          // run
+          // the if statements below
+        } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
+            && !m_turret.usePoseEstimation()) {
           usingVisionSetpoint = true;
           m_vision.setGoalCameraLedState(true);
-          currentVisionSetpoint = m_vision.getGoalTargetXRotation2d();
+          currentVisionSetpoint =
+              m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.GOAL);
         }
         // else if vision doesn't have a target and the joysticks have not moved,
-        // set usingVisionSetpoint to false and make the turret angle the setpoint
-        else if (!m_vision.getGoalValidTarget()) {
+        // set usingVisionSetpoint to false and turn off the LEDs if possible
+        else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
           usingVisionSetpoint = false;
           m_vision.setGoalCameraLedState(false);
         }
-        // if the controlmode is 1, set the current setpoint as the turret setpoint
-        // else set the percent output of the turret to the movement of the left joystick * 0.2
 
         currentTurretSetpoint = Rotation2d.fromDegrees(m_turret.getTurretAngleDegrees());
 
+        // If no manual input is used and we're not using pose estimation, set the setpoint to the
+        // vision setpoint
         if (!joystickMoved && !m_turret.usePoseEstimation()) {
           setpoint =
               currentVisionSetpoint

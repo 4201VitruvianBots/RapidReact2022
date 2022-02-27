@@ -103,7 +103,8 @@ public class DriveTrain extends SubsystemBase {
             // gyro.
             new MatBuilder<>(Nat.N3(), Nat.N1())
                 .fill(
-                    0.008, 0.008, 0.01)); // Global measurement standard deviations. X, Y, and theta.
+                    0.008, 0.008,
+                    0.0001)); // Global measurement standard deviations. X, Y, and theta.
 
     if (RobotBase.isSimulation()) {
       m_drivetrainSimulator =

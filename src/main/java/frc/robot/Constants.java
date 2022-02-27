@@ -194,7 +194,7 @@ public final class Constants {
   public final class Flywheel {
     public static final int flywheelMotorA = 40;
     public static final int flywheelMotorB = 41;
-    public static final double hubToleranceDegrees = 3;
+    public static final double hubToleranceDegrees = 1;
 
     public static final int encoderUnitsPerRotation = 2048;
 
@@ -257,6 +257,11 @@ public final class Constants {
       OAK,
       LIMELIGHT,
       PHOTONVISION
+    }
+
+    public enum CAMERA_POSITION {
+      GOAL,
+      INTAKE
     }
 
     public enum INTAKE_TRACKING_TYPE {

@@ -43,13 +43,15 @@ public class AutoUseVisionCorrection extends CommandBase {
     //// if the turret is using sensor feedback
     if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
       // if vision has a valid target to shoot at then set usingVisinoSetpoint to true
-      if (m_vision.getGoalValidTarget()) {
+      if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
         usingVisionSetpoint = true;
         // if we are not turning then turn on vision leds and set the turret setpoint to the turret
         // angle + targetx
         if (!turning) {
           m_vision.setGoalCameraLedState(true);
-          setpoint = m_turret.getTurretAngleDegrees() + m_vision.getGoalTargetXAngle();
+          setpoint =
+              m_turret.getTurretAngleDegrees()
+                  + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL);
           // if the setpoint is greater than the max turret angle then subtract 360 from it
           if (setpoint > m_turret.getMaxAngle()) {
             setpoint -= 360;
@@ -72,7 +74,7 @@ public class AutoUseVisionCorrection extends CommandBase {
         }
         // else if vision does not have a valid target, set usingVisionSetpoint to false and make
         // the setpoint the current turret angle
-      } else if (!m_vision.getGoalValidTarget()) {
+      } else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
         usingVisionSetpoint = false;
         setpoint = m_turret.getTurretAngleDegrees();
       }
@@ -88,6 +90,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(m_vision.getGoalTargetXAngle()) <= 3);
+    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL)) <= 3);
   }
 }

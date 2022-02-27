@@ -57,7 +57,7 @@ public class RobotContainer {
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final Turret m_turret = new Turret(m_driveTrain);
   private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret);
-  private final Flywheel m_flywheel = new Flywheel(m_vision);
+  private final Flywheel m_flywheel = new Flywheel(m_vision, m_turret);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
   private final LED m_led = new LED();
