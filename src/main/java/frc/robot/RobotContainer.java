@@ -53,17 +53,17 @@ import frc.robot.subsystems.Vision;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final DriveTrain m_driveTrain = new DriveTrain();
   private final Controls m_controls = new Controls();
+  private final DriveTrain m_driveTrain = new DriveTrain();
   private final Turret m_turret = new Turret(m_driveTrain);
-  private final Vision m_vision = new Vision(m_controls);
-  private final Flywheel m_flywheel = new Flywheel(m_vision);
+  private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret);
+  private final Flywheel m_flywheel = new Flywheel(m_vision, m_turret);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
   private final LED m_led = new LED();
   private final Climber m_climber = new Climber();
 
-  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_intake);
+  private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_vision, m_intake);
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -158,9 +158,9 @@ public class RobotContainer {
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1300));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 3600));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 900));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1900));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2650));
 
     xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
     xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
@@ -169,8 +169,9 @@ public class RobotContainer {
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
     xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
+    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
@@ -212,12 +213,16 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {}
+  public void robotPeriodic() {
+    m_fieldSim.periodic();
+  }
 
   public void disabledInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+    xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
   }
 
   public void disabledPeriodic() {}

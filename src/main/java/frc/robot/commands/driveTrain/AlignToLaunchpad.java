@@ -52,8 +52,10 @@ public class AlignToLaunchpad extends CommandBase {
 
     double throttle = joystickY;
     double turn = joystickX;
-    if (m_vision.getIntakeTargetsValid() > 0) {
-      double setpoint = m_driveTrain.getHeadingDegrees() + m_vision.getIntakeTargetAngle(0);
+    if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
+      double setpoint =
+          m_driveTrain.getHeadingDegrees()
+              + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.INTAKE);
 
       double turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
 
