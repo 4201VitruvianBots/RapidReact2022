@@ -5,6 +5,7 @@
 package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Turret;
 
 /** An example command that uses an example subsystem. */
@@ -26,7 +27,10 @@ public class ToggleTurretControlMode extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_turret.setControlMode(m_turret.getControlMode() != 1 ? 1 : 0);
+    m_turret.setControlMode(
+        m_turret.getControlMode() != Constants.CONTROL_MODE.CLOSEDLOOP
+            ? Constants.CONTROL_MODE.CLOSEDLOOP
+            : Constants.CONTROL_MODE.OPENLOOP);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -40,6 +44,6 @@ public class ToggleTurretControlMode extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

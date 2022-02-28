@@ -8,7 +8,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,21 +19,35 @@ public class Intake extends SubsystemBase {
   private boolean isIntaking = false; // is robot intaking
 
   // Intake motor setup
-  private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor);
+
+  private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor); // RapidReact
+
+  // private final CANSparkMax intakeMotor =
+  // new CANSparkMax(Constants.Intake.intakeMotor, MotorType.kBrushless); // Jango
 
   // Intake piston setup
   DoubleSolenoid intakePiston =
       new DoubleSolenoid(
-          Constants.Intake.pcmOne,
-          PneumaticsModuleType.CTREPCM,
-          Constants.Intake.intakePistonForward,
-          Constants.Intake.intakePistonReverse);
+          Constants.Pneumatics.pcmOne,
+          Constants.Pneumatics.pcmType,
+          Constants.Pneumatics.intakePistonForward,
+          Constants.Pneumatics.intakePistonReverse);
 
   public Intake() {
     // Motor configuration
-    intakeMotor.configFactoryDefault();
-    intakeMotor.setNeutralMode(NeutralMode.Brake);
+
+    intakeMotor.configFactoryDefault(); // RapidReact
+    intakeMotor.setNeutralMode(NeutralMode.Coast); // RapidReact
+
+    // intakeMotor.restoreFactoryDefaults(); // Jango
+    // intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake); // Jango
+
     intakeMotor.setInverted(false);
+
+    intakeMotor.setStatusFramePeriod(1, 100);
+    intakeMotor.setStatusFramePeriod(2, 100);
+
+    SmartDashboard.putData("Intake Subsystem", this);
   }
 
   /** @return Gets a boolean for the intake's actuation */
@@ -58,7 +72,9 @@ public class Intake extends SubsystemBase {
 
   /** sets the amount of power going to the intake */
   public void setIntakePercentOutput(double value) {
-    intakeMotor.set(ControlMode.PercentOutput, value);
+    intakeMotor.set(ControlMode.PercentOutput, value); // RapidReact
+
+    // intakeMotor.set(value); // Jango
   }
 
   /** updates intake data on to the dashboard */

@@ -4,71 +4,75 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Climber.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /**
  * climber will only be making for a mid-climb as of 1/11/22 in the future I hope that the climber
  * will use some more advanced capability to get a traversal run climb in the future.
  */
 public class Climber extends SubsystemBase {
-  private final DoubleSolenoid climbPiston =
-      new DoubleSolenoid(PneumaticsModuleType.CTREPCM, climbPistonForward, climbPistonReverse);
-  // TODO: Ask the design team about how the climber functions will work and if they will work
-  // similarly or different than what the climber did on jango
-  private final TalonFX climbMotor = new TalonFX(climbMotorA);
-  private boolean climbState;
+  public final TalonFX[] elevatorClimbMotors = {
+    new TalonFX(Constants.Climber.climbMotorA), new TalonFX(Constants.Climber.climbMotorB)
+  };
+
+  private DigitalInput climberLowerLimitOverride =
+      new DigitalInput(Constants.Climber.climberLowerLimitOverrideID);
+
+  private DigitalInput climberUpperLimitOverride =
+      new DigitalInput(Constants.Climber.climberUpperLimitOverrideID);
+
+  private boolean Overridelatched = false;
+
+  DoubleSolenoid highClimbPiston =
+      new DoubleSolenoid(
+          Constants.Pneumatics.pcmOne,
+          Constants.Pneumatics.pcmType,
+          Constants.Pneumatics.climbPistonForward,
+          Constants.Pneumatics.climbPistonReverse);
+
+  private final double kF = 0;
+  private final double kP = 0.2;
+
+  private boolean elevatorClimbState;
+
+  private double holdPosition;
 
   /** Creates a new Climber. */
   public Climber() {
     // Set up climber motor
-    this.climbMotor.configFactoryDefault();
-    this.climbMotor.setSelectedSensorPosition(0);
-    this.climbMotor.setNeutralMode(NeutralMode.Brake);
-    this.climbMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+    for (int i = 0; i < elevatorClimbMotors.length; i++) {
+      elevatorClimbMotors[i].configFactoryDefault();
+      elevatorClimbMotors[i].setSelectedSensorPosition(0);
+      elevatorClimbMotors[i].setNeutralMode(NeutralMode.Brake);
+      elevatorClimbMotors[i].configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+      elevatorClimbMotors[i].configSupplyCurrentLimit(
+          new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
+    }
+    elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
+
+    elevatorClimbMotors[0].setInverted(false);
+    elevatorClimbMotors[1].setInverted(false);
+    elevatorClimbMotors[0].config_kF(0, kF);
+    elevatorClimbMotors[0].config_kP(0, kP);
   }
 
-  /**
-   * return the extended state of the climber
-   *
-   * @return the climber state the piston (true is extended)
-   */
-  public boolean getClimbPistonExtendStatus() {
-    return this.climbPiston.get() == DoubleSolenoid.Value.kForward;
+  public boolean getElevatorClimbState() {
+    return elevatorClimbState;
   }
 
-  /**
-   * sets the state of the climb piston
-   *
-   * @param state true sets' climber to go up. false sets climber to go down
-   */
-  public void setClimbPiston(final boolean state) {
-    this.climbPiston.set(state ? DoubleSolenoid.Value.kForward : DoubleSolenoid.Value.kReverse);
-  }
-
-  /**
-   * returns the state of the climb piston
-   *
-   * @return up is true. down is false
-   */
-  public boolean getClimbState() {
-    return this.climbState;
-  }
-
-  /**
-   * returns the state of the climb piston
-   *
-   * @param state up is true. down is false
-   */
-  public void setClimbState(final boolean state) {
-    this.climbState = state;
+  public void setElevatorClimbState(boolean climbState) {
+    this.elevatorClimbState = climbState;
   }
 
   /**
@@ -76,8 +80,23 @@ public class Climber extends SubsystemBase {
    *
    * @param value output value
    */
-  public void setClimberPercentOutput(final double value) {
-    this.climbMotor.set(ControlMode.PercentOutput, value);
+  public void setElevatorClimberPercentOutput(double value) {
+    if ((getElevatorClimbPosition() > Constants.Climber.climberLowerLimit || value > 0)
+        && (getElevatorClimbPosition() < Constants.Climber.climberUpperLimit || value < 0))
+      elevatorClimbMotors[0].set(ControlMode.PercentOutput, value);
+    else elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
+  }
+
+  public void setHighClimbPiston(DoubleSolenoid.Value kValue) {
+    highClimbPiston.set(kValue);
+  }
+
+  public void holdClimber() {
+    elevatorClimbMotors[0].set(ControlMode.Position, holdPosition);
+  }
+
+  public void setHoldPosition(double position) {
+    holdPosition = position;
   }
 
   /**
@@ -85,13 +104,59 @@ public class Climber extends SubsystemBase {
    *
    * @return the climber position (in raw sensor units)
    */
-  public double getClimberPosition() {
-    return this.climbMotor.getSelectedSensorPosition();
+  public double getElevatorClimbPosition() {
+    return elevatorClimbMotors[0].getSelectedSensorPosition();
+  }
+
+  /**
+   * get the high climber position
+   *
+   * @return the climber position (in raw sensor units)
+   */
+  public DoubleSolenoid.Value getHighClimbPistonPosition() {
+    return highClimbPiston.get();
+  }
+
+  private void updateClimberLimits() {
+    if (!Overridelatched) {
+      if (!climberLowerLimitOverride.get()) {
+        elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberLowerLimit);
+        Overridelatched = true;
+      } else if (!climberUpperLimitOverride.get()) {
+        elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
+        Overridelatched = true;
+      }
+    } else if (Overridelatched
+        && climberLowerLimitOverride.get()
+        && climberUpperLimitOverride.get()) {
+      Overridelatched = false;
+    }
+  }
+
+  private void updateSmartDashboard() {
+    SmartDashboardTab.putBoolean(
+        "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
+    SmartDashboardTab.putBoolean(
+        "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
+    SmartDashboardTab.putBoolean(
+        "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
+    SmartDashboardTab.putBoolean("Climber", "Climb Mode", getElevatorClimbState());
+    SmartDashboardTab.putNumber(
+        "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
+    SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateSmartDashboard();
+
+    if ((getElevatorClimbPosition() <= Constants.Climber.climberLowerLimit
+            && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
+        || (getElevatorClimbPosition() >= Constants.Climber.climberUpperLimit
+            && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
+      elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
+    updateClimberLimits();
   }
 
   @Override

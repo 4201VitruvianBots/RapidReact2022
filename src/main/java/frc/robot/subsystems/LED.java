@@ -91,11 +91,11 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-    if (m_toAnimate == null) {
-      System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
-    } else {
-      System.out.println("Changed to " + toChange);
-    }
+    //     if (m_toAnimate == null) {
+    //       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
+    //     } else {
+    //       System.out.println("Changed to " + toChange);
+    //     }
   }
 
   /**
