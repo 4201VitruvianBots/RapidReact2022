@@ -79,7 +79,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
           // Convert joystick axis values to degrees setpoint
           setpoint =
-              Units.radiansToDegrees(
+              -Units.radiansToDegrees(
                   Math.atan2(m_controller.getRawAxis(0), -m_controller.getRawAxis(1)));
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
