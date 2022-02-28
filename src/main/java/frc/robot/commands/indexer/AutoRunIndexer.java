@@ -29,9 +29,7 @@ public class AutoRunIndexer extends CommandBase {
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(0.65);
-    if (m_flywheel.canShoot()) {
-      m_indexer.setKickerPercentOutput(0.85);
-    } else m_indexer.setKickerPercentOutput(0);
+    m_indexer.setKickerPercentOutput(0.85);
   }
 
   // Called once the command ends or is interrupted.
