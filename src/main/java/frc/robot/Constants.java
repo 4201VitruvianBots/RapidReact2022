@@ -32,7 +32,7 @@ public final class Constants {
 
   public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.REVPH; // CTREPCM, REVPH
+    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
@@ -58,10 +58,8 @@ public final class Constants {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
 
-    public static final int indexerRearSensor = 1; // Rear = closer to shooter
-    public static final int indexerFrontSensor = 2; // Front = closer to intake
-    public static final int colorSensorFront = 2;
-    public static final int colorSensorRear = 0;
+    public static final int indexerRearSensor = 0; // Rear = closer to shooter
+    public static final int indexerFrontSensor = 1; // Front = closer to intake
 
     public static final double kKickerKs = 0.53436;
     public static final double kKickerKv = 0.017544;
@@ -220,7 +218,7 @@ public final class Constants {
   public static final class Turret {
     public static final int turretMotor = 60;
 
-    public static final int turretHomeSensor = 3;
+    public static final int turretHomeSensor = 2;
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;
@@ -269,7 +267,8 @@ public final class Constants {
       LAUNCHPAD
     }
 
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0;
+//    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0;   // Takeoff
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
