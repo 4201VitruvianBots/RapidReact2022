@@ -12,9 +12,7 @@ public class AutoRunIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
-  /**
-   * @param intake The intake used by this command
-   */
+  /** @param intake The intake used by this command */
   public AutoRunIntake(Intake intake) {
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -23,8 +21,7 @@ public class AutoRunIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-  }
+  public void initialize() {}
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake and

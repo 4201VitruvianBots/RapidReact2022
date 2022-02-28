@@ -1,7 +1,6 @@
 package frc.robot.commands.auto;
 
 import com.pathplanner.lib.PathPlanner;
-
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -16,7 +15,6 @@ import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
-import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
@@ -28,13 +26,11 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Intakes one cargo and shoots two cargo into the low goal. 
- * Starting from the upper part of the field.
- */
-public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
+/** Intakes one cargo and shoots two cargo into the low goal. */
+public class TwoBallAutoLowerHub extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the low goal.
-   * Starting from upper part of the field.
+   *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
    * @param intake Runs the intake to pick up new cargo.
@@ -43,7 +39,7 @@ public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public TwoBallAutoUpperLowerHub(
+  public TwoBallAutoLowerHub(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -54,15 +50,19 @@ public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
     // Drive backward maximum distance to ball
     // While dirivng backward, intake is running
     // Stop (now with 2 cargo) and aim for high goal
-    // Shoot 2 cargo into high goal
+    // Shoot 2 cargo into low goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-Upper", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
+    Trajectory trajectory2 =
+        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
 
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
@@ -74,17 +74,22 @@ public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret, 5),
+        new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntake(intake)
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntake(intake)
             // TODO implement indexer
             ),
         new AutoRunIntake(intake).withTimeout(1),
         new IntakePiston(intake, false),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
+        new ParallelDeadlineGroup(
+            command2.andThen(
+                () ->
+                    driveTrain.setMotorTankDrive(
+                        0, 0)) // TODO: change this no parallel deadline group
+            ),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
@@ -93,9 +98,5 @@ public class TwoBallAutoUpperLowerHub extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
-       // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-       // new SetAndHoldRpmSetpoint(flywheel, vision, 0));
-    //    new SchedulePostAutoCommand(.
-    //         driveTrain, new PostTwoBallIntake(driveTrain, fieldSim, indexer, intake)));
   }
 }

@@ -12,10 +12,9 @@ import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
-import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
@@ -27,10 +26,14 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from the terminal*/
+/**
+ * Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from
+ * the terminal
+ */
 public class FourBallAuto extends SequentialCommandGroup {
   /**
-   * Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from the terminal
+   * Intakes one cargo, shoots two, then intakes and shoots two more cargo, one of them coming from
+   * the terminal
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -55,8 +58,7 @@ public class FourBallAuto extends SequentialCommandGroup {
      * tele-op
      */
     Trajectory trajectory1 =
-        PathPlanner.loadPath(
-            "FourBallAuto-1", Units.feetToMeters(12), Units.feetToMeters(6), true);
+        PathPlanner.loadPath("FourBallAuto-1", Units.feetToMeters(12), Units.feetToMeters(6), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
@@ -67,8 +69,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath(
-            "FourBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(8), true);
+        PathPlanner.loadPath("FourBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(8), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
@@ -76,7 +77,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         PathPlanner.loadPath(
             "FourBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(8), false);
     VitruvianRamseteCommand command4 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);   
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -89,23 +90,23 @@ public class FourBallAuto extends SequentialCommandGroup {
             new RunIntake(intake, indexer)),
         new RunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
-         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-            new SetTurretAbsoluteSetpointDegrees(turret, 0),
+        new SetTurretAbsoluteSetpointDegrees(turret, 0),
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        //new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new RunIndexer(indexer, flywheel).withTimeout(2),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(2),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
