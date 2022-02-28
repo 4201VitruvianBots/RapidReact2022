@@ -32,7 +32,8 @@ public final class Constants {
 
   public static final class Pneumatics {
     public static final int pcmOne = 11;
-    public static final PneumaticsModuleType pcmType = PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
+    public static final PneumaticsModuleType pcmType =
+        PneumaticsModuleType.CTREPCM; // CTREPCM, REVPH
 
     public static final int intakePistonForward = pcmType == PneumaticsModuleType.CTREPCM ? 0 : 0;
     public static final int intakePistonReverse = pcmType == PneumaticsModuleType.CTREPCM ? 1 : 1;
@@ -267,8 +268,8 @@ public final class Constants {
       LAUNCHPAD
     }
 
-//    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0;   // Takeoff
+    //    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
+    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
