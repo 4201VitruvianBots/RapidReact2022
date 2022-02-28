@@ -12,16 +12,16 @@ public class GetSubsystemStates extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LED m_led;
 
-  private final Vision m_vision;
+  private final Flywheel m_flywheel;
   private final Intake m_intake;
   private final Climber m_climber;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(LED led, Intake intake, Vision vision, Climber climber) {
+  public GetSubsystemStates(LED led, Intake intake, Flywheel flywheel, Climber climber) {
     m_led = led;
-    m_vision = vision;
     m_climber = climber;
     m_intake = intake;
+    m_flywheel = flywheel;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(led);
   }
@@ -39,7 +39,7 @@ public class GetSubsystemStates extends CommandBase {
     boolean Disabled = DriverStation.isDisabled();
     boolean Enabled = !DriverStation.isDisabled();
     boolean Intaking = m_intake.getIntakeState();
-    boolean VisionLock = m_vision.getGoalValidTarget();
+    boolean CanShoot = m_flywheel.canShoot();
     boolean Climbing = m_climber.getClimbState();
 
     // set in order of priority to be expressed from the least priority to the
@@ -53,8 +53,8 @@ public class GetSubsystemStates extends CommandBase {
     if (Intaking) {
       m_led.expressState(LED.robotState.Intaking);
     }
-    if (VisionLock) {
-      m_led.expressState(LED.robotState.VisionLock);
+    if (CanShoot) {
+      m_led.expressState(LED.robotState.CanShoot);
     }
     if (Climbing) {
       m_led.expressState(LED.robotState.Climbing);
