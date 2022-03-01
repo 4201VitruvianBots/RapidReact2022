@@ -38,6 +38,8 @@ public class Vision extends SubsystemBase {
   private VisionData[] dataBuffer = new VisionData[100];
   private int bufferIdx = 0;
 
+  private boolean enablePoseEstimation = true;
+
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
     m_controls = controls;
@@ -323,6 +325,10 @@ public class Vision extends SubsystemBase {
     bufferIdx++;
   }
 
+  public void setVisionPoseEstimation(boolean enabled) {
+    this.enablePoseEstimation = enabled;
+  }
+
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
     if (getValidTarget(CAMERA_POSITION.GOAL)) {
@@ -375,7 +381,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     //    updateDataQueue();
-    updateVisionPose();
+    if (enablePoseEstimation) updateVisionPose();
     updateTurretArbitraryFF();
   }
 

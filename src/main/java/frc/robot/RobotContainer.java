@@ -8,17 +8,18 @@ import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.GroupThreeBallAuto;
-import frc.robot.commands.auto.IndividualThreeBallAuto;
+import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.PostTwoBallIntake;
 import frc.robot.commands.auto.TestPath;
+import frc.robot.commands.auto.ThreeBallAuto;
+import frc.robot.commands.auto.ThreeBallAutoLowerHub;
 import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoDefense;
+import frc.robot.commands.auto.TwoBallAutoLowerHub;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -93,6 +94,7 @@ public class RobotContainer {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
         "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "One Ball Auto",
         new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
@@ -101,22 +103,22 @@ public class RobotContainer {
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto Defense",
-        new TwoBallAutoDefense(
+        "Two Ball Auto Lower Hub",
+        new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Group Three Ball Auto",
-        new GroupThreeBallAuto(
+        "Three Ball Auto",
+        new ThreeBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Individual Three Ball Auto",
-        new IndividualThreeBallAuto(
+        "Three Ball Auto Lower Hub",
+        new ThreeBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-
+    m_autoChooser.addOption(
+        "Four Ball Auto",
+        new FourBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption(
-        "Post Two Ball Intake",
-        new PostTwoBallIntake(m_driveTrain, m_fieldSim, m_indexer, m_intake));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
@@ -230,6 +232,7 @@ public class RobotContainer {
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
+    m_vision.setVisionPoseEstimation(true);
   }
 
   public void teleopPeriodic() {}
@@ -248,6 +251,7 @@ public class RobotContainer {
           m_fieldSim.getRobotPose(), m_fieldSim.getRobotPose().getRotation());
       m_driveTrain.resetAngle();
     }
+    m_vision.setVisionPoseEstimation(false);
   }
 
   public void autonomousPeriodic() {}
