@@ -381,7 +381,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     //    updateDataQueue();
-    if (enablePoseEstimation) updateVisionPose();
+    updateVisionPose();
     updateTurretArbitraryFF();
   }
 
