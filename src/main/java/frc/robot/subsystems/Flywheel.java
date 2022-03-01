@@ -20,6 +20,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -116,10 +117,13 @@ public class Flywheel extends SubsystemBase {
     } else {
       checkTurretAngle = true;
     }
-    boolean checkVisionAngle =
-        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
-            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
-                < hubToleranceDegrees;
+    boolean checkVisionAngle;
+    if (DriverStation.isAutonomous()) {
+      checkVisionAngle =
+          m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
+              && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+                  < hubToleranceDegrees;
+    } else checkVisionAngle = true;
 
     boolean checkRPM = false;
     if (getSetpointRPM() > 0) {

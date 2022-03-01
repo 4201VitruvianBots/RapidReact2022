@@ -13,7 +13,6 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
@@ -54,11 +53,11 @@ public class FiveBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
-
 
     Trajectory trajectory2 =
         PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), false);
@@ -91,7 +90,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1500),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
-        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
+        //        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5),
+        // flywheel::canShoot),
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
         new ConditionalCommand(

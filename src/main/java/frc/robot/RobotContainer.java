@@ -119,9 +119,9 @@ public class RobotContainer {
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
     m_autoChooser.addOption(
-      "Five Ball Auto ",
-      new FiveBallAuto(
-          m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+        "Five Ball Auto ",
+        new FiveBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 

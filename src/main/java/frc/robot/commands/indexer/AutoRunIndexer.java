@@ -28,8 +28,10 @@ public class AutoRunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
+    else m_indexer.setKickerPercentOutput(0);
+
     m_indexer.setIndexerPercentOutput(0.65);
-    m_indexer.setKickerPercentOutput(0.85);
   }
 
   // Called once the command ends or is interrupted.
