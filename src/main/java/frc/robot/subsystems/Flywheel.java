@@ -133,7 +133,7 @@ public class Flywheel extends SubsystemBase {
     }
 
     if (timestamp != 0) {
-      checkRPM = Timer.getFPGATimestamp() - timestamp > 0.6;
+      checkRPM = Timer.getFPGATimestamp() - timestamp > 0.1;
     }
 
     canShoot = checkTurretAngle && checkVisionAngle && checkRPM;
