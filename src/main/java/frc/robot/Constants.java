@@ -233,7 +233,7 @@ public final class Constants {
     //    public static final double kD = 0.0;
     public static final double kF = 0.04;
     public static final double kP = 0.15;
-    public static final double kI = 0.00001;
+    public static final double kI = 0.0008;
     public static final double kD = 0.0;
 
     public static final double kErrorBand = 50;
@@ -249,7 +249,7 @@ public final class Constants {
     public static final double degreeTolerance = 1.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
-    public static final double gearRatio = (60.0 / 16) * (170.0 / 16.0);
+    public static final double gearRatio = (60.0 / 16.0) * (170.0 / 16.0);
   }
 
   public static final class Vision {
