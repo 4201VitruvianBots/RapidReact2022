@@ -220,6 +220,7 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
   }

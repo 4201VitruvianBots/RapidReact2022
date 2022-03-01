@@ -326,12 +326,12 @@ public class Vision extends SubsystemBase {
   }
 
   public void setVisionPoseEstimation(boolean enabled) {
-    this.enablePoseEstimation = enabled;
+    enablePoseEstimation = enabled;
   }
 
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
-    if (getValidTarget(CAMERA_POSITION.GOAL) && this.enablePoseEstimation) {
+    if (getValidTarget(CAMERA_POSITION.GOAL) && enablePoseEstimation) {
       m_drivetrain
           .getOdometry()
           .addVisionMeasurement(
