@@ -214,9 +214,9 @@ public class Flywheel extends SubsystemBase {
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
-      //SmartDashboard.putNumber("RPMSecondary", getRPM(1));
-      //SmartDashboard.putNumber("RPMOutput", rpmOutput);
-      //SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
+      // SmartDashboard.putNumber("RPMSecondary", getRPM(1));
+      // SmartDashboard.putNumber("RPMOutput", rpmOutput);
+      // SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
     }
   }
