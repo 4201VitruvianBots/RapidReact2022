@@ -15,7 +15,7 @@ public class AutoRunIndexer extends CommandBase {
   private final double m_kickerOutput;
   /** Creates a new RunIndexer. */
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
-    this(indexer,flywheel,0.85);
+    this(indexer, flywheel, 0.85);
   }
 
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput) {
@@ -35,11 +35,10 @@ public class AutoRunIndexer extends CommandBase {
   @Override
   public void execute() {
     // if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
-   m_indexer.setKickerPercentOutput(m_kickerOutput);
+    m_indexer.setKickerPercentOutput(m_kickerOutput);
 
     m_indexer.setIndexerPercentOutput(0.65);
   }
-
 
   // Called once the command ends or is interrupted.
   @Override
