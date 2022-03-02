@@ -498,12 +498,7 @@ public class DriveTrain extends SubsystemBase {
           "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
-      SmartDashboard.putNumber(
-          "Heading Degrees", getHeadingDegrees());
-      SmartDashboard.putNumber(
-        "Roll", getRoll());
-      SmartDashboard.putNumber(
-        "Pitch", getPitch());
+      SmartDashboard.putNumber("Heading Degrees", getHeadingDegrees());
 
       SmartDashboardTab.putNumber(
           "DriveTrain",
