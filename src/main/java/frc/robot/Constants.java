@@ -51,7 +51,7 @@ public final class Constants {
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
 
-    public static final double climberUpperLimit = 205_000.0;
+    public static final double climberUpperLimit = 120_000.0;
     public static final double climberLowerLimit = 0.0;
   }
 
