@@ -9,7 +9,7 @@ import frc.robot.subsystems.*;
 
 /** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
-  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final LED m_led;
 
   private final Flywheel m_flywheel;
@@ -36,11 +36,11 @@ public class GetSubsystemStates extends CommandBase {
   @Override
   public void execute() {
     // the prioritized state to be expressed to the LEDs
-    boolean Disabled = /* DriverStation.isDisabled(); */ false;
-    boolean Enabled = /* !DriverStation.isDisabled(); */ false;
-    boolean Intaking = /* m_intake.getIntakeState(); */ false;
-    boolean CanShoot = /* m_flywheel.canShoot(); */ false;
-    boolean Climbing = /* m_climber.getElevatorClimbState(); */ true;
+    boolean Disabled = DriverStation.isDisabled();
+    boolean Enabled = !DriverStation.isDisabled();
+    boolean Intaking = m_intake.getIntakeState();
+    boolean CanShoot = m_flywheel.canShoot();
+    boolean Climbing = m_climber.getElevatorClimbState();
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority
@@ -63,8 +63,7 @@ public class GetSubsystemStates extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
