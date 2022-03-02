@@ -51,7 +51,16 @@ public final class Constants {
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
 
-    public static final double climberUpperLimit = 120_000.0;
+    public static final int encoderUnitsPerRotation = 2048;
+    public static final double climberHeightUpperLimit = 4.0; // Upper limit of the climber OUTPUT
+    public static final double climberGearRatio = 72.0 * 72.0 / (10.0 * 36.0);
+    // Climber motors have 2 stages: 10T to 72T and 36T to 72T. This ratio is input speed / output
+    // speed
+
+    public static final double climberUpperLimit =
+        climberHeightUpperLimit * encoderUnitsPerRotation * climberGearRatio;
+    // Upper limit of the climber MOTOR
+
     public static final double climberLowerLimit = 0.0;
   }
 
