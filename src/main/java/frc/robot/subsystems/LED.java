@@ -29,8 +29,8 @@ public class LED extends SubsystemBase {
     CANdleConfiguration configAll = new CANdleConfiguration();
     configAll.statusLedOffWhenActive = true;
     configAll.disableWhenLOS = false;
-    configAll.stripType = LEDStripType.RGBW;
-    configAll.brightnessScalar = 0.1; // 0.1 is highest safe value
+    configAll.stripType = LEDStripType.GRB;
+    configAll.brightnessScalar = 1; // 1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
   }
@@ -91,11 +91,12 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-    //     if (m_toAnimate == null) {
-    //       System.out.println("Changed to solid (" + red + ", " + green + ", " + blue + ")");
-    //     } else {
-    //       System.out.println("Changed to " + toChange);
-    //     }
+    // if (m_toAnimate == null) {
+    // System.out.println("Changed to solid (" + red + ", " + green + ", " + blue +
+    // ")");
+    // } else {
+    // System.out.println("Changed to " + toChange);
+    // }
   }
 
   /**
