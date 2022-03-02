@@ -12,10 +12,16 @@ public class AutoRunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
   private final Flywheel m_flywheel;
+  private final double m_kickerOutput;
   /** Creates a new RunIndexer. */
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
+    this(indexer,flywheel,0.85);
+  }
+
+  public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput) {
     m_indexer = indexer;
     m_flywheel = flywheel;
+    m_kickerOutput = kickerOutput;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
@@ -28,11 +34,12 @@ public class AutoRunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
-    else m_indexer.setKickerPercentOutput(0);
+    // if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
+   m_indexer.setKickerPercentOutput(m_kickerOutput);
 
     m_indexer.setIndexerPercentOutput(0.65);
   }
+
 
   // Called once the command ends or is interrupted.
   @Override
