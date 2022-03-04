@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Flywheel.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -53,7 +51,8 @@ public class Flywheel extends SubsystemBase {
   private double errorRange = 300;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
-      LinearSystemId.identifyVelocitySystem(kFlywheelKv, kFlywheelKa);
+      LinearSystemId.identifyVelocitySystem(
+          Constants.Flywheel.kFlywheelKv, Constants.Flywheel.kFlywheelKa);
 
   // The observer fuses our encoder data and voltage inputs to reject noise.
   private final KalmanFilter<N1, N1, N1> m_observer =
@@ -70,7 +69,9 @@ public class Flywheel extends SubsystemBase {
   private final LinearQuadraticRegulator<N1, N1, N1> m_controller =
       new LinearQuadraticRegulator<>(
           m_flywheelPlant,
-          VecBuilder.fill(Conversions.RpmToRadPerSec(rpmTolerance)), // Velocity error tolerance
+          VecBuilder.fill(
+              Conversions.RpmToRadPerSec(
+                  Constants.Flywheel.rpmTolerance)), // Velocity error tolerance
           VecBuilder.fill(12.0), // Control effort (voltage) tolerance
           0.020);
 
@@ -119,7 +120,7 @@ public class Flywheel extends SubsystemBase {
     boolean checkVisionAngle =
         m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
             && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
-                < hubToleranceDegrees;
+                < Constants.Flywheel.hubToleranceDegrees;
 
     boolean checkRPM = false;
     if (getSetpointRPM() > 0) {
@@ -157,7 +158,7 @@ public class Flywheel extends SubsystemBase {
       } else {
         errorSum = 0;
       }
-      double nextVoltage = m_loop.getU(0) + kFlywheelKs + kI * errorSum;
+      double nextVoltage = m_loop.getU(0) + Constants.Flywheel.kFlywheelKs + kI * errorSum;
 
       setPower(nextVoltage / 10.0);
     } else {
@@ -175,7 +176,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   public double getRPMTolerance() {
-    return rpmTolerance;
+    return Constants.Flywheel.rpmTolerance;
   }
   /**
    * boolean
@@ -195,16 +196,16 @@ public class Flywheel extends SubsystemBase {
    */
   public double getRPM(int motorIndex) {
     return flywheelMotors[motorIndex].getSelectedSensorVelocity()
-        * (600.0 / encoderUnitsPerRotation)
-        / gearRatio;
+        * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
+        / Constants.Flywheel.gearRatio;
   }
 
   public double FalconUnitstoRPM(double SensorUnits) {
-    return (SensorUnits / 2048.0) * 600.0 / gearRatio;
+    return (SensorUnits / 2048.0) * 600.0 / Constants.Flywheel.gearRatio;
   }
 
   public double RPMtoFalconUnits(double RPM) {
-    return (RPM / 600.0) * 2048.0 * gearRatio;
+    return (RPM / 600.0) * 2048.0 * Constants.Flywheel.gearRatio;
   }
 
   public void setIdealRPM() {

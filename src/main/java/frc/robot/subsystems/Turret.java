@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Turret.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
@@ -43,24 +41,27 @@ public class Turret extends SubsystemBase {
     turretMotor.setInverted(false);
     turretMotor.setNeutralMode(NeutralMode.Brake);
     turretMotor.configVoltageCompSaturation(12.0);
-    turretMotor.config_kP(0, kF);
-    turretMotor.config_kP(0, kP);
-    turretMotor.config_kI(0, kI);
-    turretMotor.config_IntegralZone(0, kI_Zone);
-    turretMotor.configMaxIntegralAccumulator(0, kMaxIAccum);
-    turretMotor.config_kD(0, kD);
-    turretMotor.configMotionCruiseVelocity(kCruiseVelocity);
-    turretMotor.configMotionAcceleration(kMotionAcceleration);
-    turretMotor.configAllowableClosedloopError(0, kErrorBand);
+    turretMotor.config_kP(0, Constants.Turret.kF);
+    turretMotor.config_kP(0, Constants.Turret.kP);
+    turretMotor.config_kI(0, Constants.Turret.kI);
+    turretMotor.config_IntegralZone(0, Constants.Turret.kI_Zone);
+    turretMotor.configMaxIntegralAccumulator(0, Constants.Turret.kMaxIAccum);
+    turretMotor.config_kD(0, Constants.Turret.kD);
+    turretMotor.configMotionCruiseVelocity(Constants.Turret.kCruiseVelocity);
+    turretMotor.configMotionAcceleration(Constants.Turret.kMotionAcceleration);
+    turretMotor.configAllowableClosedloopError(0, Constants.Turret.kErrorBand);
     //    turretMotor.setSensorPhase(true);
   }
 
   private void updateClosedLoopPosition() {
-    double setpoint = Math.min(Math.max(turretSetpointDegrees, minAngle), maxAngle);
+    double setpoint =
+        Math.min(
+            Math.max(turretSetpointDegrees, Constants.Turret.minAngle), Constants.Turret.maxAngle);
 
     SmartDashboardTab.putNumber("Turret", "Setpoint Test", setpoint);
 
-    turretMotor.set(ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * gearRatio);
+    turretMotor.set(
+        ControlMode.MotionMagic, degreesToEncoderUnits(setpoint) * Constants.Turret.gearRatio);
     //        DemandType.ArbitraryFeedForward,
     //        getArbitraryFF());
   }
@@ -83,7 +84,8 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretAngleDegrees() {
-    return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition()) / gearRatio;
+    return encoderUnitsToDegrees(turretMotor.getSelectedSensorPosition())
+        / Constants.Turret.gearRatio;
   }
 
   public Rotation2d getTurretRotation2d() {
@@ -98,7 +100,8 @@ public class Turret extends SubsystemBase {
 
   /** double returns encoder units of turret into degrees */
   public double getTurretVelocity() {
-    return encoderUnitsToDegrees(turretMotor.getSelectedSensorVelocity()) / gearRatio;
+    return encoderUnitsToDegrees(turretMotor.getSelectedSensorVelocity())
+        / Constants.Turret.gearRatio;
   }
 
   /** double returns encoder units of turret into degrees */
@@ -126,12 +129,12 @@ public class Turret extends SubsystemBase {
    * @return max angle
    */
   public double getMaxAngle() {
-    return maxAngle;
+    return Constants.Turret.maxAngle;
   }
 
   /** @return minimum angle */
   public double getMinAngle() {
-    return minAngle;
+    return Constants.Turret.minAngle;
   }
 
   /**
@@ -144,7 +147,7 @@ public class Turret extends SubsystemBase {
   }
 
   public double getTurretSetpointDegrees() {
-    return encoderUnitsToDegrees(turretMotor.getClosedLoopTarget()) / gearRatio;
+    return encoderUnitsToDegrees(turretMotor.getClosedLoopTarget()) / Constants.Turret.gearRatio;
   }
 
   public boolean getInitialHome() {
@@ -166,11 +169,11 @@ public class Turret extends SubsystemBase {
   }
 
   public int degreesToEncoderUnits(double degrees) {
-    return (int) (degrees * (encoderUnitsPerRotation / 360.0));
+    return (int) (degrees * (Constants.Turret.encoderUnitsPerRotation / 360.0));
   }
 
   public double encoderUnitsToDegrees(double encoderUnits) {
-    return encoderUnits * (360.0 / encoderUnitsPerRotation);
+    return encoderUnits * (360.0 / Constants.Turret.encoderUnitsPerRotation);
   }
 
   public boolean getTurretLatch() {
@@ -179,7 +182,8 @@ public class Turret extends SubsystemBase {
 
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
-    return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees()) < kErrorBand;
+    return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees())
+        < Constants.Turret.kErrorBand;
   }
 
   public double getArbitraryFF() {
