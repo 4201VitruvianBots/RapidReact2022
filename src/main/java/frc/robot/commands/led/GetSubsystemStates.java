@@ -44,9 +44,6 @@ public class GetSubsystemStates extends CommandBase {
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (Disabled) {
-      m_led.expressState(LED.robotState.Disabled);
-    }
     if (Enabled) {
       m_led.expressState(LED.robotState.Enabled);
     }
@@ -58,6 +55,9 @@ public class GetSubsystemStates extends CommandBase {
     }
     if (Climbing) {
       m_led.expressState(LED.robotState.Climbing);
+    }
+    if (Disabled) {
+      m_led.expressState(LED.robotState.Disabled);
     }
   }
 

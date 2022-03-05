@@ -91,12 +91,6 @@ public class LED extends SubsystemBase {
       default:
         System.out.println("Incorrect animation type provided to changeAnimation() method");
     }
-    // if (m_toAnimate == null) {
-    // System.out.println("Changed to solid (" + red + ", " + green + ", " + blue +
-    // ")");
-    // } else {
-    // System.out.println("Changed to " + toChange);
-    // }
   }
 
   /**
@@ -108,7 +102,7 @@ public class LED extends SubsystemBase {
     if (state != currentRobotState) {
       switch (state) {
         case Intaking: // Strobing Yellow
-          setPattern(255, 255, 0, 0, 1, AnimationTypes.Strobe);
+          setPattern(255, 255, 0, 0, 0.1, AnimationTypes.Strobe);
           break;
         case Enabled: // Solid Green
           setPattern(0, 255, 0, 0, 0, AnimationTypes.Solid);
