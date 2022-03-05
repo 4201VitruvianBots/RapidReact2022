@@ -13,6 +13,7 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
@@ -26,10 +27,10 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
-/** Shoots one cargo, intakes and shoots a second, then intakes and shoots a third. */
-public class IndividualThreeBallAuto extends SequentialCommandGroup {
+/** Intakes one cargo, shoots two, then intakes and shoots a third cargo */
+public class ThreeBallAutoLowerHub extends SequentialCommandGroup {
   /**
-   * Shoots one cargo, intakes and shoots a second, then intakes and shoots a third.
+   * Intakes one cargo, shoots two, then intakes and shoots a third cargo
    *
    * @param driveTrain The driveTrain used by this command.
    * @param fieldSim The fieldSim used by this command.
@@ -39,7 +40,7 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public IndividualThreeBallAuto(
+  public ThreeBallAutoLowerHub(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -54,44 +55,51 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
      * tele-op
      */
     Trajectory trajectory1 =
-        PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(2), Units.feetToMeters(2), true);
+        PathPlanner.loadPath("ThreeBallAuto-1", Units.feetToMeters(7), Units.feetToMeters(6), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("ThreeBallAuto-2", Units.feetToMeters(4), Units.feetToMeters(4), true);
+        PathPlanner.loadPath(
+            "ThreeBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
+    Trajectory trajectory3 =
+        PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(7), Units.feetToMeters(6), true);
+    VitruvianRamseteCommand command3 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+
     // Trajectory trajectory3 =
-    //     PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4),
-    // true);
+    // PathPlanner.loadPath("ThreeBallAuto-3", Units.feetToMeters(4), Units.feetToMeters(4), true);
     // VitruvianRamseteCommand command3 =
-    //     TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+    // TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
-        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
-        new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal),
+        // TODO set turret angle
+        new WaitCommand(.5),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new AutoRunIntake(intake).withTimeout(1),
+        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
+            new SimulationShoot(fieldSim, true).withTimeout(1),
             RobotBase::isReal),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ParallelDeadlineGroup(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
+        new AutoRunIntake(intake).withTimeout(1),
+        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
@@ -101,4 +109,5 @@ public class IndividualThreeBallAuto extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 0));
     // command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
+  // class ToastAuto {
 }

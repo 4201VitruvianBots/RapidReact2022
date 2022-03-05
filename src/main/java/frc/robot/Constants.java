@@ -45,14 +45,30 @@ public final class Constants {
     public static final int climbMotorA = 50;
     public static final int climbMotorB = 51;
 
-    public static final int climberLowerLimitOverrideID = 9;
-    public static final int climberUpperLimitOverrideID = 8;
+    public static final int climberLowerLimitOverrideID = 8;
+    // public static final int climberUpperLimitOverrideID = 8;
 
     public static final double climberBottomOutValue = 0;
     public static final double climberTopOutValue = 1;
 
-    public static final double climberUpperLimit = 205_000.0;
-    public static final double climberLowerLimit = 0.0;
+    public static final int encoderUnitsPerRotation = 2048;
+    public static final double climberGearRatio = 72.0 * 72.0 / (10.0 * 36.0);
+    // Climber motors have 2 stages: 10T to 72T and 36T to 72T. This ratio is input speed / output
+    // speed
+
+    public static final double climberHeightUpperLimit = 4.25; // Upper limit of the climber OUTPUT
+    public static final double climberEncoderUpperLimit =
+        climberHeightUpperLimit * encoderUnitsPerRotation * climberGearRatio;
+    // Upper limit of the climber MOTOR
+
+    public static final double climberEncoderLowerLimit = 0.1;
+
+    // At what point we start slowing down in order to not overshoot upper/lower limits
+    public static final double climberHeightSlowdown = 0.75;
+    public static final double climberEncoderSlowdown =
+        climberHeightSlowdown * encoderUnitsPerRotation * climberGearRatio;
+
+    public static final double maxSpeedLimitsPercent = 0.2;
   }
 
   public static final class Indexer {
@@ -219,7 +235,7 @@ public final class Constants {
   public static final class Turret {
     public static final int turretMotor = 60;
 
-    public static final int turretHomeSensor = 2;
+    public static final int turretHomeSensor = 6;
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;

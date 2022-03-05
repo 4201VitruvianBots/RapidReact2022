@@ -182,6 +182,14 @@ public class DriveTrain extends SubsystemBase {
     return Math.IEEEremainder(pigeon.getYaw(), 360);
   }
 
+  public double getRoll() {
+    return pigeon.getRoll();
+  }
+
+  public double getPitch() {
+    return pigeon.getPitch();
+  }
+
   public double getHeadingRateDegrees() {
     return yawPerSecond;
   }
@@ -490,6 +498,9 @@ public class DriveTrain extends SubsystemBase {
           "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
       SmartDashboardTab.putNumber(
           "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
+      SmartDashboard.putNumber("Heading Degrees", getHeadingDegrees());
+      SmartDashboard.putNumber("Roll", getRoll());
+      SmartDashboard.putNumber("Pitch", getPitch());
 
       SmartDashboardTab.putNumber(
           "DriveTrain",

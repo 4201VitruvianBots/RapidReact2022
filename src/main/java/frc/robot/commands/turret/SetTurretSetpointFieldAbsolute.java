@@ -132,9 +132,9 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         lastVisionSetpoint = currentVisionSetpoint;
         lastTurretSetpoint = m_turret.getTurretRotation2d();
         lastRobotHeading = m_driveTrain.getHeadingRotation2d();
+      } else {
+        m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.2);
       }
-    } else {
-      m_turret.setPercentOutput(m_controller.getRawAxis(0) * 0.2);
     }
 
     // if the shooter can shoot, set the rumble to 0.4 on both sides of the controller, else set

@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems;
 
-import static frc.robot.Constants.Vision.*;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,6 +16,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
+import frc.robot.Constants.Vision.CAMERA_TYPE;
+import frc.robot.Constants.Vision.INTAKE_TRACKING_TYPE;
 import frc.robot.utils.VisionData;
 
 public class Vision extends SubsystemBase {
@@ -37,6 +39,8 @@ public class Vision extends SubsystemBase {
 
   private VisionData[] dataBuffer = new VisionData[100];
   private int bufferIdx = 0;
+
+  private boolean enablePoseEstimation = true;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
@@ -58,7 +62,7 @@ public class Vision extends SubsystemBase {
     }
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
-    PortForwarder.add(5802, VISION_SERVER_IP, 5802);
+    PortForwarder.add(5802, Constants.Vision.VISION_SERVER_IP, 5802);
   }
 
   /**
@@ -176,7 +180,8 @@ public class Vision extends SubsystemBase {
   public double getGoalTargetHorizontalDistance() {
     return Math.cos(
             Units.degreesToRadians(
-                GOAL_CAMERA_MOUNTING_ANGLE_DEGREES + getTargetYAngle(CAMERA_POSITION.GOAL, 0)))
+                Constants.Vision.GOAL_CAMERA_MOUNTING_ANGLE_DEGREES
+                    + getTargetYAngle(CAMERA_POSITION.GOAL, 0)))
         * getGoalTargetDirectDistance();
   }
 
@@ -186,7 +191,7 @@ public class Vision extends SubsystemBase {
    * @return Hub Pose in meters
    */
   public Pose2d getHubPose() {
-    Pose2d hubPose = HUB_POSE;
+    Pose2d hubPose = Constants.Vision.HUB_POSE;
     Rotation2d rotation =
         new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) : 0);
     return new Pose2d(hubPose.getTranslation(), rotation);
@@ -323,6 +328,10 @@ public class Vision extends SubsystemBase {
     bufferIdx++;
   }
 
+  public void setVisionPoseEstimation(boolean enabled) {
+    this.enablePoseEstimation = enabled;
+  }
+
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
     if (getValidTarget(CAMERA_POSITION.GOAL)) {
@@ -375,7 +384,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     //    updateDataQueue();
-    updateVisionPose();
+    if (enablePoseEstimation) updateVisionPose();
     updateTurretArbitraryFF();
   }
 
