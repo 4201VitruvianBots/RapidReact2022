@@ -27,7 +27,7 @@ public class Turret extends SubsystemBase {
   private double turretSetpointDegrees = 0; // angle
 
   private Constants.CONTROL_MODE controlMode = CONTROL_MODE.CLOSEDLOOP;
-  private boolean usePoseEstimation = true;
+  private boolean usePoseEstimation = false;
 
   private double arbitraryFF;
 
@@ -205,10 +205,10 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (turretHomeSensor.get() && !turretHomeSensorLatch) {
+    if (!turretHomeSensor.get() && !turretHomeSensorLatch) {
       turretMotor.setSelectedSensorPosition(0);
       turretHomeSensorLatch = true;
-    } else if (!turretHomeSensor.get() && turretHomeSensorLatch) {
+    } else if (turretHomeSensor.get() && turretHomeSensorLatch) {
       turretHomeSensorLatch = false;
     }
 

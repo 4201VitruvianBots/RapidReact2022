@@ -133,11 +133,9 @@ public class DriveTrain extends SubsystemBase {
       motor.configOpenloopRamp(0.25);
       motor.configClosedloopRamp(0.1);
 
-      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
+      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 20, 60, 0.1));
 
       motor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
-
-      motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 35, 60, 0.1));
     }
 
     driveMotors.get(MotorPosition.LEFT_FRONT).setInverted(false);
@@ -273,8 +271,8 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    setMotorPercentOutput(leftOutput, rightOutput);
-    // setMotorTankDrive(leftOutput, rightOutput);
+    // setMotorPercentOutput(leftOutput, rightOutput);
+    setMotorTankDrive(leftOutput, rightOutput);
   }
 
   /**
