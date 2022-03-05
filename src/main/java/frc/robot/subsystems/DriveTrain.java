@@ -273,8 +273,8 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    // setMotorPercentOutput(leftOutput, rightOutput);
-    setMotorTankDrive(leftOutput, rightOutput);
+    setMotorPercentOutput(leftOutput, rightOutput);
+    // setMotorTankDrive(leftOutput, rightOutput);
   }
 
   /**
