@@ -21,7 +21,9 @@ public class AutoRunIntake extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_intake.setIntakeState(true);
+  }
 
   /**
    * Called every time the scheduler runs while the command is scheduled. Spins the Intake and
@@ -38,6 +40,7 @@ public class AutoRunIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_intake.setIntakePercentOutput(0);
+    m_intake.setIntakeState(false);
   }
 
   // Returns true when the command should end.
