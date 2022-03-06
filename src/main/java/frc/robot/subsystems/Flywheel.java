@@ -71,7 +71,7 @@ public class Flywheel extends SubsystemBase {
           m_flywheelPlant,
           VecBuilder.fill(
               Conversions.RpmToRadPerSec(
-                  Constants.Flywheel.rpmTolerance)), // Velocity error tolerance
+                  Constants.Flywheel.lqrRPMThreshold)), // Velocity error tolerance
           VecBuilder.fill(12.0), // Control effort (voltage) tolerance
           0.020);
 
@@ -221,6 +221,7 @@ public class Flywheel extends SubsystemBase {
       // SmartDashboard.putNumber("RPMOutput", rpmOutput);
       // SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
+      SmartDashboard.putBoolean("CanShoot", canShoot);
     }
   }
 
