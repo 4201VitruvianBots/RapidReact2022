@@ -116,8 +116,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
             RobotBase::isReal),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
+            new SequentialCommandGroup(command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 5),
