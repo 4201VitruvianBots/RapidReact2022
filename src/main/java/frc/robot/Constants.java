@@ -239,8 +239,8 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;
-    public static final double minAngle = -60;
-    public static final double maxAngle = 60;
+    public static final double minAngle = -40;
+    public static final double maxAngle = 40;
 
     //    public static final double kF = 0.07;
     //    public static final double kP = 0.1;

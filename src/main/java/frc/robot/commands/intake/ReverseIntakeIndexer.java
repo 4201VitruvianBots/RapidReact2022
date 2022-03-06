@@ -31,6 +31,7 @@ public class ReverseIntakeIndexer extends CommandBase {
   @Override
   public void initialize() {
     m_intake.setIntakePiston(true);
+    m_intake.setIntakeState(true);
   }
 
   /**
@@ -41,7 +42,7 @@ public class ReverseIntakeIndexer extends CommandBase {
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(-0.9);
-    m_indexer.setIndexerPercentOutput(-0.35);
+    m_indexer.setIndexerPercentOutput(-0.65);
     m_indexer.setKickerPercentOutput(-0.7);
   }
 
@@ -55,6 +56,7 @@ public class ReverseIntakeIndexer extends CommandBase {
     m_indexer.setIndexerPercentOutput(0);
     m_indexer.setKickerPercentOutput(0);
     m_intake.setIntakePiston(false);
+    m_intake.setIntakeState(false);
   }
 
   // Returns true when the command should end.

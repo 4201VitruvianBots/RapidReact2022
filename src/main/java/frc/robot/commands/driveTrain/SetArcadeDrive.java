@@ -46,7 +46,7 @@ public class SetArcadeDrive extends CommandBase {
 
     double throttle = joystickY;
 
-    double turn = -0.6 * joystickX;
+    double turn = -0.85 * joystickX;
 
     m_driveTrain.setMotorArcadeDrive(throttle, turn);
   }

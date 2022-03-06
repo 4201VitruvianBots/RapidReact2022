@@ -62,8 +62,8 @@ public class Climber extends SubsystemBase {
     }
     elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
 
-    elevatorClimbMotors[0].setInverted(true);
-    elevatorClimbMotors[1].setInverted(true);
+    elevatorClimbMotors[0].setInverted(false);
+    elevatorClimbMotors[1].setInverted(false);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
   }
@@ -138,8 +138,7 @@ public class Climber extends SubsystemBase {
   private void updateClimberLimits() {
     if (!Overridelatched) {
       if (!climberLowerLimitOverride.get()) {
-        elevatorClimbMotors[0].setSelectedSensorPosition(
-            Constants.Climber.climberEncoderLowerLimit);
+        elevatorClimbMotors[0].setSelectedSensorPosition(0);
         Overridelatched = true;
       } /*else if (!climberUpperLimitOverride.get()) {
           elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
@@ -170,8 +169,7 @@ public class Climber extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
 
-    if ((getElevatorClimbPosition() <= Constants.Climber.climberEncoderLowerLimit
-            && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
+    if ((!climberLowerLimitOverride.get() && elevatorClimbMotors[0].getMotorOutputPercent() < 0)
         || (getElevatorClimbPosition() >= Constants.Climber.climberEncoderUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
