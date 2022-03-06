@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00007;
+  private double kI = 0.00009;
   private double errorSum = 0;
   private double errorRange = 300;
 
@@ -72,7 +72,7 @@ public class Flywheel extends SubsystemBase {
           m_flywheelPlant,
           VecBuilder.fill(
               Conversions.RpmToRadPerSec(
-                  Constants.Flywheel.rpmTolerance)), // Velocity error tolerance
+                  Constants.Flywheel.lqrRPMThreshold)), // Velocity error tolerance
           VecBuilder.fill(12.0), // Control effort (voltage) tolerance
           0.020);
 
