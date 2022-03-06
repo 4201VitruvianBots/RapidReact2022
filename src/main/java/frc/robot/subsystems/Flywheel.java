@@ -47,7 +47,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00009;
+  private double kI = 0.00007;
   private double errorSum = 0;
   private double errorRange = 300;
 
@@ -222,6 +222,7 @@ public class Flywheel extends SubsystemBase {
       // SmartDashboard.putNumber("RPMOutput", rpmOutput);
       // SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
+      SmartDashboard.putBoolean("CanShoot", canShoot);
     }
   }
 
