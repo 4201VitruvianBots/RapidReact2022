@@ -271,8 +271,8 @@ public class DriveTrain extends SubsystemBase {
       rightOutput /= magnitude;
     }
 
-    // setMotorPercentOutput(leftOutput, rightOutput);
-    setMotorTankDrive(leftOutput, rightOutput);
+    setMotorPercentOutput(leftOutput, rightOutput);
+    // setMotorTankDrive(leftOutput, rightOutput);
   }
 
   /**
@@ -471,7 +471,7 @@ public class DriveTrain extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose, Rotation2d rotation) {
     resetEncoderCounts();
-    pigeon.setYaw(0);
+    resetAngle();
     odometry.resetPosition(pose, rotation);
     if (RobotBase.isSimulation()) {
       // resetEncoderCounts();
