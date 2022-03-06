@@ -329,12 +329,12 @@ public class Vision extends SubsystemBase {
   }
 
   public void setVisionPoseEstimation(boolean enabled) {
-    this.enablePoseEstimation = enabled;
+    enablePoseEstimation = enabled;
   }
 
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
-    if (getValidTarget(CAMERA_POSITION.GOAL)) {
+    if (getValidTarget(CAMERA_POSITION.GOAL) && enablePoseEstimation) {
       m_drivetrain
           .getOdometry()
           .addVisionMeasurement(
@@ -384,7 +384,7 @@ public class Vision extends SubsystemBase {
     // This method will be called once per scheduler run
     updateSmartDashboard();
     //    updateDataQueue();
-    if (enablePoseEstimation) updateVisionPose();
+    updateVisionPose();
     updateTurretArbitraryFF();
   }
 
