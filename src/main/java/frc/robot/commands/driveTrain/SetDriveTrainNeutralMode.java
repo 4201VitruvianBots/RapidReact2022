@@ -12,10 +12,10 @@ public class SetDriveTrainNeutralMode extends CommandBase {
   private final DriveTrainNeutralMode m_mode;
 
   /**
-   * Sets the drivetrain to neutral (coast/brake)
+   * Sets the drivetrain neutral mode (coast/brake).
    *
-   * @param driveTrain drivetrain to set
-   * @param mode 2 = all coast, 1 = all brake, 0 = half and half
+   * @param driveTrain The driveTrain used by this command.
+   * @param mode {@link DriveTrainNeutralMode}: COAST, BRAKE, or HALF_BRAKE.
    */
   public SetDriveTrainNeutralMode(DriveTrain driveTrain, DriveTrainNeutralMode mode) {
     m_driveTrain = driveTrain;

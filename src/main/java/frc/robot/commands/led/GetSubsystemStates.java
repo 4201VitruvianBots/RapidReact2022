@@ -40,13 +40,10 @@ public class GetSubsystemStates extends CommandBase {
     boolean Enabled = !DriverStation.isDisabled();
     boolean Intaking = m_intake.getIntakeState();
     boolean CanShoot = m_flywheel.canShoot();
-    boolean Climbing = m_climber.getClimbState();
+    boolean Climbing = m_climber.getElevatorClimbState();
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (Disabled) {
-      m_led.expressState(LED.robotState.Disabled);
-    }
     if (Enabled) {
       m_led.expressState(LED.robotState.Enabled);
     }
@@ -58,6 +55,9 @@ public class GetSubsystemStates extends CommandBase {
     }
     if (Climbing) {
       m_led.expressState(LED.robotState.Climbing);
+    }
+    if (Disabled) {
+      m_led.expressState(LED.robotState.Disabled);
     }
   }
 

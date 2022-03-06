@@ -8,15 +8,16 @@
 package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 
-/** Retracts the climb motor */
+/** Raises/lowers the climber based on joystick input */
 public class RetractClimber extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Climber m_climber;
 
   /**
-   * Retracts the climb motor
+   * Creates a new SetClimberOutput.
    *
    * @param climber The climber used by this command.
    */
@@ -32,14 +33,16 @@ public class RetractClimber extends CommandBase {
 
   @Override
   public void execute() {
-    this.m_climber.setClimbPiston(false);
-    if (!this.m_climber.getClimbPistonExtendStatus()) this.m_climber.setClimberPercentOutput(0.5);
+    while (this.m_climber.elevatorClimbMotors[0].getSelectedSensorPosition()
+        > Constants.Climber.climberBottomOutValue) {
+      this.m_climber.setElevatorClimberPercentOutput(-0.5);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(final boolean interrupted) {
-    this.m_climber.setClimberPercentOutput(0.0);
+    this.m_climber.setElevatorClimberPercentOutput(0.0);
   }
 
   // Returns true when the command should end.
