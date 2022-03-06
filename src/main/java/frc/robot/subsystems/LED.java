@@ -7,10 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
-import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
-import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -50,33 +47,14 @@ public class LED extends SubsystemBase {
 
     int ledCount = 296;
     switch (toChange) {
-      case ColorFlow: // stripe of color flowing through the led strip
-        m_toAnimate = new ColorFlowAnimation(red, green, blue, white, speed, ledCount, Direction.Forward);
-        break;
-      case Fire: // red and orange leds flaming up and down the led strip
-        m_toAnimate = new FireAnimation(0.5, 0.7, ledCount, 0.7, 0.5);
-        break;
       case Larson: // a line bouncing back and forth with its width determined by size
         m_toAnimate = new LarsonAnimation(red, green, blue, white, speed, ledCount, BounceMode.Front, 7);
         break;
       case Rainbow: // neon cat type beat
         m_toAnimate = new RainbowAnimation(1, speed, ledCount);
         break;
-      case RgbFade: // cycling between red, greed, and blue
-        m_toAnimate = new RgbFadeAnimation(1, speed, ledCount);
-        break;
-      case SingleFade: // slowly turn all leds from solid color to off
-        m_toAnimate = new SingleFadeAnimation(red, green, blue, white, speed, ledCount);
-        break;
       case Strobe: // switching between solid color and full off at high speed
         m_toAnimate = new StrobeAnimation(red, green, blue, white, speed, ledCount);
-        break;
-      case Twinkle: // random leds turning on and off with certain color
-        m_toAnimate = new TwinkleAnimation(red, green, blue, white, speed, ledCount, TwinklePercent.Percent6);
-        break;
-      case TwinkleOff: // twinkle in reverse
-        m_toAnimate = new TwinkleOffAnimation(
-            red, green, blue, white, speed, ledCount, TwinkleOffPercent.Percent100);
         break;
       case Solid:
         this.red = red;
@@ -132,15 +110,9 @@ public class LED extends SubsystemBase {
 
   /** Different LED animation types */
   public enum AnimationTypes {
-    ColorFlow,
-    Fire,
     Larson,
     Rainbow,
-    RgbFade,
-    SingleFade,
     Strobe,
-    Twinkle,
-    TwinkleOff,
     Solid
   }
 
