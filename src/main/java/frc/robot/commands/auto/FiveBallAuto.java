@@ -90,12 +90,6 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new WaitCommand(0.5),
-        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
-        //        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5),
-        // flywheel::canShoot),
-        // TODO how long does flywheel take to rev up? (should the flywheel run while
-        // driving?)
-
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new SequentialCommandGroup(
@@ -106,7 +100,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
                     new SimulationShoot(fieldSim, true).withTimeout(1),
                     RobotBase::isReal)),
             new AutoRunIntakeIndexer(intake, indexer)),
-        new SetTurretAbsoluteSetpointDegrees(turret, 30),
+        new SetTurretAbsoluteSetpointDegrees(turret, 46),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new IntakePiston(intake, false),
@@ -119,7 +113,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
             new SequentialCommandGroup(command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
-        new SetTurretAbsoluteSetpointDegrees(turret, 5),
+        new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ConditionalCommand(
