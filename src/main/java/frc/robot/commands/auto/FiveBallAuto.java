@@ -100,7 +100,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
                     new SimulationShoot(fieldSim, true).withTimeout(1),
                     RobotBase::isReal)),
             new AutoRunIntakeIndexer(intake, indexer)),
-        new SetTurretAbsoluteSetpointDegrees(turret, 30),
+        new SetTurretAbsoluteSetpointDegrees(turret, 46),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new IntakePiston(intake, false),
@@ -113,7 +113,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
             new SequentialCommandGroup(command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
-        new SetTurretAbsoluteSetpointDegrees(turret, 5),
+        new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ConditionalCommand(
