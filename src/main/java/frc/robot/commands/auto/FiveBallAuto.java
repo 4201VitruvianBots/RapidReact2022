@@ -90,12 +90,6 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new WaitCommand(0.5),
-        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
-        //        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5),
-        // flywheel::canShoot),
-        // TODO how long does flywheel take to rev up? (should the flywheel run while
-        // driving?)
-
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new SequentialCommandGroup(
