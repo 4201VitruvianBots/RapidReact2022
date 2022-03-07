@@ -27,7 +27,7 @@ public class Turret extends SubsystemBase {
   private double turretSetpointDegrees = 0; // angle
 
   private Constants.CONTROL_MODE controlMode = CONTROL_MODE.CLOSEDLOOP;
-  private boolean usePoseEstimation = false;
+  private boolean usePoseEstimation = true;
 
   private double arbitraryFF;
 
