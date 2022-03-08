@@ -477,6 +477,7 @@ public class DriveTrain extends SubsystemBase {
       // resetEncoderCounts();
       m_drivetrainSimulator.setPose(pose);
     }
+    pigeon.setYaw(rotation.getDegrees());
   }
 
   /** Puts values on SmartDashboard. */
