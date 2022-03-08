@@ -118,9 +118,9 @@ public class Flywheel extends SubsystemBase {
       checkTurretAngle = true;
     }
     boolean checkVisionAngle =
-    m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
-        && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
-            < Constants.Flywheel.hubToleranceDegrees;
+        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
+            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+                < Constants.Flywheel.hubToleranceDegrees;
 
     boolean checkRPM = false;
     if (getSetpointRPM() > 0) {

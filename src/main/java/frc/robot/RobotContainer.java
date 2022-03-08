@@ -242,7 +242,8 @@ public class RobotContainer {
   }
 
   public void teleopPeriodic() {
-    m_vision.setVisionPoseEstimation(true);}
+    m_vision.setVisionPoseEstimation(true);
+  }
 
   public void autonomousInit() {
     if (RobotBase.isReal()) {
