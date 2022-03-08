@@ -225,12 +225,14 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
-    m_vision.setVisionPoseEstimation(false);
+    m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
   }
 
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_vision.setVisionPoseEstimation(true);
+  }
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
