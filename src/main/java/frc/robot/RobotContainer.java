@@ -241,7 +241,8 @@ public class RobotContainer {
     m_vision.setVisionPoseEstimation(true);
   }
 
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_vision.setVisionPoseEstimation(true);}
 
   public void autonomousInit() {
     if (RobotBase.isReal()) {
@@ -260,7 +261,9 @@ public class RobotContainer {
     m_vision.setVisionPoseEstimation(false);
   }
 
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_vision.setVisionPoseEstimation(false);
+  }
 
   public void simulationInit() {
     m_fieldSim.initSim();
