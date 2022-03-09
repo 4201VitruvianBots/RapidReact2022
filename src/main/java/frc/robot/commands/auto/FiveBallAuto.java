@@ -15,6 +15,7 @@ import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.IntakePiston;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.simulation.SimulationShoot;
@@ -100,13 +101,14 @@ public class FiveBallAuto extends SequentialCommandGroup {
                     new SimulationShoot(fieldSim, true).withTimeout(1),
                     RobotBase::isReal)),
             new AutoRunIntakeIndexer(intake, indexer)),
+        new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 46),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(1),
-            new SimulationShoot(fieldSim, true).withTimeout(1),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
+            new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
@@ -116,10 +118,10 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.85).withTimeout(1),
-            new SimulationShoot(fieldSim, true).withTimeout(1),
-            RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+            new AutoRunIndexer(indexer, flywheel, 0.85),
+            new SimulationShoot(fieldSim, true),
+            RobotBase::isReal));
   }
 }

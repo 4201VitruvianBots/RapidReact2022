@@ -7,9 +7,14 @@
 
 package frc.robot.commands.turret;
 
+import javax.imageio.plugins.tiff.TIFFImageReadParam;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
+import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
@@ -17,11 +22,12 @@ import frc.robot.subsystems.Vision;
 public class AutoUseVisionCorrection extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Turret m_turret;
-
   private final Vision m_vision;
+
   boolean turning, usingVisionSetpoint;
   private double setpoint;
   private double startTime;
+
   /** Creates a new ExampleCommand. */
   public AutoUseVisionCorrection(Turret turret, Vision vision) {
     m_turret = turret;
@@ -40,47 +46,11 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    //// if the turret is using sensor feedback
-    if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
-      // if vision has a valid target to shoot at then set usingVisinoSetpoint to true
-      if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
-        usingVisionSetpoint = true;
-        // if we are not turning then turn on vision leds and set the turret setpoint to the turret
-        // angle + targetx
-        if (!turning) {
-          m_vision.setGoalCameraLedState(true);
-          setpoint =
-              m_turret.getTurretAngleDegrees()
-                  + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL);
-          // if the setpoint is greater than the max turret angle then subtract 360 from it
-          if (setpoint > m_turret.getMaxAngle()) {
-            setpoint -= 360;
-            // if the setpiont is less than the minimum angle of the turret, make the setpoint the
-            // minimum angle and set turning to true
-            if (setpoint < m_turret.getMinAngle()) setpoint = m_turret.getMinAngle();
-            turning = true;
-            // else if the setpoint is less than the minimum angle, add 360 to it
-          } else if (setpoint < m_turret.getMinAngle()) {
-            setpoint += 360;
-            // if the setpoint is greater than the turret's max angle, make it the max angle and set
-            // turning to true
-            if (setpoint > m_turret.getMaxAngle()) setpoint = m_turret.getMaxAngle();
-            turning = true;
-          }
-        }
-        // else if the turret is on target, set turning to false
-        else {
-          if (m_turret.onTarget()) turning = false;
-        }
-        // else if vision does not have a valid target, set usingVisionSetpoint to false and make
-        // the setpoint the current turret angle
-      } else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
-        usingVisionSetpoint = false;
-        setpoint = m_turret.getTurretAngleDegrees();
-      }
+      if(m_vision.getValidTarget(CAMERA_POSITION.GOAL)) {
+        setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.GOAL);
 
-      m_turret.setAbsoluteSetpointDegrees(setpoint);
-    }
+        m_turret.setAbsoluteSetpointDegrees(setpoint);
+      }
   }
 
   // Called once the command ends or is interrupted.
@@ -90,6 +60,6 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL)) <= 3);
+    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL)) <= Constants.Flywheel.hubToleranceDegrees);
   }
 }

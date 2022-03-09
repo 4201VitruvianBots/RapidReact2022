@@ -241,6 +241,7 @@ public class RobotContainer {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
     m_vision.setVisionPoseEstimation(true);
+    m_flywheel.setRPM(0);
   }
 
   public void teleopPeriodic() {
