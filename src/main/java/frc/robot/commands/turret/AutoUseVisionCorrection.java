@@ -7,14 +7,10 @@
 
 package frc.robot.commands.turret;
 
-import javax.imageio.plugins.tiff.TIFFImageReadParam;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Vision.CAMERA_POSITION;
-import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
@@ -22,6 +18,7 @@ import frc.robot.subsystems.Vision;
 public class AutoUseVisionCorrection extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Turret m_turret;
+
   private final Vision m_vision;
 
   boolean turning, usingVisionSetpoint;
@@ -46,11 +43,11 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      if(m_vision.getValidTarget(CAMERA_POSITION.GOAL)) {
-        setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.GOAL);
+    if (m_vision.getValidTarget(CAMERA_POSITION.GOAL)) {
+      setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.GOAL);
 
-        m_turret.setAbsoluteSetpointDegrees(setpoint);
-      }
+      m_turret.setAbsoluteSetpointDegrees(setpoint);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -60,6 +57,7 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL)) <= Constants.Flywheel.hubToleranceDegrees);
+    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+        <= Constants.Flywheel.hubToleranceDegrees);
   }
 }

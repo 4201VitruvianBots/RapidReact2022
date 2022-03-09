@@ -242,6 +242,7 @@ public class RobotContainer {
     }
     m_vision.setVisionPoseEstimation(true);
     m_flywheel.setRPM(0);
+    m_fieldSim.clearAutoTrajectory();
   }
 
   public void teleopPeriodic() {

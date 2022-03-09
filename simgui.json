@@ -15,6 +15,9 @@
       "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[3]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[6]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalInput[8]": "Digital Input",
+      "/LiveWindow/Ungrouped/DigitalOutput[5]": "Digital Output",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
@@ -34,6 +37,11 @@
     },
     "windows": {
       "/SmartDashboard/Field2d": {
+        "Blue Cargo": {
+          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\blue_cargo.png",
+          "length": 0.24130000174045563,
+          "width": 0.24130000174045563
+        },
         "BlueCargo_0": {
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
@@ -74,6 +82,11 @@
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
+        "Intake": {
+          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "length": 0.10000000149011612,
+          "width": 0.10000000149011612
+        },
         "Intake A": {
           "arrows": false,
           "length": 0.10000000149011612,
@@ -93,6 +106,11 @@
           "arrows": false,
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
+        },
+        "Red Cargo": {
+          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "length": 0.24130000174045563,
+          "width": 0.24130000174045563
         },
         "RedCargo_0": {
           "image": "resources/Images/red_cargo.png",
@@ -130,13 +148,47 @@
           "width": 0.23999999463558197
         },
         "Robot": {
+          "arrows": false,
           "image": "resources/Images/robot.png"
         },
         "Turret": {
-          "image": "resources/Images/turret.png"
+          "image": "resources/Images/turret.png",
+          "weight": 0.0
+        },
+        "Vision": {
+          "arrowColor": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ]
         },
         "height": 8.229999542236328,
-        "image": "resources/Images/RapidReactField.PNG",
+        "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\field22.png",
+        "trajectory": {
+          "arrowColor": [
+            0.0,
+            0.0,
+            0.0,
+            255.0
+          ],
+          "arrowSize": 0,
+          "arrowWeight": 5.0,
+          "color": [
+            1.0,
+            1.0,
+            1.0,
+            255.0
+          ],
+          "style": "Line",
+          "weight": 3.0
+        },
         "width": 16.459999084472656,
         "window": {
           "visible": true

@@ -2,16 +2,21 @@ package frc.robot.simulation;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants;
-import frc.robot.Constants.Sim.BallColor;
-import frc.robot.Constants.Sim.BallState;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.simulation.SetSimTrajectory;
+import frc.robot.simulation.SimConstants.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class FieldSim {
   private final Field2d m_field2d;
@@ -20,7 +25,8 @@ public class FieldSim {
   private final Vision m_vision;
   private final Intake m_intake;
   // Exclude 5 cargo in other robots and 2 with human players
-  private final Cargo[] m_cargo = new Cargo[15];
+  private final Cargo[] m_redCargo = new Cargo[11];
+  private final Cargo[] m_blueCargo = new Cargo[11];
 
   private int ballCount = 0;
   private final Pose2d[] intakePose = {new Pose2d(), new Pose2d(), new Pose2d(), new Pose2d()};
@@ -37,30 +43,55 @@ public class FieldSim {
   }
 
   public void initSim() {
-    // Loads 1 cargo into the robot
-    m_cargo[0] = new Cargo("BlueCargo_0", BallColor.BLUE, new Pose2d());
-    m_cargo[0].setBallState(BallState.IN_ROBOT);
-
     // Places and sets the position of all the cargo on the field
 
-    for (int i = 0; i < Constants.Sim.blueHubBallPos.length; i++) {
-      m_cargo[i + 1] =
-          new Cargo(
-              String.format("BlueCargo_" + (i + 1)),
-              BallColor.BLUE,
-              Constants.Sim.blueHubBallPos[i]);
-      m_cargo[i + 1].setBallState(BallState.ON_FIELD);
+    for (int i = 0; i < m_blueCargo.length; i++) {
+      if (i < SimConstants.blueHubBallPos.length) {
+        m_blueCargo[i] =
+            new Cargo(
+                String.format("BlueCargo_" + (i)), BallColor.BLUE, SimConstants.blueHubBallPos[i]);
+        m_blueCargo[i].setBallState(BallState.ON_FIELD);
+      } else {
+        m_blueCargo[i] = new Cargo(String.format("BlueCargo_" + (i)), BallColor.BLUE, new Pose2d());
+        m_blueCargo[i].setBallState(BallState.ON_FIELD);
+      }
     }
 
-    for (int i = 0; i < Constants.Sim.redHubBallPos.length; i++) {
-      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length] =
-          new Cargo(String.format("RedCargo_" + i), BallColor.RED, Constants.Sim.redHubBallPos[i]);
-      m_cargo[i + 1 + Constants.Sim.blueHubBallPos.length].setBallState(BallState.ON_FIELD);
+    for (int i = 0; i < m_redCargo.length; i++) {
+      if (i < SimConstants.redHubBallPos.length) {
+        m_redCargo[i] =
+            new Cargo(String.format("RedCargo_" + i), BallColor.RED, SimConstants.redHubBallPos[i]);
+        m_redCargo[i].setBallState(BallState.ON_FIELD);
+      } else {
+        m_redCargo[i] = new Cargo(String.format("RedCargo_" + i), BallColor.RED, new Pose2d());
+        m_redCargo[i].setBallState(BallState.ON_FIELD);
+      }
     }
 
-    m_field2d.setRobotPose(Constants.Sim.startPositionMeters);
+    // Loads 1 cargo into the robot
+    m_blueCargo[6].setBallState(BallState.IN_ROBOT);
+
+    m_field2d.setRobotPose(SimConstants.startPositionMeters);
     m_driveTrain.resetOdometry(
-        Constants.Sim.startPositionMeters, Constants.Sim.startPositionMeters.getRotation());
+        SimConstants.startPositionMeters, SimConstants.startPositionMeters.getRotation());
+  }
+
+  public void setAutoTrajectory(Trajectory... trajectories) {
+    var trajectoryPoses = new ArrayList<Pose2d>();
+
+    for (int i = 0; i < trajectories.length; i++) {
+      trajectoryPoses.addAll(
+          trajectories[i].getStates().stream()
+              .map(state -> state.poseMeters)
+              .collect(Collectors.toList()));
+    }
+
+  }
+
+  public void clearAutoTrajectory() {
+    var trajectoryPoses = new ArrayList<Pose2d>();
+
+//    m_field2d.getObject("trajectory").setPoses(trajectoryPoses);
   }
 
   private void updateIntakePoses() {
@@ -75,39 +106,23 @@ public class FieldSim {
     */
 
     // Look up rotating a point about another point in 2D space for the math explanation
+    Translation2d[] intakePositions = {
+      new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0),
+      new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0),
+      new Translation2d(
+          -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
+          SimConstants.robotWidth / 2.0),
+      new Translation2d(
+          -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
+          -SimConstants.robotWidth / 2.0),
+    };
+
     Pose2d robotPose = m_driveTrain.getRobotPoseMeters();
-    double robotX = robotPose.getX();
-    double robotY = robotPose.getY();
-    double cos = robotPose.getRotation().getCos();
-    double sin = robotPose.getRotation().getSin();
-
-    double deltaXa =
-        (robotX - Constants.Sim.robotLengthMeters / 2.0 - Constants.Sim.intakeLengthMeters)
-            - robotX;
-    double deltaXb = (robotX - Constants.Sim.robotLengthMeters / 2.0) - robotX;
-    double deltaYa = (robotY + Constants.Sim.robotWidthMeters / 2.0) - robotY;
-    double deltaYb = (robotY - Constants.Sim.robotWidthMeters / 2.0) - robotY;
-
-    intakePose[0] =
-        new Pose2d(
-            cos * deltaXa - sin * deltaYa + robotX,
-            sin * deltaXa + cos * deltaYa + robotY,
-            new Rotation2d());
-    intakePose[1] =
-        new Pose2d(
-            cos * deltaXa - sin * deltaYb + robotX,
-            sin * deltaXa + cos * deltaYb + robotY,
-            new Rotation2d());
-    intakePose[2] =
-        new Pose2d(
-            cos * deltaXb - sin * deltaYb + robotX,
-            sin * deltaXb + cos * deltaYb + robotY,
-            new Rotation2d());
-    intakePose[3] =
-        new Pose2d(
-            cos * deltaXb - sin * deltaYa + robotX,
-            sin * deltaXb + cos * deltaYa + robotY,
-            new Rotation2d());
+    for (int i = 0; i < intakePose.length; i++) {
+      var intakePoseFromChassis =
+          intakePositions[i].rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation());
+      intakePose[i] = new Pose2d(intakePoseFromChassis, robotPose.getRotation());
+    }
   }
 
   private boolean isBallInIntakeZone(Pose2d ballPose) {
@@ -153,20 +168,25 @@ public class FieldSim {
     updateIntakePoses();
 
     if (m_intake.getIntakePistonExtendStatus()) {
-      m_field2d.getObject("Intake A").setPose(intakePose[0]);
-      m_field2d.getObject("Intake B").setPose(intakePose[1]);
-      m_field2d.getObject("Intake C").setPose(intakePose[2]);
-      m_field2d.getObject("Intake D").setPose(intakePose[3]);
+      m_field2d.getObject("Intake").setPoses(intakePose);
     } else {
-      m_field2d.getObject("Intake A").setPose(intakePoseHidden);
-      m_field2d.getObject("Intake B").setPose(intakePoseHidden);
-      m_field2d.getObject("Intake C").setPose(intakePoseHidden);
-      m_field2d.getObject("Intake D").setPose(intakePoseHidden);
+      m_field2d.getObject("Intake").setPoses(intakePoseHidden);
     }
 
-    for (Cargo p : m_cargo) {
+    for (Cargo p : m_redCargo) {
       updateBallState(p);
-      m_field2d.getObject(p.getName()).setPose(p.getBallPose());
+      m_field2d
+          .getObject("Red Cargo")
+          .setPoses(
+              Arrays.stream(m_redCargo).map(Cargo::getCargoPose).collect(Collectors.toList()));
+    }
+
+    for (Cargo p : m_blueCargo) {
+      updateBallState(p);
+      m_field2d
+          .getObject("Blue Cargo")
+          .setPoses(
+              Arrays.stream(m_blueCargo).map(Cargo::getCargoPose).collect(Collectors.toList()));
     }
 
     SmartDashboard.putData("Field2d", m_field2d);
@@ -175,12 +195,24 @@ public class FieldSim {
   public double getIdealAngleToHub() {
     return Math.toDegrees(
         Math.atan2(
-            Constants.Sim.hubPoseMeters.getY() - m_driveTrain.getRobotPoseMeters().getY(),
-            Constants.Sim.hubPoseMeters.getX() - m_driveTrain.getRobotPoseMeters().getX()));
+            SimConstants.hubPoseMeters.getY() - m_driveTrain.getRobotPoseMeters().getY(),
+            SimConstants.hubPoseMeters.getX() - m_driveTrain.getRobotPoseMeters().getX()));
+  }
+
+  public Cargo[] getRedCargo() {
+    return m_redCargo;
+  }
+
+  public Cargo[] getBlueCargo() {
+    return m_blueCargo;
   }
 
   public Cargo[] getCargo() {
-    return m_cargo;
+    var cargo = new Cargo[m_redCargo.length + m_blueCargo.length];
+    System.arraycopy(m_redCargo, 0, cargo, 0, m_redCargo.length);
+    System.arraycopy(m_blueCargo, 0, cargo, m_redCargo.length, m_blueCargo.length);
+
+    return cargo;
   }
 
   public Pose2d getRobotPose() {
@@ -194,12 +226,12 @@ public class FieldSim {
   }
 
   private void updateBallState(Cargo cargo) {
-    Pose2d ballPose = cargo.getBallPose();
+    Pose2d ballPose = cargo.getCargoPose();
 
     switch (cargo.getBallState()) {
       case IN_AIR:
-        if (Math.pow(ballPose.getX() - Constants.Sim.hubPoseMeters.getX(), 2)
-                + Math.pow(ballPose.getY() - Constants.Sim.hubPoseMeters.getY(), 2)
+        if (Math.pow(ballPose.getX() - SimConstants.hubPoseMeters.getX(), 2)
+                + Math.pow(ballPose.getY() - SimConstants.hubPoseMeters.getY(), 2)
             < Math.pow(0.1, 2)) { // / If the ball has gone into the hub
           cargo.setBallState(BallState.ON_FIELD);
           break;
@@ -207,7 +239,7 @@ public class FieldSim {
         double currentTime = RobotController.getFPGATime();
         // FPGA time is in microseonds, need to convert it into seconds
         double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
-        double distanceTraveled = Constants.Sim.shotSpeedMetersPerSecond * deltaT;
+        double distanceTraveled = SimConstants.shotSpeedMetersPerSecond * deltaT;
 
         double deltaX = distanceTraveled * Math.cos(Math.toRadians(getIdealAngleToHub()));
         double deltaY = distanceTraveled * Math.sin(Math.toRadians(getIdealAngleToHub()));
@@ -244,61 +276,5 @@ public class FieldSim {
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
     m_field2d.getObject("Turret").setPose(m_turret.getPose());
     m_field2d.getObject("Vision").setPose(m_vision.getPoseFromHub());
-  }
-
-  public static class Cargo {
-    private BallColor m_color;
-    private boolean wasShot;
-    private Pose2d ballPose = new Pose2d();
-    private double m_lastTimestamp;
-    private BallState ballState = BallState.ON_FIELD;
-
-    String m_name;
-
-    public Cargo(String name, BallColor color, Pose2d pose) {
-      m_name = name;
-      m_color = color;
-      ballPose = pose;
-    }
-
-    public String getName() {
-      return m_name;
-    }
-
-    public BallState getBallState() {
-      return ballState;
-    }
-
-    public boolean getBallShotState() {
-      return wasShot;
-    }
-
-    public void setBallState(BallState state) {
-      ballState = state;
-    }
-
-    public void setBallShotState(boolean shotState) {
-      wasShot = shotState;
-    }
-
-    public void setBallPose(Pose2d pose) {
-      ballPose = pose;
-    }
-
-    public Pose2d getBallPose() {
-      return ballPose;
-    }
-
-    public void setLastTimestamp(double timestamp) {
-      m_lastTimestamp = timestamp;
-    }
-
-    public double getLastTimestamp() {
-      return m_lastTimestamp;
-    }
-
-    public BallColor getColor() {
-      return m_color;
-    }
   }
 }
