@@ -81,7 +81,7 @@ public class FourBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
     addCommands(
-          new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),

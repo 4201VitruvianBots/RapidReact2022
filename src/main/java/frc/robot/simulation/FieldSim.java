@@ -7,8 +7,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.simulation.SimConstants.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -85,13 +83,12 @@ public class FieldSim {
               .map(state -> state.poseMeters)
               .collect(Collectors.toList()));
     }
-
   }
 
   public void clearAutoTrajectory() {
     var trajectoryPoses = new ArrayList<Pose2d>();
 
-//    m_field2d.getObject("trajectory").setPoses(trajectoryPoses);
+    //    m_field2d.getObject("trajectory").setPoses(trajectoryPoses);
   }
 
   private void updateIntakePoses() {

@@ -54,7 +54,7 @@ public class OneBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     addCommands(
-            new SetSimTrajectory(fieldSim, trajectory1, trajectory2),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new SetAndHoldRpmSetpoint(flywheel, vision, 3000),
