@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -13,7 +14,8 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAuto;
+import frc.robot.commands.auto.FiveBallAutoBlue;
+import frc.robot.commands.auto.FiveBallAutoRed;
 import frc.robot.commands.auto.FourBallAuto;
 import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TestPath;
@@ -28,6 +30,7 @@ import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
+import frc.robot.commands.driveTrain.ResetOdometry;
 import frc.robot.commands.driveTrain.SetArcadeDrive;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
@@ -94,11 +97,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-      "Five Ball Auto ",
-        new FiveBallAuto(
+        "Five Ball Auto Red",
+        new FiveBallAutoRed(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+        "Five Ball Auto Blue",
+        new FiveBallAutoBlue(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "One Ball Auto",
@@ -187,6 +193,7 @@ public class RobotContainer {
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getPostAutoCommand());
     // TODO Try this if the above does not work
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
+    SmartDashboard.putData(new ResetOdometry(m_driveTrain, m_fieldSim, new Pose2d()));
   }
 
   public void initializeSubsystems() {
