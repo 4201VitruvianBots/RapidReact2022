@@ -82,7 +82,7 @@ public final class Constants {
     public static final double kKickerKv = 0.017544;
     public static final double kKickerKa = 0.00030392;
 
-    public static final double radiansPerSecondTolerance = 1.0;
+    public static final double radiansPerSecondTolerance = 30.0;
 
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
@@ -193,8 +193,8 @@ public final class Constants {
 
     public static final int encoderUnitsPerRotation = 2048;
     public static final double canCoderAngleOffset = -329.150;
-    public static final double minAngle = -46;
-    public static final double maxAngle = 46;
+    public static final double minAngle = -40;
+    public static final double maxAngle = 40;
 
     //    public static final double kF = 0.07;
     //    public static final double kP = 0.1;

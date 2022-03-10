@@ -67,14 +67,14 @@ public class FiveBallAuto extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(5), true);
 
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(7), false);
+            "FiveBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(5), false);
 
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
@@ -86,7 +86,9 @@ public class FiveBallAuto extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
+        new ConditionalCommand(new WaitCommand(0),
         new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
+        RobotBase::isReal),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
@@ -104,10 +106,10 @@ public class FiveBallAuto extends SequentialCommandGroup {
                     RobotBase::isReal)),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
-        new SetTurretAbsoluteSetpointDegrees(turret, 46),
+        new SetTurretAbsoluteSetpointDegrees(turret, 40),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
@@ -119,8 +121,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
-        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ParallelDeadlineGroup(command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel, 0.85),
             new SimulationShoot(fieldSim, true),
