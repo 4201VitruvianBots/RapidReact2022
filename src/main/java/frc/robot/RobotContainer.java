@@ -79,7 +79,7 @@ public class RobotContainer {
   public Button[] leftButtons = new Button[2];
   public Button[] rightButtons = new Button[2];
   public Button[] xBoxButtons = new Button[10];
-  public Button[] xBoxPOVButtons = new Button[8];
+  public Button[] xBoxPOVButtons = new Button[4];
   public Button xBoxLeftTrigger, xBoxRightTrigger;
   // public static boolean allianceColorBlue;
   // public static boolean allianceColorRed;
@@ -117,19 +117,19 @@ public class RobotContainer {
         "Two Ball Auto Lower Hub",
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Three Ball Auto",
-        new ThreeBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Three Ball Auto Lower Hub",
-        new ThreeBallAutoLowerHub(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Four Ball Auto",
-        new FourBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
+    // m_autoChooser.addOption(
+    //     "Three Ball Auto",
+    //     new ThreeBallAuto(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Three Ball Auto Lower Hub",
+    //     new ThreeBallAutoLowerHub(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Four Ball Auto",
+    //     new FourBallAuto(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
@@ -153,7 +153,7 @@ public class RobotContainer {
     for (int i = 0; i < xBoxButtons.length; i++)
       xBoxButtons[i] = new JoystickButton(xBoxController, (i + 1));
     for (int i = 0; i < xBoxPOVButtons.length; i++)
-      xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 45));
+      xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
@@ -175,7 +175,7 @@ public class RobotContainer {
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
-    xBoxPOVButtons[4].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
+    xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
