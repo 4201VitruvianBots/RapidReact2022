@@ -80,10 +80,10 @@ public class TwoBallAutoLowerHub extends SequentialCommandGroup {
         new WaitCommand(0.5),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1300),
         new ParallelDeadlineGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntake(intake)
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntake(intake, indexer)
             // TODO implement indexer
             ),
-        new AutoRunIntake(intake).withTimeout(1),
+        new AutoRunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new ParallelDeadlineGroup(
             command2.andThen(
