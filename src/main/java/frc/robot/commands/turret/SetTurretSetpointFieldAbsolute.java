@@ -74,8 +74,17 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         joystickMoved =
             (Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))
                 >= Math.pow(deadZone, 2);
+          // if vision has a target and the joystick has not moved, set visionsetpoint to true and
+          // run
+          // the if statements below
+        if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
+          && !m_turret.usePoseEstimation()) {
+          usingVisionSetpoint = true;
+          m_vision.setGoalCameraLedState(true);
+          currentVisionSetpoint =
+          m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.GOAL);
         // if the joystick sensors report movement greater than the deadzone it runs these methods
-        if (joystickMoved) {
+        } else if (joystickMoved) {
 
           // Convert joystick axis values to degrees setpoint
           setpoint =
@@ -98,15 +107,6 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           setpoint = targetAngleRotation.getDegrees();
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
-          // if vision has a target and the joystick has not moved, set visionsetpoint to true and
-          // run
-          // the if statements below
-        } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
-            && !m_turret.usePoseEstimation()) {
-          usingVisionSetpoint = true;
-          m_vision.setGoalCameraLedState(true);
-          currentVisionSetpoint =
-              m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.GOAL);
         }
         // else if vision doesn't have a target and the joysticks have not moved,
         // set usingVisionSetpoint to false and turn off the LEDs if possible
