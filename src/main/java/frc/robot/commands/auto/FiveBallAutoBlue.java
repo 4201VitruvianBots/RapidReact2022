@@ -88,10 +88,7 @@ public class FiveBallAutoBlue extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
-        new ConditionalCommand(
-            new WaitCommand(0),
-            new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
-            RobotBase::isReal),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
