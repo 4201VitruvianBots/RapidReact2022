@@ -81,7 +81,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         useLimelight =
             m_controller.getAButton() || m_controller.getBButton() || m_controller.getYButton();
         // if the joystick sensors report movement greater than the deadzone it runs these methods
-        } else if (joystickMoved) {
+        if (joystickMoved) {
 
           // Convert joystick axis values to degrees setpoint
           setpoint =
