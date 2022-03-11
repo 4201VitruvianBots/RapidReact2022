@@ -69,7 +69,9 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
     // If we are not climbing
     if (!m_climber.getElevatorClimbState()) {
       // If the turret is using sensor feedback
-      if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
+      if (m_turret.getTurretLocked()) {
+        m_turret.setAbsoluteSetpointDegrees(0);
+      } else if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
         currentRobotHeading = m_driveTrain.getHeadingRotation2d();
         joystickMoved =
             (Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))

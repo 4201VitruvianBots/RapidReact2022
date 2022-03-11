@@ -218,18 +218,14 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (turretLocked) {
-      setAbsoluteSetpointDegrees(0);
-    } else {
-      if (!turretHomeSensor.get() && !turretHomeSensorLatch) {
-        turretMotor.setSelectedSensorPosition(0);
-        turretHomeSensorLatch = true;
-      } else if (turretHomeSensor.get() && turretHomeSensorLatch) {
-        turretHomeSensorLatch = false;
-      }
+    if (!turretHomeSensor.get() && !turretHomeSensorLatch) {
+      turretMotor.setSelectedSensorPosition(0);
+      turretHomeSensorLatch = true;
+    } else if (turretHomeSensor.get() && turretHomeSensorLatch) {
+      turretHomeSensorLatch = false;
+    }
 
-      updateClosedLoopPosition();
-    } 
+    updateClosedLoopPosition(); 
     updateShuffleboard();
   }
 }
