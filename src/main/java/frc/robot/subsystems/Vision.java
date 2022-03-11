@@ -29,6 +29,7 @@ public class Vision extends SubsystemBase {
   private final Turret m_turret;
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
+  private final NetworkTable limelight;
 
   private CAMERA_TYPE goal_camera_type = CAMERA_TYPE.OAK;
   private int red_offset, blue_offset;
@@ -60,6 +61,7 @@ public class Vision extends SubsystemBase {
         goal_camera = NetworkTableInstance.getDefault().getTable("OAK-D_Goal");
         break;
     }
+    limelight = NetworkTableInstance.getDefault().getTable("limelight");
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
     PortForwarder.add(5802, Constants.Vision.VISION_SERVER_IP, 5802);
@@ -76,6 +78,8 @@ public class Vision extends SubsystemBase {
         return goal_camera.getEntry("tv").getDouble(0) == 1;
       case INTAKE:
         return intake_camera.getEntry("tv").getDouble(0) > 0;
+      case LIMELIGHT:
+        return limelight.getEntry("tv").getDouble(0) == 1;
       default:
         return false;
     }
@@ -124,6 +128,8 @@ public class Vision extends SubsystemBase {
             return 0;
           }
         } else return 0;
+      case LIMELIGHT:
+        return limelight.getEntry("tx").getDouble(0);
       default:
         return 0;
     }
@@ -157,6 +163,10 @@ public class Vision extends SubsystemBase {
     switch (position) {
       case GOAL:
         return goal_camera.getEntry("ty").getDouble(0);
+
+      case LIMELIGHT:
+        return limelight.getEntry("ty").getDouble(0);
+
       case INTAKE:
       default:
         return 0;
@@ -236,35 +246,13 @@ public class Vision extends SubsystemBase {
    *
    * @param state true: Set LEDs On false: set LEDs Off
    */
-  public void setGoalCameraLedState(boolean state) {
-    int ledMode = 0;
-    if (state) {
-      switch (goal_camera_type) {
-        case LIMELIGHT:
-          ledMode = 3;
-          break;
-        case PHOTONVISION:
-          ledMode = 1;
-          break;
-        case OAK:
-        default:
-          ledMode = 0;
-          break;
-      }
-    } else {
-      switch (goal_camera_type) {
-        case LIMELIGHT:
-          ledMode = 1;
-          break;
-        case PHOTONVISION:
-        case OAK:
-        default:
-          ledMode = 0;
-          break;
-      }
-    }
+  public void setLimelightLEDState(boolean state) {
 
-    goal_camera.getEntry("ledMode").setNumber(ledMode);
+    limelight.getEntry("ledMode").setNumber(state ? 3 : 1);
+  }
+
+  public void setLimelightPipeline(int pipeline) {
+    limelight.getEntry("pipeline").setNumber(pipeline);
   }
 
   /** Returns the total count of red cargo detected by the intake camera. */

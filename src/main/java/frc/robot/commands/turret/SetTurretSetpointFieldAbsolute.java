@@ -37,6 +37,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   boolean timeout = false;
   boolean turning, usingVisionSetpoint;
   private boolean direction, directionTripped, joystickMoved;
+  private boolean useLimelight;
 
   /** Creates a new ExampleCommand. */
   public SetTurretSetpointFieldAbsolute(
@@ -52,6 +53,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
     m_flywheel = flywheel;
     m_climber = climber;
     m_controller = controller;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turretSubsystem);
   }
@@ -76,15 +78,8 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         joystickMoved =
             (Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))
                 >= Math.pow(deadZone, 2);
-          // if vision has a target and the joystick has not moved, set visionsetpoint to true and
-          // run
-          // the if statements below
-        if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
-          && !m_turret.usePoseEstimation()) {
-          usingVisionSetpoint = true;
-          m_vision.setGoalCameraLedState(true);
-          currentVisionSetpoint =
-          m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.GOAL);
+        useLimelight =
+            m_controller.getAButton() || m_controller.getBButton() || m_controller.getYButton();
         // if the joystick sensors report movement greater than the deadzone it runs these methods
         } else if (joystickMoved) {
 
@@ -109,12 +104,22 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           setpoint = targetAngleRotation.getDegrees();
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
+          // if vision has a target and the joystick has not moved, set visionsetpoint to true and
+          // run
+          // the if statements below
+        } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
+            && !m_turret.usePoseEstimation()
+            && useLimelight) {
+          usingVisionSetpoint = true;
+          m_vision.setLimelightLEDState(true);
+          currentVisionSetpoint =
+              m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.LIMELIGHT);
         }
         // else if vision doesn't have a target and the joysticks have not moved,
         // set usingVisionSetpoint to false and turn off the LEDs if possible
-        else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)) {
+        else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)) {
           usingVisionSetpoint = false;
-          m_vision.setGoalCameraLedState(false);
+          m_vision.setLimelightLEDState(false);
         }
 
         currentTurretSetpoint = Rotation2d.fromDegrees(m_turret.getTurretAngleDegrees());

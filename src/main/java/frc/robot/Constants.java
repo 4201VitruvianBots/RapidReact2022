@@ -230,7 +230,8 @@ public final class Constants {
 
     public enum CAMERA_POSITION {
       GOAL,
-      INTAKE
+      INTAKE,
+      LIMELIGHT
     }
 
     public enum INTAKE_TRACKING_TYPE {
