@@ -37,7 +37,6 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   boolean timeout = false;
   boolean turning, usingVisionSetpoint;
   private boolean direction, directionTripped, joystickMoved;
-  private boolean useLimelight;
 
   /** Creates a new ExampleCommand. */
   public SetTurretSetpointFieldAbsolute(
@@ -78,8 +77,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         joystickMoved =
             (Math.pow(m_controller.getRawAxis(0), 2) + Math.pow(m_controller.getRawAxis(1), 2))
                 >= Math.pow(deadZone, 2);
-        useLimelight =
-            m_controller.getAButton() || m_controller.getBButton() || m_controller.getYButton();
+
         // if the joystick sensors report movement greater than the deadzone it runs these methods
         if (joystickMoved) {
 
@@ -108,12 +106,12 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // run
           // the if statements below
         } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
-            && !m_turret.usePoseEstimation()
-            && useLimelight) {
+            && !m_turret.usePoseEstimation()) {
           usingVisionSetpoint = true;
           m_vision.setLimelightLEDState(true);
-          currentVisionSetpoint =
-              m_vision.getTargetXRotation2d(Constants.Vision.CAMERA_POSITION.LIMELIGHT);
+          m_turret.setAbsoluteSetpointDegrees(
+              m_turret.getTurretAngleDegrees()
+                  - m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
         }
         // else if vision doesn't have a target and the joysticks have not moved,
         // set usingVisionSetpoint to false and turn off the LEDs if possible
@@ -126,19 +124,19 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
         // If no manual input is used and we're not using pose estimation, set the setpoint to the
         // vision setpoint
-        if (!joystickMoved && !m_turret.usePoseEstimation()) {
-          setpoint =
-              currentVisionSetpoint
-                  .plus(currentTurretSetpoint)
-                  .minus(currentRobotHeading.minus(lastRobotHeading))
-                  .getDegrees();
+        // if (!joystickMoved && !m_turret.usePoseEstimation()) {
+        //   setpoint =
+        //       currentVisionSetpoint
+        //           .plus(currentTurretSetpoint)
+        //           .minus(currentRobotHeading.minus(lastRobotHeading))
+        //           .getDegrees();
 
-          m_turret.setAbsoluteSetpointDegrees(setpoint);
-        }
+        //   m_turret.setAbsoluteSetpointDegrees(setpoint);
+        // }
 
-        lastVisionSetpoint = currentVisionSetpoint;
-        lastTurretSetpoint = m_turret.getTurretRotation2d();
-        lastRobotHeading = m_driveTrain.getHeadingRotation2d();
+        // lastVisionSetpoint = currentVisionSetpoint;
+        // lastTurretSetpoint = m_turret.getTurretRotation2d();
+        // lastRobotHeading = m_driveTrain.getHeadingRotation2d();
       } else {
         m_turret.setPercentOutput(-m_controller.getRawAxis(0) * 0.2);
       }

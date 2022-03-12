@@ -260,5 +260,5 @@ public final class Constants {
   public enum CONTROL_MODE {
     OPENLOOP,
     CLOSEDLOOP
-  };
+  }
 }

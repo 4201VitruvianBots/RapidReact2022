@@ -41,7 +41,7 @@ public class Vision extends SubsystemBase {
   private VisionData[] dataBuffer = new VisionData[100];
   private int bufferIdx = 0;
 
-  private boolean enablePoseEstimation = true;
+  private boolean enablePoseEstimation = false;
 
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
@@ -317,7 +317,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void setVisionPoseEstimation(boolean enabled) {
-    enablePoseEstimation = enabled;
+    enablePoseEstimation = false;
   }
 
   /** Update the robot pose based on vision data if a valid vision target is found. */
@@ -354,17 +354,17 @@ public class Vision extends SubsystemBase {
 
   /** Sends values to SmartDashboard */
   private void updateSmartDashboard() {
-    SmartDashboard.putBoolean("Has Goal Target", getValidTarget(CAMERA_POSITION.GOAL));
-    SmartDashboard.putNumber("Goal Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
+    // SmartDashboard.putBoolean("Has Goal Target", getValidTarget(CAMERA_POSITION.GOAL));
+    // SmartDashboard.putNumber("Goal Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
     SmartDashboard.putNumber("Goal Horizontal Distance", getGoalTargetHorizontalDistance());
 
     SmartDashboard.putBoolean("Has Intake Target", getValidTarget(CAMERA_POSITION.INTAKE));
     SmartDashboard.putNumber("Intake Angle", getTargetXAngle(CAMERA_POSITION.INTAKE, 0));
 
-    SmartDashboardTab.putNumber(
-        "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
-    SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
-    SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
+    // SmartDashboardTab.putNumber(
+    //     "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
+    // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
+    // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
   }
 
   @Override
