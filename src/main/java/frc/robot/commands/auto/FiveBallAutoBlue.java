@@ -5,6 +5,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -14,6 +15,7 @@ import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
+import frc.robot.commands.intake.AutoRunIntakeNoBackwardKicker;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
@@ -99,12 +101,14 @@ public class FiveBallAutoBlue extends SequentialCommandGroup {
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new SequentialCommandGroup(
                 // new WaitCommand(0.25),
-                new ConditionalCommand(
-                    new AutoRunIndexer(indexer, flywheel, 0.90)
-                        .withTimeout(1), // if this still overshoots, raise some more (0.95ish)
-                    new SimulationShoot(fieldSim, true).withTimeout(1),
-                    RobotBase::isReal)),
-            new AutoRunIntakeIndexer(intake, indexer)),
+                new ParallelCommandGroup(
+                    new ConditionalCommand(
+                        new AutoRunIndexer(indexer, flywheel, 0.90)
+                            .withTimeout(1), // if this still overshoots, raise some more (0.95ish)
+                        new SimulationShoot(fieldSim, true).withTimeout(1),
+                        RobotBase::isReal),
+                    new AutoRunIntakeNoBackwardKicker(intake)),
+                new AutoRunIntakeIndexer(intake, indexer))),
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 40),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
