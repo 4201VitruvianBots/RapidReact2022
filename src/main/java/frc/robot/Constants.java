@@ -253,7 +253,7 @@ public final class Constants {
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
-    public static String VISION_SERVER_IP = "10.42.1.100";
+    public static String VISION_SERVER_IP = "10.42.1.11";
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
