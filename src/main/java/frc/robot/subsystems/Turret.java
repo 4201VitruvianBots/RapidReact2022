@@ -225,7 +225,7 @@ public class Turret extends SubsystemBase {
       turretHomeSensorLatch = false;
     }
 
-    updateClosedLoopPosition(); 
+    updateClosedLoopPosition();
     updateShuffleboard();
   }
 }
