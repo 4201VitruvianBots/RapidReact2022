@@ -44,7 +44,7 @@ public class AutoRunIndexer extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_indexer.setIndexerPercentOutput(0);
-    m_indexer.setKickerPercentOutput(0);
+    m_indexer.setKickerPercentOutput(-0.2);
   }
 
   // Returns true when the command should end.

@@ -255,8 +255,8 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     updateSetpoint();
 
-    SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
-    SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeanBreakFront", getIndexerFrontSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeanBreakRear", getIndexerRearSensorTripped());
 
     SmartDashboardTab.putString("Indexer", "Rear Color", getFrontColorType().toString());
     SmartDashboardTab.putNumber("Indexer", "Rear Red", getFrontColor().red);
@@ -285,6 +285,8 @@ public class Indexer extends SubsystemBase {
                 * Math.PI
                 / (Constants.Flywheel.encoderUnitsPerRotation
                     * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+    
+    SmartDashboardTab.putNumber("Indexer", "Kicker Setpoint", kickerSetpoint);
   }
 
   @Override

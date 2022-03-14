@@ -98,14 +98,11 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new WaitCommand(0.5),
         new ParallelDeadlineGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            /*> */ command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new SequentialCommandGroup(
                 // new WaitCommand(0.25),
                 new ParallelCommandGroup(
-                    new ConditionalCommand(
-                        new AutoRunIndexer(indexer, flywheel, 0.90).withTimeout(1), // if this still overshoots, raise some more (0.95ish)
-                        new SimulationShoot(fieldSim, true).withTimeout(1),
-                        RobotBase::isReal),
+                    /* Shooting command */ new ConditionalCommand(new AutoRunIndexer(indexer, flywheel, 0.90).withTimeout(1), /* if this still overshoots, raise some more (0.95ish)*/new SimulationShoot(fieldSim, true).withTimeout(1),RobotBase::isReal),
                     new AutoRunIntakeNoBackwardKicker(intake)),
                 new AutoRunIntakeIndexer(intake, indexer))),
         new IntakePiston(intake, false),
