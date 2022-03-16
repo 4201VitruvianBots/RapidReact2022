@@ -121,6 +121,10 @@ public class Vision extends SubsystemBase {
     return(distance* Math.cos (Units.degreesToRadians(-horizontalAngleDegrees))+Constants.Vision. INTAKE_MOUNT_OFFSET_METERS);
   }
 
+  public double[] rotatePoint (double pointX, double pointY, double pivotX, double pivotY, double angleDegrees){
+        return null; // TODO: implement logic!
+  }
+
   public double getTargetXAngle(CAMERA_POSITION position, int index) {
     switch (position) {
       case GOAL:
