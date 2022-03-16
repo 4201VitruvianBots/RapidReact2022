@@ -1,17 +1,16 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.commands.controls.OverrideAllianceColor;
 
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
-  private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
+  // private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public Controls() {
     initSmartDashboard();
@@ -26,6 +25,7 @@ public class Controls extends SubsystemBase {
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
     } else if (DriverStation.isFMSAttached()) {
+      //    } else {
       alliance = DriverStation.getAlliance();
       if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
         // System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
@@ -55,7 +55,7 @@ public class Controls extends SubsystemBase {
   }
 
   public void setPDHChannel(boolean on) {
-    pdh.setSwitchableChannel(on);
+    // pdh.setSwitchableChannel(on);
   }
 
   /** Initializes values on SmartDashboard */
@@ -71,7 +71,8 @@ public class Controls extends SubsystemBase {
         .add("Set Alliance Blue", new OverrideAllianceColor(this, DriverStation.Alliance.Blue));
 
     Shuffleboard.getTab("Controls")
-        .addString("Alliance String", () -> getAllianceColor().toString());
+        .addString("alliance_string", () -> getAllianceColor().toString());
+    SmartDashboardTab.putString("Controls", "Alliance String", getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */

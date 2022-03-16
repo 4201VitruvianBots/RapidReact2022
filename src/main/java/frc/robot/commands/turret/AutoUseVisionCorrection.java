@@ -1,10 +1,16 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
 package frc.robot.commands.turret;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 
@@ -15,21 +21,34 @@ public class AutoUseVisionCorrection extends CommandBase {
 
   private final Vision m_vision;
 
-  /** Temporary; add actual code when vision and turret work */
+  boolean turning, usingVisionSetpoint;
+  private double setpoint;
+  private double startTime;
+
+  /** Creates a new ExampleCommand. */
   public AutoUseVisionCorrection(Turret turret, Vision vision) {
     m_turret = turret;
     m_vision = vision;
+
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    startTime = Timer.getFPGATimestamp();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (m_vision.getValidTarget(CAMERA_POSITION.GOAL)) {
+      setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.GOAL);
+
+      m_turret.setAbsoluteSetpointDegrees(setpoint);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -38,6 +57,7 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+        <= Constants.Flywheel.hubToleranceDegrees);
   }
 }

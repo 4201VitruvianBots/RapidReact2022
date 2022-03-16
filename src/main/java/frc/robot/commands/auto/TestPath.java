@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
+import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
@@ -32,8 +33,9 @@ public class TestPath extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
 
     addCommands(
+        new SetSimTrajectory(fieldSim, trajectory),
         new SetOdometry(driveTrain, fieldSim, trajectory.getInitialPose()),
-        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.HALF_BRAKE),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         command,
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE));
   }

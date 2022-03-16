@@ -13,7 +13,7 @@ public class RunIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
-  private final Indexer m_indexer;
+  // private final Indexer m_indexer;
 
   /**
    * @param intake The intake used by this command
@@ -21,16 +21,17 @@ public class RunIntake extends CommandBase {
    */
   public RunIntake(Intake intake, Indexer indexer) {
     m_intake = intake;
-    m_indexer = indexer;
+    // m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    addRequirements(indexer);
+    // addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_intake.setIntakePiston(true);
+    m_intake.setIntakeState(true);
   }
 
   /**
@@ -39,7 +40,8 @@ public class RunIntake extends CommandBase {
    */
   @Override
   public void execute() {
-    //  m_indexer.setIndexerPercentOutput(0.5);
+    // m_indexer.setKickerPercentOutput(-0.25);
+    // m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(0.9);
   }
 
@@ -48,9 +50,11 @@ public class RunIntake extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    //  m_indexer.setIndexerPercentOutput(0);
+    // m_indexer.setKickerPercentOutput(0);
+    // m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePiston(false);
     m_intake.setIntakePercentOutput(0);
+    m_intake.setIntakeState(false);
   }
 
   // Returns true when the command should end.
