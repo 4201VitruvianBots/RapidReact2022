@@ -23,7 +23,16 @@ public class FieldSim {
   private final Vision m_vision;
   private final Intake m_intake;
   private ArrayList<Pose2d> trajectoryPoses;
-  private Translation2d[] intakePositions;
+  private Translation2d[] intakePositions = {
+    new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0),
+    new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0),
+    new Translation2d(
+        -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
+        SimConstants.robotWidth / 2.0),
+    new Translation2d(
+        -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
+        -SimConstants.robotWidth / 2.0),
+  };;
   private double slope0to1 = 0;
   private double slope1to2 = 0;
   private Translation2d intakePoseFromChassis;
@@ -118,21 +127,6 @@ public class FieldSim {
     */
 
     // Look up rotating a point about another point in 2D space for the math explanation
-    // intakePositions = {
-    //   new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0),
-    //   new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0),
-    //   new Translation2d(
-    //       -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-    //       SimConstants.robotWidth / 2.0),
-    //   new Translation2d(
-    //       -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-    //       -SimConstants.robotWidth / 2.0),
-    // };
-
-    intakePositions[0] = new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0);
-    intakePositions[1] = new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0);
-    intakePositions[2] = new Translation2d(-(SimConstants.robotLength / 2.0) - SimConstants.intakeLength, SimConstants.robotWidth / 2.0);
-    intakePositions[3] = new Translation2d(-(SimConstants.robotLength / 2.0) - SimConstants.intakeLength, -SimConstants.robotWidth / 2.0);
 
     robotPose = m_driveTrain.getRobotPoseMeters();
     for (int i = 0; i < intakePose.length; i++) {
