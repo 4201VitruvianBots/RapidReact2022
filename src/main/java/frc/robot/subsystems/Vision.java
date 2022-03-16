@@ -187,12 +187,28 @@ public class Vision extends SubsystemBase {
    *
    * @return Horizontal Distance to goal target (0-30 meters)
    */
-  public double getGoalTargetHorizontalDistance() {
-    return Math.cos(
-            Units.degreesToRadians(
-                Constants.Vision.GOAL_CAMERA_MOUNTING_ANGLE_DEGREES
-                    + getTargetYAngle(CAMERA_POSITION.GOAL, 0)))
-        * getGoalTargetDirectDistance();
+  public double getGoalTargetHorizontalDistance(CAMERA_POSITION Position) {
+    switch (Position) {
+      case LIMELIGHT:
+        if (getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
+          double distanceFromLimelightToGoalMeters =
+              (Constants.Vision.UPPER_HUB_HEIGHT_METERS
+                      - Constants.Vision.LIMELIGHT_MOUNTING_HEIGHT_METERS)
+                  / Math.tan(
+                      Units.degreesToRadians(
+                          Constants.Vision.LIMELIGHT_MOUNTING_ANGLE_DEGREES
+                              + getTargetYAngle(CAMERA_POSITION.LIMELIGHT)));
+          return distanceFromLimelightToGoalMeters;
+        }
+      case GOAL:
+        return Math.cos(
+                Units.degreesToRadians(
+                    Constants.Vision.GOAL_CAMERA_MOUNTING_ANGLE_DEGREES
+                        + getTargetYAngle(CAMERA_POSITION.GOAL, 0)))
+            * getGoalTargetDirectDistance();
+      default:
+        return 0;
+    }
   }
 
   /**
@@ -220,8 +236,8 @@ public class Vision extends SubsystemBase {
             .minus(getTargetXRotation2d(CAMERA_POSITION.GOAL))
             .getRadians();
 
-    double x = (getGoalTargetHorizontalDistance() * Math.cos(theta));
-    double y = (getGoalTargetHorizontalDistance() * Math.sin(theta));
+    double x = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.cos(theta));
+    double y = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.sin(theta));
 
     Translation2d robotPose =
         new Translation2d(x, y)
@@ -341,8 +357,12 @@ public class Vision extends SubsystemBase {
                 + m_drivetrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
             / 2.0;
     double angularVelocity = 0;
-    if (getValidTarget(CAMERA_POSITION.GOAL))
-      angularVelocity = angle * robotVelocity / getGoalTargetHorizontalDistance();
+    if (getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
+      angularVelocity =
+          angle * robotVelocity / getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT);
+    } else if (getValidTarget(CAMERA_POSITION.GOAL))
+      angularVelocity =
+          angle * robotVelocity / getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL);
 
     double tangentalVelocity = Units.degreesToRadians(m_drivetrain.getHeadingRateDegrees());
     double ff = (angularVelocity + tangentalVelocity) * 0.006;
@@ -356,7 +376,10 @@ public class Vision extends SubsystemBase {
   private void updateSmartDashboard() {
     // SmartDashboard.putBoolean("Has Goal Target", getValidTarget(CAMERA_POSITION.GOAL));
     // SmartDashboard.putNumber("Goal Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
-    SmartDashboard.putNumber("Goal Horizontal Distance", getGoalTargetHorizontalDistance());
+    SmartDashboard.putNumber(
+        "Goal Horizontal Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL));
+    SmartDashboard.putNumber(
+        "Limelight Target Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
 
     SmartDashboard.putBoolean("Has Intake Target", getValidTarget(CAMERA_POSITION.INTAKE));
     SmartDashboard.putNumber("Intake Angle", getTargetXAngle(CAMERA_POSITION.INTAKE, 0));

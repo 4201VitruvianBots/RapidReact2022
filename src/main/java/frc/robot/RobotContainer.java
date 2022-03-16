@@ -22,7 +22,6 @@ import frc.robot.commands.auto.TwoBallAutoLowerHub;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
-import frc.robot.commands.controls.SetFloodlight;
 import frc.robot.commands.driveTrain.AlignToCargo;
 import frc.robot.commands.driveTrain.AlignToLaunchpad;
 import frc.robot.commands.driveTrain.DriveForwardDistance;
@@ -165,10 +164,6 @@ public class RobotContainer {
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 900));
     xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
     xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2650));
-
-    xBoxButtons[0].whileHeld(new SetFloodlight(m_controls));
-    xBoxButtons[1].whileHeld(new SetFloodlight(m_controls));
-    xBoxButtons[3].whileHeld(new SetFloodlight(m_controls));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
