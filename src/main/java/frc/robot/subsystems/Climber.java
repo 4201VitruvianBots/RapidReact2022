@@ -173,9 +173,8 @@ public class Climber extends SubsystemBase {
         || (getElevatorClimbPosition() >= Constants.Climber.climberEncoderUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
-    
-    if(getElevatorClimbState())
-      updateClimberLimits();
+
+    if (getElevatorClimbState()) updateClimberLimits();
   }
 
   @Override
