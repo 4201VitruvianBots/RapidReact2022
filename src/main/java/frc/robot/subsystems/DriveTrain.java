@@ -80,6 +80,11 @@ public class DriveTrain extends SubsystemBase {
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
 
+  private double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
+  private double currentYaw = 0;
+
+  private double leftOutput = 0, rightOutput = 0, magnitude = 1.0;
+
   /** A differential drivetrain with two falcon motors on each side */
   public DriveTrain() {
     // Set up DriveTrain motors
@@ -261,11 +266,11 @@ public class DriveTrain extends SubsystemBase {
    * @param turn The rotation of the drivetrain (positive clockwise, negative counterclockwise)
    */
   public void setMotorArcadeDrive(double throttle, double turn) {
-    double leftOutput = throttle + turn;
-    double rightOutput = throttle - turn;
+    leftOutput = throttle + turn;
+    rightOutput = throttle - turn;
 
     // Normalization
-    double magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
+    magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
     if (magnitude > 1.0) {
       leftOutput /= magnitude;
       rightOutput /= magnitude;
@@ -397,7 +402,6 @@ public class DriveTrain extends SubsystemBase {
    *     second.
    */
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
-    double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
     // getSelectedSensorVelocity() returns values in units per 100ms. Need to convert value to RPS
     if (RobotBase.isReal()) {
@@ -617,7 +621,7 @@ public class DriveTrain extends SubsystemBase {
 
     updateSmartDashboard();
 
-    double currentYaw = pigeon.getYaw();
+    currentYaw = pigeon.getYaw();
     yawPerSecond = currentYaw - lastYaw / 0.02;
     lastYaw = currentYaw;
   }

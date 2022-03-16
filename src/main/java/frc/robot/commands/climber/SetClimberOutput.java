@@ -19,6 +19,8 @@ public class SetClimberOutput extends CommandBase {
   private DoubleSupplier m_input;
 
   private boolean latch = false;
+  private double input = 0;
+  private climberState desiredDirection = climberState.STILL;
 
   /**
    * Creates a new SetClimberOutput.
@@ -41,9 +43,9 @@ public class SetClimberOutput extends CommandBase {
   @Override
   public void execute() {
     if (m_climber.getElevatorClimbState()) {
-      double input = Math.abs(m_input.getAsDouble()) > 0.2 ? -m_input.getAsDouble() : 0;
+      input = Math.abs(m_input.getAsDouble()) > 0.2 ? -m_input.getAsDouble() : 0;
 
-      climberState desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
+      desiredDirection = ((input == 0) ? climberState.STILL : climberState.MOVING);
       switch (desiredDirection) {
         case MOVING:
           m_climber.setElevatorClimberPercentOutput(input);

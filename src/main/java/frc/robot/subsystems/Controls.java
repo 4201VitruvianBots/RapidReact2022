@@ -10,6 +10,7 @@ import frc.robot.commands.controls.OverrideAllianceColor;
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
+  private DriverStation.Alliance alliance;
   // private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public Controls() {
@@ -21,7 +22,7 @@ public class Controls extends SubsystemBase {
    * @return Returns the current alliance color.
    */
   public DriverStation.Alliance getAllianceColor() {
-    DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
+    alliance = DriverStation.Alliance.Invalid;
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
     } else if (DriverStation.isFMSAttached()) {
