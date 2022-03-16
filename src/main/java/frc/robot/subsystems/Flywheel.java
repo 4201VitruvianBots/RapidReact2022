@@ -43,6 +43,9 @@ public class Flywheel extends SubsystemBase {
   private boolean timerStart = false;
   private Timer timer = new Timer();
   private double timestamp;
+  private boolean checkTurretAngle;
+  private boolean checkVisionAngle;
+  private boolean checkRPM = false;
 
   private int testingSession = 0;
 
@@ -111,18 +114,17 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-    boolean checkTurretAngle;
+
     if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
       checkTurretAngle = m_turret.onTarget();
     } else {
       checkTurretAngle = true;
     }
-    boolean checkVisionAngle =
+    checkVisionAngle =
         m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
             && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
                 < Constants.Flywheel.hubToleranceDegrees;
 
-    boolean checkRPM = false;
     if (getSetpointRPM() > 0) {
       if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
         timerStart = true;
@@ -217,9 +219,6 @@ public class Flywheel extends SubsystemBase {
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
-      // SmartDashboard.putNumber("RPMSecondary", getRPM(1));
-      // SmartDashboard.putNumber("RPMOutput", rpmOutput);
-      // SmartDashboard.putNumber("Power", flywheelMotors[0].getMotorOutputPercent());
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
       SmartDashboard.putBoolean("CanShoot", canShoot);
     }
