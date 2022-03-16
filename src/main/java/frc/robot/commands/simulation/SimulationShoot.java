@@ -22,6 +22,8 @@ public class SimulationShoot extends CommandBase {
 
   private boolean m_continuous;
 
+  private double currentTime;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -40,7 +42,7 @@ public class SimulationShoot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentTime = RobotController.getFPGATime();
+    currentTime = RobotController.getFPGATime();
     // Shoot only every 80ms
     if (((currentTime - lastShotTime) / 1e6) > 0.080) {
       for (Cargo p : m_fieldSim.getCargo()) {
