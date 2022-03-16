@@ -125,6 +125,7 @@ public class Flywheel extends SubsystemBase {
             && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
                 < Constants.Flywheel.hubToleranceDegrees;
 
+    checkRPM = false; 
     if (getSetpointRPM() > 0) {
       if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
         timerStart = true;
