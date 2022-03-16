@@ -124,7 +124,7 @@ public class Vision extends SubsystemBase {
   public double getTargetXAngle(CAMERA_POSITION position, int index) {
     switch (position) {
       case GOAL:
-        return goal_camera.getEntry("tx").getDouble(0);
+        return goal_camera.getEntry("tx").getDouble(0); // TODO MEMORY LEAK
       case INTAKE:
         if (getValidTarget(position)) {
           double[] nullValue = {-99};

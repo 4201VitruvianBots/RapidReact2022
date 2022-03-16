@@ -56,8 +56,8 @@ public class DriveTrain extends SubsystemBase {
           Constants.DriveTrain.kvVoltSecondsPerMeter / 12,
           Constants.DriveTrain.kaVoltSecondsSquaredPerMeter / 12);
 
-  PIDController leftPIDController = new PIDController(kP, kI, kD);
-  PIDController rightPIDController = new PIDController(kP, kI, kD);
+  private final PIDController leftPIDController = new PIDController(kP, kI, kD);
+  private final PIDController rightPIDController = new PIDController(kP, kI, kD);
 
   /** Will run when enabled in teleop, unless null */
   private Command m_postAutoCommand = null;
@@ -81,6 +81,8 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrivetrainSim m_drivetrainSimulator;
 
   private double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
+  private DifferentialDriveWheelSpeeds m_wheelSpeeds = new DifferentialDriveWheelSpeeds(0,0);
+
   private double currentYaw = 0;
 
   private double leftOutput = 0, rightOutput = 0, magnitude = 1.0;
@@ -417,7 +419,9 @@ public class DriveTrain extends SubsystemBase {
       leftMetersPerSecond = m_drivetrainSimulator.getLeftVelocityMetersPerSecond();
       rightMetersPerSecond = m_drivetrainSimulator.getRightVelocityMetersPerSecond();
     }
-    return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
+    m_wheelSpeeds.leftMetersPerSecond = leftMetersPerSecond;
+    m_wheelSpeeds.rightMetersPerSecond = rightMetersPerSecond;
+    return m_wheelSpeeds;
   }
 
   /**
@@ -585,8 +589,6 @@ public class DriveTrain extends SubsystemBase {
             * Constants.DriveTrain.kEncoderDistancePerPulseMeters
             * 10.0);
 
-    SmartDashboard.putData(
-        "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
   }
 
   /**
@@ -614,7 +616,7 @@ public class DriveTrain extends SubsystemBase {
     // SmartDashboardTab.putNumber(
     //     "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
-        Rotation2d.fromDegrees(getHeadingDegrees()),
+        Rotation2d.fromDegrees(getHeadingDegrees()), // TODO MEMORY LEAK
         getSpeedsMetersPerSecond(),
         getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
         getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
