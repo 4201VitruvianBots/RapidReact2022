@@ -238,21 +238,25 @@ public final class Constants {
       LAUNCHPAD
     }
 
-    //    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
-    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
-    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
-    public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
-    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
-    public static double UPPER_HUB_HEIGHT_METERS = 1.0;
-    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
-
-    public static Pose2d HUB_POSE =
+    //    public static final double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
+    public static final double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
+    public static final double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
+    public static final double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static final double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static final double UPPER_HUB_HEIGHT_METERS = 1.0;
+    public static final double LOWER_HUB_HEIGHT_METERS = 1.0;
+    public static final double INTAKE_CAMERA_FOV_X_DEGREES = 65;
+    public static final double INTAKE_CAMERA_FOV_Y_DEGREES = 55;
+    public static final double INTAKE_MOUNT_OFFSET_METERS = 0; // TODO GET MEASUREMENT!
+    public static final double CARGO_RADIUS_METERS = Units.inchesToMeters(4.75);
+    
+    public static final  Pose2d HUB_POSE = 
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
-    public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
-    public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
+    public static final double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
+    public static final double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
-    public static String VISION_SERVER_IP = "10.42.1.100";
+    public static final String VISION_SERVER_IP = "10.42.1.100";
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
