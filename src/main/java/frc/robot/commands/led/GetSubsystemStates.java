@@ -15,6 +15,11 @@ public class GetSubsystemStates extends CommandBase {
   private final Flywheel m_flywheel;
   private final Intake m_intake;
   private final Climber m_climber;
+  private boolean disabled;
+  private boolean enabled;
+  private boolean intaking;
+  private boolean canShoot;
+  private boolean climbing;
 
   /** Sets the LED based on the subsystems' statuses */
   public GetSubsystemStates(LED led, Intake intake, Flywheel flywheel, Climber climber) {
@@ -36,23 +41,23 @@ public class GetSubsystemStates extends CommandBase {
   @Override
   public void execute() {
     // the prioritized state to be expressed to the LEDs
-    boolean Disabled = DriverStation.isDisabled();
-    boolean Enabled = !Disabled;
-    boolean Intaking = m_intake.getIntakeState();
-    boolean CanShoot = m_flywheel.canShoot();
-    boolean Climbing = m_climber.getElevatorClimbState();
+    disabled = DriverStation.isDisabled();
+    enabled = !disabled;
+    intaking = m_intake.getIntakeState();
+    canShoot = m_flywheel.canShoot();
+    climbing = m_climber.getElevatorClimbState();
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority
-    if (Disabled) {
+    if (disabled) {
       m_led.expressState(LED.robotState.Disabled);
-    } else if (Climbing) {
+    } else if (climbing) {
       m_led.expressState(LED.robotState.Climbing);
-    } else if (CanShoot) {
+    } else if (canShoot) {
       m_led.expressState(LED.robotState.CanShoot);
-    } else if (Intaking) {
+    } else if (intaking) {
       m_led.expressState(LED.robotState.Intaking);
-    } else if (Enabled) {
+    } else if (enabled) {
       m_led.expressState(LED.robotState.Enabled);
     }
   }
