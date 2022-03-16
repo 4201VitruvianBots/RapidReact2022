@@ -34,6 +34,7 @@ public class Climber extends SubsystemBase {
   //     new DigitalInput(Constants.Climber.climberUpperLimitOverrideID);
 
   private boolean Overridelatched = false;
+  private double climberPosition = 0;
 
   DoubleSolenoid highClimbPiston =
       new DoubleSolenoid(
@@ -82,7 +83,7 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setElevatorClimberPercentOutput(double value) {
-    double climberPosition = getElevatorClimbPosition();
+    climberPosition = getElevatorClimbPosition();
     if (value > 0) {
       if (climberPosition < Constants.Climber.climberEncoderUpperLimit) {
         if (Math.abs(climberPosition - Constants.Climber.climberEncoderUpperLimit)
