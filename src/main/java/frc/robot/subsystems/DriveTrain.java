@@ -483,40 +483,40 @@ public class DriveTrain extends SubsystemBase {
   /** Puts values on SmartDashboard. */
   private void updateSmartDashboard() {
     if (RobotBase.isReal()) {
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "X Coordinate", getRobotPoseMeters().getTranslation().getX());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Y Coordinate", getRobotPoseMeters().getTranslation().getY());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "X Coordinate", getRobotPoseMeters().getTranslation().getX());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Y Coordinate", getRobotPoseMeters().getTranslation().getY());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
       SmartDashboard.putNumber("Heading Degrees", getHeadingDegrees());
       SmartDashboard.putNumber("Roll", getRoll());
       SmartDashboard.putNumber("Pitch", getPitch());
 
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Left front temperature (C)",
-          driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Left rear temperature (C)",
-          driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Right front temperature (C)",
-          driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Right rear temperature (C)",
-          driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Left front temperature (C)",
+      //     driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Left rear temperature (C)",
+      //     driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Right front temperature (C)",
+      //     driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Right rear temperature (C)",
+      //     driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
@@ -607,8 +607,8 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboardTab.putNumber(
-        "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
+    // SmartDashboardTab.putNumber(
+    //     "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
         Rotation2d.fromDegrees(getHeadingDegrees()),
         getSpeedsMetersPerSecond(),

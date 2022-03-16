@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -37,6 +38,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   boolean timeout = false;
   boolean turning, usingVisionSetpoint;
   private boolean direction, directionTripped, joystickMoved;
+  private double lastVisionTimestamp;
 
   /** Creates a new ExampleCommand. */
   public SetTurretSetpointFieldAbsolute(
@@ -88,8 +90,15 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
 
           m_turret.setAbsoluteSetpointDegrees(setpoint);
         }
+        else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)) {
+          usingVisionSetpoint = true;
+          m_vision.setLimelightLEDState(true);
+          m_turret.setAbsoluteSetpointDegrees(
+              m_turret.getTurretAngleDegrees()
+                  - m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
+          lastVisionTimestamp = Timer.getFPGATimestamp();
         // If we are estimating the hub's location using the pose of the hub and the robot
-        else if (m_turret.usePoseEstimation()) {
+        } else if (m_turret.usePoseEstimation() && Timer.getFPGATimestamp() - lastVisionTimestamp > 0.5) {
           Translation2d goalToRobot =
               m_vision
                   .getHubPose()
@@ -105,19 +114,12 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // if vision has a target and the joystick has not moved, set visionsetpoint to true and
           // run
           // the if statements below
-        } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
-            && !m_turret.usePoseEstimation()) {
-          usingVisionSetpoint = true;
-          m_vision.setLimelightLEDState(true);
-          m_turret.setAbsoluteSetpointDegrees(
-              m_turret.getTurretAngleDegrees()
-                  - m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
-        }
+        } 
         // else if vision doesn't have a target and the joysticks have not moved,
         // set usingVisionSetpoint to false and turn off the LEDs if possible
         else if (!m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)) {
           usingVisionSetpoint = false;
-          m_vision.setLimelightLEDState(false);
+          // m_vision.setLimelightLEDState(false);
         }
 
         currentTurretSetpoint = Rotation2d.fromDegrees(m_turret.getTurretAngleDegrees());

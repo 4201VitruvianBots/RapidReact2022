@@ -151,8 +151,8 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateSmartDashboard() {
-    SmartDashboardTab.putBoolean(
-        "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
     // SmartDashboardTab.putBoolean(
     //     "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
     SmartDashboardTab.putBoolean(
@@ -173,7 +173,9 @@ public class Climber extends SubsystemBase {
         || (getElevatorClimbPosition() >= Constants.Climber.climberEncoderUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
-    updateClimberLimits();
+    
+    if(getElevatorClimbState())
+      updateClimberLimits();
   }
 
   @Override
