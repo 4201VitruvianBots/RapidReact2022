@@ -17,7 +17,6 @@ import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
-import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -86,9 +85,10 @@ public class FiveBallAuto extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
-        new ConditionalCommand(new WaitCommand(0),
-        new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
-        RobotBase::isReal),
+        new ConditionalCommand(
+            new WaitCommand(0),
+            new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
+            RobotBase::isReal),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
@@ -121,7 +121,9 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
-        new ParallelDeadlineGroup(command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
+        new ParallelDeadlineGroup(
+            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel, 0.85),

@@ -94,11 +94,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-      "Five Ball Auto ",
+        "Five Ball Auto ",
         new FiveBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "One Ball Auto",
