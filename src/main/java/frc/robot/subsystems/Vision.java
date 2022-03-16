@@ -109,7 +109,7 @@ public class Vision extends SubsystemBase {
   }
 
   public double getTargetHorizontalDistance(double verticalAngleDegrees){
-    return (Constants.Vision.INTAKE_CAMERA_MOUNTING_HEIGHT_METERS- Constants.Vision.CARGO_RADIUS_METERS) * Math.tan(Units.degreesToRadians(90+ verticalAngle));
+    return (Constants.Vision.INTAKE_CAMERA_MOUNTING_HEIGHT_METERS- Constants.Vision.CARGO_RADIUS_METERS) * Math.tan(Units.degreesToRadians(90+ verticalAngleDegrees));
   }
 
   public double getTargetHorizontalAngleOffset (double distance, double horizontalAngleDegrees){
