@@ -26,6 +26,8 @@ public class AlignToCargo extends CommandBase {
   private final DoubleSupplier m_turn;
   private final PIDController pid = new PIDController(P_TERM, I_TERM, D_TERM);
 
+  private double joystickX, joystickY, throttle, turn, setpoint, turnAdjustment;
+
   public AlignToCargo(
       DriveTrain driveTrain, Vision vision, DoubleSupplier throttle, DoubleSupplier turn) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -44,17 +46,17 @@ public class AlignToCargo extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
-    double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
+    joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
+    joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
-    double throttle = joystickY;
-    double turn = joystickX;
+    throttle = joystickY;
+    turn = joystickX;
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
-      double setpoint =
+      setpoint =
           m_driveTrain.getHeadingDegrees()
               + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.INTAKE);
 
-      double turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
+      turnAdjustment = pid.calculate(m_driveTrain.getHeadingDegrees(), setpoint);
 
       turn = turnAdjustment;
       //            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
