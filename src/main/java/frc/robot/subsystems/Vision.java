@@ -43,6 +43,15 @@ public class Vision extends SubsystemBase {
 
   private boolean enablePoseEstimation = false;
 
+  private double distanceFromLimelightToGoalMeters;
+  private Pose2d hubPose;
+  private Rotation2d rotation;
+  private double theta, x, y;
+  private Translation2d robotPose;
+  private int bufferLength;
+  private VisionData data, item;
+  private double angle, robotVelocity, angularVelocity, tangentalVelocity, ff;
+
   /** Creates a new Vision Subsystem. */
   public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
     m_controls = controls;
@@ -191,7 +200,7 @@ public class Vision extends SubsystemBase {
     switch (Position) {
       case LIMELIGHT:
         if (getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
-          double distanceFromLimelightToGoalMeters =
+          distanceFromLimelightToGoalMeters =
               (Constants.Vision.UPPER_HUB_HEIGHT_METERS
                       - Constants.Vision.LIMELIGHT_MOUNTING_HEIGHT_METERS)
                   / Math.tan(
@@ -217,8 +226,8 @@ public class Vision extends SubsystemBase {
    * @return Hub Pose in meters
    */
   public Pose2d getHubPose() {
-    Pose2d hubPose = Constants.Vision.HUB_POSE;
-    Rotation2d rotation =
+    hubPose = Constants.Vision.HUB_POSE;
+    rotation =
         new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) : 0);
     return new Pose2d(hubPose.getTranslation(), rotation);
   }
@@ -229,17 +238,17 @@ public class Vision extends SubsystemBase {
    * @return Robot Pose in meters
    */
   public Pose2d getPoseFromHub() {
-    double theta =
+    theta =
         m_drivetrain
             .getHeadingRotation2d()
             .plus(m_turret.getTurretRotation2d())
             .minus(getTargetXRotation2d(CAMERA_POSITION.GOAL))
             .getRadians();
 
-    double x = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.cos(theta));
-    double y = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.sin(theta));
+    x = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.cos(theta));
+    y = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.sin(theta));
 
-    Translation2d robotPose =
+    robotPose =
         new Translation2d(x, y)
             .rotateBy(getHubPose().getRotation())
             .plus(getHubPose().getTranslation());
@@ -304,9 +313,9 @@ public class Vision extends SubsystemBase {
 
   /** Get VisionData given a tiemstamp. Will return first result if no valid results are found */
   public VisionData getTimestampedData(double timestamp) {
-    int bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
+    bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
     for (int i = bufferLength; i > -1; i--) {
-      VisionData data = dataBuffer[i];
+      data = dataBuffer[i];
       if (data.timestamp < timestamp) {
         return data;
       }
@@ -316,7 +325,7 @@ public class Vision extends SubsystemBase {
 
   /** Update our data buffer of saved VisionData for latency compensation */
   private void updateDataBuffer() {
-    VisionData item =
+    item =
         new VisionData(
             getDetectionTimestamp(),
             getTargetXAngle(CAMERA_POSITION.GOAL),
@@ -349,14 +358,14 @@ public class Vision extends SubsystemBase {
 
   /** Give the turret a feedforward value if the robot is moving. Based on 254's 2019 code */
   private void updateTurretArbitraryFF() {
-    double angle =
+    angle =
         Math.sin(
             m_turret.getTurretRotation2d().minus(m_drivetrain.getHeadingRotation2d()).getRadians());
-    double robotVelocity =
+    robotVelocity =
         (m_drivetrain.getSpeedsMetersPerSecond().leftMetersPerSecond
                 + m_drivetrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
             / 2.0;
-    double angularVelocity = 0;
+    angularVelocity = 0;
     if (getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
       angularVelocity =
           angle * robotVelocity / getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT);
@@ -364,8 +373,8 @@ public class Vision extends SubsystemBase {
       angularVelocity =
           angle * robotVelocity / getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL);
 
-    double tangentalVelocity = Units.degreesToRadians(m_drivetrain.getHeadingRateDegrees());
-    double ff = (angularVelocity + tangentalVelocity) * 0.006;
+    tangentalVelocity = Units.degreesToRadians(m_drivetrain.getHeadingRateDegrees());
+    ff = (angularVelocity + tangentalVelocity) * 0.006;
 
     //    SmartDashboardTab.putNumber("Vision", "Turret FF", ff);
 

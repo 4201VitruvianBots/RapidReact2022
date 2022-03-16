@@ -17,7 +17,6 @@ public class SetArcadeDrive extends CommandBase {
   private final DriveTrain m_driveTrain;
 
   private final DoubleSupplier m_throttle, m_turn;
-
   private double joystickX, joystickY, throttle, turn;
 
   /**
