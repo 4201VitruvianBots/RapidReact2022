@@ -32,7 +32,7 @@ public class FieldSim {
     new Translation2d(
         -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
         -SimConstants.robotWidth / 2.0),
-  };;
+  };
   private double slope0to1 = 0;
   private double slope1to2 = 0;
   private Translation2d intakePoseFromChassis;
@@ -237,7 +237,7 @@ public class FieldSim {
   }
 
   private void updateBallState(Cargo cargo) {
-  ballPose = cargo.getCargoPose();
+    ballPose = cargo.getCargoPose();
 
     switch (cargo.getBallState()) {
       case IN_AIR:
