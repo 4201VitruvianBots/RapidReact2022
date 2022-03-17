@@ -405,7 +405,7 @@ public class Vision extends SubsystemBase {
     updateSmartDashboard();
     //    updateDataQueue();
     updateVisionPose();
-    updateTurretArbitraryFF();
+    // updateTurretArbitraryFF();
   }
 
   @Override

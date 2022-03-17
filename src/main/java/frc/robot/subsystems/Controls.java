@@ -21,7 +21,7 @@ public class Controls extends SubsystemBase {
    *
    * @return Returns the current alliance color.
    */
-  public DriverStation.Alliance getAllianceColor() {
+  public void updateAllianceColor() {
     alliance = DriverStation.Alliance.Invalid;
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
@@ -33,16 +33,19 @@ public class Controls extends SubsystemBase {
         alliance = DriverStation.Alliance.Red;
       }
     }
+  }
 
+  public DriverStation.Alliance getAllianceColor() {
     return alliance;
   }
+
   /**
    * Returns true when the alliance color is not Blue`
    *
    * @return Returns the current alliance color.
    */
   public boolean getAllianceColorBoolean() {
-    return getAllianceColor() != DriverStation.Alliance.Blue;
+    return alliance != DriverStation.Alliance.Blue;
   }
 
   /** Sets whether or not to ignore the FMS to determine alliance color. */
@@ -83,6 +86,9 @@ public class Controls extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (DriverStation.isDisabled()) {
+      updateAllianceColor();
+    }
     // This method will be called once per scheduler run
     updateSmartDashboard();
   }

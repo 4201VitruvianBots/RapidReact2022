@@ -32,7 +32,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.Constants.DriveTrain.MotorPosition;
-import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,7 +80,7 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrivetrainSim m_drivetrainSimulator;
 
   private double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
-  private DifferentialDriveWheelSpeeds m_wheelSpeeds = new DifferentialDriveWheelSpeeds(0,0);
+  private DifferentialDriveWheelSpeeds m_wheelSpeeds = new DifferentialDriveWheelSpeeds(0, 0);
 
   private double currentYaw = 0;
 
@@ -544,12 +543,12 @@ public class DriveTrain extends SubsystemBase {
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "Right Speed",
+          "Left Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "Right Speed",
-          Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
+          Units.metersToFeet(m_drivetrainSimulator.getRightVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "L Encoder Count",
@@ -576,19 +575,18 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
-    SmartDashboardTab.putNumber(
-        "DriveTrain",
-        "Left follower speed",
-        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
-            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-            * 10.0);
-    SmartDashboardTab.putNumber(
-        "DriveTrain",
-        "Right follower speed",
-        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
-            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-            * 10.0);
-
+    //    SmartDashboardTab.putNumber(
+    //        "DriveTrain",
+    //        "Left follower speed",
+    //        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
+    //            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    //            * 10.0);
+    //    SmartDashboardTab.putNumber(
+    //        "DriveTrain",
+    //        "Right follower speed",
+    //        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
+    //            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    //            * 10.0);
   }
 
   /**
