@@ -290,10 +290,12 @@ public class FieldSim {
     m_field2d
         .getObject("Vision")
         .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
+    
+    if(m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE))
+      m_field2d.getObject("DetectedCargo").setPose(m_vision.getCargoPositionFromRobot());
+    else
+      m_field2d.getObject("DetectedCargo").setPose(new Pose2d());
 
-//    var testPose = new Translation2d(-1, 0).rotateBy(m_driveTrain.getHeadingRotation2d()).plus(m_driveTrain.getRobotPoseMeters().getTranslation());
-
-    m_field2d.getObject("DetectedCargo").setPose(m_vision.getCargoPositionFromRobot());
     m_field2d.getObject("trajectory").setTrajectory(m_driveTrain.getCurrentTrajectory());
   }
 }

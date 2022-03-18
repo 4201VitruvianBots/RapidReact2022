@@ -44,7 +44,7 @@ public class Vision extends SubsystemBase {
   private VisionData[] dataBuffer = new VisionData[100];
   private int bufferIdx = 0;
 
-  private boolean enablePoseEstimation = false;
+  private boolean enablePoseEstimation = true;
 
   private double distanceFromLimelightToGoalMeters;
   private Pose2d hubPose;
@@ -143,20 +143,20 @@ public class Vision extends SubsystemBase {
   public double getTargetXAngle(CAMERA_POSITION position, int index) {
     switch (position) {
       case GOAL:
-        return goal_camera.getEntry("tx").getDouble(0);
+        return -goal_camera.getEntry("tx").getDouble(0);
       case INTAKE:
         if (getValidTarget(position)) {
           double[] nullValue = {-99};
           var intakeAngles = intake_camera.getEntry("tx").getDoubleArray(nullValue);
           try {
-            return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
+            return intakeAngles[0] == -99 ? 0 : -intakeAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetXAngle() illegal array access");
             return 0;
           }
         } else return 0;
       case LIMELIGHT:
-        return limelight.getEntry("tx").getDouble(0);
+        return -limelight.getEntry("tx").getDouble(0);
       default:
         return 0;
     }
@@ -321,7 +321,7 @@ public class Vision extends SubsystemBase {
         m_drivetrain
             .getHeadingRotation2d()
             .plus(m_turret.getTurretRotation2d())
-            .minus(getTargetXRotation2d(position))
+            .plus(getTargetXRotation2d(position))
             .getRadians();
 
     x = (getGoalTargetHorizontalDistance(position) * Math.cos(theta));
@@ -426,7 +426,7 @@ public class Vision extends SubsystemBase {
   }
 
   public void setVisionPoseEstimation(boolean enabled) {
-    enablePoseEstimation = false;
+    enablePoseEstimation = enabled;
   }
 
   /** Update the robot pose based on vision data if a valid vision target is found. */
