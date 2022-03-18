@@ -24,7 +24,6 @@ public class DriveToCargoTrajectory extends CommandBase {
   private final DriveTrain m_driveTrain;
 
   private final Vision m_vision;
-  private DifferentialDriveOdometry m_tempOdometry;
 
   private RamseteController m_pathFollower = new RamseteController();
   private Trajectory m_path;
@@ -35,8 +34,6 @@ public class DriveToCargoTrajectory extends CommandBase {
   public DriveToCargoTrajectory(DriveTrain driveTrain, Vision vision) {
     m_driveTrain = driveTrain;
     m_vision = vision;
-    m_tempOdometry =
-        new DifferentialDriveOdometry(Rotation2d.fromDegrees(m_driveTrain.getHeadingDegrees()));
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
@@ -53,7 +50,7 @@ public class DriveToCargoTrajectory extends CommandBase {
               m_driveTrain.getHeadingRotation2d()); // TODO: How to determine best heading?
 
       TrajectoryConfig m_pathConfig =
-          new TrajectoryConfig(8, 4)
+          new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))
               // Add kinematics to ensure max speed is actually obeyed
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
@@ -96,7 +93,7 @@ public class DriveToCargoTrajectory extends CommandBase {
         var currentReference = m_path.sample(currentTime);
 
         var m_chassisSpeeds =
-            m_pathFollower.calculate(m_tempOdometry.getPoseMeters(), currentReference);
+            m_pathFollower.calculate(m_driveTrain.getRobotPoseMeters(), currentReference);
 
         var targetSpeeds = m_driveTrain.getDriveTrainKinematics().toWheelSpeeds(m_chassisSpeeds);
 
