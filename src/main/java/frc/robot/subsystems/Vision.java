@@ -20,13 +20,17 @@ import frc.robot.Constants;
 import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.Constants.Vision.CAMERA_TYPE;
 import frc.robot.Constants.Vision.INTAKE_TRACKING_TYPE;
+import frc.robot.simulation.FieldSim;
 import frc.robot.utils.VisionData;
+import javax.swing.text.Position;
 
 public class Vision extends SubsystemBase {
 
   private final Controls m_controls;
   private final DriveTrain m_drivetrain;
   private final Turret m_turret;
+  private final FieldSim m_fieldSim;
+
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
   private final NetworkTable limelight;
@@ -50,13 +54,15 @@ public class Vision extends SubsystemBase {
   private Translation2d robotPose;
   private int bufferLength;
   private VisionData data, item;
+  private double lastOakPoseTimestamp;
   private double angle, robotVelocity, angularVelocity, tangentalVelocity, ff;
 
   /** Creates a new Vision Subsystem. */
-  public Vision(Controls controls, DriveTrain driveTrain, Turret turret) {
+  public Vision(Controls controls, DriveTrain driveTrain, Turret turret, FieldSim fieldSim) {
     m_controls = controls;
     m_drivetrain = driveTrain;
     m_turret = turret;
+    m_fieldSim = fieldSim;
 
     switch (goal_camera_type) {
       case PHOTONVISION:
@@ -73,7 +79,10 @@ public class Vision extends SubsystemBase {
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
 
-    PortForwarder.add(5802, Constants.Vision.VISION_SERVER_IP, 5802);
+    PortForwarder.add(5800, Constants.Vision.LIMELIGHT_IP, 5800);
+    PortForwarder.add(5801, Constants.Vision.LIMELIGHT_IP, 5801);
+    PortForwarder.add(5802, Constants.Vision.LIMELIGHT_IP, 5802);
+    PortForwarder.add(5803, Constants.Vision.VISION_SERVER_IP, 5802);
   }
 
   /**
@@ -128,12 +137,11 @@ public class Vision extends SubsystemBase {
       case INTAKE:
         if (getValidTarget(position)) {
           double[] nullValue = {-99};
-          var intakeAngles = intake_camera.getEntry("ta").getDoubleArray(nullValue);
+          var intakeAngles = intake_camera.getEntry("tx").getDoubleArray(nullValue);
           try {
             return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
           } catch (Exception e) {
-            System.out.println(
-                "Vision Subsystem Error: getIntakeTargetAngle() illegal array access");
+            System.out.println("Vision Subsystem Error: getTargetXAngle() illegal array access");
             return 0;
           }
         } else return 0;
@@ -177,6 +185,16 @@ public class Vision extends SubsystemBase {
         return limelight.getEntry("ty").getDouble(0);
 
       case INTAKE:
+        if (getValidTarget(position)) {
+          double[] nullValue = {-99};
+          var intakeAngles = intake_camera.getEntry("ty").getDoubleArray(nullValue);
+          try {
+            return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
+          } catch (Exception e) {
+            System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
+            return 0;
+          }
+        }
       default:
         return 0;
     }
@@ -219,6 +237,35 @@ public class Vision extends SubsystemBase {
         return 0;
     }
   }
+  public double getCargoTargetDirectDistance() {
+    return getCargoTargetDirectDistance(0);
+  }
+
+  public double getCargoTargetDirectDistance(int index) {
+    if (getValidTarget(CAMERA_POSITION.INTAKE)) {
+      double[] nullValue = {-99};
+      var intakeAngles = intake_camera.getEntry("tz").getDoubleArray(nullValue);
+      try {
+        return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
+      } catch (Exception e) {
+        System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
+        return 0;
+      }
+    } else
+      return -1;
+  }
+
+  public double getCargoHorizontalDistance() {
+    return getCargoHorizontalDistance(0);
+  }
+
+  public double getCargoHorizontalDistance(int index) {
+    return Math.cos(
+            Units.degreesToRadians(
+                    Constants.Vision.INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES
+                            + getTargetYAngle(CAMERA_POSITION.INTAKE, index)))
+            * getTargetYAngle(CAMERA_POSITION.INTAKE, index);
+  }
 
   /**
    * Get the pose of the hub. We just rotate it 180 degrees if we're blue for pose estimation.
@@ -227,8 +274,9 @@ public class Vision extends SubsystemBase {
    */
   public Pose2d getHubPose() {
     hubPose = Constants.Vision.HUB_POSE;
-    rotation =
-        new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) : 0);
+    rotation = new Rotation2d();
+    //        new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) :
+    // 0);
     return new Pose2d(hubPose.getTranslation(), rotation);
   }
 
@@ -237,16 +285,16 @@ public class Vision extends SubsystemBase {
    *
    * @return Robot Pose in meters
    */
-  public Pose2d getPoseFromHub() {
+  public Pose2d getPoseFromHub(CAMERA_POSITION position) {
     theta =
         m_drivetrain
             .getHeadingRotation2d()
             .plus(m_turret.getTurretRotation2d())
-            .minus(getTargetXRotation2d(CAMERA_POSITION.GOAL))
+            .minus(getTargetXRotation2d(position))
             .getRadians();
 
-    x = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.cos(theta));
-    y = (getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL) * Math.sin(theta));
+    x = (getGoalTargetHorizontalDistance(position) * Math.cos(theta));
+    y = (getGoalTargetHorizontalDistance(position) * Math.sin(theta));
 
     robotPose =
         new Translation2d(x, y)
@@ -263,6 +311,10 @@ public class Vision extends SubsystemBase {
    */
   public double getDetectionTimestamp() {
     return goal_camera.getEntry("timestamp").getDouble(0);
+  }
+
+  public double getLimelightLatency() {
+    return limelight.getEntry("tl").getDouble(0);
   }
 
   /**
@@ -347,12 +399,22 @@ public class Vision extends SubsystemBase {
 
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
-    if (getValidTarget(CAMERA_POSITION.GOAL) && enablePoseEstimation) {
-      m_drivetrain
-          .getOdometry()
-          .addVisionMeasurement(
-              getPoseFromHub(),
-              Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 2.67 ms of latency
+    if (enablePoseEstimation) {
+      if (getValidTarget(CAMERA_POSITION.GOAL)) {
+        m_drivetrain
+            .getOdometry()
+            .addVisionMeasurement(
+                getPoseFromHub(CAMERA_POSITION.GOAL),
+                Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 267 ms of latency
+        lastOakPoseTimestamp = Timer.getFPGATimestamp();
+      } else if (getValidTarget(CAMERA_POSITION.LIMELIGHT)
+          && (Timer.getFPGATimestamp() - lastOakPoseTimestamp) > 0.5) {
+        m_drivetrain
+            .getOdometry()
+            .addVisionMeasurement(
+                getPoseFromHub(CAMERA_POSITION.LIMELIGHT),
+                Timer.getFPGATimestamp() - (getLimelightLatency() + 0.011));
+      }
     }
   }
 

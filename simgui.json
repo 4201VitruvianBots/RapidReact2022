@@ -31,6 +31,7 @@
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Intake Subsystem": "Subsystem",
       "/SmartDashboard/NeutralMode": "Command",
+      "/SmartDashboard/ResetOdometry": "Command",
       "/SmartDashboard/Selected Auto": "String Chooser",
       "/SmartDashboard/Set Neutral": "Command",
       "/SmartDashboard/indexer Subsystem": "Subsystem"
@@ -197,7 +198,16 @@
     }
   },
   "NetworkTables": {
+    "Controls": {
+      "open": true
+    },
     "Drivetrain": {
+      "open": true
+    },
+    "OAK-1_Intake": {
+      "open": true
+    },
+    "Shuffleboard": {
       "open": true
     },
     "SmartDashboard": {
@@ -206,8 +216,7 @@
       },
       "Selected Auto": {
         "open": true
-      },
-      "open": true
+      }
     }
   }
 }

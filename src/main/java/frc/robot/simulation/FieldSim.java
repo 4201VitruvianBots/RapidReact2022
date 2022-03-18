@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.simulation.SimConstants.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -286,6 +287,8 @@ public class FieldSim {
   public void periodic() {
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
     m_field2d.getObject("Turret").setPose(m_turret.getPose());
-    m_field2d.getObject("Vision").setPose(m_vision.getPoseFromHub());
+    m_field2d
+        .getObject("Vision")
+        .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
   }
 }

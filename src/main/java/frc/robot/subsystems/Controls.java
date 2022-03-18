@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
@@ -10,7 +11,7 @@ import frc.robot.commands.controls.OverrideAllianceColor;
 public class Controls extends SubsystemBase {
   private boolean overrideFmsAlliance;
   private DriverStation.Alliance overrideFmsAllianceColor;
-  private DriverStation.Alliance alliance;
+  private DriverStation.Alliance alliance = DriverStation.Alliance.Invalid;
   // private PowerDistribution pdh = new PowerDistribution(1, ModuleType.kRev);
 
   public Controls() {
@@ -22,14 +23,12 @@ public class Controls extends SubsystemBase {
    * @return Returns the current alliance color.
    */
   public void updateAllianceColor() {
-    alliance = DriverStation.Alliance.Invalid;
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
     } else if (DriverStation.isFMSAttached()) {
-      //    } else {
-      alliance = DriverStation.getAlliance();
-      if (alliance != DriverStation.Alliance.Blue || alliance != DriverStation.Alliance.Red) {
-        // System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
+        alliance = DriverStation.getAlliance();
+      if (alliance != DriverStation.Alliance.Blue && alliance != DriverStation.Alliance.Red) {
+//         System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
         alliance = DriverStation.Alliance.Red;
       }
     }
@@ -76,19 +75,17 @@ public class Controls extends SubsystemBase {
 
     Shuffleboard.getTab("Controls")
         .addString("alliance_string", () -> getAllianceColor().toString());
-    SmartDashboardTab.putString("Controls", "Alliance String", getAllianceColor().toString());
   }
 
   /** Sends values to SmartDashboard */
   private void updateSmartDashboard() {
     SmartDashboard.putBoolean("Alliance", getAllianceColorBoolean());
+    SmartDashboardTab.putString("Controls", "alliance_string", getAllianceColor().toString());
   }
 
   @Override
   public void periodic() {
-    if (DriverStation.isDisabled()) {
-      updateAllianceColor();
-    }
+    updateAllianceColor();
     // This method will be called once per scheduler run
     updateSmartDashboard();
   }

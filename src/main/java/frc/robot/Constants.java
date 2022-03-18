@@ -247,7 +247,9 @@ public final class Constants {
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);
+    public static double UPPER_HUB_RADIUS_METERS = 1.0;
     public static double LOWER_HUB_HEIGHT_METERS = 1.0;
+    public static double LOWER_HUB_RADIUS_METERS = 1.0;
 
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
@@ -255,7 +257,8 @@ public final class Constants {
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);
 
-    public static String VISION_SERVER_IP = "10.42.1.11";
+    public static String VISION_SERVER_IP = "10.42.1.12";
+    public static String LIMELIGHT_IP = "10.42.1.11";
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
