@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
@@ -26,9 +25,10 @@ public class Controls extends SubsystemBase {
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
     } else if (DriverStation.isFMSAttached()) {
-        alliance = DriverStation.getAlliance();
+      alliance = DriverStation.getAlliance();
       if (alliance != DriverStation.Alliance.Blue && alliance != DriverStation.Alliance.Red) {
-//         System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to Red");
+        //         System.out.println("Vision Subsystem Error: Invalid Alliance Color. Defaulting to
+        // Red");
         alliance = DriverStation.Alliance.Red;
       }
     }

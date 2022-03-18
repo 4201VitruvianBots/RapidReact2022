@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.numbers.N2;
 import edu.wpi.first.math.system.LinearSystem;
@@ -241,18 +242,24 @@ public final class Constants {
 
     //    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
-    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 30.0;
-    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
-    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
+    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 0.0;
+    public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);
-    public static double UPPER_HUB_RADIUS_METERS = 1.0;
-    public static double LOWER_HUB_HEIGHT_METERS = 1.0;
-    public static double LOWER_HUB_RADIUS_METERS = 1.0;
+    public static double UPPER_HUB_RADIUS_METERS = Units.feetToMeters(2);
+    public static double LOWER_HUB_HEIGHT_METERS = Units.inchesToMeters(41);
+    public static double LOWER_HUB_RADIUS_METERS = Units.inchesToMeters(30.0625);
 
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
+
+    public static Translation2d INTAKE_CAM_TRANSLATION =
+        new Translation2d(Units.inchesToMeters(12), 0);
+
+    public static double INTAKE_H_FOV = Units.degreesToRadians(69);
+    public static double INTAKE_DETECTION_DISTANCE = Units.inchesToMeters(1.0);
 
     public static double MIN_SHOOTING_DISTANCE = Units.feetToMeters(5);
     public static double MAX_SHOOTING_DISTANCE = Units.feetToMeters(20);

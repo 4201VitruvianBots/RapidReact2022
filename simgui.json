@@ -27,6 +27,7 @@
       "/LiveWindow/Vision": "Subsystem",
       "/Shuffleboard/Controls/Set Alliance Blue": "Command",
       "/Shuffleboard/Controls/Set Alliance Red": "Command",
+      "/SmartDashboard/Auto Trajectory": "Command",
       "/SmartDashboard/DT Subsystem": "Subsystem",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Intake Subsystem": "Subsystem",
@@ -201,6 +202,9 @@
     "Controls": {
       "open": true
     },
+    "DriveTrain": {
+      "open": true
+    },
     "Drivetrain": {
       "open": true
     },
@@ -217,6 +221,9 @@
       "Selected Auto": {
         "open": true
       }
+    },
+    "Vision": {
+      "open": true
     }
   }
 }

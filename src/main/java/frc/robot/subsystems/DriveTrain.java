@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -78,6 +79,7 @@ public class DriveTrain extends SubsystemBase {
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
+  private Trajectory currentTrajectory = new Trajectory();
 
   private double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
   private DifferentialDriveWheelSpeeds m_wheelSpeeds = new DifferentialDriveWheelSpeeds(0, 0);
@@ -389,6 +391,14 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  public void setCurrentTrajectory(Trajectory trajectory) {
+    currentTrajectory = trajectory;
+  }
+
+  public Trajectory getCurrentTrajectory() {
+    return currentTrajectory;
+  }
+
   /**
    * Gets the encoder position of a specified motor converted to wheel distance traveled.
    *
@@ -668,5 +678,7 @@ public class DriveTrain extends SubsystemBase {
             (int)
                 (m_drivetrainSimulator.getRightVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
+
+    pigeon.getSimCollection().setRawHeading(m_drivetrainSimulator.getHeading().getDegrees());
   }
 }

@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,11 +23,7 @@ import frc.robot.commands.auto.TwoBallAutoLowerHub;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
-import frc.robot.commands.driveTrain.AlignToCargo;
-import frc.robot.commands.driveTrain.AlignToLaunchpad;
-import frc.robot.commands.driveTrain.DriveForwardDistance;
-import frc.robot.commands.driveTrain.ResetOdometry;
-import frc.robot.commands.driveTrain.SetArcadeDrive;
+import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
@@ -55,11 +52,13 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final DataLog m_logger = DataLogManager.getLog();
+
   // The robot's subsystems and commands are defined here...
   private final Controls m_controls = new Controls();
   private final DriveTrain m_driveTrain = new DriveTrain();
   private final Turret m_turret = new Turret(m_driveTrain);
-  private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret);
+  private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret, m_logger);
   private final Flywheel m_flywheel = new Flywheel(m_vision, m_turret);
   private final Intake m_intake = new Intake();
   private final Indexer m_indexer = new Indexer();
@@ -128,6 +127,7 @@ public class RobotContainer {
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
+    SmartDashboard.putData("Auto Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision));
 
     initializeSubsystems();
 
@@ -150,6 +150,8 @@ public class RobotContainer {
       xBoxButtons[i] = new JoystickButton(xBoxController, (i + 1));
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
+
+    leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

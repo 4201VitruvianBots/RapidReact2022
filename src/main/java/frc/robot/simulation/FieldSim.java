@@ -25,14 +25,14 @@ public class FieldSim {
   private final Intake m_intake;
   private ArrayList<Pose2d> trajectoryPoses;
   private Translation2d[] intakePositions = {
-    new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0),
-    new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0),
+    new Translation2d(-SimConstants.robotLengthMeters / 2.0, SimConstants.robotWidthMeters / 2.0),
+    new Translation2d(-SimConstants.robotLengthMeters / 2.0, -SimConstants.robotWidthMeters / 2.0),
     new Translation2d(
-        -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-        SimConstants.robotWidth / 2.0),
+        -(SimConstants.robotLengthMeters / 2.0) - SimConstants.intakeLengthMeters,
+        SimConstants.robotWidthMeters / 2.0),
     new Translation2d(
-        -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-        -SimConstants.robotWidth / 2.0),
+        -(SimConstants.robotLengthMeters / 2.0) - SimConstants.intakeLengthMeters,
+        -SimConstants.robotWidthMeters / 2.0),
   };
   private double slope0to1 = 0;
   private double slope1to2 = 0;
@@ -290,5 +290,10 @@ public class FieldSim {
     m_field2d
         .getObject("Vision")
         .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
+
+//    var testPose = new Translation2d(-1, 0).rotateBy(m_driveTrain.getHeadingRotation2d()).plus(m_driveTrain.getRobotPoseMeters().getTranslation());
+
+    m_field2d.getObject("DetectedCargo").setPose(m_vision.getCargoPositionFromRobot());
+    m_field2d.getObject("trajectory").setTrajectory(m_driveTrain.getCurrentTrajectory());
   }
 }

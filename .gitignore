@@ -162,3 +162,5 @@ bin/
 *-window.json
 
 .idea/
+
+*.wpilog

@@ -10,6 +10,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
@@ -20,16 +22,13 @@ import frc.robot.Constants;
 import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.Constants.Vision.CAMERA_TYPE;
 import frc.robot.Constants.Vision.INTAKE_TRACKING_TYPE;
-import frc.robot.simulation.FieldSim;
 import frc.robot.utils.VisionData;
-import javax.swing.text.Position;
 
 public class Vision extends SubsystemBase {
 
   private final Controls m_controls;
   private final DriveTrain m_drivetrain;
   private final Turret m_turret;
-  private final FieldSim m_fieldSim;
 
   private final NetworkTable goal_camera;
   private final NetworkTable intake_camera;
@@ -57,12 +56,19 @@ public class Vision extends SubsystemBase {
   private double lastOakPoseTimestamp;
   private double angle, robotVelocity, angularVelocity, tangentalVelocity, ff;
 
+  private DataLog m_logger;
+  private DoubleLogEntry limelightTargetValidLog;
+  private DoubleLogEntry goalTargetValidLog;
+
   /** Creates a new Vision Subsystem. */
-  public Vision(Controls controls, DriveTrain driveTrain, Turret turret, FieldSim fieldSim) {
+  public Vision(Controls controls, DriveTrain driveTrain, Turret turret, DataLog logger) {
     m_controls = controls;
     m_drivetrain = driveTrain;
     m_turret = turret;
-    m_fieldSim = fieldSim;
+
+    m_logger = logger;
+    limelightTargetValidLog = new DoubleLogEntry(logger, "/vision/limelight_tv");
+    goalTargetValidLog = new DoubleLogEntry(logger, "/vision/goal_tv");
 
     switch (goal_camera_type) {
       case PHOTONVISION:
@@ -91,15 +97,19 @@ public class Vision extends SubsystemBase {
    * @return true: Camera has a target. false: Camera does not have a target
    */
   public boolean getValidTarget(CAMERA_POSITION position) {
+    return getValidTargetType(position) > 0;
+  }
+
+  public double getValidTargetType(CAMERA_POSITION position) {
     switch (position) {
       case GOAL:
-        return goal_camera.getEntry("tv").getDouble(0) == 1;
+        return goal_camera.getEntry("tv").getDouble(0);
       case INTAKE:
-        return intake_camera.getEntry("tv").getDouble(0) > 0;
+        return intake_camera.getEntry("tv").getDouble(0);
       case LIMELIGHT:
-        return limelight.getEntry("tv").getDouble(0) == 1;
+        return limelight.getEntry("tv").getDouble(0);
       default:
-        return false;
+        return 0;
     }
   }
 
@@ -231,12 +241,13 @@ public class Vision extends SubsystemBase {
         return Math.cos(
                 Units.degreesToRadians(
                     Constants.Vision.GOAL_CAMERA_MOUNTING_ANGLE_DEGREES
-                        + getTargetYAngle(CAMERA_POSITION.GOAL, 0)))
+                        + getTargetYAngle(CAMERA_POSITION.GOAL)))
             * getGoalTargetDirectDistance();
       default:
         return 0;
     }
   }
+
   public double getCargoTargetDirectDistance() {
     return getCargoTargetDirectDistance(0);
   }
@@ -244,15 +255,15 @@ public class Vision extends SubsystemBase {
   public double getCargoTargetDirectDistance(int index) {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
       double[] nullValue = {-99};
-      var intakeAngles = intake_camera.getEntry("tz").getDoubleArray(nullValue);
+      var cargoDepth = intake_camera.getEntry("tz").getDoubleArray(nullValue);
       try {
-        return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
+        return cargoDepth[0] == -99 ? 0 : cargoDepth[index];
       } catch (Exception e) {
-        System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
+        System.out.println(
+            "Vision Subsystem Error: getCargoTargetDirectDistance() illegal array access");
         return 0;
       }
-    } else
-      return -1;
+    } else return -1;
   }
 
   public double getCargoHorizontalDistance() {
@@ -262,9 +273,29 @@ public class Vision extends SubsystemBase {
   public double getCargoHorizontalDistance(int index) {
     return Math.cos(
             Units.degreesToRadians(
-                    Constants.Vision.INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES
-                            + getTargetYAngle(CAMERA_POSITION.INTAKE, index)))
-            * getTargetYAngle(CAMERA_POSITION.INTAKE, index);
+                Constants.Vision.INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES
+                    + getTargetYAngle(CAMERA_POSITION.INTAKE, index)))
+        * getCargoTargetDirectDistance(index);
+  }
+
+  public Pose2d getCargoPositionFromRobot() {
+    return getCargoPositionFromRobot(0);
+  }
+
+  public Pose2d getCargoPositionFromRobot(int index) {
+    double x =
+        getCargoHorizontalDistance(index)
+            * Math.cos(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
+    double y =
+        getCargoHorizontalDistance(index)
+            * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
+
+    var cargoTranslation =
+        new Translation2d(x, y).plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
+            .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
+            .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
+
+    return new Pose2d(cargoTranslation, new Rotation2d());
   }
 
   /**
@@ -358,6 +389,7 @@ public class Vision extends SubsystemBase {
   public void setIntakeTrackingType(INTAKE_TRACKING_TYPE type) {
     SmartDashboardTab.putNumber("Vision", "intake_tracking_type", type.ordinal());
   }
+
   /** Sets the category of objects the intake should track. 0: Cargo 1: Launchpads */
   public void setIntakeTargetLock(boolean state) {
     SmartDashboardTab.putBoolean("Vision", "intake_target_lock", state);
@@ -461,6 +493,11 @@ public class Vision extends SubsystemBase {
     // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
   }
 
+  private void logData() {
+    limelightTargetValidLog.append(getValidTargetType(CAMERA_POSITION.LIMELIGHT));
+    goalTargetValidLog.append(getValidTargetType(CAMERA_POSITION.GOAL));
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -468,10 +505,15 @@ public class Vision extends SubsystemBase {
     //    updateDataQueue();
     updateVisionPose();
     // updateTurretArbitraryFF();
+    logData();
   }
 
   @Override
   public void simulationPeriodic() {
     // This method will be called once per scheduler run during simulation
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance());
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX());
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY());
   }
 }
