@@ -84,6 +84,11 @@
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
         },
+        "DetectedCargo": {
+          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "length": 0.2409999966621399,
+          "width": 0.2409999966621399
+        },
         "Intake": {
           "image": "resources/Images/red_cargo.png",
           "length": 0.10000000149011612,
@@ -202,13 +207,13 @@
     "Controls": {
       "open": true
     },
-    "DriveTrain": {
-      "open": true
-    },
     "Drivetrain": {
       "open": true
     },
     "OAK-1_Intake": {
+      "open": true
+    },
+    "OAK-D_Goal": {
       "open": true
     },
     "Shuffleboard": {
