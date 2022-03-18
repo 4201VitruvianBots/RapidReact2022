@@ -39,7 +39,7 @@
     "windows": {
       "/SmartDashboard/Field2d": {
         "Blue Cargo": {
-          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\blue_cargo.png",
+          "image": "resources/Images/blue_cargo.png",
           "length": 0.24130000174045563,
           "width": 0.24130000174045563
         },
@@ -84,7 +84,7 @@
           "width": 0.23999999463558197
         },
         "Intake": {
-          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.10000000149011612,
           "width": 0.10000000149011612
         },
@@ -109,7 +109,7 @@
           "width": 0.10000000149011612
         },
         "Red Cargo": {
-          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "image": "resources/Images/red_cargo.png",
           "length": 0.24130000174045563,
           "width": 0.24130000174045563
         },
@@ -171,7 +171,7 @@
           ]
         },
         "height": 8.229999542236328,
-        "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\field22.png",
+        "image": "resources/Images/field22.png",
         "trajectory": {
           "arrowColor": [
             0.0,
