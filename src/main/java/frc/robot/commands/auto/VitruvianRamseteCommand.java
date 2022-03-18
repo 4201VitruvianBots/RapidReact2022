@@ -75,7 +75,7 @@ public class VitruvianRamseteCommand extends RamseteCommand {
         Units.metersToFeet(
             m_driveTrain
                 .getDriveTrainKinematics()
-                .toChassisSpeeds(m_driveTrain.getSpeedsMetersPerSecond()) // TODO MEMORY LEAK?
+                .toChassisSpeeds(m_driveTrain.getSpeedsMetersPerSecond())
                 .vxMetersPerSecond));
   }
 

@@ -624,7 +624,7 @@ public class DriveTrain extends SubsystemBase {
     // SmartDashboardTab.putNumber(
     //     "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
     odometry.update(
-        Rotation2d.fromDegrees(getHeadingDegrees()), // TODO MEMORY LEAK
+        Rotation2d.fromDegrees(getHeadingDegrees()),
         getSpeedsMetersPerSecond(),
         getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
         getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
