@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.FiveBallAutoBlue;
 import frc.robot.commands.auto.FiveBallAutoRed;
-import frc.robot.commands.auto.OneBallAuto;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoLowerHub;
 import frc.robot.commands.climber.EngageHighClimb;
@@ -101,9 +100,6 @@ public class RobotContainer {
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
-    m_autoChooser.addOption(
-        "One Ball Auto",
-        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
