@@ -162,13 +162,13 @@ public class Climber extends SubsystemBase {
     //     "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
     // SmartDashboardTab.putBoolean(
     //     "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
-    SmartDashboardTab.putBoolean(
-        "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
-    SmartDashboard.putBoolean("Climb Mode", getElevatorClimbState());
-    SmartDashboardTab.putNumber(
-        "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
-    SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
-    SmartDashboard.putBoolean("Climber limit switch", climberLowerLimitOverride.get());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
+    // SmartDashboard.putBoolean("Climb Mode", getElevatorClimbState());
+    // SmartDashboardTab.putNumber(
+    //     "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
+    // SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
+    // SmartDashboard.putBoolean("Climber limit switch", climberLowerLimitOverride.get());
   }
 
   @Override
