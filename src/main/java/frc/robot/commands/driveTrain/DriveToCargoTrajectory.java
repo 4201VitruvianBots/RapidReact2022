@@ -11,7 +11,6 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
@@ -46,13 +45,11 @@ public class DriveToCargoTrajectory extends CommandBase {
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
       var startPos = m_driveTrain.getRobotPoseMeters();
       Translation2d cargoPose = m_vision.getCargoPositionFromRobot().getTranslation();
-      Rotation2d angleToCargo = new Rotation2d(Math.atan2(cargoPose.getY() - startPos.getY(), cargoPose.getX() - startPos.getX()));
+      Rotation2d angleToCargo =
+          new Rotation2d(
+              Math.atan2(cargoPose.getY() - startPos.getY(), cargoPose.getX() - startPos.getX()));
       var endPos =
-          new Pose2d(
-              cargoPose,
-              angleToCargo.minus(
-                startPos.getRotation().minus(angleToCargo))
-                );
+          new Pose2d(cargoPose, angleToCargo.minus(startPos.getRotation().minus(angleToCargo)));
 
       TrajectoryConfig m_pathConfig =
           new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))
@@ -64,7 +61,6 @@ public class DriveToCargoTrajectory extends CommandBase {
                   (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
                           + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
                       / 2);
-              
 
       m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
@@ -147,5 +143,4 @@ public class DriveToCargoTrajectory extends CommandBase {
   public boolean isFinished() {
     return m_pathFollower.atReference();
   }
-
 }
