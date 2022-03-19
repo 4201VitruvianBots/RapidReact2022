@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -69,7 +70,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FiveBallAutoRed-3", Units.feetToMeters(14), Units.feetToMeters(5), true);
+            "FiveBallAutoRed-3", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
@@ -80,6 +81,20 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
+
+    Trajectory trajectory5 =
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-5", Units.feetToMeters(14), Units.feetToMeters(5), false);
+
+    VitruvianRamseteCommand command5 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory5);
+
+    Trajectory trajectory6 =
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-6", Units.feetToMeters(14), Units.feetToMeters(5), false);
+
+    VitruvianRamseteCommand command6 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory6);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
@@ -96,7 +111,11 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new WaitCommand(0.5),
         new ParallelDeadlineGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new SequentialCommandGroup(
+                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision),
+                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision)),
             new SequentialCommandGroup(
                 // new WaitCommand(0.25),
                 new ConditionalCommand(
@@ -108,7 +127,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 40),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
@@ -116,13 +135,17 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
             RobotBase::isReal),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
+            new SequentialCommandGroup(
+                command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision),
+                command5.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision)),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
         new ParallelDeadlineGroup(
-            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command6.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
