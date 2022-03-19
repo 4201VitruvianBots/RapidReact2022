@@ -67,6 +67,12 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[1].setInverted(false);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
+    
+    elevatorClimbMotors[0].setStatusFramePeriod(1, 100);
+    elevatorClimbMotors[0].setStatusFramePeriod(2, 100);
+
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
   }
 
   public boolean getElevatorClimbState() {

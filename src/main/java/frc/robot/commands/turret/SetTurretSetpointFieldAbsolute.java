@@ -66,6 +66,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_vision.setLimelightLEDState(true);
 
     // TODO: Ask if hastarget=getGoalValidTarget
 
@@ -91,10 +92,10 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           m_turret.setAbsoluteSetpointDegrees(setpoint);
         } else if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)) {
           usingVisionSetpoint = true;
-          m_vision.setLimelightLEDState(true);
+          // m_vision.setLimelightLEDState(true);
           m_turret.setAbsoluteSetpointDegrees(
               m_turret.getTurretAngleDegrees()
-                  - m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
+                  + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
           lastVisionTimestamp = Timer.getFPGATimestamp();
           // If we are estimating the hub's location using the pose of the hub and the robot
         } else if (m_turret.usePoseEstimation()

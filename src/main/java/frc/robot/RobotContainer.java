@@ -220,8 +220,20 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void robotPeriodic() {
+  public void updateFieldSim() {
     m_fieldSim.periodic();
+  }
+
+  public void updateSmartDashboard() {
+    m_driveTrain.updateSmartDashboard();
+  }
+
+  public void updateDriveTrainPeriodic() {
+    m_driveTrain.periodicRunnable();
+  }
+
+  public void updateVisionPeriodic() {
+    m_vision.periodicRunnable();
   }
 
   public void disabledInit() {

@@ -320,8 +320,6 @@ public class DriveTrain extends SubsystemBase {
     }
     m_leftOutput = leftVoltage / batteryVoltage;
     m_rightOutput = rightVoltage / batteryVoltage;
-    SmartDashboardTab.putNumber("DriveTrain", "Left Voltage", leftVoltage);
-    SmartDashboardTab.putNumber("DriveTrain", "Right Voltage", rightVoltage);
 
     setMotorPercentOutput(leftVoltage / batteryVoltage, rightVoltage / batteryVoltage);
   }
@@ -498,7 +496,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /** Puts values on SmartDashboard. */
-  private void updateSmartDashboard() {
+  public void updateSmartDashboard() {
     if (RobotBase.isReal()) {
       // SmartDashboardTab.putNumber(
       //     "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
@@ -580,7 +578,7 @@ public class DriveTrain extends SubsystemBase {
     }
 
     SmartDashboardTab.putNumber("DriveTrain", "Robot Angle", getHeadingDegrees());
-    SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
+    // SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
     SmartDashboardTab.putNumber("DriveTrain", "L Output", m_leftOutput);
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
@@ -618,22 +616,29 @@ public class DriveTrain extends SubsystemBase {
     return m_postAutoCommand;
   }
 
-  @Override
-  public void periodic() {
+  public void periodicRunnable() {
     // This method will be called once per scheduler run
     // SmartDashboardTab.putNumber(
     //     "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
-    odometry.update(
-        Rotation2d.fromDegrees(getHeadingDegrees()),
-        getSpeedsMetersPerSecond(),
-        getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
-        getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
-
-    updateSmartDashboard();
+    try {
+      odometry.update(
+          Rotation2d.fromDegrees(getHeadingDegrees()),
+          getSpeedsMetersPerSecond(),
+          getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
+          getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+    } catch(Exception e) {
+      System.out.println("Error: Could not update Odometry");
+    }
+    // updateSmartDashboard();
 
     currentYaw = pigeon.getYaw();
     yawPerSecond = currentYaw - lastYaw / 0.02;
     lastYaw = currentYaw;
+  }
+
+  @Override
+  public void periodic() {
+   
   }
 
   @Override

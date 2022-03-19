@@ -235,7 +235,8 @@ public class Vision extends SubsystemBase {
                       Units.degreesToRadians(
                           Constants.Vision.LIMELIGHT_MOUNTING_ANGLE_DEGREES
                               + getTargetYAngle(CAMERA_POSITION.LIMELIGHT)));
-          return distanceFromLimelightToGoalMeters;
+          
+          return Math.abs(distanceFromLimelightToGoalMeters);
         }
       case GOAL:
         return Math.cos(
@@ -432,20 +433,24 @@ public class Vision extends SubsystemBase {
   /** Update the robot pose based on vision data if a valid vision target is found. */
   private void updateVisionPose() {
     if (enablePoseEstimation) {
-      if (getValidTarget(CAMERA_POSITION.GOAL)) {
-        m_drivetrain
-            .getOdometry()
-            .addVisionMeasurement(
-                getPoseFromHub(CAMERA_POSITION.GOAL),
-                Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 267 ms of latency
-        lastOakPoseTimestamp = Timer.getFPGATimestamp();
-      } else if (getValidTarget(CAMERA_POSITION.LIMELIGHT)
-          && (Timer.getFPGATimestamp() - lastOakPoseTimestamp) > 0.5) {
-        m_drivetrain
-            .getOdometry()
-            .addVisionMeasurement(
-                getPoseFromHub(CAMERA_POSITION.LIMELIGHT),
-                Timer.getFPGATimestamp() - (getLimelightLatency() + 0.011));
+      try {
+        if (getValidTarget(CAMERA_POSITION.GOAL)) {
+          m_drivetrain
+              .getOdometry()
+              .addVisionMeasurement(
+                  getPoseFromHub(CAMERA_POSITION.GOAL),
+                  Timer.getFPGATimestamp() - 0.267); // Vision camera has ~ 267 ms of latency
+          lastOakPoseTimestamp = Timer.getFPGATimestamp();
+        } else if (getValidTarget(CAMERA_POSITION.LIMELIGHT)
+            && (Timer.getFPGATimestamp() - lastOakPoseTimestamp) > 0.5) {
+          m_drivetrain
+              .getOdometry()
+              .addVisionMeasurement(
+                  getPoseFromHub(CAMERA_POSITION.LIMELIGHT),
+                  Timer.getFPGATimestamp() - (getLimelightLatency() + 0.011));
+        }
+      } catch (Exception e) {
+        System.out.println("Error: updateVisionPose() could not update pose");
       }
     }
   }
@@ -479,14 +484,14 @@ public class Vision extends SubsystemBase {
   private void updateSmartDashboard() {
     // SmartDashboard.putBoolean("Has Goal Target", getValidTarget(CAMERA_POSITION.GOAL));
     // SmartDashboard.putNumber("Goal Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
-    SmartDashboard.putNumber(
-        "Goal Horizontal Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL));
-    SmartDashboard.putNumber(
-        "Limelight Target Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
+
+    // SmartDashboard.putNumber(
+    //     "Goal Horizontal Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.GOAL));
+    // SmartDashboard.putNumber(
+    //     "Limelight Target Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
 
     SmartDashboard.putBoolean("Has Intake Target", getValidTarget(CAMERA_POSITION.INTAKE));
     SmartDashboard.putNumber("Intake Angle", getTargetXAngle(CAMERA_POSITION.INTAKE, 0));
-
     // SmartDashboardTab.putNumber(
     //     "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
     // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
@@ -498,13 +503,18 @@ public class Vision extends SubsystemBase {
     goalTargetValidLog.append(getValidTargetType(CAMERA_POSITION.GOAL));
   }
 
+  public void periodicRunnable() {
+
+    // updateDataQueue();
+    updateVisionPose();
+    // updateTurretArbitraryFF();
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-    //    updateDataQueue();
-    updateVisionPose();
-    // updateTurretArbitraryFF();
+    
     logData();
   }
 
