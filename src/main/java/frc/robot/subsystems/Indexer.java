@@ -258,14 +258,14 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
     SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
-    SmartDashboardTab.putString("Indexer", "Rear Color", getFrontColorType().toString());
-    SmartDashboardTab.putNumber("Indexer", "Rear Red", getFrontColor().red);
-    SmartDashboardTab.putNumber("Indexer", "Rear Green", getFrontColor().green);
-    SmartDashboardTab.putNumber("Indexer", "Rear Blue", getFrontColor().blue);
-    SmartDashboardTab.putString("Indexer", "Front Color", getRearColorType().toString());
-    SmartDashboardTab.putNumber("Indexer", "Front Red", getRearColor().red);
-    SmartDashboardTab.putNumber("Indexer", "Front Green", getRearColor().green);
-    SmartDashboardTab.putNumber("Indexer", "Front Blue", getRearColor().blue);
+    SmartDashboardTab.putString("Indexer", "Rear Color", getRearColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Rear Red", getRearColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Rear Green", getRearColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Rear Blue", getRearColor().blue);
+    SmartDashboardTab.putString("Indexer", "Front Color", getFrontColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Front Red", getFrontColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Front Green", getFrontColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Front Blue", getFrontColor().blue);
 
     SmartDashboardTab.putNumber(
         "Indexer",
