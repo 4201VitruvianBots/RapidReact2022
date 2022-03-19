@@ -4,12 +4,14 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
@@ -43,17 +45,21 @@ public class DriveToCargoTrajectory extends CommandBase {
   public void initialize() {
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
       var startPos = m_driveTrain.getRobotPoseMeters();
+      Translation2d cargoPose = m_vision.getCargoPositionFromRobot().getTranslation();
+      Rotation2d angleToCargo = new Rotation2d(Math.atan2(cargoPose.getY() - startPos.getY(), cargoPose.getX() - startPos.getX()));
       var endPos =
           new Pose2d(
-              m_vision.getCargoPositionFromRobot().getTranslation(),
-              m_driveTrain.getHeadingRotation2d()); // TODO: How to determine best heading?
+              cargoPose,
+              angleToCargo.minus(
+                startPos.getRotation().minus(angleToCargo))
+                );
 
       TrajectoryConfig m_pathConfig =
           new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))
               // Add kinematics to ensure max speed is actually obeyed
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
-              .setEndVelocity(3)
+              .setEndVelocity(0)
               .setStartVelocity(
                   (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
                           + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
@@ -141,4 +147,5 @@ public class DriveToCargoTrajectory extends CommandBase {
   public boolean isFinished() {
     return m_pathFollower.atReference();
   }
+
 }
