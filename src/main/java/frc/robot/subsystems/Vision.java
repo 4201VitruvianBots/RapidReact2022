@@ -137,7 +137,24 @@ public class Vision extends SubsystemBase {
    * @return Vertical angle (+/- 35 degrees)
    */
   public double getTargetXAngle(CAMERA_POSITION position) {
-    return getTargetXAngle(position, 0);
+    return getTargetXAngle(position, 0 );
+  }
+
+  public double getTargetHorizontalDistance(double verticalAngleDegrees){
+    return (Constants.Vision.INTAKE_CAMERA_MOUNTING_HEIGHT_METERS- Constants.Vision.CARGO_RADIUS_METERS) * Math.tan(Units.degreesToRadians(90+ verticalAngleDegrees));
+  }
+
+  public double getTargetHorizontalAngleOffset (double distance, double horizontalAngleDegrees){
+   
+    return(distance* Math.sin (Units.degreesToRadians(-horizontalAngleDegrees)));
+  }
+
+  public double getTargetForwardOffset (double distance, double horizontalAngleDegrees){
+    return(distance* Math.cos (Units.degreesToRadians(-horizontalAngleDegrees))+Constants.Vision. INTAKE_MOUNT_OFFSET_METERS);
+  }
+
+  public double[] rotatePoint (double pointX, double pointY, double pivotX, double pivotY, double angleDegrees){
+        return null; // TODO: implement logic!
   }
 
   public double getTargetXAngle(CAMERA_POSITION position, int index) {
