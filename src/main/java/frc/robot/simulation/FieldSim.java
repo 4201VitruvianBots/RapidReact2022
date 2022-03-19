@@ -7,6 +7,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.simulation.SimConstants.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Intake;
@@ -22,6 +23,30 @@ public class FieldSim {
   private final Turret m_turret;
   private final Vision m_vision;
   private final Intake m_intake;
+  private ArrayList<Pose2d> trajectoryPoses;
+  private Translation2d[] intakePositions = {
+    new Translation2d(-SimConstants.robotLengthMeters / 2.0, SimConstants.robotWidthMeters / 2.0),
+    new Translation2d(-SimConstants.robotLengthMeters / 2.0, -SimConstants.robotWidthMeters / 2.0),
+    new Translation2d(
+        -(SimConstants.robotLengthMeters / 2.0) - SimConstants.intakeLengthMeters,
+        SimConstants.robotWidthMeters / 2.0),
+    new Translation2d(
+        -(SimConstants.robotLengthMeters / 2.0) - SimConstants.intakeLengthMeters,
+        -SimConstants.robotWidthMeters / 2.0),
+  };
+  private double slope0to1 = 0;
+  private double slope1to2 = 0;
+  private Translation2d intakePoseFromChassis;
+  private Pose2d robotPose;
+  private Cargo[] cargo;
+  private Pose2d ballPose;
+  private double currentTime = 0;
+
+  private double deltaT = 0;
+  private double distanceTraveled = 0;
+
+  private double deltaX = 0;
+  private double deltaY = 0;
   // Exclude 5 cargo in other robots and 2 with human players
   private final Cargo[] m_redCargo = new Cargo[11];
   private final Cargo[] m_blueCargo = new Cargo[11];
@@ -75,7 +100,7 @@ public class FieldSim {
   }
 
   public void setAutoTrajectory(Trajectory... trajectories) {
-    var trajectoryPoses = new ArrayList<Pose2d>();
+    trajectoryPoses = new ArrayList<Pose2d>();
 
     for (int i = 0; i < trajectories.length; i++) {
       trajectoryPoses.addAll(
@@ -86,7 +111,7 @@ public class FieldSim {
   }
 
   public void clearAutoTrajectory() {
-    var trajectoryPoses = new ArrayList<Pose2d>();
+    trajectoryPoses = new ArrayList<Pose2d>();
 
     //    m_field2d.getObject("trajectory").setPoses(trajectoryPoses);
   }
@@ -103,20 +128,10 @@ public class FieldSim {
     */
 
     // Look up rotating a point about another point in 2D space for the math explanation
-    Translation2d[] intakePositions = {
-      new Translation2d(-SimConstants.robotLength / 2.0, SimConstants.robotWidth / 2.0),
-      new Translation2d(-SimConstants.robotLength / 2.0, -SimConstants.robotWidth / 2.0),
-      new Translation2d(
-          -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-          SimConstants.robotWidth / 2.0),
-      new Translation2d(
-          -(SimConstants.robotLength / 2.0) - SimConstants.intakeLength,
-          -SimConstants.robotWidth / 2.0),
-    };
 
-    Pose2d robotPose = m_driveTrain.getRobotPoseMeters();
+    robotPose = m_driveTrain.getRobotPoseMeters();
     for (int i = 0; i < intakePose.length; i++) {
-      var intakePoseFromChassis =
+      intakePoseFromChassis =
           intakePositions[i].rotateBy(robotPose.getRotation()).plus(robotPose.getTranslation());
       intakePose[i] = new Pose2d(intakePoseFromChassis, robotPose.getRotation());
     }
@@ -125,13 +140,13 @@ public class FieldSim {
   private boolean isBallInIntakeZone(Pose2d ballPose) {
     // The rise/run between intake points 0 to 1
     // Since the intake is a rectangle, this is the same as the slope between points 2 to 3
-    double slope0to1 =
+    slope0to1 =
         (intakePose[1].getY() - intakePose[0].getY())
             / (intakePose[1].getX() - intakePose[0].getX());
 
     // The rise/run between points 1 to 2
     // Same as slope between points 3 and 0
-    double slope1to2 =
+    slope1to2 =
         (intakePose[2].getY() - intakePose[1].getY())
             / (intakePose[2].getX() - intakePose[1].getX());
 
@@ -205,7 +220,7 @@ public class FieldSim {
   }
 
   public Cargo[] getCargo() {
-    var cargo = new Cargo[m_redCargo.length + m_blueCargo.length];
+    cargo = new Cargo[m_redCargo.length + m_blueCargo.length];
     System.arraycopy(m_redCargo, 0, cargo, 0, m_redCargo.length);
     System.arraycopy(m_blueCargo, 0, cargo, m_redCargo.length, m_blueCargo.length);
 
@@ -223,7 +238,7 @@ public class FieldSim {
   }
 
   private void updateBallState(Cargo cargo) {
-    Pose2d ballPose = cargo.getCargoPose();
+    ballPose = cargo.getCargoPose();
 
     switch (cargo.getBallState()) {
       case IN_AIR:
@@ -233,13 +248,13 @@ public class FieldSim {
           cargo.setBallState(BallState.ON_FIELD);
           break;
         }
-        double currentTime = RobotController.getFPGATime();
+        currentTime = RobotController.getFPGATime();
         // FPGA time is in microseonds, need to convert it into seconds
-        double deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
-        double distanceTraveled = SimConstants.shotSpeedMetersPerSecond * deltaT;
+        deltaT = (currentTime - cargo.getLastTimestamp()) / 1e6;
+        distanceTraveled = SimConstants.shotSpeedMetersPerSecond * deltaT;
 
-        double deltaX = distanceTraveled * Math.cos(Math.toRadians(getIdealAngleToHub()));
-        double deltaY = distanceTraveled * Math.sin(Math.toRadians(getIdealAngleToHub()));
+        deltaX = distanceTraveled * Math.cos(Math.toRadians(getIdealAngleToHub()));
+        deltaY = distanceTraveled * Math.sin(Math.toRadians(getIdealAngleToHub()));
 
         cargo.setBallPose(
             new Pose2d(deltaX + ballPose.getX(), deltaY + ballPose.getY(), ballPose.getRotation()));
@@ -272,6 +287,15 @@ public class FieldSim {
   public void periodic() {
     m_field2d.setRobotPose(m_driveTrain.getRobotPoseMeters());
     m_field2d.getObject("Turret").setPose(m_turret.getPose());
-    m_field2d.getObject("Vision").setPose(m_vision.getPoseFromHub());
+    m_field2d
+        .getObject("Vision")
+        .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
+    
+    if(m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE))
+      m_field2d.getObject("DetectedCargo").setPose(m_vision.getCargoPositionFromRobot());
+    else
+      m_field2d.getObject("DetectedCargo").setPose(new Pose2d());
+
+    m_field2d.getObject("trajectory").setTrajectory(m_driveTrain.getCurrentTrajectory());
   }
 }

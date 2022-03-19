@@ -34,6 +34,7 @@ public class Climber extends SubsystemBase {
   //     new DigitalInput(Constants.Climber.climberUpperLimitOverrideID);
 
   private boolean Overridelatched = false;
+  private double climberPosition = 0;
 
   DoubleSolenoid highClimbPiston =
       new DoubleSolenoid(
@@ -66,6 +67,12 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[1].setInverted(false);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
+    
+    elevatorClimbMotors[0].setStatusFramePeriod(1, 100);
+    elevatorClimbMotors[0].setStatusFramePeriod(2, 100);
+
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
   }
 
   public boolean getElevatorClimbState() {
@@ -82,7 +89,7 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setElevatorClimberPercentOutput(double value) {
-    double climberPosition = getElevatorClimbPosition();
+    climberPosition = getElevatorClimbPosition();
     if (value > 0) {
       if (climberPosition < Constants.Climber.climberEncoderUpperLimit) {
         if (Math.abs(climberPosition - Constants.Climber.climberEncoderUpperLimit)
@@ -151,8 +158,8 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateSmartDashboard() {
-    SmartDashboardTab.putBoolean(
-        "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
     // SmartDashboardTab.putBoolean(
     //     "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
     SmartDashboardTab.putBoolean(
@@ -173,7 +180,8 @@ public class Climber extends SubsystemBase {
         || (getElevatorClimbPosition() >= Constants.Climber.climberEncoderUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
-    updateClimberLimits();
+
+    if (getElevatorClimbState()) updateClimberLimits();
   }
 
   @Override

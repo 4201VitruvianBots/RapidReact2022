@@ -25,6 +25,9 @@ public class TurnInPlace extends CommandBase {
   double lastAngle;
 
   boolean latch = true;
+
+  private double pid_output;
+
   /**
    * Creates a new ExampleCommand.
    *
@@ -52,7 +55,7 @@ public class TurnInPlace extends CommandBase {
 
   @Override
   public void execute() {
-    double pid_output = m_controller.calculate(m_driveTrain.getHeadingDegrees());
+    pid_output = m_controller.calculate(m_driveTrain.getHeadingDegrees());
     pid_output = Math.max(Math.min(pid_output, 0.6), -0.6);
     m_driveTrain.setMotorArcadeDrive(0, pid_output);
     if (Math.abs(m_driveTrain.getHeadingDegrees()) >= m_setpoint && latch) {

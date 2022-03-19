@@ -5,9 +5,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class SimConstants {
-  public static final double robotWidth = 0.673;
-  public static final double robotLength = 0.838;
-  public static final double intakeLength = 0.3048;
+  public static final double robotWidthMeters = Units.inchesToMeters(26.5);
+  public static final double robotLengthMeters = Units.inchesToMeters(33);
+  public static final double intakeLengthMeters = 0.3048;
 
   public static final Pose2d[] redHubBallPos = {
     new Pose2d(Units.inchesToMeters(362), Units.inchesToMeters(13), new Rotation2d()),
@@ -33,9 +33,6 @@ public class SimConstants {
   public static final double fieldHieghtMeters = Units.feetToMeters(27);
   public static final double ballDiameterMeters = Units.inchesToMeters(9.5);
 
-  public static final double robotWidthMeters = 0.673;
-  public static final double robotLengthMeters = 0.838;
-  public static final double intakeLengthMeters = 0.3048;
   public static final double shotSpeedMetersPerSecond = 10;
 
   public static final Pose2d hubPoseMeters =

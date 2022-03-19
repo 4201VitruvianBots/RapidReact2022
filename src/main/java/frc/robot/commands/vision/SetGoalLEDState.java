@@ -29,7 +29,7 @@ public class SetGoalLEDState extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_vision.setGoalCameraLedState(m_state);
+    m_vision.setLimelightLEDState(m_state);
   }
 
   // Called once the command ends or is interrupted.

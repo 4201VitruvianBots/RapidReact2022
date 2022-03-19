@@ -32,12 +32,12 @@ public class SetRpmSetpoint extends CommandBase {
   @Override
   public void initialize() {
     System.out.print("RpmSetpoint is running");
+    m_vision.setLimelightLEDState(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_vision.setGoalCameraLedState(true);
     m_flywheel.setRPM(m_RPM);
   }
 
