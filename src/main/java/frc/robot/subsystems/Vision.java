@@ -137,24 +137,7 @@ public class Vision extends SubsystemBase {
    * @return Vertical angle (+/- 35 degrees)
    */
   public double getTargetXAngle(CAMERA_POSITION position) {
-    return getTargetXAngle(position, 0 );
-  }
-
-  public double getTargetHorizontalDistance(double verticalAngleDegrees){
-    return (Constants.Vision.INTAKE_CAMERA_MOUNTING_HEIGHT_METERS- Constants.Vision.CARGO_RADIUS_METERS) * Math.tan(Units.degreesToRadians(90+ verticalAngleDegrees));
-  }
-
-  public double getTargetHorizontalAngleOffset (double distance, double horizontalAngleDegrees){
-   
-    return(distance* Math.sin (Units.degreesToRadians(-horizontalAngleDegrees)));
-  }
-
-  public double getTargetForwardOffset (double distance, double horizontalAngleDegrees){
-    return(distance* Math.cos (Units.degreesToRadians(-horizontalAngleDegrees))+Constants.Vision. INTAKE_MOUNT_OFFSET_METERS);
-  }
-
-  public double[] rotatePoint (double pointX, double pointY, double pivotX, double pivotY, double angleDegrees){
-        return null; // TODO: implement logic!
+    return getTargetXAngle(position, 0);
   }
 
   public double getTargetXAngle(CAMERA_POSITION position, int index) {
@@ -252,7 +235,7 @@ public class Vision extends SubsystemBase {
                       Units.degreesToRadians(
                           Constants.Vision.LIMELIGHT_MOUNTING_ANGLE_DEGREES
                               + getTargetYAngle(CAMERA_POSITION.LIMELIGHT)));
-          
+
           return Math.abs(distanceFromLimelightToGoalMeters);
         }
       case GOAL:
@@ -309,7 +292,8 @@ public class Vision extends SubsystemBase {
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
     var cargoTranslation =
-        new Translation2d(x, y).plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
+        new Translation2d(x, y)
+            .plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
             .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
             .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
 
@@ -531,7 +515,7 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     updateSmartDashboard();
-    
+
     logData();
   }
 

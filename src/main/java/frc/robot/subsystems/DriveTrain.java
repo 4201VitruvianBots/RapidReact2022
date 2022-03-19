@@ -626,7 +626,7 @@ public class DriveTrain extends SubsystemBase {
           getSpeedsMetersPerSecond(),
           getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
           getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
-    } catch(Exception e) {
+    } catch (Exception e) {
       System.out.println("Error: Could not update Odometry");
     }
     // updateSmartDashboard();
@@ -637,9 +637,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-   
-  }
+  public void periodic() {}
 
   @Override
   public void simulationPeriodic() {
