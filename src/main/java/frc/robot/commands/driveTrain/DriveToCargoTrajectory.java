@@ -58,7 +58,6 @@ public class DriveToCargoTrajectory extends CommandBase {
                   (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
                           + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
                       / 2);
-              
 
       m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
