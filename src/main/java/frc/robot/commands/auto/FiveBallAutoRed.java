@@ -89,13 +89,6 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
     VitruvianRamseteCommand command5 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory5);
 
-    Trajectory trajectory6 =
-        PathPlanner.loadPath(
-            "FiveBallAutoRed-6", Units.feetToMeters(14), Units.feetToMeters(5), false);
-
-    VitruvianRamseteCommand command6 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory6);
-
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
@@ -137,15 +130,13 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                command5.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision)),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
         new ParallelDeadlineGroup(
-            command6.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command5.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
