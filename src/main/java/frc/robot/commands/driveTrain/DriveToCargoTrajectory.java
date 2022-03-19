@@ -53,10 +53,12 @@ public class DriveToCargoTrajectory extends CommandBase {
               // Add kinematics to ensure max speed is actually obeyed
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
+              .setEndVelocity(3)
               .setStartVelocity(
                   (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
                           + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
                       / 2);
+              
 
       m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
@@ -137,7 +139,6 @@ public class DriveToCargoTrajectory extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_pathFollower.atReference()
-        || !m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE);
+    return m_pathFollower.atReference();
   }
 }
