@@ -5,12 +5,13 @@
 /* the project.                                                               */
 /*----------------------------------------------------------------------------*/
 
-package frc.robot.simulation;
+package frc.robot.commands.simulation;
 
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants.Sim.BallState;
-import frc.robot.simulation.FieldSim.Cargo;
+import frc.robot.simulation.Cargo;
+import frc.robot.simulation.FieldSim;
+import frc.robot.simulation.SimConstants.BallState;
 
 /** An example command that uses an example subsystem. */
 public class SimulationShoot extends CommandBase {

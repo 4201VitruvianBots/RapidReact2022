@@ -36,6 +36,7 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.commands.turret.SetTurretControlMode;
+import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -93,7 +94,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+        "Five Ball Auto ",
+        new FiveBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "One Ball Auto",
@@ -119,10 +123,6 @@ public class RobotContainer {
         new FourBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-    m_autoChooser.addOption(
-        "Five Ball Auto ",
-        new FiveBallAuto(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
@@ -197,9 +197,9 @@ public class RobotContainer {
     // m_indexer.setDefaultCommand(
     //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
     // xBoxRightTrigger.get()));
-    // m_turret.setDefaultCommand(
-    //     new SetTurretSetpointFieldAbsolute(
-    //         m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
+    m_turret.setDefaultCommand(
+        new SetTurretSetpointFieldAbsolute(
+            m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
   }
 
   public Indexer getIndexer() {
@@ -229,7 +229,9 @@ public class RobotContainer {
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
   }
 
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_vision.setVisionPoseEstimation(true);
+  }
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
@@ -238,9 +240,13 @@ public class RobotContainer {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
     m_vision.setVisionPoseEstimation(true);
+    m_flywheel.setRPM(0);
+    m_fieldSim.clearAutoTrajectory();
   }
 
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_vision.setVisionPoseEstimation(true);
+  }
 
   public void autonomousInit() {
     if (RobotBase.isReal()) {
@@ -259,7 +265,9 @@ public class RobotContainer {
     m_vision.setVisionPoseEstimation(false);
   }
 
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    m_vision.setVisionPoseEstimation(false);
+  }
 
   public void simulationInit() {
     m_fieldSim.initSim();
