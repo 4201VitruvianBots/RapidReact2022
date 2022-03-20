@@ -1,6 +1,5 @@
 package frc.robot.commands.driveTrain;
 
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -10,11 +9,12 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.commands.auto.VitruvianRamseteCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
+import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,11 +25,10 @@ public class DriveToCargoTrajectory extends CommandBase {
 
   private final Vision m_vision;
 
-  private RamseteController m_pathFollower = new RamseteController();
   private Trajectory m_path;
   DifferentialDriveWheelSpeeds m_prevSpeed = new DifferentialDriveWheelSpeeds();
-  private Timer m_timer = new Timer();
-  private double m_prevTime = 0;
+  VitruvianRamseteCommand m_command;
+
   /** Creates a new ExampleCommand. */
   public DriveToCargoTrajectory(DriveTrain driveTrain, Vision vision) {
     m_driveTrain = driveTrain;
@@ -57,10 +56,7 @@ public class DriveToCargoTrajectory extends CommandBase {
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
               .setEndVelocity(0)
-              .setStartVelocity(
-                  (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
-                          + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
-                      / 2);
+              .setStartVelocity(0);
 
       m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
@@ -78,58 +74,15 @@ public class DriveToCargoTrajectory extends CommandBase {
 
       m_driveTrain.setCurrentTrajectory(m_path);
 
-      m_timer.reset();
-      m_timer.start();
+      m_command = TrajectoryUtils.generateRamseteCommand(m_driveTrain, m_path);
+      m_command.initialize();
     }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentTime = m_timer.get();
-
-    double dt = currentTime - m_prevTime;
-    m_prevTime = currentTime;
-
-    if (dt > 0) {
-      try {
-        var currentReference = m_path.sample(currentTime);
-
-        var m_chassisSpeeds =
-            m_pathFollower.calculate(m_driveTrain.getRobotPoseMeters(), currentReference);
-
-        var targetSpeeds = m_driveTrain.getDriveTrainKinematics().toWheelSpeeds(m_chassisSpeeds);
-
-        double leftTargetSpeed = targetSpeeds.leftMetersPerSecond;
-        double rightTargetSpeed = targetSpeeds.rightMetersPerSecond;
-
-        double leftOutput =
-            m_driveTrain
-                .getLeftPIDController()
-                .calculate(
-                    m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond, leftTargetSpeed);
-        leftOutput +=
-            m_driveTrain
-                .getFeedforward()
-                .calculate(
-                    leftTargetSpeed, (leftTargetSpeed - m_prevSpeed.leftMetersPerSecond) / dt);
-
-        double rightOutput =
-            m_driveTrain
-                .getLeftPIDController()
-                .calculate(
-                    m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond, rightTargetSpeed);
-        rightOutput +=
-            m_driveTrain
-                .getFeedforward()
-                .calculate(
-                    rightTargetSpeed, (rightTargetSpeed - m_prevSpeed.rightMetersPerSecond) / dt);
-
-        m_driveTrain.setVoltageOutput(leftOutput, rightOutput);
-      } catch (Exception e) {
-
-      }
-    }
+    m_command.execute();
   }
 
   // Called once the command ends or is interrupted.
@@ -141,6 +94,6 @@ public class DriveToCargoTrajectory extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_pathFollower.atReference();
+    return m_command.isFinished(); // m_pathFollower.atReference();
   }
 }
