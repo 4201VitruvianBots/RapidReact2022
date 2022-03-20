@@ -47,8 +47,10 @@ public class DriveToCargoTrajectory extends CommandBase {
       Rotation2d angleToCargo =
           new Rotation2d(
               Math.atan2(cargoPose.getY() - startPos.getY(), cargoPose.getX() - startPos.getX()));
+      Rotation2d endAngle = angleToCargo.minus(startPos.getRotation().minus(angleToCargo));
       var endPos =
-          new Pose2d(cargoPose, angleToCargo.minus(startPos.getRotation().minus(angleToCargo)));
+          new Pose2d(
+              cargoPose.plus(Constants.Vision.INTAKE_CAM_TRANSLATION.rotateBy(endAngle)), endAngle);
 
       TrajectoryConfig m_pathConfig =
           new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))

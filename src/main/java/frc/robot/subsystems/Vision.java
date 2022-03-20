@@ -293,7 +293,6 @@ public class Vision extends SubsystemBase {
 
     var cargoTranslation =
         new Translation2d(x, y)
-            .plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
             .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
             .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
 
