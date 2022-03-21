@@ -279,11 +279,17 @@ public class Vision extends SubsystemBase {
         * getCargoTargetDirectDistance(index);
   }
 
-  public Pose2d getCargoPositionFromRobot() {
+  public Translation2d getCargoPositionFromRobot() {
     return getCargoPositionFromRobot(0);
   }
 
-  public Pose2d getCargoPositionFromRobot(int index) {
+  /**
+   * Gets cargo position relative to the robot's center
+   * 
+   * @param index
+   * @return 
+   */
+  public Translation2d getCargoPositionFromRobot(int index) {
     double x =
         getCargoHorizontalDistance(index)
             * Math.cos(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
@@ -291,12 +297,21 @@ public class Vision extends SubsystemBase {
         getCargoHorizontalDistance(index)
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
-    var cargoTranslation =
+    Translation2d cargoTranslation =
         new Translation2d(x, y)
-            .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
-            .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
+            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
 
-    return new Pose2d(cargoTranslation, new Rotation2d());
+    return cargoTranslation;
+  }
+
+  public Translation2d getCargoPositionFieldAbsolute() {
+    return getCargoPositionFieldAbsolute(0);
+  }
+
+  public Translation2d getCargoPositionFieldAbsolute(int index) {
+    return getCargoPositionFromRobot(index)
+      .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
+      .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
   }
 
   /**

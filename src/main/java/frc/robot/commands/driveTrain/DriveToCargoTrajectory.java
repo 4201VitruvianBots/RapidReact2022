@@ -42,15 +42,16 @@ public class DriveToCargoTrajectory extends CommandBase {
   @Override
   public void initialize() {
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
-      var startPos = m_driveTrain.getRobotPoseMeters();
-      Translation2d cargoPose = m_vision.getCargoPositionFromRobot().getTranslation();
-      Rotation2d angleToCargo =
-          new Rotation2d(
-              Math.atan2(cargoPose.getY() - startPos.getY(), cargoPose.getX() - startPos.getX()));
-      Rotation2d endAngle = angleToCargo.minus(startPos.getRotation().minus(angleToCargo));
-      var endPos =
+      Pose2d startPos = m_driveTrain.getRobotPoseMeters();
+      /** Field relative cargo pose */
+      Translation2d cargoPose = m_vision.getCargoPositionFieldAbsolute();
+      /** Field relative cargo angle */
+      // Rotation2d angleToCargo =
+      //     new Rotation2d(cargoPose.getX() - startPos.getX(), cargoPose.getY() - startPos.getY());
+      Rotation2d endAngle = startPos.getRotation().unaryMinus();
+      Pose2d endPos =
           new Pose2d(
-              cargoPose.plus(Constants.Vision.INTAKE_CAM_TRANSLATION.rotateBy(endAngle)), endAngle);
+              cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION.rotateBy(endAngle)), endAngle);
 
       TrajectoryConfig m_pathConfig =
           new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))
@@ -62,13 +63,13 @@ public class DriveToCargoTrajectory extends CommandBase {
 
       m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
-      var projectedPath =
+      Trajectory projectedPath =
           m_path.transformBy(
               new Transform2d(
                   m_driveTrain.getRobotPoseMeters().getTranslation(),
                   new Rotation2d(Units.degreesToRadians(m_driveTrain.getHeadingDegrees()))));
 
-      var trajectoryStates = new ArrayList<Pose2d>();
+      ArrayList<Pose2d> trajectoryStates = new ArrayList<Pose2d>();
       trajectoryStates.addAll(
           projectedPath.getStates().stream()
               .map(state -> state.poseMeters)
@@ -91,6 +92,7 @@ public class DriveToCargoTrajectory extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     m_driveTrain.setVoltageOutput(0, 0);
+    m_command.end(interrupted);
   }
 
   // Returns true when the command should end.

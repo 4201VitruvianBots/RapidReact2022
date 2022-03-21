@@ -255,8 +255,13 @@ public final class Constants {
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
+    /** Offset of the intake camera from the robot's center */
     public static Translation2d INTAKE_CAM_TRANSLATION =
-        new Translation2d(Units.inchesToMeters(12), 0);
+        new Translation2d(Units.inchesToMeters(15.5), 0); // TODO should this be negative, since the intake is in the back?
+
+    /** Ofset of the intake's center from the robot's center */
+    public static Translation2d INTAKE_TRANSLATION = 
+        new Translation2d(Units.inchesToMeters(24),0); // TODO should this be negative, since the intake is in the back?
 
     public static double INTAKE_H_FOV = Units.degreesToRadians(69);
     public static double INTAKE_DETECTION_DISTANCE = Units.inchesToMeters(1.0);
