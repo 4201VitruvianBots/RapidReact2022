@@ -147,7 +147,7 @@ public class Vision extends SubsystemBase {
       case INTAKE:
         if (getValidTarget(position)) {
           double[] nullValue = {-99};
-          var intakeAngles = intake_camera.getEntry("tx").getDoubleArray(nullValue);
+          double[] intakeAngles = intake_camera.getEntry("tx").getDoubleArray(nullValue);
           try {
             return intakeAngles[0] == -99 ? 0 : -intakeAngles[index];
           } catch (Exception e) {
@@ -197,7 +197,7 @@ public class Vision extends SubsystemBase {
       case INTAKE:
         if (getValidTarget(position)) {
           double[] nullValue = {-99};
-          var intakeAngles = intake_camera.getEntry("ty").getDoubleArray(nullValue);
+          double[] intakeAngles = intake_camera.getEntry("ty").getDoubleArray(nullValue);
           try {
             return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
           } catch (Exception e) {
@@ -256,7 +256,7 @@ public class Vision extends SubsystemBase {
   public double getCargoTargetDirectDistance(int index) {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
       double[] nullValue = {-99};
-      var cargoDepth = intake_camera.getEntry("tz").getDoubleArray(nullValue);
+      double[] cargoDepth = intake_camera.getEntry("tz").getDoubleArray(nullValue);
       try {
         return cargoDepth[0] == -99 ? 0 : cargoDepth[index];
       } catch (Exception e) {
@@ -291,7 +291,7 @@ public class Vision extends SubsystemBase {
         getCargoHorizontalDistance(index)
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
-    var cargoTranslation =
+    Translation2d cargoTranslation =
         new Translation2d(x, y)
             .plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
             .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
