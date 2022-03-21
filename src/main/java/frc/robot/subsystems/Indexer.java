@@ -30,7 +30,6 @@ public class Indexer extends SubsystemBase {
   private final double maxVel = 1.1e4;
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
-  private double kickerSetpoint = 0.7;
   public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
 
   private double voltageComp = 12.0;
@@ -52,6 +51,8 @@ public class Indexer extends SubsystemBase {
   // Indexer sensors setup
   DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
   DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerFrontSensor);
+
+  private double kickerSetpoint;
 
   private final LinearSystem<N1, N1, N1> m_KickerPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -279,11 +280,13 @@ public class Indexer extends SubsystemBase {
         "Indexer",
         "Kicker Speed",
         kickerMotor.getSelectedSensorVelocity()
-            * (10.0
-                * 2.0
-                * Math.PI
-                / (Constants.Flywheel.encoderUnitsPerRotation
-                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+        * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
+        / Constants.Indexer.kickerGearRatio);
+            // * (10.0
+            //     * 2.0
+            //     * Math.PI
+            //     / (Constants.Flywheel.encoderUnitsPerRotation
+            //         * Constants.Indexer.falconMaxSpeedRadPerSecond)));
   }
 
   @Override

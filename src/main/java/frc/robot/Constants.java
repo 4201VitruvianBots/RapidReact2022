@@ -75,15 +75,16 @@ public final class Constants {
   public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
+    public static final double kickerGearRatio = 5.0; 
 
     public static final int indexerRearSensor = 0; // Rear = closer to shooter
     public static final int indexerFrontSensor = 1; // Front = closer to intake
 
-    public static final double kKickerKs = 0.53436;
-    public static final double kKickerKv = 0.017544;
-    public static final double kKickerKa = 0.00030392;
+    public static final double kKickerKs = 0.63662;
+    public static final double kKickerKv = 0.017502;
+    public static final double kKickerKa = 0.00035281;
 
-    public static final double radiansPerSecondTolerance = 30.0;
+    public static final double radiansPerSecondTolerance = 2.0;
 
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
