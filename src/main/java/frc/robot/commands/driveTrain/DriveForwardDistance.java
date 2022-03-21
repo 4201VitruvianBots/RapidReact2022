@@ -41,7 +41,8 @@ public class DriveForwardDistance extends SequentialCommandGroup {
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(startPosition, List.of(), endPosition, configA);
 
-    VitruvianRamseteCommand driveForwardCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
+    VitruvianRamseteCommand driveForwardCommand =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, startPosition),
