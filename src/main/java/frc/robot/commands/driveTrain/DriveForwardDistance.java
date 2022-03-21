@@ -10,6 +10,7 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.auto.VitruvianRamseteCommand;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
@@ -40,7 +41,7 @@ public class DriveForwardDistance extends SequentialCommandGroup {
     Trajectory trajectory =
         TrajectoryGenerator.generateTrajectory(startPosition, List.of(), endPosition, configA);
 
-    var driveForwardCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
+    VitruvianRamseteCommand driveForwardCommand = TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory);
 
     addCommands(
         new SetOdometry(driveTrain, fieldSim, startPosition),
