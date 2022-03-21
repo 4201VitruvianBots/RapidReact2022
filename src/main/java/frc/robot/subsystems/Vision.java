@@ -299,7 +299,8 @@ public class Vision extends SubsystemBase {
 
     Translation2d cargoTranslation =
         new Translation2d(x, y)
-            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
+            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION)
+            .rotateBy(new Rotation2d(Math.PI));
 
     return cargoTranslation;
   }
@@ -310,7 +311,7 @@ public class Vision extends SubsystemBase {
 
   public Translation2d getCargoPositionFieldAbsolute(int index) {
     return getCargoPositionFromRobot(index)
-      .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
+      .rotateBy(m_drivetrain.getHeadingRotation2d())
       .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
   }
 
@@ -511,6 +512,15 @@ public class Vision extends SubsystemBase {
     //     "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance());
     // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
     // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
+
+    
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance());
+        
+    SmartDashboardTab.putNumber(
+      "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance());
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX());
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY());
   }
 
   private void logData() {
@@ -535,10 +545,6 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-    SmartDashboardTab.putNumber(
-        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY());
+    // This method will be called once per scheduler run during simulation;
   }
 }
