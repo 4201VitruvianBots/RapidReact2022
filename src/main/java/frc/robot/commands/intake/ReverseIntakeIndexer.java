@@ -43,7 +43,7 @@ public class ReverseIntakeIndexer extends CommandBase {
     //  m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(-0.9);
     m_indexer.setIndexerPercentOutput(-0.65);
-    m_indexer.setKickerPercentOutput(-0.7);
+    m_indexer.setKickerPercentOutput(-0.35);
   }
 
   /**
