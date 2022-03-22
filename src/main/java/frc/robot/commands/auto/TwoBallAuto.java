@@ -83,7 +83,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision)),
+                new DriveToCargoTrajectory(driveTrain, vision).withTimeout(2)),
             new AutoRunIntake(intake, indexer)
             // TODO implement indexer
             ),
