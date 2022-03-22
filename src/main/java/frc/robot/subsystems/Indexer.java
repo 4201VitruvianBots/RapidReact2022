@@ -238,7 +238,7 @@ public class Indexer extends SubsystemBase {
   }
 
   private void updateSetpoint() {
-    if (kickerSetpoint > 0) {
+    if (Math.abs(kickerSetpoint) > 0) {
       m_loop.setNextR(VecBuilder.fill(kickerSetpoint));
       m_loop.correct(
           VecBuilder.fill(

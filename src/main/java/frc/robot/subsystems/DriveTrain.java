@@ -313,7 +313,7 @@ public class DriveTrain extends SubsystemBase {
    * @param rightVoltage The voltage for the right side of the drivetrain
    */
   public void setVoltageOutput(double leftVoltage, double rightVoltage) {
-    var batteryVoltage = RobotController.getBatteryVoltage();
+    double batteryVoltage = RobotController.getBatteryVoltage();
     if (Math.max(Math.abs(leftVoltage), Math.abs(rightVoltage)) > batteryVoltage) {
       leftVoltage *= batteryVoltage / 12.0;
       rightVoltage *= batteryVoltage / 12.0;
