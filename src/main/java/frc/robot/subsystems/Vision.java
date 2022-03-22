@@ -56,6 +56,11 @@ public class Vision extends SubsystemBase {
   private double lastOakPoseTimestamp;
   private double angle, robotVelocity, angularVelocity, tangentalVelocity, ff;
 
+  double[] nullArray = {-99};
+  double[] targetXAngles = new double[50];
+  double[] targetYAngles = new double[50];
+  double[] targetDepth = new double[50];
+
   private DataLog m_logger;
   private DoubleLogEntry limelightTargetValidLog;
   private DoubleLogEntry goalTargetValidLog;
@@ -146,10 +151,9 @@ public class Vision extends SubsystemBase {
         return -goal_camera.getEntry("tx").getDouble(0);
       case INTAKE:
         if (getValidTarget(position)) {
-          double[] nullValue = {-99};
-          var intakeAngles = intake_camera.getEntry("tx").getDoubleArray(nullValue);
+          targetXAngles = intake_camera.getEntry("tx").getDoubleArray(nullArray);
           try {
-            return intakeAngles[0] == -99 ? 0 : -intakeAngles[index];
+            return targetXAngles[0] == -99 ? 0 : -targetXAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetXAngle() illegal array access");
             return 0;
@@ -196,10 +200,9 @@ public class Vision extends SubsystemBase {
 
       case INTAKE:
         if (getValidTarget(position)) {
-          double[] nullValue = {-99};
-          var intakeAngles = intake_camera.getEntry("ty").getDoubleArray(nullValue);
+          targetYAngles = intake_camera.getEntry("ty").getDoubleArray(nullArray);
           try {
-            return intakeAngles[0] == -99 ? 0 : intakeAngles[index];
+            return targetYAngles[0] == -99 ? 0 : targetYAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
             return 0;
@@ -255,10 +258,9 @@ public class Vision extends SubsystemBase {
 
   public double getCargoTargetDirectDistance(int index) {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
-      double[] nullValue = {-99};
-      var cargoDepth = intake_camera.getEntry("tz").getDoubleArray(nullValue);
+      targetDepth = intake_camera.getEntry("tz").getDoubleArray(nullArray);
       try {
-        return cargoDepth[0] == -99 ? 0 : cargoDepth[index];
+        return targetDepth[0] == -99 ? 0 : targetDepth[index];
       } catch (Exception e) {
         System.out.println(
             "Vision Subsystem Error: getCargoTargetDirectDistance() illegal array access");
@@ -372,7 +374,6 @@ public class Vision extends SubsystemBase {
    * @param state true: Set LEDs On false: set LEDs Off
    */
   public void setLimelightLEDState(boolean state) {
-
     limelight.getEntry("ledMode").setNumber(state ? 3 : 1);
   }
 
@@ -414,7 +415,7 @@ public class Vision extends SubsystemBase {
 
   /** Get VisionData given a tiemstamp. Will return first result if no valid results are found */
   public VisionData getTimestampedData(double timestamp) {
-    bufferLength = bufferIdx > dataBuffer.length ? dataBuffer.length : bufferIdx;
+    bufferLength = Math.min(bufferIdx, dataBuffer.length);
     for (int i = bufferLength; i > -1; i--) {
       data = dataBuffer[i];
       if (data.timestamp < timestamp) {
