@@ -52,6 +52,8 @@ public class Flywheel extends SubsystemBase {
   private double kI = 0.00007;
   private double errorSum = 0;
   private double errorRange = 300;
+  public  double tarmacShot = 1450;
+  public double launchpadShot = 1600;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -222,6 +224,8 @@ public class Flywheel extends SubsystemBase {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
       SmartDashboard.putBoolean("CanShoot", canShoot);
+      tarmacShot = SmartDashboard.getNumber("TarmacShot", tarmacShot);
+      launchpadShot = SmartDashboard.getNumber("launchpadShot", launchpadShot);
     }
   }
 
