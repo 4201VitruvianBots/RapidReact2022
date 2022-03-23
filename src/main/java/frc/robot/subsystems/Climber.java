@@ -12,9 +12,6 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -34,6 +31,7 @@ public class Climber extends SubsystemBase {
   //     new DigitalInput(Constants.Climber.climberUpperLimitOverrideID);
 
   private boolean Overridelatched = false;
+  private double climberPosition = 0;
 
   DoubleSolenoid highClimbPiston =
       new DoubleSolenoid(
@@ -66,6 +64,12 @@ public class Climber extends SubsystemBase {
     elevatorClimbMotors[1].setInverted(false);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
+
+    elevatorClimbMotors[0].setStatusFramePeriod(1, 100);
+    elevatorClimbMotors[0].setStatusFramePeriod(2, 100);
+
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
+    elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
   }
 
   public boolean getElevatorClimbState() {
@@ -82,7 +86,7 @@ public class Climber extends SubsystemBase {
    * @param value output value
    */
   public void setElevatorClimberPercentOutput(double value) {
-    double climberPosition = getElevatorClimbPosition();
+    climberPosition = getElevatorClimbPosition();
     if (value > 0) {
       if (climberPosition < Constants.Climber.climberEncoderUpperLimit) {
         if (Math.abs(climberPosition - Constants.Climber.climberEncoderUpperLimit)
@@ -151,17 +155,17 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateSmartDashboard() {
-    SmartDashboardTab.putBoolean(
-        "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber", "ClimberLowerOverride", climberLowerLimitOverride.get());
     // SmartDashboardTab.putBoolean(
     //     "Climber", "ClimberUpperOverride", climberUpperLimitOverride.get());
-    SmartDashboardTab.putBoolean(
-        "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
-    SmartDashboard.putBoolean("Climb Mode", getElevatorClimbState());
-    SmartDashboardTab.putNumber(
-        "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
-    SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
-    SmartDashboard.putBoolean("Climber limit switch", climberLowerLimitOverride.get());
+    // SmartDashboardTab.putBoolean(
+    //     "Climber", "High Climb Piston Position", getHighClimbPistonPosition() == Value.kForward);
+    // SmartDashboard.putBoolean("Climb Mode", getElevatorClimbState());
+    // SmartDashboardTab.putNumber(
+    //     "Climber", "Climb Output", elevatorClimbMotors[0].getMotorOutputPercent());
+    // SmartDashboardTab.putNumber("Climber", "Climb Position", getElevatorClimbPosition());
+    // SmartDashboard.putBoolean("Climber limit switch", climberLowerLimitOverride.get());
   }
 
   @Override
@@ -173,7 +177,8 @@ public class Climber extends SubsystemBase {
         || (getElevatorClimbPosition() >= Constants.Climber.climberEncoderUpperLimit
             && elevatorClimbMotors[0].getMotorOutputPercent() > 0))
       elevatorClimbMotors[0].set(ControlMode.PercentOutput, 0);
-    updateClimberLimits();
+
+    if (getElevatorClimbState()) updateClimberLimits();
   }
 
   @Override

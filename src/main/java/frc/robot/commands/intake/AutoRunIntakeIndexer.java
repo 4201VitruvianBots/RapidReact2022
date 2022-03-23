@@ -35,6 +35,7 @@ public class AutoRunIntakeIndexer extends CommandBase {
   public void execute() {
     m_intake.setIntakePercentOutput(0.9);
     m_indexer.setIndexerPercentOutput(0.65);
+    m_indexer.setKickerPercentOutput(-0.2);
   }
 
   /**
@@ -44,6 +45,7 @@ public class AutoRunIntakeIndexer extends CommandBase {
   public void end(boolean interrupted) {
     m_intake.setIntakePercentOutput(0);
     m_indexer.setIndexerPercentOutput(0);
+    m_indexer.setKickerPercentOutput(0);
   }
 
   // Returns true when the command should end.

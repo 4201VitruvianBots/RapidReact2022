@@ -238,7 +238,7 @@ public class Indexer extends SubsystemBase {
   }
 
   private void updateSetpoint() {
-    if (kickerSetpoint > 0) {
+    if (Math.abs(kickerSetpoint) > 0) {
       m_loop.setNextR(VecBuilder.fill(kickerSetpoint));
       m_loop.correct(
           VecBuilder.fill(
@@ -255,8 +255,8 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     updateSetpoint();
 
-    SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
-    SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
+    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
+    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
     SmartDashboardTab.putString("Indexer", "Rear Color", getRearColorType().toString());
     SmartDashboardTab.putNumber("Indexer", "Rear Red", getRearColor().red);

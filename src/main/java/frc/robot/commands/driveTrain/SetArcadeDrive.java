@@ -17,6 +17,7 @@ public class SetArcadeDrive extends CommandBase {
   private final DriveTrain m_driveTrain;
 
   private final DoubleSupplier m_throttle, m_turn;
+  private double joystickX, joystickY, throttle, turn;
 
   /**
    * Sets the drivetrain based on joystick inputs for forward and turning
@@ -41,12 +42,12 @@ public class SetArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
-    double joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
+    joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
+    joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
-    double throttle = joystickY;
+    throttle = joystickY;
 
-    double turn = -0.70 * joystickX;
+    turn = -0.70 * joystickX;
 
     m_driveTrain.setMotorArcadeDrive(throttle, turn);
   }

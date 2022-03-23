@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.constraint.DifferentialDriveVoltageConstrai
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.auto.VitruvianRamseteCommand;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.vitruvianlib.utils.TrajectoryUtils;
@@ -37,7 +38,7 @@ public class DriveBackwardDistance extends SequentialCommandGroup {
     ArrayList<Pose2d> driveBackwardPath = new ArrayList<Pose2d>();
     driveBackwardPath.add(startPosition);
     driveBackwardPath.add(endPosition);
-    var driveBackwardCommand =
+    VitruvianRamseteCommand driveBackwardCommand =
         TrajectoryUtils.generateRamseteCommand(driveTrain, driveBackwardPath, configA);
 
     addCommands(

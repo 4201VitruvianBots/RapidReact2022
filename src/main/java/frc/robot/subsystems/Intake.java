@@ -38,6 +38,7 @@ public class Intake extends SubsystemBase {
 
     intakeMotor.configFactoryDefault(); // RapidReact
     intakeMotor.setNeutralMode(NeutralMode.Coast); // RapidReact
+    intakeMotor.configOpenloopRamp(0.5);
 
     // intakeMotor.restoreFactoryDefaults(); // Jango
     // intakeMotor.setIdleMode(CANSparkMax.IdleMode.kBrake); // Jango

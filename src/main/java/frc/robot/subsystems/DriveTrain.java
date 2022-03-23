@@ -21,6 +21,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
@@ -32,7 +33,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.Constants.DriveTrain.MotorPosition;
-import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,8 +56,8 @@ public class DriveTrain extends SubsystemBase {
           Constants.DriveTrain.kvVoltSecondsPerMeter / 12,
           Constants.DriveTrain.kaVoltSecondsSquaredPerMeter / 12);
 
-  PIDController leftPIDController = new PIDController(kP, kI, kD);
-  PIDController rightPIDController = new PIDController(kP, kI, kD);
+  private final PIDController leftPIDController = new PIDController(kP, kI, kD);
+  private final PIDController rightPIDController = new PIDController(kP, kI, kD);
 
   /** Will run when enabled in teleop, unless null */
   private Command m_postAutoCommand = null;
@@ -79,6 +79,14 @@ public class DriveTrain extends SubsystemBase {
   private DriveTrainNeutralMode neutralMode = DriveTrainNeutralMode.COAST;
 
   private DifferentialDrivetrainSim m_drivetrainSimulator;
+  private Trajectory currentTrajectory = new Trajectory();
+
+  private double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
+  private DifferentialDriveWheelSpeeds m_wheelSpeeds = new DifferentialDriveWheelSpeeds(0, 0);
+
+  private double currentYaw = 0;
+
+  private double leftOutput = 0, rightOutput = 0, magnitude = 1.0;
 
   /** A differential drivetrain with two falcon motors on each side */
   public DriveTrain() {
@@ -261,11 +269,11 @@ public class DriveTrain extends SubsystemBase {
    * @param turn The rotation of the drivetrain (positive clockwise, negative counterclockwise)
    */
   public void setMotorArcadeDrive(double throttle, double turn) {
-    double leftOutput = throttle + turn;
-    double rightOutput = throttle - turn;
+    leftOutput = throttle + turn;
+    rightOutput = throttle - turn;
 
     // Normalization
-    double magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
+    magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
     if (magnitude > 1.0) {
       leftOutput /= magnitude;
       rightOutput /= magnitude;
@@ -305,15 +313,13 @@ public class DriveTrain extends SubsystemBase {
    * @param rightVoltage The voltage for the right side of the drivetrain
    */
   public void setVoltageOutput(double leftVoltage, double rightVoltage) {
-    var batteryVoltage = RobotController.getBatteryVoltage();
+    double batteryVoltage = RobotController.getBatteryVoltage();
     if (Math.max(Math.abs(leftVoltage), Math.abs(rightVoltage)) > batteryVoltage) {
       leftVoltage *= batteryVoltage / 12.0;
       rightVoltage *= batteryVoltage / 12.0;
     }
     m_leftOutput = leftVoltage / batteryVoltage;
     m_rightOutput = rightVoltage / batteryVoltage;
-    SmartDashboardTab.putNumber("DriveTrain", "Left Voltage", leftVoltage);
-    SmartDashboardTab.putNumber("DriveTrain", "Right Voltage", rightVoltage);
 
     setMotorPercentOutput(leftVoltage / batteryVoltage, rightVoltage / batteryVoltage);
   }
@@ -383,6 +389,14 @@ public class DriveTrain extends SubsystemBase {
     }
   }
 
+  public void setCurrentTrajectory(Trajectory trajectory) {
+    currentTrajectory = trajectory;
+  }
+
+  public Trajectory getCurrentTrajectory() {
+    return currentTrajectory;
+  }
+
   /**
    * Gets the encoder position of a specified motor converted to wheel distance traveled.
    *
@@ -397,7 +411,6 @@ public class DriveTrain extends SubsystemBase {
    *     second.
    */
   public DifferentialDriveWheelSpeeds getSpeedsMetersPerSecond() {
-    double leftMetersPerSecond = 0, rightMetersPerSecond = 0;
 
     // getSelectedSensorVelocity() returns values in units per 100ms. Need to convert value to RPS
     if (RobotBase.isReal()) {
@@ -413,7 +426,9 @@ public class DriveTrain extends SubsystemBase {
       leftMetersPerSecond = m_drivetrainSimulator.getLeftVelocityMetersPerSecond();
       rightMetersPerSecond = m_drivetrainSimulator.getRightVelocityMetersPerSecond();
     }
-    return new DifferentialDriveWheelSpeeds(leftMetersPerSecond, rightMetersPerSecond);
+    m_wheelSpeeds.leftMetersPerSecond = leftMetersPerSecond;
+    m_wheelSpeeds.rightMetersPerSecond = rightMetersPerSecond;
+    return m_wheelSpeeds;
   }
 
   /**
@@ -481,42 +496,42 @@ public class DriveTrain extends SubsystemBase {
   }
 
   /** Puts values on SmartDashboard. */
-  private void updateSmartDashboard() {
+  public void updateSmartDashboard() {
     if (RobotBase.isReal()) {
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "X Coordinate", getRobotPoseMeters().getTranslation().getX());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Y Coordinate", getRobotPoseMeters().getTranslation().getY());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
-      SmartDashboardTab.putNumber(
-          "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Left Distance", getWheelDistanceMeters(MotorPosition.LEFT_FRONT));
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Right Distance", getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "X Coordinate", getRobotPoseMeters().getTranslation().getX());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Y Coordinate", getRobotPoseMeters().getTranslation().getY());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Left Speed", getSpeedsMetersPerSecond().leftMetersPerSecond);
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
       SmartDashboard.putNumber("Heading Degrees", getHeadingDegrees());
       SmartDashboard.putNumber("Roll", getRoll());
       SmartDashboard.putNumber("Pitch", getPitch());
 
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Left front temperature (C)",
-          driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Left rear temperature (C)",
-          driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Right front temperature (C)",
-          driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
-      SmartDashboardTab.putNumber(
-          "DriveTrain",
-          "Right rear temperature (C)",
-          driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Left front temperature (C)",
+      //     driveMotors.get(MotorPosition.LEFT_FRONT).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Left rear temperature (C)",
+      //     driveMotors.get(MotorPosition.LEFT_REAR).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Right front temperature (C)",
+      //     driveMotors.get(MotorPosition.RIGHT_FRONT).getTemperature());
+      // SmartDashboardTab.putNumber(
+      //     "DriveTrain",
+      //     "Right rear temperature (C)",
+      //     driveMotors.get(MotorPosition.RIGHT_REAR).getTemperature());
 
       SmartDashboardTab.putNumber("Turret", "Robot Angle", getHeadingDegrees());
     } else {
@@ -536,12 +551,12 @@ public class DriveTrain extends SubsystemBase {
           "DriveTrain", "Angle", getRobotPoseMeters().getRotation().getDegrees());
       SmartDashboardTab.putNumber(
           "DriveTrain",
-          "Right Speed",
+          "Left Speed",
           Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "Right Speed",
-          Units.metersToFeet(m_drivetrainSimulator.getLeftVelocityMetersPerSecond()));
+          Units.metersToFeet(m_drivetrainSimulator.getRightVelocityMetersPerSecond()));
       SmartDashboardTab.putNumber(
           "DriveTrain",
           "L Encoder Count",
@@ -563,26 +578,23 @@ public class DriveTrain extends SubsystemBase {
     }
 
     SmartDashboardTab.putNumber("DriveTrain", "Robot Angle", getHeadingDegrees());
-    SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
+    // SmartDashboard.putBoolean("CTRE Feed Enabled", Unmanaged.getEnableState());
     SmartDashboardTab.putNumber("DriveTrain", "L Output", m_leftOutput);
     SmartDashboardTab.putNumber("DriveTrain", "R Output", m_rightOutput);
     SmartDashboardTab.putString("DriveTrain", "BrakeMode", neutralMode.toString());
 
-    SmartDashboardTab.putNumber(
-        "DriveTrain",
-        "Left follower speed",
-        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
-            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-            * 10.0);
-    SmartDashboardTab.putNumber(
-        "DriveTrain",
-        "Right follower speed",
-        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
-            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
-            * 10.0);
-
-    SmartDashboard.putData(
-        "Set Neutral", new SetDriveTrainNeutralMode(this, DriveTrainNeutralMode.COAST));
+    //    SmartDashboardTab.putNumber(
+    //        "DriveTrain",
+    //        "Left follower speed",
+    //        driveMotors.get(MotorPosition.LEFT_REAR).getSelectedSensorVelocity()
+    //            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    //            * 10.0);
+    //    SmartDashboardTab.putNumber(
+    //        "DriveTrain",
+    //        "Right follower speed",
+    //        driveMotors.get(MotorPosition.RIGHT_REAR).getSelectedSensorVelocity()
+    //            * Constants.DriveTrain.kEncoderDistancePerPulseMeters
+    //            * 10.0);
   }
 
   /**
@@ -604,23 +616,28 @@ public class DriveTrain extends SubsystemBase {
     return m_postAutoCommand;
   }
 
-  @Override
-  public void periodic() {
+  public void periodicRunnable() {
     // This method will be called once per scheduler run
-    SmartDashboardTab.putNumber(
-        "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
-    odometry.update(
-        Rotation2d.fromDegrees(getHeadingDegrees()),
-        getSpeedsMetersPerSecond(),
-        getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
-        getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+    // SmartDashboardTab.putNumber(
+    //     "DriveTrain", "WheelDistance", odometry.getEstimatedPosition().getX());
+    try {
+      odometry.update(
+          Rotation2d.fromDegrees(getHeadingDegrees()),
+          getSpeedsMetersPerSecond(),
+          getWheelDistanceMeters(MotorPosition.LEFT_FRONT),
+          getWheelDistanceMeters(MotorPosition.RIGHT_FRONT));
+    } catch (Exception e) {
+      System.out.println("Error: Could not update Odometry");
+    }
+    // updateSmartDashboard();
 
-    updateSmartDashboard();
-
-    double currentYaw = pigeon.getYaw();
+    currentYaw = pigeon.getYaw();
     yawPerSecond = currentYaw - lastYaw / 0.02;
     lastYaw = currentYaw;
   }
+
+  @Override
+  public void periodic() {}
 
   @Override
   public void simulationPeriodic() {
@@ -664,5 +681,7 @@ public class DriveTrain extends SubsystemBase {
             (int)
                 (m_drivetrainSimulator.getRightVelocityMetersPerSecond()
                     / (Constants.DriveTrain.kEncoderDistancePerPulseMeters * 10.0)));
+
+    pigeon.getSimCollection().setRawHeading(m_drivetrainSimulator.getHeading().getDegrees());
   }
 }

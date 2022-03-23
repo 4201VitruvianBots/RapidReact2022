@@ -28,7 +28,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class FiveBallAuto extends SequentialCommandGroup {
+public class FiveBallAutoRed extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -40,7 +40,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public FiveBallAuto(
+  public FiveBallAutoRed(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -54,26 +54,29 @@ public class FiveBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(14), Units.feetToMeters(5), true);
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-3", Units.feetToMeters(14), Units.feetToMeters(5), true);
 
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(14), Units.feetToMeters(5), false);
+            "FiveBallAutoRed-4", Units.feetToMeters(14), Units.feetToMeters(5), false);
 
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
@@ -85,10 +88,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
-        new ConditionalCommand(
-            new WaitCommand(0),
-            new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
-            RobotBase::isReal),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
@@ -120,7 +120,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
         new ParallelDeadlineGroup(
             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),

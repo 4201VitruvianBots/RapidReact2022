@@ -13,7 +13,7 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntake;
+import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
@@ -28,7 +28,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class TwoBallAuto extends SequentialCommandGroup {
+public class FiveBallAutoBlue extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -40,7 +40,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public TwoBallAuto(
+  public FiveBallAutoBlue(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -54,16 +54,32 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "FiveBallAutoBlue-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath(
+            "FiveBallAutoBlue-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+    Trajectory trajectory3 =
+        PathPlanner.loadPath(
+            "FiveBallAutoBlue-3", Units.feetToMeters(14), Units.feetToMeters(5), true);
+
+    VitruvianRamseteCommand command3 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+
+    Trajectory trajectory4 =
+        PathPlanner.loadPath(
+            "FiveBallAutoBlue-4", Units.feetToMeters(14), Units.feetToMeters(5), false);
+
+    VitruvianRamseteCommand command4 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
@@ -72,34 +88,46 @@ public class TwoBallAuto extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
-        new SetSimTrajectory(fieldSim, trajectory1, trajectory2),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2, trajectory3, trajectory4),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntake(intake, indexer)
-            // TODO implement indexer
-            ),
-        new AutoRunIntake(intake, indexer).withTimeout(1),
+            new SequentialCommandGroup(
+                // new WaitCommand(0.25),
+                new ConditionalCommand(
+                    new AutoRunIndexer(indexer, flywheel, 0.90)
+                        .withTimeout(1), // if this still overshoots, raise some more (0.95ish)
+                    new SimulationShoot(fieldSim, true).withTimeout(1),
+                    RobotBase::isReal)),
+            new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
-        new ParallelDeadlineGroup(
-            command2.andThen(
-                () ->
-                    driveTrain.setMotorTankDrive(
-                        0, 0)) // TODO: change this no parallel deadline group
-            ),
-        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
-        new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
-        // TODO how long does flywheel take to rev up? (should the flywheel run while
-        // driving?)
+        new SetTurretAbsoluteSetpointDegrees(turret, 40),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(4),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
+            new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
+            new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+        new IntakePiston(intake, true),
+        new ParallelDeadlineGroup(
+            new SequentialCommandGroup(command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
+            new AutoRunIntakeIndexer(intake, indexer)),
+        new IntakePiston(intake, false),
+        new SetTurretAbsoluteSetpointDegrees(turret, 15),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
+        new ParallelDeadlineGroup(
+            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIntakeIndexer(intake, indexer).withTimeout(1)),
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(
+            new AutoRunIndexer(indexer, flywheel, 0.85),
+            new SimulationShoot(fieldSim, true),
+            RobotBase::isReal));
   }
 }
