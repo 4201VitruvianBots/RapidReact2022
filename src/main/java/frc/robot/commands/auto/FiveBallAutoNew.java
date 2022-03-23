@@ -58,34 +58,56 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
 
     addCommands(
 
-        // INTAKE 1
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
+      
+        // INTAKE 1
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
-        new WaitCommand(0.5),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
                 // new DriveToCargoTrajectory(driveTrain, vision),
-                new AutoRunIntakeIndexer(intake, indexer))),
+            new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
 
         // SHOOT 2
-        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
-            RobotBase::isReal)
+            RobotBase::isReal);
 
         // INTAKE 2
-
+        new IntakePiston(intake, true),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
+        new ParallelDeadlineGroup(
+            new SequentialCommandGroup(
+                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
+                // new DriveToCargoTrajectory(driveTrain, vision),
+            new AutoRunIntakeIndexer(intake, indexer)),
 
         // SHOOT 3
-        
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ParallelDeadlineGroup( 
+          new ConditionalCommand(
+              new AutoRunIndexer(indexer, flywheel).withTimeout(5.0),
+              new SimulationShoot(fieldSim, true).withTimeout(5.0),
+              RobotBase::isReal);
+          new AutoRunIntakeIndexer(intake, indexer)),
 
         );
   }
 }
+
+
+/**
+ * drive forward while intaking 
+ * shoot [SHOOT 1]
+ * drive backwards [curve] whilie intaking, back to terminal
+ * drive forwards while intaking
+ * shoot while intaking [SHOOT 2]
+ * shoot until last ball is shot
+ **/ 
