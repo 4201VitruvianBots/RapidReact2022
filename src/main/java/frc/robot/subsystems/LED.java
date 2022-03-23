@@ -23,6 +23,8 @@ public class LED extends SubsystemBase {
   private robotState currentRobotState;
   private Animation m_toAnimate = null;
 
+  private final int ledCount = 296;
+
   public LED() {
     // Setup LED strip
     setPattern(8, 95, 0, 255, 1, AnimationTypes.Solid);
@@ -48,7 +50,6 @@ public class LED extends SubsystemBase {
   public void setPattern(
       int red, int green, int blue, int white, double speed, AnimationTypes toChange) {
 
-    int ledCount = 296;
     switch (toChange) {
       case ColorFlow: // stripe of color flowing through the led strip
         m_toAnimate =

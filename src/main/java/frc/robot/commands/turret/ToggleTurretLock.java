@@ -2,26 +2,31 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.controls;
+package frc.robot.commands.turret;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Controls;
+import frc.robot.subsystems.Turret;
 
-public class SetFloodlight extends CommandBase {
-  public final Controls m_controls;
-  public boolean extend;
+/** An example command that uses an example subsystem. */
+public class ToggleTurretLock extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Turret m_turret;
 
-  /** Creates a new IntakePiston. */
-  public SetFloodlight(Controls controls) {
-    m_controls = controls;
+  /**
+   * Creates a new ExampleCommand.
+   *
+   * @param subsystem The subsystem used by this command.
+   */
+  public ToggleTurretLock(Turret turret) {
+    m_turret = turret;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(controls);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_controls.setPDHChannel(true);
+    m_turret.setTurretLocked(!m_turret.getTurretLocked());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -30,13 +35,11 @@ public class SetFloodlight extends CommandBase {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_controls.setPDHChannel(false);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

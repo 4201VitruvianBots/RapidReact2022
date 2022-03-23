@@ -34,6 +34,8 @@ public class Turret extends SubsystemBase {
   private boolean initialHome;
   private boolean turretHomeSensorLatch = false;
 
+  private boolean turretLocked = false;
+
   /** Creates a new Turret. */
   public Turret(DriveTrain driveTrain) {
     m_driveTrain = driveTrain;
@@ -157,7 +159,9 @@ public class Turret extends SubsystemBase {
 
   /** @param output sets the percentoutput for the turretmotor */
   public void setPercentOutput(double output) {
-    turretMotor.set(ControlMode.PercentOutput, output);
+    if (!turretLocked) {
+      turretMotor.set(ControlMode.PercentOutput, output);
+    }
   }
 
   public void setAbsoluteSetpointDegrees(double turretSetpointDegrees) {
@@ -181,6 +185,14 @@ public class Turret extends SubsystemBase {
     return turretHomeSensorLatch;
   }
 
+  public boolean getTurretLocked() {
+    return turretLocked;
+  }
+
+  public void setTurretLocked(boolean lock) {
+    turretLocked = lock;
+  }
+
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
     return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees())
@@ -200,6 +212,7 @@ public class Turret extends SubsystemBase {
       SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngleDegrees());
       SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
       SmartDashboard.putNumber("Turret Angle", getTurretAngleDegrees());
+      SmartDashboard.putBoolean("Turret Locked", getTurretLocked());
     }
   }
 

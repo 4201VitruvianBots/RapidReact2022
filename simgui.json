@@ -27,10 +27,12 @@
       "/LiveWindow/Vision": "Subsystem",
       "/Shuffleboard/Controls/Set Alliance Blue": "Command",
       "/Shuffleboard/Controls/Set Alliance Red": "Command",
+      "/SmartDashboard/Auto Trajectory": "Command",
       "/SmartDashboard/DT Subsystem": "Subsystem",
       "/SmartDashboard/Field2d": "Field2d",
       "/SmartDashboard/Intake Subsystem": "Subsystem",
       "/SmartDashboard/NeutralMode": "Command",
+      "/SmartDashboard/ResetOdometry": "Command",
       "/SmartDashboard/Selected Auto": "String Chooser",
       "/SmartDashboard/Set Neutral": "Command",
       "/SmartDashboard/indexer Subsystem": "Subsystem"
@@ -81,6 +83,11 @@
           "image": "resources/Images/blue_cargo.png",
           "length": 0.23999999463558197,
           "width": 0.23999999463558197
+        },
+        "DetectedCargo": {
+          "image": "C:\\Users\\Jonathan\\Documents\\CodeProjects\\Java\\FRC\\RapidReact2022\\resources\\Images\\red_cargo.png",
+          "length": 0.2409999966621399,
+          "width": 0.2409999966621399
         },
         "Intake": {
           "image": "resources/Images/red_cargo.png",
@@ -197,7 +204,19 @@
     }
   },
   "NetworkTables": {
+    "Controls": {
+      "open": true
+    },
     "Drivetrain": {
+      "open": true
+    },
+    "OAK-1_Intake": {
+      "open": true
+    },
+    "OAK-D_Goal": {
+      "open": true
+    },
+    "Shuffleboard": {
       "open": true
     },
     "SmartDashboard": {
@@ -206,7 +225,9 @@
       },
       "Selected Auto": {
         "open": true
-      },
+      }
+    },
+    "Vision": {
       "open": true
     }
   }

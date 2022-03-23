@@ -87,7 +87,7 @@ public class ThreeBallAutoLowerHub extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new AutoRunIntake(intake).withTimeout(1),
+        new AutoRunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
@@ -100,7 +100,7 @@ public class ThreeBallAutoLowerHub extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new RunIntake(intake, indexer)),
-        new AutoRunIntake(intake).withTimeout(1),
+        new AutoRunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),

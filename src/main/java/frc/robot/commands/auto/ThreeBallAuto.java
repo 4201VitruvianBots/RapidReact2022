@@ -81,8 +81,9 @@ public class ThreeBallAuto extends SequentialCommandGroup {
             new SetTurretAbsoluteSetpointDegrees(turret, -5), new WaitCommand(.5)),
         new SetAndHoldRpmSetpoint(flywheel, vision, 2400),
         new ParallelDeadlineGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), new AutoRunIntake(intake)),
-        new AutoRunIntake(intake).withTimeout(1),
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIntake(intake, indexer)),
+        new AutoRunIntake(intake, indexer).withTimeout(1),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),
         new ConditionalCommand(
@@ -93,9 +94,9 @@ public class ThreeBallAuto extends SequentialCommandGroup {
         command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new ParallelDeadlineGroup(
             command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntake(intake),
+            new AutoRunIntake(intake, indexer),
             new SetTurretAbsoluteSetpointDegrees(turret, 60)),
-        new AutoRunIntake(intake).withTimeout(1),
+        new AutoRunIntake(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(new WaitCommand(0), new WaitCommand(0.5), flywheel::canShoot),

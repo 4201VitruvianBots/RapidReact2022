@@ -5,7 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -30,8 +32,15 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
+    DataLogManager.start();
+    LiveWindow.disableAllTelemetry();
+
     //    addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
     addPeriodic(() -> NetworkTableInstance.getDefault().flush(), 0.02, 0.01);
+    addPeriodic(() -> m_robotContainer.updateSmartDashboard(), 0.02, 0.01);
+    addPeriodic(() -> m_robotContainer.updateDriveTrainPeriodic(), 0.02, 0.01);
+    addPeriodic(() -> m_robotContainer.updateFieldSim(), 0.04, 0.01);
+    // addPeriodic(() -> m_robotContainer.updateVisionPeriodic(), 0.1, 0.015);
   }
 
   /**
@@ -48,8 +57,6 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.    This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-    m_robotContainer.robotPeriodic();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
