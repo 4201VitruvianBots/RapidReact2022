@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -52,6 +53,9 @@ public class Flywheel extends SubsystemBase {
   private double kI = 0.00007;
   private double errorSum = 0;
   private double errorRange = 300;
+  public double tarmacShot = 1450;
+  public double launchpadShot = 1660;
+  public double launchpadShot2 = 1850;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -121,8 +125,8 @@ public class Flywheel extends SubsystemBase {
       checkTurretAngle = true;
     }
     checkVisionAngle =
-        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.GOAL)
-            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
+            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT))
                 < Constants.Flywheel.hubToleranceDegrees;
 
     checkRPM = false;
@@ -218,11 +222,15 @@ public class Flywheel extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-    if (RobotBase.isReal()) {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
       SmartDashboard.putBoolean("CanShoot", canShoot);
-    }
+      tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
+      launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
+      launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
+      SmartDashboard.putNumber("TarmacShot", tarmacShot);
+      SmartDashboard.putNumber("launchpadShot", launchpadShot);
+      SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
   }
 
   /**

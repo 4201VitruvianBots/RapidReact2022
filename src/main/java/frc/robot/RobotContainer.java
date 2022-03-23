@@ -155,17 +155,19 @@ public class RobotContainer {
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
-    rightButtons[1].whileHeld(
-        new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    // rightButtons[1].whileHeld(
+    //     new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+
+    rightButtons[1].whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
 
     xBoxLeftTrigger =
         new Button(
             () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 900));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2650));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
+    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot2));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
