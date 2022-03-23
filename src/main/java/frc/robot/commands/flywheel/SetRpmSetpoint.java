@@ -7,6 +7,8 @@
 
 package frc.robot.commands.flywheel;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
@@ -17,10 +19,10 @@ public class SetRpmSetpoint extends CommandBase {
   private final Flywheel m_flywheel;
 
   private final Vision m_vision;
-  private final double m_RPM;
+  private final DoubleSupplier m_RPM;
 
   /** Creates a new ExampleCommand. */
-  public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
+  public SetRpmSetpoint(Flywheel flywheel, Vision vision, DoubleSupplier RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_flywheel = flywheel;
     m_RPM = RPM;
@@ -38,7 +40,7 @@ public class SetRpmSetpoint extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flywheel.setRPM(m_RPM);
+    m_flywheel.setRPM(m_RPM.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

@@ -21,6 +21,7 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -53,8 +54,8 @@ public class Flywheel extends SubsystemBase {
   private double errorSum = 0;
   private double errorRange = 300;
   public double tarmacShot = 1450;
-  public double launchpadShot = 1600;
-  public double launchpadShot2 = 1700;
+  public double launchpadShot = 1660;
+  public double launchpadShot2 = 1850;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -221,14 +222,15 @@ public class Flywheel extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-    if (RobotBase.isReal()) {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
       SmartDashboard.putBoolean("CanShoot", canShoot);
-      tarmacShot = SmartDashboard.getNumber("TarmacShot", tarmacShot);
-      launchpadShot = SmartDashboard.getNumber("launchpadShot", launchpadShot);
-      launchpadShot2 = SmartDashboard.getNumber("launchpadShot2", launchpadShot2);
-    }
+      tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
+      launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
+      launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
+      SmartDashboard.putNumber("TarmacShot", tarmacShot);
+      SmartDashboard.putNumber("launchpadShot", launchpadShot);
+      SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
   }
 
   /**
