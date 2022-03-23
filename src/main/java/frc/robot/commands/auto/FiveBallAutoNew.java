@@ -17,6 +17,7 @@ import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -52,9 +53,14 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
     Trajectory trajectory1 =
         PathPlanner.loadPath(
             "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
-
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
+
+    Trajectory trajectory2 =
+        PathPlanner.loadPath(
+            "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
+    VitruvianRamseteCommand command2 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     addCommands(
 
@@ -78,7 +84,7 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
-            RobotBase::isReal);
+            RobotBase::isReal),
 
         // INTAKE 2
         new IntakePiston(intake, true),
@@ -95,9 +101,8 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
           new ConditionalCommand(
               new AutoRunIndexer(indexer, flywheel).withTimeout(5.0),
               new SimulationShoot(fieldSim, true).withTimeout(5.0),
-              RobotBase::isReal);
-          new AutoRunIntakeIndexer(intake, indexer)),
-
+              RobotBase::isReal),
+          new AutoRunIntakeIndexer(intake, indexer))
         );
   }
 }
