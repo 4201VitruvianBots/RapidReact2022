@@ -153,6 +153,8 @@ public class RobotContainer {
 
     leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision));
 
+    leftButtons[1].whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
     rightButtons[1].whileHeld(

@@ -82,8 +82,11 @@ public class Intake extends SubsystemBase {
   public void updateSmartDashboard() {
     SmartDashboardTab.putBoolean("Intake", "Intake State", getIntakeState());
     SmartDashboardTab.putBoolean("Intake", "Pistons", getIntakePistonExtendStatus());
-    SmartDashboardTab.putNumber("Intake", "Intake motor speed", intakeMotor.getSelectedSensorVelocity()
-    * (10.0
+    SmartDashboardTab.putNumber(
+        "Intake",
+        "Intake motor speed",
+        intakeMotor.getSelectedSensorVelocity()
+            * (10.0
                 * 2.0
                 * Math.PI
                 / (Constants.Flywheel.encoderUnitsPerRotation
