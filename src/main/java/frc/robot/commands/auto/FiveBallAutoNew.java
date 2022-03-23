@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -50,7 +49,6 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
       Turret turret,
       Vision vision) {
 
-
     Trajectory trajectory1 =
         PathPlanner.loadPath(
             "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
@@ -58,10 +56,9 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-   
-
-
     addCommands(
+
+        // INTAKE 1
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
@@ -72,14 +69,23 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-               // new DriveToCargoTrajectory(driveTrain, vision),
-            new AutoRunIntakeIndexer(intake, indexer))),
+                // new DriveToCargoTrajectory(driveTrain, vision),
+                new AutoRunIntakeIndexer(intake, indexer))),
         new IntakePiston(intake, false),
-        
-        //new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+
+        // SHOOT 2
+        // new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
-            RobotBase::isReal));
+            RobotBase::isReal)
+
+        // INTAKE 2
+
+
+        // SHOOT 3
+        
+
+        );
+  }
 }
-    }
