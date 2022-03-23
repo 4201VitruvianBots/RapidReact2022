@@ -72,7 +72,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 150),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1450),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
             // new DriveToCargoTrajectory(driveTrain, vision).withTimeout(2)),
@@ -81,6 +81,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
             ),
         // new ParallelCommandGroup(
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
+        new WaitCommand(1),
         // new AutoRunIntake(intake, indexer).withTimeout(1)),
         new IntakePiston(intake, false),
         // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
