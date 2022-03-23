@@ -280,13 +280,13 @@ public class Indexer extends SubsystemBase {
         "Indexer",
         "Kicker Speed",
         kickerMotor.getSelectedSensorVelocity()
-        * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
-        / Constants.Indexer.kickerGearRatio);
-            // * (10.0
-            //     * 2.0
-            //     * Math.PI
-            //     / (Constants.Flywheel.encoderUnitsPerRotation
-            //         * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+        // * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
+        // / Constants.Indexer.kickerGearRatio);
+            * (10.0
+                * 2.0
+                * Math.PI
+                / (Constants.Flywheel.encoderUnitsPerRotation
+                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
   }
 
   @Override

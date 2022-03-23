@@ -84,7 +84,7 @@ public final class Constants {
     public static final double kKickerKv = 0.017502;
     public static final double kKickerKa = 0.00035281;
 
-    public static final double radiansPerSecondTolerance = 2.0;
+    public static final double radiansPerSecondTolerance = 1.0;
 
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
@@ -172,15 +172,15 @@ public final class Constants {
     //    public static final double kFlywheelKv = 0.02001;
     //    public static final double kFlywheelKa = 0.002995;
     public static final double kFlywheelKs =
-        0.73456; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
+        0.72271; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
 
     // Volts per (radian per second)
     public static final double kFlywheelKv =
-        0.016957; // old flywheel: 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
+        0.018876; // old flywheel: 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
 
     // Volts per (radian per second squared)
     public static final double kFlywheelKa =
-        0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
+        0.0031698; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
     public static final double lqrRPMThreshold = 15.0;
     public static final double rpmTolerance = 40.0;
