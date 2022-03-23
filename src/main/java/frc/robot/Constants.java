@@ -246,7 +246,7 @@ public final class Constants {
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
-    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = -13.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = -25.0;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);
     public static double UPPER_HUB_RADIUS_METERS = Units.feetToMeters(2);
