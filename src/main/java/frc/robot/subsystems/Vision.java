@@ -269,6 +269,14 @@ public class Vision extends SubsystemBase {
     } else return -1;
   }
 
+  public boolean cargoInRange() {
+    return cargoInRange(0);
+  }
+
+  public boolean cargoInRange(int index) {
+    return getCargoTargetDirectDistance(index) < Constants.Vision.TRAJECTORY_MAX_CARGO_DISTANCE;
+  }
+
   public double getCargoHorizontalDistance() {
     return getCargoHorizontalDistance(0);
   }

@@ -95,11 +95,11 @@ public class RobotContainer {
         "Five Ball Auto Red",
         new FiveBallAutoRed(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-            m_autoChooser.setDefaultOption(
-              "Five Ball Auto New",
-              new FiveBallAutoNew(
-                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-            
+    m_autoChooser.setDefaultOption(
+        "Five Ball Auto New",
+        new FiveBallAutoNew(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
     m_autoChooser.addOption(
         "Five Ball Auto Blue",
         new FiveBallAutoBlue(
