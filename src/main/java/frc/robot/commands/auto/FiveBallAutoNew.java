@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.CancellingCommand;
+import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
+import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -62,6 +65,18 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
+    Trajectory trajectory3 =
+        PathPlanner.loadPath(
+            "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
+    VitruvianRamseteCommand command3 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
+
+    Trajectory trajectory4 =
+        PathPlanner.loadPath(
+            "FiveBallAuto-Master", Units.feetToMeters(8), Units.feetToMeters(7), true);
+    VitruvianRamseteCommand command4 =
+        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
+
     addCommands(
 
         new SetSimTrajectory(fieldSim, trajectory1),
@@ -74,8 +89,8 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
-                // new DriveToCargoTrajectory(driveTrain, vision),
+                new CancellingCommand(command1, vision::cargoInRange).andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision)),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
 
@@ -91,11 +106,14 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
-                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
-                // new DriveToCargoTrajectory(driveTrain, vision),
+                new CancellingCommand(command2, vision::cargoInRange).andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision),
+                new CancellingCommand(command3, vision::cargoInRange).andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision)),
             new AutoRunIntakeIndexer(intake, indexer)),
 
-        // SHOOT 3
+        // SHOOT 3 
+        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ParallelDeadlineGroup( 
           new ConditionalCommand(
