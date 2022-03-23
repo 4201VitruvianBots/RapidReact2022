@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.FiveBallAutoBlue;
+import frc.robot.commands.auto.FiveBallAutoNew;
 import frc.robot.commands.auto.FiveBallAutoRed;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoLowerHub;
@@ -94,6 +95,11 @@ public class RobotContainer {
         "Five Ball Auto Red",
         new FiveBallAutoRed(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            m_autoChooser.setDefaultOption(
+              "Five Ball Auto New",
+              new FiveBallAutoNew(
+                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+            
     m_autoChooser.addOption(
         "Five Ball Auto Blue",
         new FiveBallAutoBlue(
