@@ -31,9 +31,9 @@ import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.commands.turret.SetTurretControlMode;
-import frc.robot.commands.turret.sotm;
 import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.commands.turret.ToggleTurretLock;
+import frc.robot.commands.turret.sotm;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -202,8 +202,7 @@ public class RobotContainer {
     //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
     // xBoxRightTrigger.get()));
     m_turret.setDefaultCommand(
-        new sotm(
-            m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
+        new sotm(m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
   }
 
   public Indexer getIndexer() {
