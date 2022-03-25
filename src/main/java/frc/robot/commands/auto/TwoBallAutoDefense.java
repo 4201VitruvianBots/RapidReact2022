@@ -18,6 +18,7 @@ import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
+import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
@@ -68,12 +69,6 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
-    Trajectory trajectory3 =
-        PathPlanner.loadPath(
-            "TwoBallAutoDefense-3", Units.feetToMeters(8), Units.feetToMeters(7), false);
-
-    VitruvianRamseteCommand command3 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
@@ -94,32 +89,21 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision)),
             new AutoRunIntake(intake, indexer)
-            // TODO implement indexer
             ),
-        new AutoRunIntake(intake, indexer).withTimeout(1),
-        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
+        new ConditionalCommand(
+                new AutoRunIndexer(indexer, flywheel).withTimeout(4),
+                new SimulationShoot(fieldSim, true).withTimeout(2),
+                RobotBase::isReal),
         new ParallelDeadlineGroup(
-            command2.andThen(
-                () ->
-                    driveTrain.setMotorTankDrive(
-                        0, 0)) // TODO: change this no parallel deadline group
-            ),
-        // new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
+            new SequentialCommandGroup(
+                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision)),
+            new AutoRunIntake(intake, indexer))); 
+        
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
-        new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(4),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal),
-        new SetTurretAbsoluteSetpointDegrees(turret, 0),
-        new IntakePiston(intake, true),
-        new ParallelDeadlineGroup(
-            new SequentialCommandGroup(command3, new DriveToCargoTrajectory(driveTrain, vision)),
-            new AutoRunIntake(intake, indexer)),
-        new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(4),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+        
+        
   }
 }

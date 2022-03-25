@@ -19,6 +19,7 @@ import frc.robot.commands.auto.FiveBallAutoBlue;
 import frc.robot.commands.auto.FiveBallAutoNew;
 import frc.robot.commands.auto.FiveBallAutoRed;
 import frc.robot.commands.auto.TwoBallAuto;
+import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.auto.TwoBallAutoLowerHub;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
@@ -109,6 +110,10 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Two Ball Auto Lower Hub",
