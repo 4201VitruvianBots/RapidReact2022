@@ -7,11 +7,10 @@
 
 package frc.robot.commands.flywheel;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
+import java.util.function.DoubleSupplier;
 
 /** An example command that uses an example subsystem. */
 public class SetRpmSetpoint extends CommandBase {
