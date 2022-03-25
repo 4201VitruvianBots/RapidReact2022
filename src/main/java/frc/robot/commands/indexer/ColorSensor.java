@@ -129,8 +129,8 @@ public class ColorSensor extends CommandBase {
                 || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
         if (!frontCorrectColor) {
           // Front cargo is wrong
-          m_indexer.setIndexerPercentOutput(0.2);
-          m_indexer.setKickerPercentOutput(0.5);
+          m_indexer.setIndexerPercentOutput(-0.4);
+          m_intake.setIntakePercentOutput(-0.4);
           m_flywheel.setRPM(600);
         } else {
           if (m_triggerPressed.get()) {
