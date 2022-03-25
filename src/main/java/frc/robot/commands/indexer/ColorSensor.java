@@ -56,14 +56,14 @@ public class ColorSensor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
-      m_indexer.setIndexerPercentOutput(0.2);
-      m_indexer.setKickerPercentOutput(0.5);
-      m_flywheel.setRPM(600);
-      frontTripped = m_indexer.getIndexerFrontSensorTripped();
-      rearTripped = m_indexer.getIndexerRearSensorTripped();
-      return;
-    }
+    // if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
+    //   m_indexer.setIndexerPercentOutput(0.2);
+    //   m_indexer.setKickerPercentOutput(0.5);
+    //   m_flywheel.setRPM(600);
+    //   frontTripped = m_indexer.getIndexerFrontSensorTripped();
+    //   rearTripped = m_indexer.getIndexerRearSensorTripped();
+    //   return;
+    // }
 
     frontTripped = m_indexer.getIndexerFrontSensorTripped();
     rearTripped = m_indexer.getIndexerRearSensorTripped();
@@ -78,6 +78,10 @@ public class ColorSensor extends CommandBase {
         rearCorrectColor =
             (allianceColor == m_indexer.getRearColorType()
                 || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
+       
+        
+
+        //Rear
         if (!rearCorrectColor) {
           if (!frontCorrectColor) {
             // none are right
@@ -90,7 +94,18 @@ public class ColorSensor extends CommandBase {
             m_indexer.setKickerPercentOutput(0.5);
             m_flywheel.setRPM(600);
           }
-        } else {
+        }
+
+          //front is wrong, rear is correct
+        if (rearCorrectColor) {
+          if (!frontCorrectColor) {
+            m_indexer.setIndexerPercentOutput(-0.5);
+            m_intake.setIntakePercentOutput(0.5);
+            m_flywheel.setRPM(100);
+          }
+
+        
+        else {
           if (m_triggerPressed.get()) {
             m_indexer.setIndexerPercentOutput(0.4);
             m_indexer.setKickerPercentOutput(0.4);
@@ -100,6 +115,7 @@ public class ColorSensor extends CommandBase {
             m_flywheel.setRPM(0);
           }
         }
+      }
       } else {
         // Only rear cargo
         rearCorrectColor =
@@ -154,23 +170,34 @@ public class ColorSensor extends CommandBase {
       }
     }
 
-    /* Front correct, rear wrong:
-        Rev flywheel to low RPM, then increase the speed after we shoot
-      Rear correct, front wrong:
-        Rev up flywheel to full RPM, run indexer for a little bit to shoot, then slow down flywheel, then shoot wrong cargo at slow speed
-      Front wrong, rear wrong:
-        Rev up flywheel very slow, then rapid fire both cargo out
+    /* 
+    TWO BALLS[
+      Front correct, rear wrong:
+        Rev flywheel to low RPM, then increase the speed after we shoot (line: 93)
+       
+      Front wrong, Rear correct:
+        Eject bad cargo through the intake, and move the good cargo at the front. (line: 100)
+      
+      Front wrong, Rear wrong:
+        Rev up flywheel very slow, then rapid fire both cargo out (line: 88)
+        
       Front correct, rear correct:
-        Run flywheel normally (or let the operator do so)
+        Run flywheel normally (or let the operator do so) (No line needed)
+]
 
-      Only 1 ball, in the front, correct:
-        Allow operators to run flywheel and index normally
-      Only 1 ball, in the front, wrong:
-        Run flywheel at low RPM, eject the cargo
-      Only 1 ball, in the rear, correct:
-        Allow operators to run flywheel and index normally
-      Only 1 ball, in the rear, wrong:
-        Run flywheel at low RPM, eject the cargo
+
+    ONE BALL[
+      Front correct:
+        Allow operators to run flywheel and index normally (No line needed)
+
+      Rear correct:
+        Allow operators to run flywheel and index normally (No line needed)
+
+      Front wrong:
+        Reverse the Intake (line: 147)
+
+      Rear wrong:
+        Run flywheel at low RPM, eject the cargo (line: 128)
 
       Questions:
         1. Do we want to control the flywheel and indexer at all times, or only when there is a wrong cargo, or just send a warning? Or maybe disable the shoot buttons?
