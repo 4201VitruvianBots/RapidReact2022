@@ -53,9 +53,9 @@ public class Flywheel extends SubsystemBase {
   private double kI = 0.00007;
   private double errorSum = 0;
   private double errorRange = 300;
-  public double tarmacShot = 1450;
+  public double tarmacShot = 1520;
   public double launchpadShot = 1660;
-  public double launchpadShot2 = 1850;
+  public double launchpadShot2 = 1950;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -118,16 +118,16 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void updateCanShoot() {
-
-    if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
-      checkTurretAngle = m_turret.onTarget();
-    } else {
-      checkTurretAngle = true;
-    }
-    checkVisionAngle =
-        m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
-            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT))
-                < Constants.Flywheel.hubToleranceDegrees;
+    checkTurretAngle = true;
+    // if (m_turret.getControlMode() == Constants.CONTROL_MODE.CLOSEDLOOP) {
+    //   checkTurretAngle = m_turret.onTarget();
+    // } else {
+    //   checkTurretAngle = true;
+    // }
+    checkVisionAngle = true;
+        // m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
+        //     && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT))
+        //         < Constants.Flywheel.hubToleranceDegrees;
 
     checkRPM = false;
     if (getSetpointRPM() > 0) {
