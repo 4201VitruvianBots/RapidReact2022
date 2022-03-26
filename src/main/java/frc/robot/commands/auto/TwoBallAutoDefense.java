@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
@@ -83,11 +84,12 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1800),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1450),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
+            new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision)),
+                new DriveToCargoTrajectory(driveTrain, vision),
+                vision::cargoInRange),
             new AutoRunIntake(intake, indexer)
             ),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
