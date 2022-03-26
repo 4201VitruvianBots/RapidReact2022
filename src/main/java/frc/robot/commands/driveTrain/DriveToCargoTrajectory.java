@@ -58,13 +58,14 @@ public class DriveToCargoTrajectory extends CommandBase {
 
       /** Field relative cargo pose */
       cargoPose = m_vision.getCargoPositionFieldAbsolute();
+      // cargoPose = new Translation2d(cargoPose .getX(),cargoPose .getY()+(Math.signum(cargoPose .getY()) * Constants.Vision.CARGO_RADIUS));
       /** Field relative cargo angle */
-      // Rotation2d angleToCargo =
-      //     new Rotation2d(cargoPose.getX() - startPos.getX(), cargoPose.getY() - startPos.getY());
+      Rotation2d angleToCargo =
+          new Rotation2d(cargoPose.getX() - startPos.getX(), cargoPose.getY() - startPos.getY());
       endAngle = startPos.getRotation().unaryMinus();
       endPos =
           new Pose2d(
-              cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION.rotateBy(endAngle)), endAngle);
+              cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION).rotateBy(endAngle), endAngle);
     } else {
       endPos = m_defaultEndPose;
     }

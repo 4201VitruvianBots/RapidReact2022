@@ -524,12 +524,12 @@ public class Vision extends SubsystemBase {
 
     
     SmartDashboardTab.putNumber(
-        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance());
+        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance()*39.37);
         
     SmartDashboardTab.putNumber(
-      "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY());
+      "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance()*39.37);
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX()*39.37);
+    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY()*39.37);
   }
 
   private void logData() {
