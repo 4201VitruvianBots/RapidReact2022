@@ -35,6 +35,7 @@ import frc.robot.commands.turret.SetTurretControlMode;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.commands.turret.ToggleTurretLock;
+import frc.robot.commands.vision.SetGoalLEDState;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -201,6 +202,7 @@ public class RobotContainer {
     // TODO Try this if the above does not work
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
     SmartDashboard.putData(new ResetOdometry(m_driveTrain, m_fieldSim, new Pose2d()));
+    SmartDashboard.putData(new SetGoalLEDState(m_vision, false));
   }
 
   public void initializeSubsystems() {
