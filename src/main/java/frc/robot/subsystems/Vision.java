@@ -270,7 +270,7 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean cargoInRange() {
-    // return cargoInRange(0);
+    // return cargoInRange(0); // TODO REMOVE DEBUG CODE
     return false;
   }
 
