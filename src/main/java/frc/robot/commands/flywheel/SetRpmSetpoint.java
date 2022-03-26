@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
 import java.util.function.DoubleSupplier;
+import frc.robot.Constants;
+import frc.robot.commands.flywheel.ShotSelecter;
 
 /** An example command that uses an example subsystem. */
 public class SetRpmSetpoint extends CommandBase {
@@ -39,7 +41,7 @@ public class SetRpmSetpoint extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flywheel.setRPM(m_RPM.getAsDouble());
+    m_flywheel.setRPM(ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(Constants.Vision.CAMERA_POSITION.LIMELIGHT)).getRPM());
   }
 
   // Called once the command ends or is interrupted.
