@@ -120,6 +120,8 @@ public class RobotContainer {
         "Two Ball Auto Lower Hub",
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+            m_autoChooser.addOption("Ball Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision).alongWith(new RunIntake(m_intake, m_indexer)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(

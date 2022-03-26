@@ -246,7 +246,7 @@ public final class Constants {
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
-    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = -30.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);
     public static double UPPER_HUB_RADIUS_METERS = Units.feetToMeters(2);
@@ -259,7 +259,7 @@ public final class Constants {
 
     /** Offset of the intake camera from the robot's center */
     public static Translation2d INTAKE_CAM_TRANSLATION =
-        new Translation2d(Units.inchesToMeters(-15.5), 0); // TODO should this be negative, since the intake is in the back?
+        new Translation2d(Units.inchesToMeters(14), 0); // TODO should this be negative, since the intake is in the back?
 
     /** Ofset of the intake's center from the robot's center */
     public static Translation2d INTAKE_TRANSLATION = 

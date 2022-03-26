@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -60,6 +62,10 @@ public class Vision extends SubsystemBase {
   double[] targetXAngles = new double[50];
   double[] targetYAngles = new double[50];
   double[] targetDepth = new double[50];
+
+  LinearFilter cargoXFilter = LinearFilter.movingAverage(5);
+  LinearFilter cargoYFilter = LinearFilter.movingAverage(5);
+  LinearFilter cargoZFilter = LinearFilter.movingAverage(5);
 
   private DataLog m_logger;
   private DoubleLogEntry limelightTargetValidLog;
@@ -153,7 +159,8 @@ public class Vision extends SubsystemBase {
         if (getValidTarget(position)) {
           targetXAngles = intake_camera.getEntry("tx").getDoubleArray(nullArray);
           try {
-            return targetXAngles[0] == -99 ? 0 : -targetXAngles[index];
+            return cargoXFilter.calculate(targetXAngles[0] == -99 ? 0 : -targetXAngles[index]);
+            // return targetXAngles[0] == -99 ? 0 : -targetXAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetXAngle() illegal array access");
             return 0;
@@ -202,7 +209,8 @@ public class Vision extends SubsystemBase {
         if (getValidTarget(position)) {
           targetYAngles = intake_camera.getEntry("ty").getDoubleArray(nullArray);
           try {
-            return targetYAngles[0] == -99 ? 0 : targetYAngles[index];
+            return cargoYFilter.calculate(targetYAngles[0] == -99 ? 0 : -targetYAngles[index]);
+            // return targetYAngles[0] == -99 ? 0 : targetYAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
             return 0;
@@ -260,7 +268,8 @@ public class Vision extends SubsystemBase {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
       targetDepth = intake_camera.getEntry("tz").getDoubleArray(nullArray);
       try {
-        return targetDepth[0] == -99 ? 0 : targetDepth[index];
+        return cargoZFilter.calculate(targetDepth[0] == -99 ? 0 : -targetDepth[index] -Constants.Vision.CARGO_RADIUS);
+        // return targetDepth[0] == -99 ? 0 : targetDepth[index];
       } catch (Exception e) {
         System.out.println(
             "Vision Subsystem Error: getCargoTargetDirectDistance() illegal array access");
@@ -309,11 +318,11 @@ public class Vision extends SubsystemBase {
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
     Translation2d cargoTranslation =
-        new Translation2d(x, y)
-            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION)
-            .rotateBy(new Rotation2d(Math.PI));
+      new Translation2d(x, -y)
+            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
+          return cargoTranslation;
 
-    return cargoTranslation;
+    
   }
 
   public Translation2d getCargoPositionFieldAbsolute() {
