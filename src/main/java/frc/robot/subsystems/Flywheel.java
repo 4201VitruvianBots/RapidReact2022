@@ -19,6 +19,7 @@ import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
@@ -50,7 +51,7 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00007;
+  private double kI = 0.00004;
   private double errorSum = 0;
   private double errorRange = 300;
   public double tarmacShot = 1520;
@@ -225,12 +226,12 @@ public class Flywheel extends SubsystemBase {
       SmartDashboard.putNumber("RPMPrimary", getRPM(0));
       SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
       SmartDashboard.putBoolean("CanShoot", canShoot);
-      tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
-      launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
-      launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
-      SmartDashboard.putNumber("TarmacShot", tarmacShot);
-      SmartDashboard.putNumber("launchpadShot", launchpadShot);
-      SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
+      // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
+      // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
+      // launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
+      // SmartDashboard.putNumber("TarmacShot", tarmacShot);
+      // SmartDashboard.putNumber("launchpadShot", launchpadShot);
+      // SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
   }
 
   /**
