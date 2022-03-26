@@ -89,9 +89,10 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1500),
         new ParallelDeadlineGroup(
-            // new SequentialCommandGroup(
-                /*new CancellingCommand(*/command1/*, vision::cargoInRange)*/.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                // new DriveToCargoTrajectory(driveTrain, vision)),
+            new InterruptingCommand(
+                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                new DriveToCargoTrajectory(driveTrain,vision),
+                vision::cargoInRange),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
 
@@ -106,24 +107,28 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
-                /*new CancellingCommand(*/command2/*, vision::cargoInRange)*/.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-               // new DriveToCargoTrajectory(driveTrain, vision),
+                new InterruptingCommand(
+                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                    new DriveToCargoTrajectory(driveTrain,vision),
+                    vision::cargoInRange),
                new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
                new SetTurretAbsoluteSetpointDegrees(turret, -6),
-          /*   new CancellingCommand(*/command3/*, vision::cargoInRange)*/.andThen(() -> driveTrain.setMotorTankDrive(0, 0))),
-             //   new DriveToCargoTrajectory(driveTrain, vision)),
-            new AutoRunIntakeIndexer(intake, indexer)),
+               new InterruptingCommand(
+                    command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                    new DriveToCargoTrajectory(driveTrain,vision),
+                    vision::cargoInRange),
+            new AutoRunIntakeIndexer(intake, indexer))),
 
         // SHOOT 3 
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
         new ParallelDeadlineGroup( 
-          new ConditionalCommand(
-              new AutoRunIndexer(indexer, flywheel, 0.70).withTimeout(5.0),
-              new SimulationShoot(fieldSim, true).withTimeout(5.0),
-              RobotBase::isReal),
-          new AutoRunIntakeIndexer(intake, indexer))
-        );
+            new ConditionalCommand(
+                new AutoRunIndexer(indexer, flywheel, 0.70).withTimeout(5.0),
+                new SimulationShoot(fieldSim, true).withTimeout(5.0),
+                RobotBase::isReal),
+            new AutoRunIntakeIndexer(intake, indexer))
+    );
   }
 }
 
