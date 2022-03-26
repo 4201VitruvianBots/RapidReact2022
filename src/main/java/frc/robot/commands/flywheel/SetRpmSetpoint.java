@@ -16,7 +16,7 @@ import frc.robot.commands.flywheel.ShotSelecter;
 
 /** An example command that uses an example subsystem. */
 public class SetRpmSetpoint extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Flywheel m_flywheel;
 
   private final Vision m_vision;
@@ -41,7 +41,8 @@ public class SetRpmSetpoint extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flywheel.setRPM(ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(Constants.Vision.CAMERA_POSITION.LIMELIGHT)).getRPM());
+    m_flywheel.setRPM(ShotSelecter
+        .bestShot(m_vision.getGoalTargetHorizontalDistance(Constants.Vision.CAMERA_POSITION.LIMELIGHT)).getRPM());
   }
 
   // Called once the command ends or is interrupted.

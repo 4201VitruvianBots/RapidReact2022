@@ -5,12 +5,12 @@ package frc.robot.commands.flywheel;
 
 public class ShotRecipe {
   private final double rpm;
-  private final double kickerRPM;
+  private final double kickerPercentOutput;
   private final double distance;
 
-  public ShotRecipe(double rpm, double kickerRPM, double distance) {
+  public ShotRecipe(double rpm, double kickerPercentOutput, double distance) {
     this.rpm = rpm;
-    this.kickerRPM = kickerRPM;
+    this.kickerPercentOutput = kickerPercentOutput;
     this.distance = distance;
   }
 
@@ -18,8 +18,8 @@ public class ShotRecipe {
     return rpm;
   }
 
-  public double getKickerRPM() {
-    return kickerRPM;
+  public double getkickerPercentOutput() {
+    return kickerPercentOutput;
   }
 
   public double getDistance() {

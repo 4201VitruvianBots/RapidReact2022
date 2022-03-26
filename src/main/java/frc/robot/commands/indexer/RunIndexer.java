@@ -11,13 +11,13 @@ import frc.robot.subsystems.Indexer;
 public class RunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
-  private final Flywheel m_flywheel;
+  private final double kickerPercentOutput;
   private final boolean m_runKicker;
 
   /** Creates a new RunIndexer. */
-  public RunIndexer(Indexer indexer, Flywheel flywheel, boolean runKicker) {
+  public RunIndexer(Indexer indexer, double kickerPercentOutput, boolean runKicker) {
     m_indexer = indexer;
-    m_flywheel = flywheel;
+    this.kickerPercentOutput = kickerPercentOutput;
     m_runKicker = runKicker;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -32,7 +32,7 @@ public class RunIndexer extends CommandBase {
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(0.55);
-    if (m_runKicker) m_indexer.setKickerPercentOutput(0.80);
+    if (m_runKicker) m_indexer.setKickerPercentOutput(kickerPercentOutput);
   }
 
   // Called once the command ends or is interrupted.
