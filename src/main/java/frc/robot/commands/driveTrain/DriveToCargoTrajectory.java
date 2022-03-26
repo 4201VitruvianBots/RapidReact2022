@@ -62,7 +62,7 @@ public class DriveToCargoTrajectory extends CommandBase {
       /** Field relative cargo angle */
       Rotation2d angleToCargo =
           new Rotation2d(cargoPose.getX() - startPos.getX(), cargoPose.getY() - startPos.getY());
-      endAngle = startPos.getRotation().unaryMinus();
+      endAngle = angleToCargo;
       endPos =
           new Pose2d(
               cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION).rotateBy(endAngle), endAngle);

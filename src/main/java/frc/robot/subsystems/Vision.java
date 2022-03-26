@@ -318,7 +318,7 @@ public class Vision extends SubsystemBase {
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
     Translation2d cargoTranslation =
-      new Translation2d(x, -y)
+      new Translation2d(x, y)
             .minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
           return cargoTranslation;
 
