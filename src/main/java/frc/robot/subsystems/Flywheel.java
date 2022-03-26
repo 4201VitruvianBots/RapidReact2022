@@ -50,7 +50,7 @@ public class Flywheel extends SubsystemBase {
 
   private double kI = 0.00004;
   private double errorSum = 0;
-  private double errorRange = 300;
+  private double errorRange = 100;
   public double tarmacShot = 1520;
   public double launchpadShot = 1660;
   public double launchpadShot2 = 1950;
@@ -77,12 +77,12 @@ public class Flywheel extends SubsystemBase {
           VecBuilder.fill(
               Conversions.RpmToRadPerSec(
                   Constants.Flywheel.lqrRPMThreshold)), // Velocity error tolerance
-          VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+          VecBuilder.fill(10.0), // Control effort (voltage) tolerance
           0.020);
 
   // The state-space loop combines a controller, observer, feedforward and plant for easy control.
   private final LinearSystemLoop<N1, N1, N1> m_loop =
-      new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
+      new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 10.0, 0.020);
 
   public Flywheel(Vision vision, Turret turret) {
     m_vision = vision;
