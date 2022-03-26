@@ -34,7 +34,7 @@ public class AutoRunIntakeIndexer extends CommandBase {
   @Override
   public void execute() {
     m_intake.setIntakePercentOutput(0.9);
-    m_indexer.setIndexerPercentOutput(0.65);
+    m_indexer.setIndexerPercentOutput(0.55);
     m_indexer.setKickerPercentOutput(-0.2);
   }
 
