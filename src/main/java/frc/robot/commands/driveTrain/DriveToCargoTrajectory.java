@@ -8,6 +8,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.commands.auto.VitruvianRamseteCommand;
@@ -29,10 +30,11 @@ public class DriveToCargoTrajectory extends CommandBase {
   private ArrayList<Pose2d> trajectoryStates;
   private VitruvianRamseteCommand m_command;
 
-  private Pose2d m_defaultEndPose = new Pose2d();
   private Pose2d startPos, endPos;
   private Translation2d cargoPose;
   private Rotation2d endAngle;
+
+  private boolean finished = false;
 
   /** Creates a new ExampleCommand. */
   public DriveToCargoTrajectory(DriveTrain driveTrain, Vision vision) {
@@ -41,11 +43,6 @@ public class DriveToCargoTrajectory extends CommandBase {
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
-  }
-
-  public DriveToCargoTrajectory(DriveTrain driveTrain, Vision vision, Pose2d defaultEndPose) {
-    this(driveTrain, vision);
-    m_defaultEndPose = defaultEndPose;
   }
 
   // Called when the command is initially scheduled.
@@ -57,17 +54,22 @@ public class DriveToCargoTrajectory extends CommandBase {
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
 
       /** Field relative cargo pose */
-      cargoPose = m_vision.getCargoPositionFieldAbsolute();
       // cargoPose = new Translation2d(cargoPose .getX(),cargoPose .getY()+(Math.signum(cargoPose .getY()) * Constants.Vision.CARGO_RADIUS));
       /** Field relative cargo angle */
+      cargoPose = m_vision.getCargoPositionFromRobot()
+                    .rotateBy(startPos.getRotation())
+                    .plus(startPos.getTranslation());
       Rotation2d angleToCargo =
-          new Rotation2d(cargoPose.getX() - startPos.getX(), cargoPose.getY() - startPos.getY());
+          new Rotation2d(startPos.getX() - cargoPose.getX(), startPos.getY() - cargoPose.getY());
       endAngle = angleToCargo;
+      SmartDashboard.putNumber("End Angle", endAngle.getDegrees());
       endPos =
           new Pose2d(
-              cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION).rotateBy(endAngle), endAngle);
+              cargoPose
+              .minus(Constants.Vision.INTAKE_TRANSLATION.rotateBy(endAngle)), endAngle);
     } else {
-      endPos = m_defaultEndPose;
+      finished = true;
+      return;
     }
 
     m_pathConfig =
@@ -101,19 +103,22 @@ public class DriveToCargoTrajectory extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_command.execute();
+    if (!finished)
+      m_command.execute();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_driveTrain.setVoltageOutput(0, 0);
-    m_command.end(interrupted);
+
+    if (!finished)
+      m_command.end(interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_command.isFinished(); // m_pathFollower.atReference();
+    return finished || m_command.isFinished();
   }
 }
