@@ -58,14 +58,14 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
 
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "TwoBallAutoDefense-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+            "TwoBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "TwoBallAutoDefense-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+            "TwoBallAuto-Defense", Units.feetToMeters(4), Units.feetToMeters(4), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
@@ -84,7 +84,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1450),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -92,16 +92,25 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
                 vision::cargoInRange),
             new AutoRunIntake(intake, indexer)
             ),
+        new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
         new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel).withTimeout(4),
+                new AutoRunIndexer(indexer, flywheel).withTimeout(2),
                 new SimulationShoot(fieldSim, true).withTimeout(2),
                 RobotBase::isReal),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 700),
+        new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
-            new SequentialCommandGroup(
-                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision)),
-            new AutoRunIntake(intake, indexer))); 
+            new InterruptingCommand(
+                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                    new DriveToCargoTrajectory(driveTrain, vision),
+                    vision::cargoInRange),
+            new AutoRunIntake(intake, indexer)),
+        new IntakePiston(intake, false),
+        new ConditionalCommand(
+            new AutoRunIndexer(indexer, flywheel).withTimeout(2),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal));
         
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)

@@ -81,7 +81,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1450),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -95,7 +95,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(4),
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0),

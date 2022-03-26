@@ -87,7 +87,7 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         // INTAKE 1
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1500),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
@@ -116,8 +116,8 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
                new InterruptingCommand(
                     command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
                     new DriveToCargoTrajectory(driveTrain,vision),
-                    vision::cargoInRange),
-            new AutoRunIntakeIndexer(intake, indexer))),
+                    vision::cargoInRange)),
+            new AutoRunIntakeIndexer(intake, indexer)),
 
         // SHOOT 3 
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
