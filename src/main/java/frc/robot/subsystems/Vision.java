@@ -495,7 +495,9 @@ public class Vision extends SubsystemBase {
     SmartDashboard.putBoolean("Has Intake Target", getValidTarget(CAMERA_POSITION.INTAKE));
     SmartDashboard.putNumber("Intake Angle", getTargetXAngle(CAMERA_POSITION.INTAKE, 0));
     SmartDashboardTab.putNumber(
-        "Vision", "Hub Horizontal Distance", getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
+        "Vision",
+        "Hub Horizontal Distance",
+        getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
     // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
     // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
   }
