@@ -32,7 +32,7 @@ public class RunIndexer extends CommandBase {
   @Override
   public void execute() {
     m_indexer.setIndexerPercentOutput(0.45);
-    if (m_runKicker) m_indexer.setKickerPercentOutput(0.80);
+    if (m_runKicker) m_indexer.setKickerPercentOutput(0.70);
   }
 
   // Called once the command ends or is interrupted.

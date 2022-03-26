@@ -48,11 +48,11 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00004;
+  private double kI = 0.0000;
   private double errorSum = 0;
   private double errorRange = 100;
-  public double tarmacShot = 1520;
-  public double launchpadShot = 1660;
+  public double tarmacShot = 1640;
+  public double launchpadShot = 1820;
   public double launchpadShot2 = 1950;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
@@ -220,7 +220,7 @@ public class Flywheel extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
-    SmartDashboard.putNumber("RPMPrimary", getRPM(0));
+    SmartDashboard.putNumber("RPMPrimary", getRPM(0) - 100);
     SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
     SmartDashboard.putBoolean("CanShoot", canShoot);
     // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
