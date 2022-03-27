@@ -22,6 +22,8 @@ public class InterruptingCommand extends CommandBase {
     m_interruptable = interruptable;
     m_interrupt = interrupt;
     m_condition = condition;
+    m_requirements.addAll(interruptable.getRequirements());
+    m_requirements.addAll(interrupt.getRequirements());
   }
 
   @Override
@@ -36,7 +38,7 @@ public class InterruptingCommand extends CommandBase {
 
     if (m_condition.getAsBoolean()) {
       hasInterrupted = true;
-      m_interruptable.cancel();
+      m_interruptable.end(true);
       m_interrupt.initialize();
     }
   }
