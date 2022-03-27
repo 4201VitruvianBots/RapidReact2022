@@ -87,7 +87,7 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         // INTAKE 1
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
@@ -99,7 +99,7 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         // SHOOT 2
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel).withTimeout(0.9),
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
 
