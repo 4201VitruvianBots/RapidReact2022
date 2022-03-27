@@ -114,12 +114,11 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         // SHOOT 3
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
-        new ParallelDeadlineGroup(
             new ConditionalCommand(
                 new AutoRunIndexer(indexer, flywheel, 0.70).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),
-                RobotBase::isReal),
-            new AutoRunIntakeIndexer(intake, indexer)));
+                RobotBase::isReal)
+    );
   }
 }
 
