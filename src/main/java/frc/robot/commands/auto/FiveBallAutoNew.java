@@ -16,7 +16,9 @@ import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
+import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
+import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
@@ -111,23 +113,27 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
                     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
                     new DriveToCargoTrajectory(driveTrain,vision),
                     vision::cargoInRange),
-               new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
+               new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
                new SetTurretAbsoluteSetpointDegrees(turret, -6),
                new InterruptingCommand(
                     command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
                     new DriveToCargoTrajectory(driveTrain,vision),
                     vision::cargoInRange)),
             new AutoRunIntakeIndexer(intake, indexer)),
+            new IntakePiston(intake, false),
 
         // SHOOT 3 
-        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new ParallelDeadlineGroup(
+             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+             new AutoRunIndexer (indexer, flywheel,-0.8,true).withTimeout(0.2)),
+        new IntakePiston(intake, true),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
         new ParallelDeadlineGroup( 
             new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel, 0.70).withTimeout(5.0),
+                new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),
                 RobotBase::isReal),
-            new AutoRunIntakeIndexer(intake, indexer))
+            new AutoRunIntakeOnly(intake))
     );
   }
 }
