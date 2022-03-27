@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
-import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
+import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -83,10 +83,9 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new DriveToCargoTrajectory(driveTrain, vision)
+            new CargoTrajectoryRameseteCommand(driveTrain, vision)
                 .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            // new PrintCommand("Test"),
-            (vision::cargoInRange)),
+            vision::cargoInRange),
         new AutoRunIntakeInstant(intake, indexer, false),
         // new ParallelCommandGroup(
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
