@@ -30,7 +30,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class TwoBallAuto extends SequentialCommandGroup {
+public class TwoBallAutoDefense extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -42,7 +42,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public TwoBallAuto(
+  public TwoBallAutoDefense(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -56,17 +56,20 @@ public class TwoBallAuto extends SequentialCommandGroup {
     // Shoot 2 cargo into high goal
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("TwoBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "TwoBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-
     Trajectory trajectory2 =
-        PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "TwoBallAuto-Defense", Units.feetToMeters(4), Units.feetToMeters(4), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
@@ -74,7 +77,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
      * shooter or vision) End path
      */
     addCommands(
-        new SetSimTrajectory(fieldSim, trajectory1),
+        new SetSimTrajectory(fieldSim, trajectory1, trajectory2),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new IntakePiston(intake, true),
@@ -84,16 +87,26 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntake(intake, indexer)),
-        // new ParallelCommandGroup(
-        new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
+        new ConditionalCommand(
+                new AutoRunIndexer(indexer, flywheel).withTimeout(2),
+                new SimulationShoot(fieldSim, true).withTimeout(2),
+                RobotBase::isReal),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 700),
+        new IntakePiston(intake, true),
+        new ParallelDeadlineGroup(
+            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIntake(intake, indexer)),
+        new IntakePiston(intake, false),
+        new ConditionalCommand(
+            new AutoRunIndexer(indexer, flywheel).withTimeout(2),
+            new SimulationShoot(fieldSim, true).withTimeout(2),
+            RobotBase::isReal));
+        
         // TODO how long does flywheel take to rev up? (should the flywheel run while
         // driving?)
-        new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2),
-            new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0,0)));
+        
+        
   }
 }
