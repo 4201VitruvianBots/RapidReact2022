@@ -105,7 +105,7 @@ public class DriveToCargoTrajectory extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!finished) m_command.execute();
+    // if (!finished) m_command.execute();
     finished = m_command.isFinished();
     SmartDashboard.putBoolean("Cargo Trajectory Command Finished", m_command.isFinished());
   }
