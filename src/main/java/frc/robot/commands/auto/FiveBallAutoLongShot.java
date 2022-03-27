@@ -107,6 +107,8 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
+        new SetTurretAbsoluteSetpointDegrees(turret, -6),
         new ParallelDeadlineGroup(
                 new InterruptingCommand(
                     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
