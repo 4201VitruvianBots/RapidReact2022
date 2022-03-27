@@ -27,6 +27,7 @@ import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -123,7 +124,7 @@ public class RobotContainer {
 
     m_autoChooser.addOption(
         "Ball Trajectory",
-        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
@@ -142,7 +143,7 @@ public class RobotContainer {
     SmartDashboard.putData("Selected Auto", m_autoChooser);
     SmartDashboard.putData(
         "Auto Trajectory",
-        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
@@ -168,8 +169,10 @@ public class RobotContainer {
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
     leftButtons[0].whileHeld(
-        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
+    rightButtons[0].whenReleased(
+            new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

@@ -4,6 +4,7 @@ import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -66,6 +67,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+    Command test = new CargoTrajectoryRameseteCommand(driveTrain, vision);
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
@@ -83,8 +86,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new CargoTrajectoryRameseteCommand(driveTrain, vision)
-                .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            test.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             vision::cargoInRange),
         new AutoRunIntakeInstant(intake, indexer, false),
         // new ParallelCommandGroup(
@@ -96,8 +98,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0)
-        // command2.andThen(() -> driveTrain.setMotorTankDrive(0,0))
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0),
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0,0))
         );
   }
 }

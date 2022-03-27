@@ -33,7 +33,7 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
   private final Vision m_vision;
 
   private TrajectoryConfig m_pathConfig;
-  private Trajectory m_path, projectedPath;
+  private Trajectory m_path;
   private ArrayList<Pose2d> trajectoryStates;
   private VitruvianRamseteCommand m_command;
 
@@ -111,18 +111,6 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
             .setStartVelocity(0);
 
     m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
-
-    projectedPath =
-        m_path.transformBy(
-            new Transform2d(
-                m_driveTrain.getRobotPoseMeters().getTranslation(),
-                new Rotation2d(Units.degreesToRadians(m_driveTrain.getHeadingDegrees()))));
-
-    trajectoryStates = new ArrayList<Pose2d>();
-    trajectoryStates.addAll(
-        projectedPath.getStates().stream()
-            .map(state -> state.poseMeters)
-            .collect(Collectors.toList()));
 
     m_driveTrain.setCurrentTrajectory(m_path);
 
