@@ -121,7 +121,10 @@ public class RobotContainer {
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
-            m_autoChooser.addOption("Ball Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision).alongWith(new RunIntake(m_intake, m_indexer)));
+    m_autoChooser.addOption(
+        "Ball Trajectory",
+        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(
@@ -137,7 +140,10 @@ public class RobotContainer {
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData("Auto Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision).alongWith(new RunIntake(m_intake, m_indexer)));
+    SmartDashboard.putData(
+        "Auto Trajectory",
+        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
 
@@ -161,7 +167,9 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
-    leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision) .alongWith(new RunIntake( m_intake, m_indexer)));
+    leftButtons[0].whileHeld(
+        new DriveToCargoTrajectory(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

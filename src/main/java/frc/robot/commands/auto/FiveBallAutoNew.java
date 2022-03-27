@@ -5,10 +5,8 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
@@ -22,7 +20,6 @@ import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
-import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
@@ -55,43 +52,38 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
       Vision vision) {
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath(
-            "FiveBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath(
-            "FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath(
-            "FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(7), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
-        PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath("FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(7), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
     addCommands(
-
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-      
+
         // INTAKE 1
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                new DriveToCargoTrajectory(driveTrain,vision),
+                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new DriveToCargoTrajectory(driveTrain, vision),
                 vision::cargoInRange),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
@@ -108,36 +100,31 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             new SequentialCommandGroup(
                 new InterruptingCommand(
-                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                    new DriveToCargoTrajectory(driveTrain,vision),
+                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                    new DriveToCargoTrajectory(driveTrain, vision),
                     vision::cargoInRange),
-               new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
-               new SetTurretAbsoluteSetpointDegrees(turret, -6),
-               new InterruptingCommand(
-                    command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                    new DriveToCargoTrajectory(driveTrain,vision),
+                new SetAndHoldRpmSetpoint(flywheel, vision, 1850),
+                new SetTurretAbsoluteSetpointDegrees(turret, -6),
+                new InterruptingCommand(
+                    command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                    new DriveToCargoTrajectory(driveTrain, vision),
                     vision::cargoInRange)),
             new AutoRunIntakeIndexer(intake, indexer)),
 
-        // SHOOT 3 
+        // SHOOT 3
         command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
-        new ParallelDeadlineGroup( 
+        new ParallelDeadlineGroup(
             new ConditionalCommand(
                 new AutoRunIndexer(indexer, flywheel, 0.70).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),
                 RobotBase::isReal),
-            new AutoRunIntakeIndexer(intake, indexer))
-    );
+            new AutoRunIntakeIndexer(intake, indexer)));
   }
 }
 
-
 /**
- * drive forward while intaking 
- * shoot [SHOOT 1]
- * drive backwards [curve] whilie intaking, back to terminal
- * drive forwards while intaking
- * shoot while intaking [SHOOT 2]
- * shoot until last ball is shot
- **/ 
+ * drive forward while intaking shoot [SHOOT 1] drive backwards [curve] whilie intaking, back to
+ * terminal drive forwards while intaking shoot while intaking [SHOOT 2] shoot until last ball is
+ * shot
+ */
