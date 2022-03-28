@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAutoNew;
+import frc.robot.commands.auto.FiveBallAuto;
+import frc.robot.commands.auto.FiveBallAutoLongShot;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.auto.TwoBallAutoLowerHub;
@@ -94,7 +95,7 @@ public class RobotContainer {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
         "Five Ball Auto New",
-        new FiveBallAutoNew(
+        new FiveBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
@@ -111,6 +112,11 @@ public class RobotContainer {
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
+     m_autoChooser.addOption("Ball Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision).alongWith(new RunIntake(m_intake, m_indexer)));
+            m_autoChooser.addOption(
+              "Five Ball Auto Long Shot",
+              new FiveBallAutoLongShot(
+                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Ball Trajectory",
         new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
