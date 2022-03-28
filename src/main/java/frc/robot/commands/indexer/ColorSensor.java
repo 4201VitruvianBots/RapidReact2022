@@ -71,7 +71,7 @@ public class ColorSensor extends CommandBase {
 
     if (m_indexer.getColorSensorOverride()) {
       if (m_lTriggerHeld.get()) {
-        m_intake.setIntakePercentOutput(0.5);  
+        m_intake.setIntakePercentOutput(0.4);  
       }
       // if (m_rTriggerHeld.get()) {
       //   m_indexer.setIndexerPercentOutput(0.6);
@@ -118,11 +118,11 @@ public class ColorSensor extends CommandBase {
         if (rearCorrectColor) {
           if (!frontCorrectColor) {
             m_indexer.setIndexerPercentOutput(-0.5);
-            m_intake.setIntakePercentOutput(-0.5);
+            m_intake.setIntakePercentOutput(-0.4);
             m_flywheel.setRPM(600);
           } else {
             if (m_lTriggerHeld.get()) {
-              m_intake.setIntakePercentOutput(0.5);;
+              m_intake.setIntakePercentOutput(0.4);;
             } 
             // if (m_rTriggerHeld.get()) {
             //   m_indexer.setIndexerPercentOutput(0.5);
@@ -147,7 +147,7 @@ public class ColorSensor extends CommandBase {
           m_flywheel.setRPM(600);
         } else {
           if (m_lTriggerHeld.get()) {
-            m_intake.setIntakePercentOutput(0.5);
+            m_intake.setIntakePercentOutput(0.4);
             // if (m_rTriggerHeld.get()) {
             //   m_indexer.setIndexerPercentOutput(0.5);
             // } 
@@ -172,7 +172,7 @@ public class ColorSensor extends CommandBase {
           m_flywheel.setRPM(600);
         } else {
           if (m_lTriggerHeld.get()) {
-            m_intake.setIntakePercentOutput(0.5);
+            m_intake.setIntakePercentOutput(0.4);
           } 
           // if (m_rTriggerHeld.get()) {
           //   m_indexer.setIndexerPercentOutput(0.5);
@@ -186,7 +186,7 @@ public class ColorSensor extends CommandBase {
         }
       } else {
         if (m_lTriggerHeld.get()) {
-          m_intake.setIntakePercentOutput(0.5);
+          m_intake.setIntakePercentOutput(0.4);
         }
         // if (m_rTriggerHeld.get()) {
         //   m_indexer.setIndexerPercentOutput(0.5);
@@ -204,7 +204,9 @@ public class ColorSensor extends CommandBase {
 
       Default Speeds [
 
-      * 50% speed for Intake, Kicker, and Indexer
+      * 40% speed for Intake,
+
+      * 50% speed for Kicker and Indexer
 
       * 600 RPM for Flywheel
 ]
