@@ -279,7 +279,7 @@ public final class Constants {
     public static String LIMELIGHT_IP = "10.42.1.11";
 
     public static double TRAJECTORY_MAX_CARGO_DISTANCE =
-        Units.inchesToMeters(80); // TODO Get reliability measurement
+        Units.inchesToMeters(40); // TODO Get reliability measurement
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)

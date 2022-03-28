@@ -115,7 +115,7 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
         new InterruptingCommand(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new CargoTrajectoryRameseteCommand(driveTrain, vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
-            vision::cargoInRange),
+            ()-> false),
         new AutoRunIntakeInstant(intake, indexer, false),
         new IntakePiston(intake, false),
 
