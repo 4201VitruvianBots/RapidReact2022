@@ -9,12 +9,15 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
+import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
+import frc.robot.commands.intake.AutoRunIntakeIndexer;
+import frc.robot.commands.intake.AutoRunIntakeInstant;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
@@ -82,12 +85,12 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
-        new ParallelDeadlineGroup(
-            new InterruptingCommand(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
-            new AutoRunIntakeIndexer(intake, indexer)),
+        new AutoRunIntakeInstant(intake, indexer, true),
+        new InterruptingCommand(
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new CargoTrajectoryRameseteCommand(driveTrain, vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
+            vision::cargoInRange),
+        new AutoRunIntakeInstant(intake, indexer, false),
         new IntakePiston(intake, false),
 
         // SHOOT 2
@@ -99,19 +102,19 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
 
         // INTAKE 2
         new IntakePiston(intake, true),
-        new ParallelDeadlineGroup(
+        new AutoRunIntakeInstant(intake, indexer, true),
             new SequentialCommandGroup(
                 new InterruptingCommand(
                     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                    new DriveToCargoTrajectory(driveTrain, vision),
+                    new CargoTrajectoryRameseteCommand(driveTrain, vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
                     vision::cargoInRange),
                new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
                new SetTurretAbsoluteSetpointDegrees(turret, -6),
                new InterruptingCommand(
                     command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                    new DriveToCargoTrajectory(driveTrain,vision),
+                    new CargoTrajectoryRameseteCommand(driveTrain,vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
                     vision::cargoInRange)),
-            new AutoRunIntakeIndexer(intake, indexer)),
+            new AutoRunIntakeInstant(intake, indexer, false),
             new IntakePiston(intake, false),
 
         // SHOOT 3 

@@ -32,6 +32,7 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
 
   private final Vision m_vision;
 
+  private TrajectoryConfig m_config = null;
   private TrajectoryConfig m_pathConfig;
   private Trajectory m_path;
   private ArrayList<Pose2d> trajectoryStates;
@@ -56,10 +57,14 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
   private double m_prevTime;
 
   /** Creates a new ExampleCommand. */
-  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision) {
+  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision) { 
+      this(driveTrain, vision, null);
+  }
+
+  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision, TrajectoryConfig config) {
     m_driveTrain = driveTrain;
     m_vision = vision;
-
+    m_config = config; 
     m_pose = m_driveTrain::getRobotPoseMeters;
     m_follower = new RamseteController();
     m_feedforward = m_driveTrain.getFeedforward();
@@ -91,6 +96,7 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
               .getCargoPositionFromRobot()
               .rotateBy(startPos.getRotation())
               .plus(startPos.getTranslation());
+      System.out.println("cargePose :" + cargoPose);
       Rotation2d angleToCargo =
           new Rotation2d(startPos.getX() - cargoPose.getX(), startPos.getY() - cargoPose.getY());
       endAngle = angleToCargo;
@@ -102,13 +108,18 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
       return;
     }
 
-    m_pathConfig =
-        new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(5))
-            // Add kinematics to ensure max speed is actually obeyed
-            .setReversed(true)
-            .setKinematics(Constants.DriveTrain.kDriveKinematics)
-            .setEndVelocity(0)
-            .setStartVelocity(0);
+    if(m_config != null) {
+      m_pathConfig = m_config;
+    }
+    else {
+      m_pathConfig =
+          new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(14))
+              // Add kinematics to ensure max speed is actually obeyed
+              .setReversed(true)
+              .setKinematics(Constants.DriveTrain.kDriveKinematics)
+              .setEndVelocity(0)
+              .setStartVelocity(0);
+    }
 
     m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
 
