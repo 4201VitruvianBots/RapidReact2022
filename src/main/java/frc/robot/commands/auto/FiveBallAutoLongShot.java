@@ -70,13 +70,13 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(7), true);
+            "FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(7), false);
+            "FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(10), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
@@ -108,7 +108,7 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         // INTAKE 1
         new IntakePiston(intake, true),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
-        new SetTurretAbsoluteSetpointDegrees(turret, -6),
+        new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new ParallelDeadlineGroup(
                 new InterruptingCommand(
                     command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
@@ -125,7 +125,7 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
             RobotBase::isReal),
             //INTAKE 2
         new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
-        new SetTurretAbsoluteSetpointDegrees(turret, -6),
+        new SetTurretAbsoluteSetpointDegrees(turret, 10),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
