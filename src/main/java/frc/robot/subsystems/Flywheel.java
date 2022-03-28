@@ -53,10 +53,10 @@ public class Flywheel extends SubsystemBase {
 
   private double kI = 0.00004;
   private double errorSum = 0;
-  private double errorRange = 300;
-  public double tarmacShot = 1520;
-  public double launchpadShot = 1660;
-  public double launchpadShot2 = 1950;
+  private double errorRange = 100;
+  public double tarmacShot = 1650;
+  public double launchpadShot = 1750;
+  public double launchpadShot2 = 1875;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
