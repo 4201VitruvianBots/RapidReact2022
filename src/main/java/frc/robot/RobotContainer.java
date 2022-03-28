@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.auto.FiveBallAuto;
 import frc.robot.commands.auto.FiveBallAutoLongShot;
+import frc.robot.commands.auto.FiveBallAutoVision;
 import frc.robot.commands.auto.TwoBallAuto;
 import frc.robot.commands.auto.TwoBallAutoDefense;
 import frc.robot.commands.auto.TwoBallAutoLowerHub;
@@ -112,12 +113,16 @@ public class RobotContainer {
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
-     m_autoChooser.addOption("Ball Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision).alongWith(new RunIntake(m_intake, m_indexer)));
             m_autoChooser.addOption(
               "Five Ball Auto Long Shot",
               new FiveBallAutoLongShot(
                   m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
+                  m_autoChooser.addOption(
+                    "Five Ball Auto Vision",
+                    new FiveBallAutoVision(
+                        m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+      
+                  m_autoChooser.addOption(
         "Ball Trajectory",
         new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
