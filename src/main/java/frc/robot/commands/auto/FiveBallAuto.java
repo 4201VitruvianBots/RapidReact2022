@@ -35,7 +35,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class FiveBallAutoNew extends SequentialCommandGroup {
+public class FiveBallAuto extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -47,7 +47,7 @@ public class FiveBallAutoNew extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public FiveBallAutoNew(
+  public FiveBallAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
