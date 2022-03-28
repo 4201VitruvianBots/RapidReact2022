@@ -24,7 +24,7 @@ public class RunIntake extends CommandBase {
     // m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    // addRequirements(indexer);
+    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
@@ -42,7 +42,7 @@ public class RunIntake extends CommandBase {
   public void execute() {
     // m_indexer.setKickerPercentOutput(-0.25);
     // m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.9);
+    m_intake.setIntakePercentOutput(0.4);
   }
 
   /**
@@ -52,8 +52,9 @@ public class RunIntake extends CommandBase {
   public void end(boolean interrupted) {
     // m_indexer.setKickerPercentOutput(0);
     // m_indexer.setIndexerPercentOutput(0);
-    m_intake.setIntakePiston(false);
+
     m_intake.setIntakePercentOutput(0);
+    m_intake.setIntakePiston(false);
     m_intake.setIntakeState(false);
   }
 

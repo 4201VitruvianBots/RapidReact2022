@@ -19,7 +19,8 @@ public class ColorSensor extends CommandBase {
   private final Intake m_intake;
   private final Controls m_controls;
   private final Flywheel m_flywheel;
-  private final Supplier<Boolean> m_triggerPressed;
+  private final Supplier<Boolean> m_lTriggerHeld;
+  // private final Supplier<Boolean> m_rTriggerHeld;
 
   private DriverStation.Alliance allianceColor;
 
@@ -35,22 +36,25 @@ public class ColorSensor extends CommandBase {
       Controls controls,
       Intake intake,
       Flywheel flywheel,
-      Supplier<Boolean> triggerPressed) {
+      Supplier<Boolean> lTriggerHeld) {
+      // Supplier<Boolean> rTriggerHeld) {
     m_indexer = indexer;
     m_controls = controls;
     m_intake = intake;
     m_flywheel = flywheel;
-    m_triggerPressed = triggerPressed;
+    m_lTriggerHeld = lTriggerHeld;
+    // m_rTriggerHeld = rTriggerHeld;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
     addRequirements(intake);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    allianceColor = DriverStation.Alliance.Red;
+    allianceColor = DriverStation.getAlliance();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -65,6 +69,22 @@ public class ColorSensor extends CommandBase {
     //   return;
     // }
 
+    if (m_indexer.getColorSensorOverride()) {
+      if (m_lTriggerHeld.get()) {
+        m_intake.setIntakePercentOutput(0.5);  
+      }
+      // if (m_rTriggerHeld.get()) {
+      //   m_indexer.setIndexerPercentOutput(0.6);
+      //  }
+        else {
+        m_intake.setIntakePercentOutput(0);
+        m_indexer.setIndexerPercentOutput(0);
+        m_indexer.setKickerPercentOutput(0);
+        m_flywheel.setRPM(0);
+      }
+      return;
+    }
+
     frontTripped = m_indexer.getIndexerFrontSensorTripped();
     rearTripped = m_indexer.getIndexerRearSensorTripped();
 
@@ -78,44 +98,43 @@ public class ColorSensor extends CommandBase {
         rearCorrectColor =
             (allianceColor == m_indexer.getRearColorType()
                 || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
-       
-        
 
-        //Rear
+        // Rear
         if (!rearCorrectColor) {
           if (!frontCorrectColor) {
             // none are right
-            m_indexer.setIndexerPercentOutput(0.2);
+            m_indexer.setIndexerPercentOutput(0.5);
             m_indexer.setKickerPercentOutput(0.5);
             m_flywheel.setRPM(600);
           } else {
             // Front is correct, rear is wrong
-            m_indexer.setIndexerPercentOutput(0.2);
+            m_indexer.setIndexerPercentOutput(0.5);
             m_indexer.setKickerPercentOutput(0.5);
             m_flywheel.setRPM(600);
           }
         }
 
-          //front is wrong, rear is correct
+        // front is wrong, rear is correct
         if (rearCorrectColor) {
           if (!frontCorrectColor) {
             m_indexer.setIndexerPercentOutput(-0.5);
-            m_intake.setIntakePercentOutput(0.5);
-            m_flywheel.setRPM(100);
-          }
-
-        
-        else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
+            m_intake.setIntakePercentOutput(-0.5);
+            m_flywheel.setRPM(600);
           } else {
-            m_indexer.setIndexerPercentOutput(0);
-            m_indexer.setKickerPercentOutput(0);
-            m_flywheel.setRPM(0);
+            if (m_lTriggerHeld.get()) {
+              m_intake.setIntakePercentOutput(0.5);;
+            } 
+            // if (m_rTriggerHeld.get()) {
+            //   m_indexer.setIndexerPercentOutput(0.5);
+            // } 
+            else {
+              m_indexer.setIndexerPercentOutput(0);
+              m_indexer.setKickerPercentOutput(0);
+              m_intake.setIntakePercentOutput(0);
+              m_flywheel.setRPM(0);
+            }
           }
         }
-      }
       } else {
         // Only rear cargo
         rearCorrectColor =
@@ -123,17 +142,20 @@ public class ColorSensor extends CommandBase {
                 || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
         if (!rearCorrectColor) {
           // Rear cargo is wrong
-          m_indexer.setIndexerPercentOutput(0.2);
+          m_indexer.setIndexerPercentOutput(0.5);
           m_indexer.setKickerPercentOutput(0.5);
           m_flywheel.setRPM(600);
         } else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
+          if (m_lTriggerHeld.get()) {
+            m_intake.setIntakePercentOutput(0.5);
+            // if (m_rTriggerHeld.get()) {
+            //   m_indexer.setIndexerPercentOutput(0.5);
+            // } 
           } else {
             m_indexer.setIndexerPercentOutput(0);
             m_indexer.setKickerPercentOutput(0);
             m_flywheel.setRPM(0);
+            m_intake.setIntakePercentOutput(0);
           }
         }
       }
@@ -145,64 +167,80 @@ public class ColorSensor extends CommandBase {
                 || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
         if (!frontCorrectColor) {
           // Front cargo is wrong
-          m_indexer.setIndexerPercentOutput(-0.4);
-          m_intake.setIntakePercentOutput(-0.4);
+          m_indexer.setIndexerPercentOutput(0.5);
+          m_indexer.setKickerPercentOutput(0.5);
           m_flywheel.setRPM(600);
         } else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
-          } else {
+          if (m_lTriggerHeld.get()) {
+            m_intake.setIntakePercentOutput(0.5);
+          } 
+          // if (m_rTriggerHeld.get()) {
+          //   m_indexer.setIndexerPercentOutput(0.5);
+          // } 
+          else {
             m_indexer.setIndexerPercentOutput(0);
             m_indexer.setKickerPercentOutput(0);
+            m_intake.setIntakePercentOutput(0);
             m_flywheel.setRPM(0);
           }
         }
       } else {
-        if (m_triggerPressed.get()) {
-          m_indexer.setIndexerPercentOutput(0.4);
-          m_indexer.setKickerPercentOutput(0.4);
-        } else {
+        if (m_lTriggerHeld.get()) {
+          m_intake.setIntakePercentOutput(0.5);
+        }
+        // if (m_rTriggerHeld.get()) {
+        //   m_indexer.setIndexerPercentOutput(0.5);
+        // } 
+         else {
           m_indexer.setIndexerPercentOutput(0);
           m_indexer.setKickerPercentOutput(0);
+          m_intake.setIntakePercentOutput(0);
           m_flywheel.setRPM(0);
         }
       }
     }
 
-    /* 
-    TWO BALLS[
-      Front correct, rear wrong:
-        Rev flywheel to low RPM, then increase the speed after we shoot (line: 93)
-       
-      Front wrong, Rear correct:
-        Eject bad cargo through the intake, and move the good cargo at the front. (line: 100)
-      
-      Front wrong, Rear wrong:
-        Rev up flywheel very slow, then rapid fire both cargo out (line: 88)
-        
-      Front correct, rear correct:
-        Run flywheel normally (or let the operator do so) (No line needed)
+    /*
+
+      Default Speeds [
+
+      * 50% speed for Intake, Kicker, and Indexer
+
+      * 600 RPM for Flywheel
 ]
 
+        TWO BALLS[
+          Front correct, rear wrong:
+            Rev flywheel to low RPM, then increase the speed after we shoot (line: 93)
 
-    ONE BALL[
-      Front correct:
-        Allow operators to run flywheel and index normally (No line needed)
+          Front wrong, Rear correct:
+            Eject bad cargo through the intake, and move the good cargo at the front. (line: 100)
 
-      Rear correct:
-        Allow operators to run flywheel and index normally (No line needed)
+          Front wrong, Rear wrong:
+            Rev up flywheel very slow, then rapid fire both cargo out (line: 88)
 
-      Front wrong:
-        Reverse the Intake (line: 147)
+          Front correct, rear correct:
+            Run flywheel normally (or let the operator do so) (No line needed)
+    ]
 
-      Rear wrong:
-        Run flywheel at low RPM, eject the cargo (line: 128)
 
-      Questions:
-        1. Do we want to control the flywheel and indexer at all times, or only when there is a wrong cargo, or just send a warning? Or maybe disable the shoot buttons?
-        2. Should we have an LED state to indicate if there is a cargo of the wrong color?
-    */
+        ONE BALL[
+          Front correct:
+            Allow operators to run flywheel and index normally (No line needed)
+
+          Rear correct:
+            Allow operators to run flywheel and index normally (No line needed)
+
+          Front wrong:
+            Reverse the Intake (line: 147)
+
+          Rear wrong:
+            Run flywheel at low RPM, eject the cargo (line: 128)
+
+          Questions:
+            1. Do we want to control the flywheel and indexer at all times, or only when there is a wrong cargo, or just send a warning? Or maybe disable the shoot buttons?
+            2. Should we have an LED state to indicate if there is a cargo of the wrong color?
+        */
 
     SmartDashboardTab.putString("Indexer", "Alliance color", allianceColor.toString());
 

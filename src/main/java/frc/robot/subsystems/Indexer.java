@@ -52,6 +52,8 @@ public class Indexer extends SubsystemBase {
   DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
   DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerFrontSensor);
 
+  private boolean colorSensorOverride = false;
+
   private double kickerSetpoint;
 
   private final LinearSystem<N1, N1, N1> m_KickerPlant =
@@ -235,6 +237,14 @@ public class Indexer extends SubsystemBase {
    */
   public Color getRearColor() {
     return rearColor;
+  }
+
+  public boolean getColorSensorOverride() {
+    return colorSensorOverride;
+  }
+
+  public void setColorSensorOverride(boolean override) {
+    colorSensorOverride = override;
   }
 
   private void updateSetpoint() {
