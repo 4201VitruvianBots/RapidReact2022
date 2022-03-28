@@ -287,6 +287,21 @@ public class Vision extends SubsystemBase {
         && getCargoHorizontalDistance(index) < Constants.Vision.TRAJECTORY_MAX_CARGO_DISTANCE;
   }
 
+  public boolean cargoInRangeWithPositionCheck(Pose2d cargoIdealPosition) {
+    return cargoInRangeWithPositionCheck(0, cargoIdealPosition);
+  }
+
+  public boolean cargoInRangeWithPositionCheck(int index, Pose2d cargoIdealPosition) {
+    double distanceFromIdealPosition =
+        getCargoPositionFieldAbsolute(index).getDistance(cargoIdealPosition.getTranslation());
+
+    SmartDashboardTab.putNumber("Vision", "Detected Cargo X", getCargoPositionFieldAbsolute(index).getX());
+    SmartDashboardTab.putNumber("Vision", "Detected Cargo Y", getCargoPositionFieldAbsolute(index).getY());
+    SmartDashboardTab.putNumber("Vision", "Cargo Position From Ideal", distanceFromIdealPosition);
+
+    return cargoInRange(index) && Math.abs(distanceFromIdealPosition) < Units.feetToMeters(1);
+  }
+
   public double getCargoHorizontalDistance() {
     return getCargoHorizontalDistance(0);
   }

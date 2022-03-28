@@ -1,16 +1,14 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.CommandGroupBase;
-
-import java.util.function.BooleanSupplier;
-
 import static edu.wpi.first.wpilibj2.command.CommandGroupBase.requireUngrouped;
 
-/** 
- * Runs a command until a condition is met, then interrupts it to run another commnd.
- * If the first command finishes, this command will end without running the other command.
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import java.util.function.BooleanSupplier;
+
+/**
+ * Runs a command until a condition is met, then interrupts it to run another commnd. If the first
+ * command finishes, this command will end without running the other command.
  */
 public class InterruptingCommand extends CommandBase {
   private final Command m_interruptible;
@@ -29,7 +27,7 @@ public class InterruptingCommand extends CommandBase {
   public InterruptingCommand(Command interruptible, Command interrupt, BooleanSupplier condition) {
     requireUngrouped(interruptible, interrupt);
 
-//    CommandGroupBase.registerGroupedCommands(interruptible, interrupt);
+    //    CommandGroupBase.registerGroupedCommands(interruptible, interrupt);
 
     m_interruptible = interruptible;
     m_interrupt = interrupt;

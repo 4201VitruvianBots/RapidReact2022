@@ -5,7 +5,6 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class CargoTrajectoryRameseteCommand extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
@@ -57,14 +55,15 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
   private double m_prevTime;
 
   /** Creates a new ExampleCommand. */
-  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision) { 
-      this(driveTrain, vision, null);
+  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision) {
+    this(driveTrain, vision, null);
   }
 
-  public CargoTrajectoryRameseteCommand(DriveTrain driveTrain, Vision vision, TrajectoryConfig config) {
+  public CargoTrajectoryRameseteCommand(
+      DriveTrain driveTrain, Vision vision, TrajectoryConfig config) {
     m_driveTrain = driveTrain;
     m_vision = vision;
-    m_config = config; 
+    m_config = config;
     m_pose = m_driveTrain::getRobotPoseMeters;
     m_follower = new RamseteController();
     m_feedforward = m_driveTrain.getFeedforward();
@@ -108,10 +107,9 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
       return;
     }
 
-    if(m_config != null) {
+    if (m_config != null) {
       m_pathConfig = m_config;
-    }
-    else {
+    } else {
       m_pathConfig =
           new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(14))
               // Add kinematics to ensure max speed is actually obeyed

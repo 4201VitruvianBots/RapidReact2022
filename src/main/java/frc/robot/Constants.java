@@ -254,6 +254,10 @@ public final class Constants {
     public static double LOWER_HUB_RADIUS_METERS = Units.inchesToMeters(30.0625);
     public static double CARGO_RADIUS = Units.inchesToMeters(4.75);
 
+    public static final Pose2d CARGO_TARMAC_ONE = new Pose2d(7.64, 0.37, new Rotation2d());
+    public static final Pose2d CARGO_TARMAC_TWO = new Pose2d(5.17, 1.89, new Rotation2d());
+    public static final Pose2d CARGO_TERMINAL = new Pose2d(1.10, 1.00, new Rotation2d());
+
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
@@ -278,8 +282,7 @@ public final class Constants {
     public static String VISION_SERVER_IP = "10.42.1.12";
     public static String LIMELIGHT_IP = "10.42.1.11";
 
-    public static double TRAJECTORY_MAX_CARGO_DISTANCE =
-        Units.inchesToMeters(40); // TODO Get reliability measurement
+    public static double TRAJECTORY_MAX_CARGO_DISTANCE = Units.inchesToMeters(30);
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)

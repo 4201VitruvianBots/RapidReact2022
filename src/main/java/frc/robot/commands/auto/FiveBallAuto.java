@@ -10,15 +10,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
-import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntake;
-import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.AutoRunIntakeInstant;
-import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
@@ -88,7 +84,8 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new CargoTrajectoryRameseteCommand(driveTrain, vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
+            new CargoTrajectoryRameseteCommand(driveTrain, vision)
+                .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             vision::cargoInRange),
         new AutoRunIntakeInstant(intake, indexer, false),
         new IntakePiston(intake, false),
@@ -103,33 +100,34 @@ public class FiveBallAuto extends SequentialCommandGroup {
         // INTAKE 2
         new IntakePiston(intake, true),
         new AutoRunIntakeInstant(intake, indexer, true),
-            new SequentialCommandGroup(
-                new InterruptingCommand(
-                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                    new CargoTrajectoryRameseteCommand(driveTrain, vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
-                    vision::cargoInRange),
-               new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
-               new SetTurretAbsoluteSetpointDegrees(turret, -6),
-               new InterruptingCommand(
-                    command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                    new CargoTrajectoryRameseteCommand(driveTrain,vision).andThen(()-> driveTrain.setMotorTankDrive(0,0)),
-                    vision::cargoInRange)),
-            new AutoRunIntakeInstant(intake, indexer, false),
-            new IntakePiston(intake, false),
+        new SequentialCommandGroup(
+            new InterruptingCommand(
+                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new CargoTrajectoryRameseteCommand(driveTrain, vision)
+                    .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                vision::cargoInRange),
+            new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
+            new SetTurretAbsoluteSetpointDegrees(turret, -6),
+            new InterruptingCommand(
+                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                new CargoTrajectoryRameseteCommand(driveTrain, vision)
+                    .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                vision::cargoInRange)),
+        new AutoRunIntakeInstant(intake, indexer, false),
+        new IntakePiston(intake, false),
 
-        // SHOOT 3 
+        // SHOOT 3
         new ParallelDeadlineGroup(
-             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-             new AutoRunIndexer (indexer, flywheel,-0.8,true).withTimeout(0.2)),
+            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIndexer(indexer, flywheel, -0.8, true).withTimeout(0.2)),
         new IntakePiston(intake, true),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
-        new ParallelDeadlineGroup( 
+        new ParallelDeadlineGroup(
             new ConditionalCommand(
                 new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),
                 RobotBase::isReal),
-            new AutoRunIntakeOnly(intake))
-    );
+            new AutoRunIntakeOnly(intake)));
   }
 }
 

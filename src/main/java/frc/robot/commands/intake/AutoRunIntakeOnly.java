@@ -12,7 +12,6 @@ public class AutoRunIntakeOnly extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
-
   /** @param intake The intake used by this command */
   public AutoRunIntakeOnly(Intake intake) {
     m_intake = intake;

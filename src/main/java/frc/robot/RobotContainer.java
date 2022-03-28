@@ -113,16 +113,16 @@ public class RobotContainer {
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
-            m_autoChooser.addOption(
-              "Five Ball Auto Long Shot",
-              new FiveBallAutoLongShot(
-                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-                  m_autoChooser.addOption(
-                    "Five Ball Auto Vision",
-                    new FiveBallAutoVision(
-                        m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-      
-                  m_autoChooser.addOption(
+    m_autoChooser.addOption(
+        "Five Ball Auto Long Shot",
+        new FiveBallAutoLongShot(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Five Ball Auto Vision",
+        new FiveBallAutoVision(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+    m_autoChooser.addOption(
         "Ball Trajectory",
         new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
@@ -171,8 +171,7 @@ public class RobotContainer {
     leftButtons[0].whileHeld(
         new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
             .alongWith(new RunIntake(m_intake, m_indexer)));
-    rightButtons[0].whenReleased(
-            new IntakePiston(m_intake, false));
+    rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

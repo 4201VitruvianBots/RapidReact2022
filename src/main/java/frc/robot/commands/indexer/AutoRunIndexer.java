@@ -18,10 +18,13 @@ public class AutoRunIndexer extends CommandBase {
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
     this(indexer, flywheel, 0.85);
   }
+
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput) {
-    this(indexer, flywheel,kickerOutput,false);
+    this(indexer, flywheel, kickerOutput, false);
   }
-  public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput, boolean reverseIndexer) {
+
+  public AutoRunIndexer(
+      Indexer indexer, Flywheel flywheel, double kickerOutput, boolean reverseIndexer) {
     m_indexer = indexer;
     m_flywheel = flywheel;
     m_kickerOutput = kickerOutput;
@@ -41,7 +44,7 @@ public class AutoRunIndexer extends CommandBase {
     // if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
     m_indexer.setKickerPercentOutput(m_kickerOutput);
 
-    m_indexer.setIndexerPercentOutput(m_reverseIndexer? -0.55: 0.55);
+    m_indexer.setIndexerPercentOutput(m_reverseIndexer ? -0.55 : 0.55);
   }
 
   // Called once the command ends or is interrupted.
