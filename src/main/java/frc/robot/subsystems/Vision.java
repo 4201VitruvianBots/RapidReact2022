@@ -301,7 +301,8 @@ public class Vision extends SubsystemBase {
         "Vision", "Detected Cargo Y", getCargoPositionFieldAbsolute(index).getY());
     SmartDashboardTab.putNumber("Vision", "Cargo Position From Ideal", distanceFromIdealPosition);
 
-    return cargoInRange(index) && distanceFromIdealPosition < Constants.Vision.TRAJECTORY_CARGO_POSITION_TOLERANCE;
+    return cargoInRange(index)
+        && distanceFromIdealPosition < Constants.Vision.TRAJECTORY_CARGO_POSITION_TOLERANCE;
   }
 
   public double getCargoHorizontalDistance() {

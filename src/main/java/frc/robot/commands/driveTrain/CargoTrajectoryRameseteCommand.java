@@ -116,7 +116,10 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
               .setEndVelocity(0)
-              .setStartVelocity((m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond) / 2.0);
+              .setStartVelocity(
+                  (m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond
+                          + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond)
+                      / 2.0);
     }
 
     m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
