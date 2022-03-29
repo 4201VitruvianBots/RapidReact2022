@@ -48,25 +48,27 @@ public class DriveToCargoTrajectory extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    finished = false;
 
     startPos = m_driveTrain.getRobotPoseMeters();
 
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE)) {
 
       /** Field relative cargo pose */
-      // cargoPose = new Translation2d(cargoPose .getX(),cargoPose .getY()+(Math.signum(cargoPose .getY()) * Constants.Vision.CARGO_RADIUS));
+      // cargoPose = new Translation2d(cargoPose .getX(),cargoPose .getY()+(Math.signum(cargoPose
+      // .getY()) * Constants.Vision.CARGO_RADIUS));
       /** Field relative cargo angle */
-      cargoPose = m_vision.getCargoPositionFromRobot()
-                    .rotateBy(startPos.getRotation())
-                    .plus(startPos.getTranslation());
+      cargoPose =
+          m_vision
+              .getCargoPositionFromRobot()
+              .rotateBy(startPos.getRotation())
+              .plus(startPos.getTranslation());
       Rotation2d angleToCargo =
           new Rotation2d(startPos.getX() - cargoPose.getX(), startPos.getY() - cargoPose.getY());
       endAngle = angleToCargo;
-      SmartDashboard.putNumber("End Angle", endAngle.getDegrees());
       endPos =
           new Pose2d(
-              cargoPose
-              .minus(Constants.Vision.INTAKE_TRANSLATION.rotateBy(endAngle)), endAngle);
+              cargoPose.minus(Constants.Vision.INTAKE_TRANSLATION.rotateBy(endAngle)), endAngle);
     } else {
       finished = true;
       return;
@@ -97,14 +99,15 @@ public class DriveToCargoTrajectory extends CommandBase {
     m_driveTrain.setCurrentTrajectory(m_path);
 
     m_command = TrajectoryUtils.generateRamseteCommand(m_driveTrain, m_path);
-    m_command.initialize();
+    m_command.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!finished)
-      m_command.execute();
+    // if (!finished) m_command.execute();
+    finished = m_command.isFinished();
+    SmartDashboard.putBoolean("Cargo Trajectory Command Finished", m_command.isFinished());
   }
 
   // Called once the command ends or is interrupted.
@@ -112,13 +115,12 @@ public class DriveToCargoTrajectory extends CommandBase {
   public void end(boolean interrupted) {
     m_driveTrain.setVoltageOutput(0, 0);
 
-    if (!finished)
-      m_command.end(interrupted);
+    if (m_command != null) m_command.end(interrupted);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return finished || m_command.isFinished();
+    return finished;
   }
 }

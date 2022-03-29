@@ -292,7 +292,9 @@ public class FieldSim {
         .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
 
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE))
-      m_field2d.getObject("DetectedCargo").setPose(new Pose2d(m_vision.getCargoPositionFieldAbsolute(), new Rotation2d()));
+      m_field2d
+          .getObject("DetectedCargo")
+          .setPose(new Pose2d(m_vision.getCargoPositionFieldAbsolute(), new Rotation2d()));
     else m_field2d.getObject("DetectedCargo").setPose(new Pose2d());
 
     m_field2d.getObject("trajectory").setTrajectory(m_driveTrain.getCurrentTrajectory());

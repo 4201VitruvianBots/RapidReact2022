@@ -44,7 +44,8 @@ public class AutoUseVisionCorrection extends CommandBase {
   @Override
   public void execute() {
     if (m_vision.getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
-      setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.LIMELIGHT);
+      setpoint =
+          m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.LIMELIGHT);
 
       m_turret.setAbsoluteSetpointDegrees(setpoint);
     }

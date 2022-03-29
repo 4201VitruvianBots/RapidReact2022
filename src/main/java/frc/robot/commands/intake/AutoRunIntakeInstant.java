@@ -5,16 +5,22 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
-public class AutoRunIntakeOnly extends CommandBase {
+public class AutoRunIntakeInstant extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
+  private final Indexer m_indexer;
+  private boolean m_continuous;
+
   /** @param intake The intake used by this command */
-  public AutoRunIntakeOnly(Intake intake) {
+  public AutoRunIntakeInstant(Intake intake, Indexer indexer, boolean continuous) {
     m_intake = intake;
+    m_indexer = indexer;
+    m_continuous = continuous;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
@@ -32,6 +38,7 @@ public class AutoRunIntakeOnly extends CommandBase {
   @Override
   public void execute() {
     m_intake.setIntakePercentOutput(0.9);
+    m_indexer.setKickerPercentOutput(-0.2);
   }
 
   /**
@@ -39,13 +46,16 @@ public class AutoRunIntakeOnly extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    m_intake.setIntakePercentOutput(0);
-    m_intake.setIntakeState(false);
+    if (!m_continuous) {
+      m_intake.setIntakePercentOutput(0);
+      m_intake.setIntakeState(false);
+      m_indexer.setKickerPercentOutput(0);
+    }
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

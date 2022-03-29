@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -268,7 +267,8 @@ public class Vision extends SubsystemBase {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
       targetDepth = intake_camera.getEntry("tz").getDoubleArray(nullArray);
       try {
-        return cargoZFilter.calculate(targetDepth[0] == -99 ? 0 : -targetDepth[index] -Constants.Vision.CARGO_RADIUS);
+        return cargoZFilter.calculate(
+            targetDepth[0] == -99 ? 0 : -targetDepth[index] - Constants.Vision.CARGO_RADIUS);
         // return targetDepth[0] == -99 ? 0 : targetDepth[index];
       } catch (Exception e) {
         System.out.println(
@@ -279,12 +279,29 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean cargoInRange() {
-    // return cargoInRange(0); // TODO REMOVE DEBUG CODE
-    return false;
+    return cargoInRange(0);
   }
 
   public boolean cargoInRange(int index) {
-    return getCargoTargetDirectDistance(index) < Constants.Vision.TRAJECTORY_MAX_CARGO_DISTANCE;
+    return getValidTarget(CAMERA_POSITION.INTAKE)
+        && getCargoHorizontalDistance(index) < Constants.Vision.TRAJECTORY_MAX_CARGO_DISTANCE;
+  }
+
+  public boolean cargoInRangeWithPositionCheck(Pose2d cargoIdealPosition) {
+    return cargoInRangeWithPositionCheck(0, cargoIdealPosition);
+  }
+
+  public boolean cargoInRangeWithPositionCheck(int index, Pose2d cargoIdealPosition) {
+    double distanceFromIdealPosition =
+        cargoIdealPosition.getTranslation().getDistance(getCargoPositionFieldAbsolute(index));
+
+    SmartDashboardTab.putNumber(
+        "Vision", "Detected Cargo X", getCargoPositionFieldAbsolute(index).getX());
+    SmartDashboardTab.putNumber(
+        "Vision", "Detected Cargo Y", getCargoPositionFieldAbsolute(index).getY());
+    SmartDashboardTab.putNumber("Vision", "Cargo Position From Ideal", distanceFromIdealPosition);
+
+    return cargoInRange(index) && distanceFromIdealPosition < Constants.Vision.TRAJECTORY_CARGO_POSITION_TOLERANCE;
   }
 
   public double getCargoHorizontalDistance() {
@@ -305,9 +322,9 @@ public class Vision extends SubsystemBase {
 
   /**
    * Gets cargo position relative to the robot's center
-   * 
+   *
    * @param index
-   * @return 
+   * @return
    */
   public Translation2d getCargoPositionFromRobot(int index) {
     double x =
@@ -318,11 +335,8 @@ public class Vision extends SubsystemBase {
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
     Translation2d cargoTranslation =
-      new Translation2d(x, y)
-            .minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
-          return cargoTranslation;
-
-    
+        new Translation2d(x, y).minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
+    return cargoTranslation;
   }
 
   public Translation2d getCargoPositionFieldAbsolute() {
@@ -331,8 +345,8 @@ public class Vision extends SubsystemBase {
 
   public Translation2d getCargoPositionFieldAbsolute(int index) {
     return getCargoPositionFromRobot(index)
-      .rotateBy(m_drivetrain.getHeadingRotation2d())
-      .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
+        .rotateBy(m_drivetrain.getHeadingRotation2d())
+        .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
   }
 
   /**
@@ -534,14 +548,15 @@ public class Vision extends SubsystemBase {
     // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
     // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
 
-    
     SmartDashboardTab.putNumber(
-        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance()*39.37);
-        
+        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance() * 39.37);
+
     SmartDashboardTab.putNumber(
-      "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance()*39.37);
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX()*39.37);
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY()*39.37);
+        "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance() * 39.37);
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Pose X", getCargoPositionFromRobot().getX() * 39.37);
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY() * 39.37);
   }
 
   private void logData() {

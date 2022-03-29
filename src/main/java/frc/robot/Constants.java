@@ -254,16 +254,27 @@ public final class Constants {
     public static double LOWER_HUB_RADIUS_METERS = Units.inchesToMeters(30.0625);
     public static double CARGO_RADIUS = Units.inchesToMeters(4.75);
 
+    public static double TRAJECTORY_MAX_CARGO_DISTANCE = Units.inchesToMeters(30);
+    public static double TRAJECTORY_CARGO_POSITION_TOLERANCE = Units.feetToMeters(.75);
+
+    public static final Pose2d CARGO_TARMAC_ONE = new Pose2d(7.64, 0.37, new Rotation2d());
+    public static final Pose2d CARGO_TARMAC_TWO = new Pose2d(4.64, 2.29, new Rotation2d());
+    public static final Pose2d CARGO_TERMINAL = new Pose2d(-0.026, 1.13, new Rotation2d());
+
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
     /** Offset of the intake camera from the robot's center */
     public static Translation2d INTAKE_CAM_TRANSLATION =
-        new Translation2d(Units.inchesToMeters(14), 0); // TODO should this be negative, since the intake is in the back?
+        new Translation2d(
+            Units.inchesToMeters(14),
+            0); // TODO should this be negative, since the intake is in the back?
 
     /** Ofset of the intake's center from the robot's center */
-    public static Translation2d INTAKE_TRANSLATION = 
-        new Translation2d(Units.inchesToMeters(-24),0); // TODO should this be negative, since the intake is in the back?
+    public static Translation2d INTAKE_TRANSLATION =
+        new Translation2d(
+            Units.inchesToMeters(-24),
+            0); // TODO should this be negative, since the intake is in the back?
 
     public static double INTAKE_H_FOV = Units.degreesToRadians(69);
     public static double INTAKE_DETECTION_DISTANCE = Units.inchesToMeters(1.0);
@@ -273,9 +284,6 @@ public final class Constants {
 
     public static String VISION_SERVER_IP = "10.42.1.12";
     public static String LIMELIGHT_IP = "10.42.1.11";
-
-    public static double TRAJECTORY_MAX_CARGO_DISTANCE =
-        Units.inchesToMeters(60); // TODO Get reliability measurement
   }
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)

@@ -4,18 +4,18 @@ import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
-import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
+import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntake;
+import frc.robot.commands.intake.AutoRunIntakeInstant;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
@@ -62,12 +62,13 @@ public class TwoBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-
     Trajectory trajectory2 =
         PathPlanner.loadPath("TwoBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), true);
 
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+
+    Command test = new CargoTrajectoryRameseteCommand(driveTrain, vision);
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
@@ -82,13 +83,12 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
-        new ParallelDeadlineGroup(
-            new InterruptingCommand(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
-            new AutoRunIntake(intake, indexer)
-            ),
+        new AutoRunIntakeInstant(intake, indexer, true),
+        new InterruptingCommand(
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            test.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            vision::cargoInRange),
+        new AutoRunIntakeInstant(intake, indexer, false),
         // new ParallelCommandGroup(
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
         new IntakePiston(intake, false),
@@ -99,6 +99,6 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0,0)));
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }
