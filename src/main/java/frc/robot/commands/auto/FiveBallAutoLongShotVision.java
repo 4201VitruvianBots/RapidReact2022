@@ -11,29 +11,23 @@ import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
+import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntakeIndexer;
-import frc.robot.commands.intake.AutoRunIntakeInstant;
-import frc.robot.commands.intake.AutoRunIntakeOnly;
-import frc.robot.commands.intake.IntakePiston;
+import frc.robot.commands.intake.*;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
+import frc.robot.simulation.Cargo;
 import frc.robot.simulation.FieldSim;
-import frc.robot.subsystems.DriveTrain;
-import frc.robot.subsystems.Flywheel;
-import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.*;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class FiveBallAutoVision extends SequentialCommandGroup {
+public class FiveBallAutoLongShotVision extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -45,7 +39,7 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public FiveBallAutoVision(
+  public FiveBallAutoLongShotVision(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -60,18 +54,20 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath(
+            "FiveBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(10), true);
+        PathPlanner.loadPath(
+            "FiveBallAuto-3", Units.feetToMeters(11), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(10), false);
+            "FiveBallAuto-4", Units.feetToMeters(11), Units.feetToMeters(10), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
@@ -86,14 +82,14 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new CargoTrajectoryRameseteCommand(driveTrain, vision)
-                .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            () -> false),
+            command1,
+            new CargoTrajectoryRameseteCommand(driveTrain,vision),
+                ()->false)
+            .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoRunIntakeInstant(intake, indexer, false),
         new IntakePiston(intake, false),
 
-        // SHOOT 2
+        // SHOOT 1
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
@@ -106,17 +102,17 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new CargoTrajectoryRameseteCommand(driveTrain, vision)
+                command2,
+                new CargoTrajectoryRameseteCommand(driveTrain,vision),
+                ()->vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TARMAC_TWO))
                 .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            () -> vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TARMAC_TWO)),
         new AutoRunIntakeInstant(intake, indexer, false),
         new IntakePiston(intake, false),
 
-        // SHOOT 1
+        //SHOOT 2
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
+            new AutoRunIndexer(indexer, flywheel, 1.4).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         // INTAKE 2
@@ -125,19 +121,21 @@ public class FiveBallAutoVision extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
-            command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new CargoTrajectoryRameseteCommand(driveTrain, vision)
+                command3,
+                new CargoTrajectoryRameseteCommand(driveTrain,vision),
+                ()->vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TERMINAL))
                 .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            () -> vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TERMINAL)),
         new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
 
         // SHOOT 3
         new ParallelDeadlineGroup(
-            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIndexer(indexer, flywheel, -0.8, true).withTimeout(0.2)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
-        new ParallelDeadlineGroup(
+             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+             new AutoRunIndexer (indexer, flywheel,-0.8,true).withTimeout(0.2)),
+
+        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
+        new ParallelDeadlineGroup( 
             new ConditionalCommand(
                 new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),

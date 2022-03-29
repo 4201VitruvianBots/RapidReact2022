@@ -95,7 +95,7 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
               .getCargoPositionFromRobot()
               .rotateBy(startPos.getRotation())
               .plus(startPos.getTranslation());
-      System.out.println("cargePose :" + cargoPose);
+
       Rotation2d angleToCargo =
           new Rotation2d(startPos.getX() - cargoPose.getX(), startPos.getY() - cargoPose.getY());
       endAngle = angleToCargo;
@@ -111,12 +111,12 @@ public class CargoTrajectoryRameseteCommand extends CommandBase {
       m_pathConfig = m_config;
     } else {
       m_pathConfig =
-          new TrajectoryConfig(Units.feetToMeters(14), Units.feetToMeters(14))
+          new TrajectoryConfig(Units.feetToMeters(8), Units.feetToMeters(14))
               // Add kinematics to ensure max speed is actually obeyed
               .setReversed(true)
               .setKinematics(Constants.DriveTrain.kDriveKinematics)
               .setEndVelocity(0)
-              .setStartVelocity(0);
+              .setStartVelocity((m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond + m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond) / 2.0);
     }
 
     m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);

@@ -59,18 +59,20 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(7), false);
+        PathPlanner.loadPath(
+            "FiveBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
-        PathPlanner.loadPath("FiveBallAuto-3", Units.feetToMeters(8), Units.feetToMeters(10), true);
+        PathPlanner.loadPath(
+            "FiveBallAuto-3", Units.feetToMeters(11), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(8), Units.feetToMeters(10), false);
+            "FiveBallAuto-4", Units.feetToMeters(11), Units.feetToMeters(10), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
@@ -85,13 +87,13 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
+                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                new DriveToCargoTrajectory(driveTrain,vision),
+                    ()-> false),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
 
-        // SHOOT 2
+        // SHOOT 1
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
@@ -103,17 +105,17 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new ParallelDeadlineGroup(
-            new InterruptingCommand(
-                command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
-            new AutoRunIntake(intake, indexer)),
+                new InterruptingCommand(
+                    command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                    new DriveToCargoTrajectory(driveTrain,vision),
+                        ()-> false),
+                    new AutoRunIntake(intake, indexer)),
         new IntakePiston(intake, false),
 
-        // SHOOT 1
+        //SHOOT 2
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
+            new AutoRunIndexer(indexer, flywheel, 1.4).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         // INTAKE 2
@@ -122,19 +124,21 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
-                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
+                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+                new DriveToCargoTrajectory(driveTrain,vision),
+                    ()-> false),
             new AutoRunIntakeIndexer(intake, indexer)),
         new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
 
         // SHOOT 3
         new ParallelDeadlineGroup(
-            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIndexer(indexer, flywheel, -0.8, true).withTimeout(0.2)),
-        new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
-        new ParallelDeadlineGroup(
+             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+             new AutoRunIndexer (indexer, flywheel,-0.8,true).withTimeout(0.2)),
+
+        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
+        new ParallelDeadlineGroup( 
             new ConditionalCommand(
                 new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
                 new SimulationShoot(fieldSim, true).withTimeout(5.0),

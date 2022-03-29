@@ -15,12 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAuto;
-import frc.robot.commands.auto.FiveBallAutoLongShot;
-import frc.robot.commands.auto.FiveBallAutoVision;
-import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoDefense;
-import frc.robot.commands.auto.TwoBallAutoLowerHub;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -119,7 +114,7 @@ public class RobotContainer {
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Five Ball Auto Vision",
-        new FiveBallAutoVision(
+        new FiveBallAutoLongShotVision(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
     m_autoChooser.addOption(
