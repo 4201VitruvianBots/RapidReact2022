@@ -115,11 +115,11 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         //SHOOT 2
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 1.4).withTimeout(0.9),
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         // INTAKE 2
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1875),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new SetTurretAbsoluteSetpointDegrees(turret, 10),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
