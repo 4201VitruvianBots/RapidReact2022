@@ -15,17 +15,14 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAutoBlue;
-import frc.robot.commands.auto.FiveBallAutoRed;
-import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoLowerHub;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -93,26 +90,37 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Five Ball Auto Red",
-        new FiveBallAutoRed(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Five Ball Auto Blue",
-        new FiveBallAutoBlue(
+        "Five Ball Auto New",
+        new FiveBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
-    m_autoChooser.addOption(
-        "One Ball Auto",
-        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
         "Two Ball Auto Lower Hub",
         new TwoBallAutoLowerHub(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+    m_autoChooser.addOption(
+        "Five Ball Auto Long Shot",
+        new FiveBallAutoLongShot(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Five Ball Auto Vision",
+        new FiveBallAutoLongShotVision(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+    m_autoChooser.addOption(
+        "Ball Trajectory",
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(
@@ -128,7 +136,10 @@ public class RobotContainer {
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData("Auto Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    SmartDashboard.putData(
+        "Auto Trajectory",
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
 
@@ -152,7 +163,10 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
-    leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    leftButtons[0].whileHeld(
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
+    rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

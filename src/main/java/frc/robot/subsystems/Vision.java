@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -60,6 +61,10 @@ public class Vision extends SubsystemBase {
   double[] targetXAngles = new double[50];
   double[] targetYAngles = new double[50];
   double[] targetDepth = new double[50];
+
+  LinearFilter cargoXFilter = LinearFilter.movingAverage(5);
+  LinearFilter cargoYFilter = LinearFilter.movingAverage(5);
+  LinearFilter cargoZFilter = LinearFilter.movingAverage(5);
 
   private DataLog m_logger;
   private DoubleLogEntry limelightTargetValidLog;
@@ -153,7 +158,8 @@ public class Vision extends SubsystemBase {
         if (getValidTarget(position)) {
           targetXAngles = intake_camera.getEntry("tx").getDoubleArray(nullArray);
           try {
-            return targetXAngles[0] == -99 ? 0 : -targetXAngles[index];
+            return cargoXFilter.calculate(targetXAngles[0] == -99 ? 0 : -targetXAngles[index]);
+            // return targetXAngles[0] == -99 ? 0 : -targetXAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetXAngle() illegal array access");
             return 0;
@@ -202,7 +208,8 @@ public class Vision extends SubsystemBase {
         if (getValidTarget(position)) {
           targetYAngles = intake_camera.getEntry("ty").getDoubleArray(nullArray);
           try {
-            return targetYAngles[0] == -99 ? 0 : targetYAngles[index];
+            return cargoYFilter.calculate(targetYAngles[0] == -99 ? 0 : -targetYAngles[index]);
+            // return targetYAngles[0] == -99 ? 0 : targetYAngles[index];
           } catch (Exception e) {
             System.out.println("Vision Subsystem Error: getTargetYAngle() illegal array access");
             return 0;
@@ -260,13 +267,41 @@ public class Vision extends SubsystemBase {
     if (getValidTarget(CAMERA_POSITION.INTAKE)) {
       targetDepth = intake_camera.getEntry("tz").getDoubleArray(nullArray);
       try {
-        return targetDepth[0] == -99 ? 0 : targetDepth[index];
+        return cargoZFilter.calculate(
+            targetDepth[0] == -99 ? 0 : -targetDepth[index] - Constants.Vision.CARGO_RADIUS);
+        // return targetDepth[0] == -99 ? 0 : targetDepth[index];
       } catch (Exception e) {
         System.out.println(
             "Vision Subsystem Error: getCargoTargetDirectDistance() illegal array access");
         return 0;
       }
     } else return -1;
+  }
+
+  public boolean cargoInRange() {
+    return cargoInRange(0);
+  }
+
+  public boolean cargoInRange(int index) {
+    return getValidTarget(CAMERA_POSITION.INTAKE)
+        && getCargoHorizontalDistance(index) < Constants.Vision.TRAJECTORY_MAX_CARGO_DISTANCE;
+  }
+
+  public boolean cargoInRangeWithPositionCheck(Pose2d cargoIdealPosition) {
+    return cargoInRangeWithPositionCheck(0, cargoIdealPosition);
+  }
+
+  public boolean cargoInRangeWithPositionCheck(int index, Pose2d cargoIdealPosition) {
+    double distanceFromIdealPosition =
+        cargoIdealPosition.getTranslation().getDistance(getCargoPositionFieldAbsolute(index));
+
+    SmartDashboardTab.putNumber(
+        "Vision", "Detected Cargo X", getCargoPositionFieldAbsolute(index).getX());
+    SmartDashboardTab.putNumber(
+        "Vision", "Detected Cargo Y", getCargoPositionFieldAbsolute(index).getY());
+    SmartDashboardTab.putNumber("Vision", "Cargo Position From Ideal", distanceFromIdealPosition);
+
+    return cargoInRange(index) && distanceFromIdealPosition < Constants.Vision.TRAJECTORY_CARGO_POSITION_TOLERANCE;
   }
 
   public double getCargoHorizontalDistance() {
@@ -281,11 +316,17 @@ public class Vision extends SubsystemBase {
         * getCargoTargetDirectDistance(index);
   }
 
-  public Pose2d getCargoPositionFromRobot() {
+  public Translation2d getCargoPositionFromRobot() {
     return getCargoPositionFromRobot(0);
   }
 
-  public Pose2d getCargoPositionFromRobot(int index) {
+  /**
+   * Gets cargo position relative to the robot's center
+   *
+   * @param index
+   * @return
+   */
+  public Translation2d getCargoPositionFromRobot(int index) {
     double x =
         getCargoHorizontalDistance(index)
             * Math.cos(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
@@ -294,12 +335,18 @@ public class Vision extends SubsystemBase {
             * Math.sin(Units.degreesToRadians(getTargetXAngle(CAMERA_POSITION.INTAKE, index)));
 
     Translation2d cargoTranslation =
-        new Translation2d(x, y)
-            .plus(Constants.Vision.INTAKE_CAM_TRANSLATION)
-            .rotateBy(m_drivetrain.getHeadingRotation2d().plus(new Rotation2d(Math.PI)))
-            .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
+        new Translation2d(x, y).minus(Constants.Vision.INTAKE_CAM_TRANSLATION);
+    return cargoTranslation;
+  }
 
-    return new Pose2d(cargoTranslation, new Rotation2d());
+  public Translation2d getCargoPositionFieldAbsolute() {
+    return getCargoPositionFieldAbsolute(0);
+  }
+
+  public Translation2d getCargoPositionFieldAbsolute(int index) {
+    return getCargoPositionFromRobot(index)
+        .rotateBy(m_drivetrain.getHeadingRotation2d())
+        .plus(m_drivetrain.getRobotPoseMeters().getTranslation());
   }
 
   /**
@@ -500,6 +547,16 @@ public class Vision extends SubsystemBase {
         getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
     // SmartDashboardTab.putNumber("Vision", "Hub X Angle", getTargetXAngle(CAMERA_POSITION.GOAL));
     // SmartDashboardTab.putNumber("Vision", "Hub Y Angle", getTargetYAngle(CAMERA_POSITION.GOAL));
+
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance() * 39.37);
+
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Direct Distance", getCargoTargetDirectDistance() * 39.37);
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Pose X", getCargoPositionFromRobot().getX() * 39.37);
+    SmartDashboardTab.putNumber(
+        "Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY() * 39.37);
   }
 
   private void logData() {
@@ -524,10 +581,6 @@ public class Vision extends SubsystemBase {
 
   @Override
   public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
-    SmartDashboardTab.putNumber(
-        "Vision", "Cargo Horizontal Distance", getCargoHorizontalDistance());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose X", getCargoPositionFromRobot().getX());
-    SmartDashboardTab.putNumber("Vision", "Cargo Pose Y", getCargoPositionFromRobot().getY());
+    // This method will be called once per scheduler run during simulation;
   }
 }
