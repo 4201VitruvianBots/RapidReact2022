@@ -89,6 +89,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Setup auto chooser
+    m_autoChooser.setDefaultOption(
+        "Five Ball Auto",
+        new FiveBallAutoLongShot(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     // m_autoChooser.setDefaultOption(
     //     "Five Ball Auto New",
     //     new FiveBallAuto(
@@ -107,11 +111,6 @@ public class RobotContainer {
     //     "Two Ball Auto Lower Hub",
     //     new TwoBallAutoLowerHub(
     //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-
-    m_autoChooser.addOption(
-        "Five Ball Auto",
-        new FiveBallAutoLongShot(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     // m_autoChooser.addOption(
     //     "Five Ball Auto Vision",
     //     new FiveBallAutoLongShotVision(
