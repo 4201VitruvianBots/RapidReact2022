@@ -7,7 +7,6 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
@@ -62,8 +61,7 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath(
-            "FiveBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
+        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
@@ -127,19 +125,16 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
-                command3,
-                new CargoTrajectoryRameseteCommand(driveTrain,vision),
-                () -> false)
-                // ()->vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TERMINAL))
-                .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+                command3, new CargoTrajectoryRameseteCommand(driveTrain, vision), () -> false)
+            // ()->vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TERMINAL))
+            .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
 
         // SHOOT 3
         new ParallelDeadlineGroup(
-             command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-             new AutoRunIndexer (indexer, flywheel,-0.8,true).withTimeout(0.09)),
-
+            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIndexer(indexer, flywheel, -0.8, true).withTimeout(0.09)),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
         new ParallelDeadlineGroup(
