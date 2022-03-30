@@ -87,7 +87,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
+                (() -> false)),
             new AutoRunIntake(intake, indexer)),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(1.5),
@@ -101,7 +101,7 @@ public class TwoBallAutoDefense extends SequentialCommandGroup {
             new InterruptingCommand(
                 command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision),
-                vision::cargoInRange),
+                () -> false),
             new AutoRunIntake(intake, indexer)),
         new IntakePiston(intake, false),
         new ConditionalCommand(

@@ -90,10 +90,14 @@ public class RobotContainer {
   public RobotContainer() {
     // Setup auto chooser
     m_autoChooser.setDefaultOption(
-        "Five Ball Auto New",
-        new FiveBallAuto(
+        "Five Ball Auto",
+        new FiveBallAutoLongShot(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    // m_autoChooser.setDefaultOption(
+    //     "Five Ball Auto New",
+    //     new FiveBallAuto(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "Two Ball Auto",
@@ -103,19 +107,14 @@ public class RobotContainer {
         "Two Ball Auto Defense",
         new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Two Ball Auto Lower Hub",
-        new TwoBallAutoLowerHub(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-
-    m_autoChooser.addOption(
-        "Five Ball Auto Long Shot",
-        new FiveBallAutoLongShot(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption(
-        "Five Ball Auto Vision",
-        new FiveBallAutoLongShotVision(
-            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Two Ball Auto Lower Hub",
+    //     new TwoBallAutoLowerHub(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Five Ball Auto Vision",
+    //     new FiveBallAutoLongShotVision(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
 
     m_autoChooser.addOption(
         "Ball Trajectory",

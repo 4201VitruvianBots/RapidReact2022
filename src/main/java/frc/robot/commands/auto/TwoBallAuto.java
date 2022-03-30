@@ -68,7 +68,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
-    Command test = new CargoTrajectoryRameseteCommand(driveTrain, vision);
+    Command cargoVisionCommand = new CargoTrajectoryRameseteCommand(driveTrain, vision);
     /**
      * Order of operations: drivetrain & intake & indexer & vision run until drivetrain stops
      * (except for vision) run indexer & flywheel until indexer stops end sequence Turn and move
@@ -86,8 +86,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            test.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            vision::cargoInRange),
+            cargoVisionCommand.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            () -> false),
         new AutoRunIntakeInstant(intake, indexer, false),
         // new ParallelCommandGroup(
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),
