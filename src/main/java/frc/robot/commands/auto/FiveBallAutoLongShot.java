@@ -60,19 +60,19 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FiveBallAuto-2", Units.feetToMeters(7), Units.feetToMeters(6), false);
+            "FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FiveBallAuto-3", Units.feetToMeters(11), Units.feetToMeters(10), true);
+            "FiveBallAuto-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(11), Units.feetToMeters(10), false);
+            "FiveBallAuto-4", Units.feetToMeters(12), Units.feetToMeters(9), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
@@ -115,11 +115,11 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
         //SHOOT 2
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
-            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.7),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         // INTAKE 2
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
         new SetTurretAbsoluteSetpointDegrees(turret, 25),
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
