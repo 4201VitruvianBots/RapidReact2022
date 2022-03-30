@@ -6,7 +6,9 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -41,12 +43,12 @@ public class Indexer extends SubsystemBase {
 
   // Setup indexer motor controller (SparkMaxs)
 
-  TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
-  TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor); // RapidReact
+  // TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
+  // TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor); // RapidReact
 
-  // CANSparkMax indexerMotor =
-  //     new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless); // Jango
-  // VictorSPX kickerMotor = new VictorSPX(Constants.Indexer.kickerMotor); // Jango
+  CANSparkMax indexerMotor = // Jango
+      new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless); // Jango
+  VictorSPX kickerMotor = new VictorSPX(Constants.Indexer.kickerMotor); // Jango
 
   // Indexer sensors setup
   DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
@@ -86,11 +88,12 @@ public class Indexer extends SubsystemBase {
   /** Creates a new Indexer. */
   public Indexer() {
     // Motor and PID controller setup
-    indexerMotor.configFactoryDefault();
+    // indexerMotor.configFactoryDefault(); //Rapid React
+    indexerMotor.restoreFactoryDefaults();
     indexerMotor.setInverted(false);
 
-    indexerMotor.setStatusFramePeriod(1, 100);
-    indexerMotor.setStatusFramePeriod(2, 100);
+    // indexerMotor.setStatusFramePeriod(1, 100); //Rapid React
+    // indexerMotor.setStatusFramePeriod(2, 100); //Rapid React
     kickerMotor.configFactoryDefault();
     kickerMotor.setInverted(false);
     kickerMotor.configVoltageCompSaturation(voltageComp);
@@ -125,9 +128,9 @@ public class Indexer extends SubsystemBase {
    * @param output value for the power of the indexer motor
    */
   public void setIndexerPercentOutput(double output) {
-    indexerMotor.set(ControlMode.PercentOutput, output); // RapidReact
+    // indexerMotor.set(ControlMode.PercentOutput, output); // RapidReact
 
-    // indexerMotor.set(output); // Jango
+    indexerMotor.set(output); // Jango
   }
 
   /**
@@ -145,7 +148,8 @@ public class Indexer extends SubsystemBase {
    * @return the percent output of the indexer motor.
    */
   public double getIndexerOutput() {
-    return indexerMotor.getMotorOutputPercent();
+    // return indexerMotor.getMotorOutputPercent(); //Rapid React
+    return indexerMotor.getOutputCurrent();
   }
 
   /**
@@ -265,8 +269,8 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     updateSetpoint();
 
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
     SmartDashboardTab.putString("Indexer", "Rear Color", getRearColorType().toString());
     SmartDashboardTab.putNumber("Indexer", "Rear Red", getRearColor().red);
@@ -276,25 +280,27 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putNumber("Indexer", "Front Red", getFrontColor().red);
     SmartDashboardTab.putNumber("Indexer", "Front Green", getFrontColor().green);
     SmartDashboardTab.putNumber("Indexer", "Front Blue", getFrontColor().blue);
+    SmartDashboardTab.putBoolean("Indexer", "ColorSensorOverride", getColorSensorOverride());
 
-    SmartDashboardTab.putNumber(
-        "Indexer",
-        "Indexer Speed",
-        indexerMotor.getSelectedSensorVelocity()
-            * (10.0
-                * 2.0
-                * Math.PI
-                / (Constants.Flywheel.encoderUnitsPerRotation
-                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
-    SmartDashboardTab.putNumber(
-        "Indexer",
-        "Kicker Speed",
-        kickerMotor.getSelectedSensorVelocity()
-            * (10.0
-                * 2.0
-                * Math.PI
-                / (Constants.Flywheel.encoderUnitsPerRotation
-                    * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+    //   SmartDashboardTab.putNumber( //Rapid React
+    //       "Indexer",
+    //       "Indexer Speed",
+    //       indexerMotor.getSelectedSensorVelocity()
+    //           * (10.0
+    //               * 2.0
+    //               * Math.PI
+    //               / (Constants.Flywheel.encoderUnitsPerRotation
+    //                   * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+    //   SmartDashboardTab.putNumber(
+    //       "Indexer",
+    //       "Kicker Speed",
+    //       kickerMotor.getSelectedSensorVelocity()
+    //           * (10.0
+    //               * 2.0
+    //               * Math.PI
+    //               / (Constants.Flywheel.encoderUnitsPerRotation
+    //                   * Constants.Indexer.falconMaxSpeedRadPerSecond)));
+    //
   }
 
   @Override

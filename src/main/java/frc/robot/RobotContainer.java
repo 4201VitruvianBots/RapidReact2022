@@ -204,8 +204,11 @@ public class RobotContainer {
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_indexer.setDefaultCommand(
         new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxLeftTrigger.get()));
-  // TODO: test first: m_indexer.setDefaultCommand(new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxLeftTrigger.get()));
-  //  TODO: Then this: m_indexer.setDefaultCommand(new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () -> xBoxLeftTrigger.get() && xBoxRightTrigger.get() && xBoxButtons[0].get() && xBoxButtons[1].get() && xBoxButtons[3].get()));
+    // TODO: test first: m_indexer.setDefaultCommand(new ColorSensor(m_indexer, m_controls,
+    // m_intake, m_flywheel, () -> xBoxLeftTrigger.get()));
+    //  TODO: Then this: m_indexer.setDefaultCommand(new ColorSensor(m_indexer, m_controls,
+    // m_intake, m_flywheel, () -> xBoxLeftTrigger.get() && xBoxRightTrigger.get() &&
+    // xBoxButtons[0].get() && xBoxButtons[1].get() && xBoxButtons[3].get()));
     m_turret.setDefaultCommand(
         new SetTurretSetpointFieldAbsolute(
             m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));

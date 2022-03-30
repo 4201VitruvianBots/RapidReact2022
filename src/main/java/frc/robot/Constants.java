@@ -76,8 +76,8 @@ public final class Constants {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
 
-    public static final int indexerRearSensor = 0; // Rear = closer to shooter
-    public static final int indexerFrontSensor = 1; // Front = closer to intake
+    public static final int indexerRearSensor = 0; // Rear = closer to shooter port: 0
+    public static final int indexerFrontSensor = 1; // Front = closer to intake port: 1
 
     public static final double kKickerKs = 0.53436;
     public static final double kKickerKv = 0.017544;
