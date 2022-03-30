@@ -87,7 +87,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             cargoVisionCommand.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            vision::cargoInRange),
+            () -> false),
         new AutoRunIntakeInstant(intake, indexer, false),
         // new ParallelCommandGroup(
         new AutoUseVisionCorrection(turret, vision).withTimeout(1),

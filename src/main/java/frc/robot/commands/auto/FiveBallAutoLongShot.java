@@ -7,8 +7,10 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
+import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
@@ -16,6 +18,7 @@ import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
+import frc.robot.commands.intake.AutoRunIntakeInstant;
 import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.simulation.SetSimTrajectory;
@@ -54,13 +57,13 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
       Vision vision) {
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+        PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(7), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FiveBallAuto-2", Units.feetToMeters(8), Units.feetToMeters(6), false);
+            "FiveBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
@@ -102,7 +105,7 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1750),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1725),
         new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new ParallelDeadlineGroup(
                 new InterruptingCommand(
@@ -120,14 +123,15 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
             RobotBase::isReal),
         // INTAKE 2
         new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
-        new SetTurretAbsoluteSetpointDegrees(turret, 25),
+        new SetTurretAbsoluteSetpointDegrees(turret, 30),
         new IntakePiston(intake, true),
-        new ParallelDeadlineGroup(
-            new InterruptingCommand(
-                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-                new DriveToCargoTrajectory(driveTrain,vision),
-                    ()-> false),
-            new AutoRunIntakeIndexer(intake, indexer)),
+        new AutoRunIntakeInstant(intake, indexer, true),
+        new InterruptingCommand(
+                command3,
+                new CargoTrajectoryRameseteCommand(driveTrain,vision),
+                () -> false)
+                // ()->vision.cargoInRangeWithPositionCheck(Constants.Vision.CARGO_TERMINAL))
+                .andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
 

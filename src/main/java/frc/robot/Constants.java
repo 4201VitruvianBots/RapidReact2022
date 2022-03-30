@@ -255,11 +255,11 @@ public final class Constants {
     public static double CARGO_RADIUS = Units.inchesToMeters(4.75);
 
     public static double TRAJECTORY_MAX_CARGO_DISTANCE = Units.inchesToMeters(30);
-    public static double TRAJECTORY_CARGO_POSITION_TOLERANCE = Units.feetToMeters(.75);
+    public static double TRAJECTORY_CARGO_POSITION_TOLERANCE = Units.feetToMeters(1.0);
 
     public static final Pose2d CARGO_TARMAC_ONE = new Pose2d(7.64, 0.37, new Rotation2d());
     public static final Pose2d CARGO_TARMAC_TWO = new Pose2d(4.64, 2.29, new Rotation2d());
-    public static final Pose2d CARGO_TERMINAL = new Pose2d(-0.026, 1.13, new Rotation2d());
+    public static final Pose2d CARGO_TERMINAL = new Pose2d(0.456, 0.81, new Rotation2d());
 
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
