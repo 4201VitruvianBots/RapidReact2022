@@ -34,7 +34,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class FiveBallAutoLongShot extends SequentialCommandGroup {
+public class FiveBallAutoRed extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -46,7 +46,7 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public FiveBallAutoLongShot(
+  public FiveBallAutoRed(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -56,24 +56,26 @@ public class FiveBallAutoLongShot extends SequentialCommandGroup {
       Vision vision) {
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath("FiveBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(7), true);
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-1", Units.feetToMeters(9), Units.feetToMeters(7), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath("FiveBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
+        PathPlanner.loadPath(
+            "FiveBallAutoRed-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FiveBallAuto-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
+            "FiveBallAutoRed-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
     Trajectory trajectory4 =
         PathPlanner.loadPath(
-            "FiveBallAuto-4", Units.feetToMeters(12), Units.feetToMeters(9), false);
+            "FiveBallAutoRed-4", Units.feetToMeters(12), Units.feetToMeters(9), false);
     VitruvianRamseteCommand command4 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory4);
 
