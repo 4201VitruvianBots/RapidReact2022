@@ -98,7 +98,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
             new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2),
             new SimulationShoot(fieldSim, true).withTimeout(2),
             RobotBase::isReal),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 0),
-        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
+        new SetAndHoldRpmSetpoint(flywheel, vision, 0));
+        // command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)));
   }
 }
