@@ -32,7 +32,7 @@ public class LED extends SubsystemBase {
     configAll.statusLedOffWhenActive = true;
     configAll.disableWhenLOS = false;
     configAll.stripType = LEDStripType.GRB;
-    configAll.brightnessScalar = 1; // 1 is highest safe value
+    configAll.brightnessScalar = .1; // 1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
   }
