@@ -181,8 +181,8 @@ public class RobotContainer {
 
     xBoxLeftTrigger =
         new Button(
-            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
-    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
+            () -> xBoxController.getLeftTriggerAxis() > 0.2); // getTrigger());// getRawAxis(2));
+    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
     xBoxButtons[1].whileHeld(
