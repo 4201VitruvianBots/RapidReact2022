@@ -12,6 +12,7 @@ public class AutoRunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
   private final Flywheel m_flywheel;
+  private final boolean m_reverseIndexer;
   private final double m_kickerOutput;
   /** Creates a new RunIndexer. */
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
@@ -19,9 +20,15 @@ public class AutoRunIndexer extends CommandBase {
   }
 
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput) {
+    this(indexer, flywheel, kickerOutput, false);
+  }
+
+  public AutoRunIndexer(
+      Indexer indexer, Flywheel flywheel, double kickerOutput, boolean reverseIndexer) {
     m_indexer = indexer;
     m_flywheel = flywheel;
     m_kickerOutput = kickerOutput;
+    m_reverseIndexer = reverseIndexer;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
@@ -37,7 +44,7 @@ public class AutoRunIndexer extends CommandBase {
     // if (m_flywheel.canShoot()) m_indexer.setKickerPercentOutput(0.85);
     m_indexer.setKickerPercentOutput(m_kickerOutput);
 
-    m_indexer.setIndexerPercentOutput(0.65);
+    m_indexer.setIndexerPercentOutput(m_reverseIndexer ? -0.55 : 0.55);
   }
 
   // Called once the command ends or is interrupted.

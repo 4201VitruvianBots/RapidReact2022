@@ -20,7 +20,6 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -49,12 +48,12 @@ public class Flywheel extends SubsystemBase {
 
   private int testingSession = 0;
 
-  private double kI = 0.00007;
+  private double kI = 0.0000;
   private double errorSum = 0;
-  private double errorRange = 300;
-  public double tarmacShot = 1520;
-  public double launchpadShot = 1660;
-  public double launchpadShot2 = 1950;
+  private double errorRange = 100;
+  public double tarmacShot = 1650;
+  public double launchpadShot = 1780;
+  public double launchpadShot2 = 1875;
 
   private final LinearSystem<N1, N1, N1> m_flywheelPlant =
       LinearSystemId.identifyVelocitySystem(
@@ -78,12 +77,12 @@ public class Flywheel extends SubsystemBase {
           VecBuilder.fill(
               Conversions.RpmToRadPerSec(
                   Constants.Flywheel.lqrRPMThreshold)), // Velocity error tolerance
-          VecBuilder.fill(12.0), // Control effort (voltage) tolerance
+          VecBuilder.fill(10.0), // Control effort (voltage) tolerance
           0.020);
 
   // The state-space loop combines a controller, observer, feedforward and plant for easy control.
   private final LinearSystemLoop<N1, N1, N1> m_loop =
-      new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 12.0, 0.020);
+      new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 10.0, 0.020);
 
   public Flywheel(Vision vision, Turret turret) {
     m_vision = vision;
@@ -130,10 +129,10 @@ public class Flywheel extends SubsystemBase {
 
     checkRPM = false;
     if (getSetpointRPM() > 0) {
-      if (Math.abs(getSetpointRPM() - getRPM(0)) < getRPMTolerance() && !timerStart) {
+      if (Math.abs(getSetpointRPM() - getRPM(0) - 220) < getRPMTolerance() && !timerStart) {
         timerStart = true;
         timestamp = Timer.getFPGATimestamp();
-      } else if (Math.abs(getSetpointRPM() - getRPM(0)) > getRPMTolerance() && timerStart) {
+      } else if (Math.abs(getSetpointRPM() - getRPM(0) - 220) > getRPMTolerance() && timerStart) {
         timerStart = false;
         timestamp = 0;
       }
@@ -222,14 +221,14 @@ public class Flywheel extends SubsystemBase {
 
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
-    SmartDashboard.putNumber("RPMSetpoint", flywheelSetpointRPM);
+    SmartDashboard.putNumber("RPMSetpoint (Adjusted)", flywheelSetpointRPM - 220);
     SmartDashboard.putBoolean("CanShoot", canShoot);
-    tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
-    launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
-    launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
-    SmartDashboard.putNumber("TarmacShot", tarmacShot);
-    SmartDashboard.putNumber("launchpadShot", launchpadShot);
-    SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
+    // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
+    // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
+    // launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
+    // SmartDashboard.putNumber("TarmacShot", tarmacShot);
+    // SmartDashboard.putNumber("launchpadShot", launchpadShot);
+    // SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
   }
 
   /**

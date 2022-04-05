@@ -15,11 +15,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAutoBlue;
-import frc.robot.commands.auto.FiveBallAutoRed;
-import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoLowerHub;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
@@ -34,6 +30,7 @@ import frc.robot.commands.turret.SetTurretControlMode;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.commands.turret.ToggleTurretLock;
+import frc.robot.commands.vision.SetGoalLEDState;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -99,19 +96,34 @@ public class RobotContainer {
         "Five Ball Auto Blue",
         new FiveBallAutoBlue(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
+    // m_autoChooser.setDefaultOption(
+    //     "Five Ball Auto New",
+    //     new FiveBallAuto(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim,
+    // 3));
     m_autoChooser.addOption("Do Nothing", new InstantCommand());
-    m_autoChooser.addOption(
-        "One Ball Auto",
-        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto Lower Hub",
-        new TwoBallAutoLowerHub(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Two Ball Auto Lower Hub",
+    //     new TwoBallAutoLowerHub(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Five Ball Auto Vision",
+    //     new FiveBallAutoLongShotVision(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+    m_autoChooser.addOption(
+        "Ball Trajectory",
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(
@@ -127,7 +139,10 @@ public class RobotContainer {
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData("Auto Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    SmartDashboard.putData(
+        "Auto Trajectory",
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
 
@@ -151,7 +166,10 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
-    leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    // leftButtons[0].whileHeld(
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
+    // rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
@@ -162,8 +180,8 @@ public class RobotContainer {
 
     xBoxLeftTrigger =
         new Button(
-            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
-    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
+            () -> xBoxController.getLeftTriggerAxis() > 0.2); // getTrigger());// getRawAxis(2));
+    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
     xBoxButtons[1].whileHeld(
@@ -194,6 +212,7 @@ public class RobotContainer {
     // TODO Try this if the above does not work
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
     SmartDashboard.putData(new ResetOdometry(m_driveTrain, m_fieldSim, new Pose2d()));
+    SmartDashboard.putData(new SetGoalLEDState(m_vision, false));
   }
 
   public void initializeSubsystems() {
