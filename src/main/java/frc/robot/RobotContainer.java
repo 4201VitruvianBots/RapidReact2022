@@ -167,10 +167,10 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
-    leftButtons[0].whileHeld(
-        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
-            .alongWith(new RunIntake(m_intake, m_indexer)));
-    rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
+    // leftButtons[0].whileHeld(
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
+    // rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));

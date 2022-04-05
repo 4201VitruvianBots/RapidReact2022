@@ -20,7 +20,7 @@ public class AutoRunIntake extends CommandBase {
     m_intake = intake;
     m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(intake); 
   }
 
   // Called when the command is initially scheduled.
@@ -35,7 +35,7 @@ public class AutoRunIntake extends CommandBase {
    */
   @Override
   public void execute() {
-    m_intake.setIntakePercentOutput(0.9);
+    m_intake.setIntakePercentOutput(0.75);
     m_indexer.setKickerPercentOutput(-0.2);
   }
 
