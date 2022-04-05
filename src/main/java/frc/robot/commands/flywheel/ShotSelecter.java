@@ -5,9 +5,11 @@ package frc.robot.commands.flywheel;
 
 public class ShotSelecter {
   private static final ShotRecipe[] shotRecipes = {
-    new ShotRecipe(1520, .8, 0),
-    new ShotRecipe(1660, .8, 0),
-    new ShotRecipe(1950, .8, 0),
+    new ShotRecipe(1650, .8, 3.08),
+    new ShotRecipe(1700, .8, 3.15),
+    new ShotRecipe(1780, .8, 3.25),
+    new ShotRecipe(1900, .8, 3.44),
+    new ShotRecipe(2000, .8, 3.65),
   };
 
   public ShotSelecter() {
