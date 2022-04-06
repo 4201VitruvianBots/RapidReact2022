@@ -63,13 +63,13 @@ public class FourBallAuto extends SequentialCommandGroup {
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FourBallAutoBlue-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
+            "FourBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FourBallAutoBlue-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
+            "FourBallAuto-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
