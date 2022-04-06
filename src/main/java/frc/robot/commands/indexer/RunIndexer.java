@@ -31,8 +31,12 @@ public class RunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_indexer.setIndexerPercentOutput(0.65);
     if (m_runKicker) m_indexer.setKickerPercentOutput(0.8);
+
+    if (!m_indexer.getIndexerRearSensorTripped() || m_runKicker)
+      m_indexer.setIndexerPercentOutput(0.65);
+
+    else m_indexer.setIndexerPercentOutput(0);
   }
 
   // Called once the command ends or is interrupted.
