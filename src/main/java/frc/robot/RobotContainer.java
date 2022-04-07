@@ -186,15 +186,15 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
-    // xBoxButtons[1].whileHeld(
-    //     new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
     xBoxButtons[1].whileHeld(
-        new SetRpmSetpoint(
-            m_flywheel,
-            m_vision,
-            () ->
-                ShotSelecter.interpolateRPM(
-                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    // xBoxButtons[1].whileHeld(
+    //     new SetRpmSetpoint(
+    //         m_flywheel,
+    //         m_vision,
+    //         () ->
+    //             ShotSelecter.interpolateRPM(
+    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[3].whileHeld(
         new SetRpmSetpoint(
             m_flywheel,
