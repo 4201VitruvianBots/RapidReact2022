@@ -35,7 +35,6 @@ public class RunIndexer extends CommandBase {
 
     if (!m_indexer.getIndexerRearSensorTripped() || m_runKicker)
       m_indexer.setIndexerPercentOutput(0.65);
-
     else m_indexer.setIndexerPercentOutput(0);
   }
 

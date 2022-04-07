@@ -201,7 +201,7 @@ public class RobotContainer {
             m_vision,
             () ->
                 ShotSelecter.bestShot(
-                        m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
@@ -284,8 +284,9 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
-    SmartDashboard.putNumber("Closest RPM", ShotSelecter.bestShot(
-      m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
+    SmartDashboard.putNumber(
+        "Closest RPM",
+        ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {

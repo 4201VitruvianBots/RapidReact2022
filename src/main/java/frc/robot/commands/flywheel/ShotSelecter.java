@@ -21,8 +21,9 @@ public class ShotSelecter {
   public static double bestShot(double distance) {
     // return shot with closest distance
     for (ShotRecipe shot : shotRecipes) {
-      if (Math.abs(shot.getDistance() - distance) < Math.abs(closest.getDistance() - distance) && 
-      Math.abs(shot.getDistance() - distance) * 2 < Math.abs(lastClosest.getDistance() - distance)) {
+      if (Math.abs(shot.getDistance() - distance) < Math.abs(closest.getDistance() - distance)
+          && Math.abs(shot.getDistance() - distance) * 2
+              < Math.abs(lastClosest.getDistance() - distance)) {
         closest = shot;
       }
     }
@@ -35,8 +36,11 @@ public class ShotSelecter {
         Math.min(
             distance, 4.1); // Vertex of parabola is at 4.1, don't want RPMs decreasing afterward
     if (distance > 0) {
-      interpolatedRPM = Math.round(Math.max(
-        -381.7 * distance * distance + 3187.88 * distance - 4550.19, 1650) / 25.0) * 25; // Minimum RPM of 1600
+      interpolatedRPM =
+          Math.round(
+                  Math.max(-381.7 * distance * distance + 3187.88 * distance - 4550.19, 1650)
+                      / 25.0)
+              * 25; // Minimum RPM of 1600
     }
     return interpolatedRPM;
   }
