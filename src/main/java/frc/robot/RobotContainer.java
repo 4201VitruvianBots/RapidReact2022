@@ -15,12 +15,14 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.flywheel.ShotSelecter;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
@@ -184,10 +186,22 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
+    // xBoxButtons[1].whileHeld(
+    //     new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
     xBoxButtons[1].whileHeld(
-        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.interpolateRPM(
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[3].whileHeld(
-        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot2));
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.bestShot(
+                        m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
@@ -270,6 +284,8 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
+    SmartDashboard.putNumber("Closest RPM", ShotSelecter.bestShot(
+      m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {

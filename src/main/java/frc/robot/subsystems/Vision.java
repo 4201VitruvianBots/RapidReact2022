@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -62,6 +63,7 @@ public class Vision extends SubsystemBase {
   double[] targetYAngles = new double[50];
   double[] targetDepth = new double[50];
 
+  MedianFilter limelightYFilter = new MedianFilter(5);
   LinearFilter cargoXFilter = LinearFilter.movingAverage(5);
   LinearFilter cargoYFilter = LinearFilter.movingAverage(5);
   LinearFilter cargoZFilter = LinearFilter.movingAverage(5);
@@ -199,7 +201,7 @@ public class Vision extends SubsystemBase {
   public double getTargetYAngle(CAMERA_POSITION position, int index) {
     switch (position) {
       case GOAL:
-        return goal_camera.getEntry("ty").getDouble(0);
+        return limelightYFilter.calculate(goal_camera.getEntry("ty").getDouble(0));
 
       case LIMELIGHT:
         return limelight.getEntry("ty").getDouble(0);
