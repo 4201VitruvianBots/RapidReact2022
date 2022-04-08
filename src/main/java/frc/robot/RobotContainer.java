@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -277,6 +279,9 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
+      m_climber.setClimberNeutralMode(NeutralMode.Coast);
+    }
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
@@ -291,6 +296,7 @@ public class RobotContainer {
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setClimberNeutralMode(NeutralMode.Brake);
     m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
