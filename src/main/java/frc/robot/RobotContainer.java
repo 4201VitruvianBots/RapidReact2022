@@ -4,9 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,14 +17,15 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.flywheel.ShotSelecter;
 import frc.robot.commands.indexer.RunIndexer;
-import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -187,8 +190,20 @@ public class RobotContainer {
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
     xBoxButtons[1].whileHeld(
         new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    // xBoxButtons[1].whileHeld(
+    //     new SetRpmSetpoint(
+    //         m_flywheel,
+    //         m_vision,
+    //         () ->
+    //             ShotSelecter.interpolateRPM(
+    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[3].whileHeld(
-        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot2));
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.bestShot(
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
@@ -264,6 +279,9 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
+      m_climber.setClimberNeutralMode(NeutralMode.Coast);
+    }
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
@@ -271,10 +289,14 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
+    SmartDashboard.putNumber(
+        "Closest RPM",
+        ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setClimberNeutralMode(NeutralMode.Brake);
     m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
