@@ -155,7 +155,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void setClimberNeutralMode(NeutralMode mode) {
-    elevatorClimbMotors[0].setNeutralMode(mode);
+    elevatorClimbMotors[0].setNeutralMode(NeutralMode.Brake);
     elevatorClimbMotors[1].setNeutralMode(mode);
   }
 

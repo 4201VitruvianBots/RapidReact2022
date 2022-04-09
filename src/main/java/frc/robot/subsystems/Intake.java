@@ -45,7 +45,6 @@ public class Intake extends SubsystemBase {
     }
     intakeMotors[0].setInverted(false);
     intakeMotors[1].setInverted(true);
-    intakeMotors[1].follow(intakeMotors[0], FollowerType.PercentOutput);
 
     // SmartDashboard.putData("Intake Subsystem", this);
   }
@@ -73,6 +72,10 @@ public class Intake extends SubsystemBase {
   /** sets the amount of power going to the intake */
   public void setIntakePercentOutput(double value) {
     intakeMotors[0].set(ControlMode.PercentOutput, value);
+  }
+
+  public void setIntakeRollerPercentOutput(double value) {
+    intakeMotors[1].set(ControlMode.PercentOutput, value);
   }
 
   /** updates intake data on to the dashboard */

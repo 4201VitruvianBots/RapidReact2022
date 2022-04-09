@@ -179,7 +179,7 @@ public class RobotContainer {
     // rightButtons[1].whileHeld(
     //     new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
-    rightButtons[1].whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+    rightButtons[1].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
 
     xBoxLeftTrigger =
         new Button(
@@ -187,15 +187,15 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
-    xBoxButtons[1].whileHeld(
-        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
     // xBoxButtons[1].whileHeld(
-    //     new SetRpmSetpoint(
-    //         m_flywheel,
-    //         m_vision,
-    //         () ->
-    //             ShotSelecter.interpolateRPM(
-    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+    //     new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    xBoxButtons[1].whileHeld(
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.interpolateRPM(
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[3].whileHeld(
         new SetRpmSetpoint(
             m_flywheel,
@@ -209,9 +209,9 @@ public class RobotContainer {
     xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
 
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
-    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
+    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
