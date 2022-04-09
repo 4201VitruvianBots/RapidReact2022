@@ -33,7 +33,6 @@ public class AutoRunIntakeOnly extends CommandBase {
   public void execute() {
     m_intake.setIntakePercentOutput(0.9);
     m_intake.setIntakeRollerPercentOutput(0.7);
-
   }
 
   /**

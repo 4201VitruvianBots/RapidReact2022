@@ -53,7 +53,6 @@ public class AutoRunIntakeInstant extends CommandBase {
       m_intake.setIntakeState(false);
       m_indexer.setKickerPercentOutput(0);
       m_intake.setIntakeRollerPercentOutput(0);
-
     }
   }
 
