@@ -141,7 +141,10 @@ public class RobotContainer {
     //     new FourBallAuto(
     //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-
+    m_autoChooser.addOption(
+        "Four Ball Auto",
+        new FourBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
     // SmartDashboard.putData(
     //     "Auto Trajectory",
