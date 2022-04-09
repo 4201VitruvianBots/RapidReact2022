@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -143,10 +142,10 @@ public class RobotContainer {
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
 
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData(
-        "Auto Trajectory",
-        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
-            .alongWith(new RunIntake(m_intake, m_indexer)));
+    // SmartDashboard.putData(
+    //     "Auto Trajectory",
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
 
@@ -279,9 +278,9 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
-    if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
-      m_climber.setClimberNeutralMode(NeutralMode.Coast);
-    }
+    // if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
+    //   m_climber.setClimberNeutralMode(NeutralMode.Coast);
+    // }
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
@@ -289,9 +288,9 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
-    SmartDashboard.putNumber(
-        "Closest RPM",
-        ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
+    // SmartDashboard.putNumber(
+    //     "Closest RPM",
+    //     ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {

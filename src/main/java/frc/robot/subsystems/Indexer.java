@@ -99,7 +99,7 @@ public class Indexer extends SubsystemBase {
     kickerMotor.setStatusFramePeriod(1, 100);
     kickerMotor.setStatusFramePeriod(2, 100);
 
-    SmartDashboard.putData("indexer Subsystem", this);
+    // SmartDashboard.putData("indexer Subsystem", this);
 
     m_controller.latencyCompensate(m_KickerPlant, 0.02, 0.01);
   }
