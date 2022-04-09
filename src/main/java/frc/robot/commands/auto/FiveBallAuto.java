@@ -117,7 +117,7 @@ public class FiveBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, false),
 
         // SHOOT 3
-            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new IntakePiston(intake, true),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.5),
         new ParallelDeadlineGroup(

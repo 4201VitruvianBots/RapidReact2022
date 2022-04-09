@@ -8,14 +8,10 @@ import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.InterruptingCommand;
-import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
-import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
 import frc.robot.commands.intake.AutoRunIntakeInstant;
 import frc.robot.commands.intake.AutoRunIntakeOnly;
@@ -56,14 +52,12 @@ public class FourBallAuto extends SequentialCommandGroup {
       Vision vision) {
 
     Trajectory trajectory1 =
-        PathPlanner.loadPath(
-            "FourBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(4), true);
+        PathPlanner.loadPath("FourBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(4), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
-        PathPlanner.loadPath(
-            "FourBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(4), true);
+        PathPlanner.loadPath("FourBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(4), true);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
@@ -73,47 +67,45 @@ public class FourBallAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
+    addCommands(
+        new SetSimTrajectory(fieldSim, trajectory1),
+        new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
+        new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
 
+        // INTAKE 1
+        new IntakePiston(intake, true),
+        new SetTurretAbsoluteSetpointDegrees(turret, 30),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
+        new ParallelDeadlineGroup(
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            new AutoRunIntakeIndexer(intake, indexer)),
+        new IntakePiston(intake, false),
 
-        addCommands(
-            new SetSimTrajectory(fieldSim, trajectory1),
-            new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
-            new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-    
-            // INTAKE 1
-            new IntakePiston(intake, true),
-            new SetTurretAbsoluteSetpointDegrees(turret, 30),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
-            new ParallelDeadlineGroup(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new AutoRunIntakeIndexer(intake, indexer)),
-            new IntakePiston(intake, false),
-    
-            // SHOOT 1
-            new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        // SHOOT 1
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
+            new SimulationShoot(fieldSim, true).withTimeout(0.9),
+            RobotBase::isReal),
+
+        // INTAKE 2
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
+        new SetTurretAbsoluteSetpointDegrees(turret, 30),
+        new IntakePiston(intake, true),
+        new AutoRunIntakeInstant(intake, indexer, true),
+        command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
+        new IntakePiston(intake, false),
+
+        // SHOOT 2
+        command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
+        new ParallelDeadlineGroup(
             new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
-                new SimulationShoot(fieldSim, true).withTimeout(0.9),
+                new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
+                new SimulationShoot(fieldSim, true).withTimeout(5.0),
                 RobotBase::isReal),
-    
-            // INTAKE 2
-            new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
-            new SetTurretAbsoluteSetpointDegrees(turret, 30),
-            new IntakePiston(intake, true),
-            new AutoRunIntakeInstant(intake, indexer, true),
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
-            new IntakePiston(intake, false),
-    
-            // SHOOT 2
-                command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new IntakePiston(intake, false),
-            new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
-            new ParallelDeadlineGroup(
-                new ConditionalCommand(
-                    new AutoRunIndexer(indexer, flywheel, 0.80).withTimeout(5.0),
-                    new SimulationShoot(fieldSim, true).withTimeout(5.0),
-                    RobotBase::isReal),
-                new AutoRunIntakeOnly(intake)));
+            new AutoRunIntakeOnly(intake)));
   }
 }

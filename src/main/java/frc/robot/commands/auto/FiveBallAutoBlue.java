@@ -133,8 +133,8 @@ public class FiveBallAutoBlue extends SequentialCommandGroup {
         new AutoRunIntakeIndexer(intake, indexer).withTimeout(1),
         new IntakePiston(intake, false),
 
-        // SHOOT 
-            command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+        // SHOOT
+        command4.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
         new ParallelDeadlineGroup(
