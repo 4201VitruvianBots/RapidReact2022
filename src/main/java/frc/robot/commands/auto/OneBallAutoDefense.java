@@ -91,7 +91,7 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
         new ParallelCommandGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new SetAndHoldRpmSetpoint(
-                flywheel, vision, 1650)), // TODO: adjust this value in testing
+                flywheel, vision, 1800)), // TODO: adjust this value in testing
         new ParallelCommandGroup(
             new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
             new ConditionalCommand(
@@ -105,7 +105,7 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntakeOnly(intake)));
-    new ReverseIntakeIndexer(intake, indexer);
+            new AutoRunIntakeOnly(intake)),
+    new ReverseIntakeIndexer(intake, indexer));
   }
 }
