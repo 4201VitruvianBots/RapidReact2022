@@ -57,19 +57,19 @@ public class FourBallAuto extends SequentialCommandGroup {
 
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "FourBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(7), true);
+            "FourBallAuto-1", Units.feetToMeters(9), Units.feetToMeters(4), true);
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
     Trajectory trajectory2 =
         PathPlanner.loadPath(
-            "FourBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(6), false);
+            "FourBallAuto-2", Units.feetToMeters(9), Units.feetToMeters(4), true);
     VitruvianRamseteCommand command2 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
 
     Trajectory trajectory3 =
         PathPlanner.loadPath(
-            "FourBallAuto-3", Units.feetToMeters(12), Units.feetToMeters(10), true);
+            "FourBallAuto-3", Units.feetToMeters(12), Units.feetToMeters(10), false);
     VitruvianRamseteCommand command3 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory3);
 
@@ -82,7 +82,7 @@ public class FourBallAuto extends SequentialCommandGroup {
     
             // INTAKE 1
             new IntakePiston(intake, true),
-            new SetTurretAbsoluteSetpointDegrees(turret, 0),
+            new SetTurretAbsoluteSetpointDegrees(turret, 30),
             new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
             new ParallelDeadlineGroup(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
