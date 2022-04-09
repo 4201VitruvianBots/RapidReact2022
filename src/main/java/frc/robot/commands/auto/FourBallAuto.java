@@ -106,9 +106,7 @@ public class FourBallAuto extends SequentialCommandGroup {
             new IntakePiston(intake, false),
     
             // SHOOT 2
-            new ParallelDeadlineGroup(
                 command3.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-                new AutoRunIndexer(indexer, flywheel, -0.8, true).withTimeout(0.09)),
             new IntakePiston(intake, false),
             new AutoUseVisionCorrection(turret, vision).withTimeout(0.75),
             new ParallelDeadlineGroup(
