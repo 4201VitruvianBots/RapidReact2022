@@ -7,17 +7,19 @@ import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.InterruptingCommand;
-import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntakeInstant;
+import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
+import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.simulation.SetSimTrajectory;
 import frc.robot.commands.simulation.SimulationShoot;
 import frc.robot.commands.turret.AutoUseVisionCorrection;
@@ -82,32 +84,32 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
      * forward to line up with blue ball on other side of the line (NOT running intake, indexer,
      * shooter or vision) End path
      */
-    addCommands(
+    addCommands(  
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         // new AutoRunIndexer(indexer, flywheel),
-
+        new SetTurretAbsoluteSetpointDegrees(turret, -15), // TODO: adjust this value in testing
         new ParallelCommandGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 1650), //TODO: adjust this value in testing
+            new SetAndHoldRpmSetpoint(flywheel, vision, 1650) //TODO: adjust this value in testing
+        ),
         new ParallelCommandGroup(
-            new AutoUseVisionCorrection(turret, vision).withTimeout(1),
+            new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
             new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2), //TODO: adjust this value in testing
-                new SimulationShoot(fieldSim, true).withTimeout(2),
+                new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.7), //TODO: adjust this value in testing
+                new SimulationShoot(fieldSim, true).withTimeout(0.8), 
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0)),
-        new IntakePiston(intake, true),
+             new IntakePiston(intake, true),
         
+        new ParallelDeadlineGroup(
+            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
+            new AutoRunIntakeOnly(intake).withTimeout(0.25))
+           // new IntakePiston(intake, false, 0.)),
+    );
+        new ReverseIntakeIndexer(intake, indexer);
         
-        new ParallelCommandGroup(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            
-
-        
-
-        )
         
             
             
