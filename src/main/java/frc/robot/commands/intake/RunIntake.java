@@ -12,6 +12,7 @@ import frc.robot.subsystems.Intake;
 public class RunIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
+
   private final Indexer m_indexer;
 
   // private final Indexer m_indexer;
@@ -46,8 +47,7 @@ public class RunIntake extends CommandBase {
     // m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(0.7);
     m_intake.setIntakeRollerPercentOutput(0.7);
-    if (!m_indexer.getIndexerRearSensorTripped())
-      m_indexer.setIndexerPercentOutput(0.65);
+    if (!m_indexer.getIndexerRearSensorTripped()) m_indexer.setIndexerPercentOutput(0.65);
     else m_indexer.setIndexerPercentOutput(0);
   }
 
