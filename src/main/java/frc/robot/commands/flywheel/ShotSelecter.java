@@ -6,10 +6,10 @@ package frc.robot.commands.flywheel;
 public class ShotSelecter {
 
   private static final ShotRecipe[] shotRecipes = {
-    new ShotRecipe(1650, .8, 3.61),
+    new ShotRecipe(1650, .8, 3.35),
     new ShotRecipe(1700, .8, 4.15),
     new ShotRecipe(1780, .8, 4.86),
-    new ShotRecipe(1900, .8, 5.2),
+    new ShotRecipe(1900, .8, 5.55),
     new ShotRecipe(2000, .8, 6.36),
   };
 
@@ -32,15 +32,13 @@ public class ShotSelecter {
   }
 
   public static double interpolateRPM(double distance) {
-    distance =
-        Math.min(
-            distance, 4.5); // Vertex of parabola is at 4.1, don't want RPMs decreasing afterward
+    distance = Math.min(distance, 7.0);
     if (distance > 0) {
       interpolatedRPM =
           Math.round(
-                  Math.max(-381.7 * distance * distance + 3493.24 * distance - 5886.42, 1650)
-                      / 25.0)
-              * 25; // Minimum RPM of 1600
+                  Math.max(17.1143 * distance * distance + (-45.1597) * distance + 1603.11, 1650)
+                      / 10.0)
+              * 10;
     }
     return interpolatedRPM;
   }

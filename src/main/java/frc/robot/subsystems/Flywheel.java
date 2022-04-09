@@ -129,10 +129,10 @@ public class Flywheel extends SubsystemBase {
 
     checkRPM = false;
     if (getSetpointRPM() > 0) {
-      if (Math.abs(getSetpointRPM() - getRPM(0) - 170) < getRPMTolerance() && !timerStart) {
+      if (Math.abs(getSetpointRPM() - getRPM(0) - 120) < getRPMTolerance() && !timerStart) {
         timerStart = true;
         timestamp = Timer.getFPGATimestamp();
-      } else if (Math.abs(getSetpointRPM() - getRPM(0) - 170) > getRPMTolerance() && timerStart) {
+      } else if (Math.abs(getSetpointRPM() - getRPM(0) - 120) > getRPMTolerance() && timerStart) {
         timerStart = false;
         timestamp = 0;
       }
@@ -222,14 +222,21 @@ public class Flywheel extends SubsystemBase {
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
     // SmartDashboard.putNumber("RPMSetpoint (Raw)", flywheelSetpointRPM);
-    // SmartDashboard.putNumber("RPMSetpoint (Adjusted)", flywheelSetpointRPM - 170);
-    SmartDashboard.putBoolean("CanShoot", canShoot);
+    // SmartDashboard.putNumber("RPMSetpoint (Adjusted)", flywheelSetpointRPM - 120);
+    SmartDashboard.putBoolean("RPM check", canShoot);
     // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
     // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
     // launchpadShot2 = SmartDashboardTab.getNumber("Flywheel", "launchpadShot2", launchpadShot2);
     // SmartDashboard.putNumber("TarmacShot", tarmacShot);
     // SmartDashboard.putNumber("launchpadShot", launchpadShot);
     // SmartDashboard.putNumber("launchpadShot2", launchpadShot2);
+    boolean turretonTarget =
+        m_turret.onTarget()
+            && m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)
+            && Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT))
+                < Constants.Flywheel.hubToleranceDegrees;
+    SmartDashboard.putBoolean("Turret on target", turretonTarget);
+    SmartDashboard.putBoolean("Can Shoot", canShoot && turretonTarget);
   }
 
   /**

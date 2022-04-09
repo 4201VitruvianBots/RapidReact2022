@@ -5,25 +5,16 @@
 package frc.robot.commands.indexer;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 
-public class RunIndexer extends CommandBase {
-  private final Intake m_intake;
+public class RunOnlyIndexer extends CommandBase {
   private final Indexer m_indexer;
-  private final Flywheel m_flywheel;
-  private final boolean m_runKicker;
 
   /** Creates a new RunIndexer. */
-  public RunIndexer(Intake intake, Indexer indexer, Flywheel flywheel, boolean runKicker) {
-    m_intake = intake;
+  public RunOnlyIndexer(Indexer indexer) {
     m_indexer = indexer;
-    m_flywheel = flywheel;
-    m_runKicker = runKicker;
 
     // Use addRequirements() here to declare subsystem dependencies.
-    if (!runKicker) addRequirements(intake);
     addRequirements(indexer);
   }
 
@@ -34,18 +25,14 @@ public class RunIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_runKicker) m_indexer.setKickerPercentOutput(0.8);
-    else m_intake.setIntakeRollerPercentOutput(0.7);
-
-    m_indexer.setIndexerPercentOutput(0.65);
+    if (!m_indexer.getIndexerRearSensorTripped()) m_indexer.setIndexerPercentOutput(0.65);
+    else m_indexer.setIndexerPercentOutput(0);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_indexer.setIndexerPercentOutput(0);
-    if (m_runKicker) m_indexer.setKickerPercentOutput(0);
-    else m_intake.setIntakeRollerPercentOutput(0);
   }
 
   // Returns true when the command should end.

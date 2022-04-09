@@ -25,6 +25,7 @@ import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.flywheel.ShotSelecter;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.RunOnlyIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -126,7 +127,7 @@ public class RobotContainer {
     m_autoChooser.addOption(
         "Ball Trajectory",
         new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
-            .alongWith(new RunIntake(m_intake, m_indexer)));
+            .alongWith(new RunIntake(m_intake)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(
@@ -179,7 +180,7 @@ public class RobotContainer {
     // rightButtons[1].whileHeld(
     //     new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
-    rightButtons[1].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
+    // rightButtons[1].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
 
     xBoxLeftTrigger =
         new Button(
@@ -187,22 +188,22 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
-    // xBoxButtons[1].whileHeld(
-    //     new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
     xBoxButtons[1].whileHeld(
+        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    xBoxButtons[3].whileHeld(
         new SetRpmSetpoint(
             m_flywheel,
             m_vision,
             () ->
                 ShotSelecter.interpolateRPM(
                     m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
-    xBoxButtons[3].whileHeld(
-        new SetRpmSetpoint(
-            m_flywheel,
-            m_vision,
-            () ->
-                ShotSelecter.bestShot(
-                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+    // xBoxButtons[3].whileHeld(
+    //     new SetRpmSetpoint(
+    //         m_flywheel,
+    //         m_vision,
+    //         () ->
+    //             ShotSelecter.bestShot(
+    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
@@ -210,7 +211,8 @@ public class RobotContainer {
 
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
-    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake));
+    xBoxLeftTrigger.whileHeld(new RunOnlyIndexer(m_indexer));
     xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
