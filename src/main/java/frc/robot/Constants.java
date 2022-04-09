@@ -97,6 +97,7 @@ public final class Constants {
 
   public final class Intake {
     public static final int intakeMotor = 30;
+    public static final int intakeRollerMotor = 31;
     // public static final int intakeSensor = 0;
   }
 
@@ -244,8 +245,8 @@ public final class Constants {
     //    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
-    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 30.0;
-    public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
+    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 36.0;
+    public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(38.0);
     public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);

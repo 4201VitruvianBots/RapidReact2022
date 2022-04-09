@@ -125,7 +125,7 @@ public class DriveTrain extends SubsystemBase {
               null); // VecBuilder.fill(0, 0, 0.0001, 0.1, 0.1, 0.005, 0.005));
     }
     // To display current commands on SmartDashboard
-    SmartDashboard.putData("DT Subsystem", this);
+    // SmartDashboard.putData("DT Subsystem", this);
   }
 
   private void configureCtreMotors() {
@@ -513,8 +513,8 @@ public class DriveTrain extends SubsystemBase {
       // SmartDashboardTab.putNumber(
       //     "DriveTrain", "Right Speed", getSpeedsMetersPerSecond().rightMetersPerSecond);
       SmartDashboard.putNumber("Heading Degrees", getHeadingDegrees());
-      SmartDashboard.putNumber("Roll", getRoll());
-      SmartDashboard.putNumber("Pitch", getPitch());
+      // SmartDashboard.putNumber("Roll", getRoll());
+      // SmartDashboard.putNumber("Pitch", getPitch());
 
       // SmartDashboardTab.putNumber(
       //     "DriveTrain",

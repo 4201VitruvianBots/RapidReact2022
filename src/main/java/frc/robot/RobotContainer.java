@@ -8,7 +8,6 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
-import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -146,10 +145,10 @@ public class RobotContainer {
       new FourBallAuto(
         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData(
-        "Auto Trajectory",
-        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
-            .alongWith(new RunIntake(m_intake, m_indexer)));
+    // SmartDashboard.putData(
+    //     "Auto Trajectory",
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
 
 
     initializeSubsystems();
@@ -184,7 +183,7 @@ public class RobotContainer {
     // rightButtons[1].whileHeld(
     //     new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
 
-    rightButtons[1].whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+    rightButtons[1].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
 
     xBoxLeftTrigger =
         new Button(
@@ -192,15 +191,15 @@ public class RobotContainer {
     xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
     xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
-    xBoxButtons[1].whileHeld(
-        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
     // xBoxButtons[1].whileHeld(
-    //     new SetRpmSetpoint(
-    //         m_flywheel,
-    //         m_vision,
-    //         () ->
-    //             ShotSelecter.interpolateRPM(
-    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+    //     new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    xBoxButtons[1].whileHeld(
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.interpolateRPM(
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[3].whileHeld(
         new SetRpmSetpoint(
             m_flywheel,
@@ -214,9 +213,9 @@ public class RobotContainer {
     xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
 
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
-    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
+    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake, m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
@@ -283,9 +282,9 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
-    if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
-      m_climber.setClimberNeutralMode(NeutralMode.Coast);
-    }
+    // if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
+    //   m_climber.setClimberNeutralMode(NeutralMode.Coast);
+    // }
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
@@ -293,9 +292,10 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
-    SmartDashboard.putNumber(
-        "Closest RPM",
-        ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
+    // SmartDashboard.putNumber(
+    //     "Closest RPM",
+    //
+    // ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {
