@@ -7,6 +7,7 @@
 
 package frc.robot.commands.driveTrain;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
 import java.util.function.DoubleSupplier;
@@ -42,8 +43,10 @@ public class SetArcadeDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
-    joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
+    joystickY = MathUtil.applyDeadband(m_throttle.getAsDouble(), 0.05);
+    joystickX = MathUtil.applyDeadband(m_turn.getAsDouble(), 0.05);
+    // joystickY = (Math.abs(m_throttle.getAsDouble()) > 0.05) ? m_throttle.getAsDouble() : 0;
+    // joystickX = (Math.abs(m_turn.getAsDouble()) > 0.05) ? m_turn.getAsDouble() : 0;
 
     throttle = joystickY;
 
