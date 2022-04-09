@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.InterruptingCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
@@ -88,12 +87,12 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-        // new AutoRunIndexer(indexer, flywheel),
+
+        // SHOOT 1
         new SetTurretAbsoluteSetpointDegrees(turret, -15), // TODO: adjust this value in testing
         new ParallelCommandGroup(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 1650) //TODO: adjust this value in testing
-        ),
+            new SetAndHoldRpmSetpoint(flywheel, vision, 1650)), //TODO: adjust this value in testing
         new ParallelCommandGroup(
             new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
             new ConditionalCommand(
@@ -101,35 +100,12 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
                 new SimulationShoot(fieldSim, true).withTimeout(0.8), 
             RobotBase::isReal),
         new SetAndHoldRpmSetpoint(flywheel, vision, 0)),
-             new IntakePiston(intake, true),
-        
+             
+        // INTAKE, REVERSE INTAKE
+        new IntakePiston(intake, true),
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)), 
-            new AutoRunIntakeOnly(intake).withTimeout(0.25))
-           // new IntakePiston(intake, false, 0.)),
-    );
+            new AutoRunIntakeOnly(intake)));
         new ReverseIntakeIndexer(intake, indexer);
-        
-        
-            
-            
-
-
-       /* (code probably needed for this auto to copy and paste)
-       
-       new SetAndHoldRpmSetpoint(flywheel, vision, 1650), //TODO: fix this value!
-        new AutoRunIntakeInstant(intake, indexer, false),
-        new ParallelCommandGroup(
-            new AutoUseVisionCorrection(turret, vision).withTimeout(1),
-            new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(2),
-                new SimulationShoot(fieldSim, true).withTimeout(2),
-            RobotBase::isReal)));
-        
-        
-        
-        new AutoRunIntakeInstant(intake, indexer, false),
-
-    */
   }
 }
