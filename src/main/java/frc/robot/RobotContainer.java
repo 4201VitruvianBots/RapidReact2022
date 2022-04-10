@@ -298,6 +298,7 @@ m_autoChooser.addOption(
     // if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
     //   m_climber.setClimberNeutralMode(NeutralMode.Coast);
     // }
+    m_turret.setTurretNeutralMode(NeutralMode.Coast);
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);

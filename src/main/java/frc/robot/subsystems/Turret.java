@@ -207,6 +207,10 @@ public class Turret extends SubsystemBase {
     this.arbitraryFF = arbitraryFF;
   }
 
+  public void setTurretNeutralMode(NeutralMode mode) {
+    turretMotor.setNeutralMode(mode);
+  }
+
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngleDegrees());
