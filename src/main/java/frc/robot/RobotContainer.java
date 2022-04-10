@@ -103,6 +103,10 @@ public class RobotContainer {
             m_autoChooser.addOption(
               "Replacement Auto",
               new ReplacementAuto(
+                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision)); 
+                  m_autoChooser.addOption(
+              "Replacement and Shoot",
+              new ReplaceandShoot(
                   m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));       
     // m_autoChooser.setDefaultOption(
     //     "Five Ball Auto New",
