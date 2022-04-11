@@ -62,7 +62,7 @@ public class ReplaceandShoot extends SequentialCommandGroup {
 
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "ReplaceandShootMaster", Units.feetToMeters(4), Units.feetToMeters(3), true);
+            "ReplaceandShootMaster", Units.feetToMeters(4), Units.feetToMeters(3), false);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
@@ -83,12 +83,17 @@ public class ReplaceandShoot extends SequentialCommandGroup {
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
         new ReverseIntakeIndexer(intake, indexer,-0.7).withTimeout(2).andThen(() -> intake.setIntakePiston(true)),
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret, -20),
+        new SetTurretAbsoluteSetpointDegrees(turret,15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeIndexer(intake, indexer)),
-        new IntakePiston(intake, false)
+        new IntakePiston(intake, false),
+        new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
+        new ConditionalCommand(
+            new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
+            new SimulationShoot(fieldSim, true).withTimeout(0.9),
+            RobotBase::isReal)
     );
   }
 }
