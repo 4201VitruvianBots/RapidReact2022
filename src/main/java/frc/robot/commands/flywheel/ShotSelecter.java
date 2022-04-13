@@ -36,7 +36,7 @@ public class ShotSelecter {
     if (distance > 0) {
       interpolatedRPM =
           Math.round(
-                  Math.max(19.6645 * distance * distance + (-39.8713) * distance + 1516.54, 1650)
+                  Math.max(19.6645 * distance * distance + (-39.8713) * distance + 1516.54, 1600)
                       / 10.0)
               * 10;
     }
