@@ -30,7 +30,7 @@ import frc.robot.subsystems.Vision;
 import frc.vitruvianlib.utils.TrajectoryUtils;
 
 /** Intakes one cargo and shoots two cargo into the high goal. */
-public class OneBallAutoDefense extends SequentialCommandGroup {
+public class ReplacementAuto extends SequentialCommandGroup {
   /**
    * Intakes one cargo and shoots two cargo into the high goal.
    *
@@ -42,7 +42,7 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
    * @param turret Turn turret to goal.
    * @param vision Find target.
    */
-  public OneBallAutoDefense(
+  public ReplacementAuto(
       DriveTrain driveTrain,
       FieldSim fieldSim,
       Intake intake,
@@ -61,17 +61,12 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
 
     Trajectory trajectory1 =
         PathPlanner.loadPath(
-            "OneBallAutoDefense-1", Units.feetToMeters(8), Units.feetToMeters(7), true);
+            "ReplacementAutoMaster", Units.feetToMeters(6), Units.feetToMeters(3), false);
 
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    Trajectory trajectory2 =
-        PathPlanner.loadPath(
-            "OneBallAutoDefense-2", Units.feetToMeters(8), Units.feetToMeters(7), true);
-
-    VitruvianRamseteCommand command2 =
-        TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory2);
+    
 
     // USE THIS? Command cargoVisionCommand = new CargoTrajectoryRameseteCommand(driveTrain,
     // vision);
@@ -85,27 +80,8 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-
-        // SHOOT 1
-        new SetTurretAbsoluteSetpointDegrees(turret, -15), // TODO: adjust this value in testing
-        new ParallelCommandGroup(
-            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new SetAndHoldRpmSetpoint(
-                flywheel, vision, 1800)), // TODO: adjust this value in testing
-        new ParallelCommandGroup(
-            new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
-            new ConditionalCommand(
-                new AutoRunIndexer(indexer, flywheel, 0.8)
-                    .withTimeout(0.7), // TODO: adjust this value in testing
-                new SimulationShoot(fieldSim, true).withTimeout(0.8),
-                RobotBase::isReal),
-            new SetAndHoldRpmSetpoint(flywheel, vision, 0)),
-
-        // INTAKE, REVERSE INTAKE
-        new IntakePiston(intake, true),
-        new ParallelDeadlineGroup(
-            command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
-            new AutoRunIntakeOnly(intake)),
-    new ReverseIntakeIndexer(intake, indexer));
+    new ReverseIntakeIndexer(intake, indexer,-0.7).withTimeout(2),
+        command1
+    );
   }
 }

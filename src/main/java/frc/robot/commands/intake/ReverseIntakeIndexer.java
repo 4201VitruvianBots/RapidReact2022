@@ -14,17 +14,23 @@ public class ReverseIntakeIndexer extends CommandBase {
   private final Intake m_intake;
 
   private final Indexer m_indexer;
+  private final double m_intakeSpeed;
+
+  public ReverseIntakeIndexer(Intake intake, Indexer indexer, double intakeSpeed) {
+    m_intake = intake;
+    m_indexer = indexer;
+    m_intakeSpeed = intakeSpeed;
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(intake);
+    addRequirements(indexer);
+  }
 
   /**
    * @param intake The intake used by this command
    * @param indexer The indexer used by this command
    */
   public ReverseIntakeIndexer(Intake intake, Indexer indexer) {
-    m_intake = intake;
-    m_indexer = indexer;
-    // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
-    addRequirements(indexer);
+   this(intake, indexer, -0.5);
   }
 
   // Called when the command is initially scheduled.
@@ -41,8 +47,8 @@ public class ReverseIntakeIndexer extends CommandBase {
   @Override
   public void execute() {
     //  m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(-0.5);
-    m_intake.setIntakeRollerPercentOutput(-0.5);
+    m_intake.setIntakePercentOutput(m_intakeSpeed);
+    m_intake.setIntakeRollerPercentOutput(m_intakeSpeed);
     m_indexer.setIndexerPercentOutput(-0.65);
     m_indexer.setKickerPercentOutput(-0.35);
   }
