@@ -106,6 +106,6 @@ public class OneBallAutoDefense extends SequentialCommandGroup {
         new ParallelDeadlineGroup(
             command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeOnly(intake)),
-    new ReverseIntakeIndexer(intake, indexer));
+        new ReverseIntakeIndexer(intake, indexer));
   }
 }

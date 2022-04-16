@@ -100,14 +100,14 @@ public class RobotContainer {
         "Five Ball Auto Blue",
         new FiveBallAutoBlue(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-            m_autoChooser.addOption(
-              "Replacement Auto",
-              new ReplacementAuto(
-                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision)); 
-                  m_autoChooser.addOption(
-              "Replacement and Shoot",
-              new ReplaceandShoot(
-                  m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));       
+    m_autoChooser.addOption(
+        "Replacement Auto",
+        new ReplacementAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Replacement and Shoot",
+        new ReplaceandShoot(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     // m_autoChooser.setDefaultOption(
     //     "Five Ball Auto New",
     //     new FiveBallAuto(
@@ -153,8 +153,8 @@ public class RobotContainer {
         "Four Ball Auto",
         new FourBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-m_autoChooser.addOption(
-    "One Ball Auto Defense",
+    m_autoChooser.addOption(
+        "One Ball Auto Defense",
         new OneBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);

@@ -3,23 +3,12 @@ package frc.robot.commands.auto;
 import com.pathplanner.lib.PathPlanner;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
-import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.indexer.AutoRunIndexer;
-import frc.robot.commands.intake.AutoRunIntakeOnly;
-import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.simulation.SetSimTrajectory;
-import frc.robot.commands.simulation.SimulationShoot;
-import frc.robot.commands.turret.AutoUseVisionCorrection;
-import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Flywheel;
@@ -66,8 +55,6 @@ public class ReplacementAuto extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    
-
     // USE THIS? Command cargoVisionCommand = new CargoTrajectoryRameseteCommand(driveTrain,
     // vision);
     /**
@@ -80,8 +67,7 @@ public class ReplacementAuto extends SequentialCommandGroup {
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-    new ReverseIntakeIndexer(intake, indexer,-0.7).withTimeout(2),
-        command1
-    );
+        new ReverseIntakeIndexer(intake, indexer, -0.7).withTimeout(2),
+        command1);
   }
 }

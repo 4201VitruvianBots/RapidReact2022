@@ -5,7 +5,6 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
@@ -14,7 +13,6 @@ import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
-import frc.robot.commands.intake.AutoRunIntakeOnly;
 import frc.robot.commands.intake.IntakePiston;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.simulation.SetSimTrajectory;
@@ -67,8 +65,6 @@ public class ReplaceandShoot extends SequentialCommandGroup {
     VitruvianRamseteCommand command1 =
         TrajectoryUtils.generateRamseteCommand(driveTrain, trajectory1);
 
-    
-
     // USE THIS? Command cargoVisionCommand = new CargoTrajectoryRameseteCommand(driveTrain,
     // vision);
     /**
@@ -81,19 +77,20 @@ public class ReplaceandShoot extends SequentialCommandGroup {
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
         new SetDriveTrainNeutralMode(driveTrain, DriveTrainNeutralMode.BRAKE),
-        new ReverseIntakeIndexer(intake, indexer,-0.7).withTimeout(2).andThen(() -> intake.setIntakePiston(true)),
+        new ReverseIntakeIndexer(intake, indexer, -0.7)
+            .withTimeout(2)
+            .andThen(() -> intake.setIntakePiston(true)),
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret,15),
+        new SetTurretAbsoluteSetpointDegrees(turret, 15),
         new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
         new ParallelDeadlineGroup(
-                command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
+            command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
             new AutoRunIntakeIndexer(intake, indexer)),
         new IntakePiston(intake, false),
         new AutoUseVisionCorrection(turret, vision).withTimeout(0.25),
         new ConditionalCommand(
             new AutoRunIndexer(indexer, flywheel, 0.8).withTimeout(0.9),
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
-            RobotBase::isReal)
-    );
+            RobotBase::isReal));
   }
 }

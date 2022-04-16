@@ -30,7 +30,7 @@ public class ReverseIntakeIndexer extends CommandBase {
    * @param indexer The indexer used by this command
    */
   public ReverseIntakeIndexer(Intake intake, Indexer indexer) {
-   this(intake, indexer, -0.5);
+    this(intake, indexer, -0.5);
   }
 
   // Called when the command is initially scheduled.
