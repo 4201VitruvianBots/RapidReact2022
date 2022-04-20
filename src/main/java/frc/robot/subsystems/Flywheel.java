@@ -20,6 +20,7 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
@@ -222,7 +223,7 @@ public class Flywheel extends SubsystemBase {
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
     // SmartDashboard.putNumber("RPMSetpoint (Raw)", flywheelSetpointRPM);
-    // SmartDashboard.putNumber("RPMSetpoint (Adjusted)", flywheelSetpointRPM - 120);
+    SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint (Adjusted)", flywheelSetpointRPM - 120);
     SmartDashboard.putBoolean("RPM check", canShoot);
     // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
     // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
