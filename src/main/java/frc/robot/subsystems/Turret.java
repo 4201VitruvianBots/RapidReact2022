@@ -196,7 +196,7 @@ public class Turret extends SubsystemBase {
   // checks if the turret is pointing within the tolerance of the target
   public boolean onTarget() {
     return Math.abs(getTurretAngleDegrees() - getTurretSetpointDegrees())
-        < Constants.Turret.kErrorBand;
+        < Constants.Turret.degreeTolerance;
   }
 
   public double getArbitraryFF() {
