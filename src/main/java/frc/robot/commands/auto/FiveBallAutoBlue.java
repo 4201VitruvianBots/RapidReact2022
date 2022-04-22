@@ -86,7 +86,7 @@ public class FiveBallAutoBlue extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1600),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -105,7 +105,7 @@ public class FiveBallAutoBlue extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1725),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
