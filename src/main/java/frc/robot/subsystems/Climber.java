@@ -140,18 +140,18 @@ public class Climber extends SubsystemBase {
   }
 
   private void updateClimberLimits() {
-    if (!Overridelatched) {
-      if (!climberLowerLimitOverride.get()) {
-        elevatorClimbMotors[0].setSelectedSensorPosition(0);
-        Overridelatched = true;
-      } /*else if (!climberUpperLimitOverride.get()) {
-          elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
-          Overridelatched = true;
-        }*/
-    } else if (Overridelatched && climberLowerLimitOverride.get()) {
-      // && climberUpperLimitOverride.get()) {
-      Overridelatched = false;
-    }
+    // if (!Overridelatched) {
+    //   if (!climberLowerLimitOverride.get()) {
+    //     elevatorClimbMotors[0].setSelectedSensorPosition(0);
+    //     Overridelatched = true;
+    //   } /*else if (!climberUpperLimitOverride.get()) {
+    //       elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
+    //       Overridelatched = true;
+    //     }*/
+    // } else if (Overridelatched && climberLowerLimitOverride.get()) {
+    //   // && climberUpperLimitOverride.get()) {
+    //   Overridelatched = false;
+    // }
   }
 
   public void setClimberNeutralMode(NeutralMode mode) {
