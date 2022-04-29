@@ -12,6 +12,7 @@ import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 import java.util.function.Supplier;
+import frc.robot.commands.flywheel.ShotSelecter;
 
 public class ColorSensor extends CommandBase {
 
@@ -80,7 +81,7 @@ public class ColorSensor extends CommandBase {
     if (m_indexer.getColorSensorOverride()) {
       if (m_lTriggerHeld.get()) {
         m_intake.setIntakePercentOutput(0.4);
-        
+
       }
 
       // if (m_xboxButton0.get()) {
@@ -126,21 +127,19 @@ public class ColorSensor extends CommandBase {
             // none are right
             m_indexer.setIndexerPercentOutput(0.5);
             m_indexer.setKickerPercentOutput(0.5);
-            m_flywheel.setRPM(600);
+            m_flywheel.setRPM(m_flywheel.getInterpulatedRPM() + 500);
           } else {
             // Front is correct, rear is wrong
             m_indexer.setIndexerPercentOutput(0.5);
             m_indexer.setKickerPercentOutput(0.5);
-            m_flywheel.setRPM(600);
+            m_flywheel.setRPM(m_flywheel.getInterpulatedRPM() + 500);
           }
         }
 
         // front is wrong, rear is correct
         if (rearCorrectColor) {
           if (!frontCorrectColor) {
-            m_indexer.setIndexerPercentOutput(-0.5);
-            m_intake.setIntakePercentOutput(-0.4);
-            m_flywheel.setRPM(600);
+
           } else {
             if (m_lTriggerHeld.get()) {
               m_intake.setIntakePercentOutput(0.4);
@@ -177,7 +176,7 @@ public class ColorSensor extends CommandBase {
           // Rear cargo is wrong
           m_indexer.setIndexerPercentOutput(0.5);
           m_indexer.setKickerPercentOutput(0.5);
-          m_flywheel.setRPM(600);
+          m_flywheel.setRPM(m_flywheel.getInterpulatedRPM() + 500);
         } else {
           if (m_lTriggerHeld.get()) {
             m_intake.setIntakePercentOutput(0.4);
@@ -214,7 +213,8 @@ public class ColorSensor extends CommandBase {
           // Front cargo is wrong
           m_indexer.setIndexerPercentOutput(0.5);
           m_indexer.setKickerPercentOutput(0.5);
-          m_flywheel.setRPM(600);
+          m_flywheel.setRPM(m_flywheel.getInterpulatedRPM() + 500);
+          //add withTimeout
         } else {
           if (m_lTriggerHeld.get()) {
             m_intake.setIntakePercentOutput(0.4);
@@ -265,10 +265,13 @@ public class ColorSensor extends CommandBase {
           m_indexer.setKickerPercentOutput(0);
           m_intake.setIntakePercentOutput(0);
           m_flywheel.setRPM(0);
+          m_flywheel.setRPM(m_flywheel.getInterpulatedRPM());
         }
       }
     }
 
+
+    //TODO: add m_flywheel.setRPM(m_flywheel.getInterpulatedRPM(); to all else statements to revert speed
     /*
 
           Default Speeds for Color Sensor [
