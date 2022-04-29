@@ -29,6 +29,7 @@ import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.RunOnlyIndexer;
 import frc.robot.commands.indexer.ToggleColorSensorOverride;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
+import frc.robot.commands.intake.RunIntake;
 import frc.robot.commands.led.GetSubsystemStates;
 import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.commands.turret.SetTurretControlMode;
