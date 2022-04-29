@@ -10,17 +10,20 @@ package frc.robot.commands.flywheel;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Vision;
+import java.util.function.DoubleSupplier;
+import frc.robot.Constants;
+import frc.robot.commands.flywheel.ShotSelecter;
 
 /** An example command that uses an example subsystem. */
 public class SetRpmSetpoint extends CommandBase {
-  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Flywheel m_flywheel;
 
   private final Vision m_vision;
-  private final double m_RPM;
+  private final DoubleSupplier m_RPM;
 
   /** Creates a new ExampleCommand. */
-  public SetRpmSetpoint(Flywheel flywheel, Vision vision, double RPM) {
+  public SetRpmSetpoint(Flywheel flywheel, Vision vision, DoubleSupplier RPM) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_flywheel = flywheel;
     m_RPM = RPM;
@@ -38,7 +41,8 @@ public class SetRpmSetpoint extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_flywheel.setRPM(m_RPM);
+    m_flywheel.setRPM(ShotSelecter
+        .bestShot(m_vision.getGoalTargetHorizontalDistance(Constants.Vision.CAMERA_POSITION.LIMELIGHT)).getRPM());
   }
 
   // Called once the command ends or is interrupted.

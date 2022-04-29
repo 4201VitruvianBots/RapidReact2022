@@ -75,15 +75,16 @@ public final class Constants {
   public static final class Indexer {
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
+    public static final double kickerGearRatio = 5.0;
 
     public static final int indexerRearSensor = 0; // Rear = closer to shooter
     public static final int indexerFrontSensor = 1; // Front = closer to intake
 
-    public static final double kKickerKs = 0.53436;
-    public static final double kKickerKv = 0.017544;
-    public static final double kKickerKa = 0.00030392;
+    public static final double kKickerKs = 0.63662;
+    public static final double kKickerKv = 0.017502;
+    public static final double kKickerKa = 0.00035281;
 
-    public static final double radiansPerSecondTolerance = 30.0;
+    public static final double radiansPerSecondTolerance = 1.0;
 
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
@@ -171,17 +172,17 @@ public final class Constants {
     //    public static final double kFlywheelKv = 0.02001;
     //    public static final double kFlywheelKa = 0.002995;
     public static final double kFlywheelKs =
-        0.73456; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
+        0; // old flywheel: 0.53456; // 0.63348; // Jamgo: 0.53456;
 
     // Volts per (radian per second)
     public static final double kFlywheelKv =
-        0.016957; // old flywheel: 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
+        0.018876; // old flywheel: 0.017092; // 0.01;//0.15784; // Jamgo: 0.017092;
 
     // Volts per (radian per second squared)
     public static final double kFlywheelKa =
-        0.0026485; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
+        0.0031698; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
-    public static final double lqrRPMThreshold = 15.0;
+    public static final double lqrRPMThreshold = 10.0;
     public static final double rpmTolerance = 40.0;
 
     public static final double gearRatio = 1.0;
@@ -243,20 +244,37 @@ public final class Constants {
     //    public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 27.0; // Landing
     public static double GOAL_CAMERA_MOUNTING_ANGLE_DEGREES = 32.0; // Takeoff
     public static double GOAL_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
-    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 34.3;
+    public static double LIMELIGHT_MOUNTING_ANGLE_DEGREES = 30.0;
     public static double LIMELIGHT_MOUNTING_HEIGHT_METERS = Units.inchesToMeters(29.0);
-    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 0.0;
+    public static double INTAKE_CAMERA_MOUNTING_ANGLE_DEGREES = 34.3;
     public static double INTAKE_CAMERA_MOUNTING_HEIGHT_METERS = 1.0;
     public static double UPPER_HUB_HEIGHT_METERS = Units.inchesToMeters(104.0);
     public static double UPPER_HUB_RADIUS_METERS = Units.feetToMeters(2);
     public static double LOWER_HUB_HEIGHT_METERS = Units.inchesToMeters(41);
     public static double LOWER_HUB_RADIUS_METERS = Units.inchesToMeters(30.0625);
+    public static double CARGO_RADIUS = Units.inchesToMeters(4.75);
+
+    public static double TRAJECTORY_MAX_CARGO_DISTANCE = Units.inchesToMeters(30);
+    public static double TRAJECTORY_CARGO_POSITION_TOLERANCE = Units.feetToMeters(1.0);
+
+    public static final Pose2d CARGO_TARMAC_ONE = new Pose2d(7.64, 0.37, new Rotation2d());
+    public static final Pose2d CARGO_TARMAC_TWO = new Pose2d(4.64, 2.29, new Rotation2d());
+    public static final Pose2d CARGO_TERMINAL = new Pose2d(0.456, 0.81, new Rotation2d());
 
     public static Pose2d HUB_POSE =
         new Pose2d(Units.feetToMeters(27), Units.feetToMeters(13.5), new Rotation2d());
 
+    /** Offset of the intake camera from the robot's center */
     public static Translation2d INTAKE_CAM_TRANSLATION =
-        new Translation2d(Units.inchesToMeters(12), 0);
+        new Translation2d(
+            Units.inchesToMeters(14),
+            0); // TODO should this be negative, since the intake is in the back?
+
+    /** Ofset of the intake's center from the robot's center */
+    public static Translation2d INTAKE_TRANSLATION =
+        new Translation2d(
+            Units.inchesToMeters(-24),
+            0); // TODO should this be negative, since the intake is in the back?
 
     public static double INTAKE_H_FOV = Units.degreesToRadians(69);
     public static double INTAKE_DETECTION_DISTANCE = Units.inchesToMeters(1.0);

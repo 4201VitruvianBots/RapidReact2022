@@ -238,7 +238,7 @@ public class Indexer extends SubsystemBase {
   }
 
   private void updateSetpoint() {
-    if (kickerSetpoint > 0) {
+    if (Math.abs(kickerSetpoint) > 0) {
       m_loop.setNextR(VecBuilder.fill(kickerSetpoint));
       m_loop.correct(
           VecBuilder.fill(
@@ -280,6 +280,8 @@ public class Indexer extends SubsystemBase {
         "Indexer",
         "Kicker Speed",
         kickerMotor.getSelectedSensorVelocity()
+            // * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
+            // / Constants.Indexer.kickerGearRatio);
             * (10.0
                 * 2.0
                 * Math.PI
