@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.*;
@@ -15,18 +16,17 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.DriveTrain.DriveTrainNeutralMode;
-import frc.robot.commands.auto.FiveBallAutoBlue;
-import frc.robot.commands.auto.FiveBallAutoRed;
-import frc.robot.commands.auto.OneBallAuto;
-import frc.robot.commands.auto.TwoBallAuto;
-import frc.robot.commands.auto.TwoBallAutoLowerHub;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.climber.EngageHighClimb;
 import frc.robot.commands.climber.SetClimbState;
 import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
+import frc.robot.commands.flywheel.ShotSelecter;
 import frc.robot.commands.indexer.ColorSensor;
 import frc.robot.commands.indexer.RunIndexer;
+import frc.robot.commands.indexer.RunOnlyIndexer;
 import frc.robot.commands.indexer.ToggleColorSensorOverride;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
 import frc.robot.commands.led.GetSubsystemStates;
@@ -35,6 +35,7 @@ import frc.robot.commands.turret.SetTurretControlMode;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
 import frc.robot.commands.turret.ToggleTurretLock;
+import frc.robot.commands.vision.SetGoalLEDState;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Controls;
@@ -101,19 +102,42 @@ public class RobotContainer {
         "Five Ball Auto Blue",
         new FiveBallAutoBlue(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
-    m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim, 3));
-    m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
-        "One Ball Auto",
-        new OneBallAuto(m_driveTrain, m_fieldSim, m_indexer, m_flywheel, m_turret, m_vision));
+        "Replacement Auto",
+        new ReplacementAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "Replacement and Shoot",
+        new ReplaceandShoot(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.setDefaultOption(
+    //     "Five Ball Auto New",
+    //     new FiveBallAuto(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption("Drive Forward", new DriveForwardDistance(m_driveTrain, m_fieldSim,
+    // 3));
+    m_autoChooser.addOption("Do Nothing", new InstantCommand());
     m_autoChooser.addOption(
         "Two Ball Auto",
         new TwoBallAuto(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     m_autoChooser.addOption(
-        "Two Ball Auto Lower Hub",
-        new TwoBallAutoLowerHub(
+        "Two Ball Auto Defense",
+        new TwoBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Two Ball Auto Lower Hub",
+    //     new TwoBallAutoLowerHub(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    // m_autoChooser.addOption(
+    //     "Five Ball Auto Vision",
+    //     new FiveBallAutoLongShotVision(
+    //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+
+    m_autoChooser.addOption(
+        "Ball Trajectory",
+        new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+            .alongWith(new RunIntake(m_intake)));
     // m_autoChooser.addOption(
     //     "Three Ball Auto",
     //     new ThreeBallAuto(
@@ -127,9 +151,19 @@ public class RobotContainer {
     //     new FourBallAuto(
     //         m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     // m_autoChooser.addOption("Test Path", new TestPath(m_driveTrain, m_fieldSim));
-
+    m_autoChooser.addOption(
+        "Four Ball Auto",
+        new FourBallAuto(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
+    m_autoChooser.addOption(
+        "One Ball Auto Defense",
+        new OneBallAutoDefense(
+            m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
-    SmartDashboard.putData("Auto Trajectory", new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    // SmartDashboard.putData(
+    //     "Auto Trajectory",
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
 
     initializeSubsystems();
 
@@ -153,22 +187,41 @@ public class RobotContainer {
     for (int i = 0; i < xBoxPOVButtons.length; i++)
       xBoxPOVButtons[i] = new POVButton(xBoxController, (i * 90));
 
-    leftButtons[0].whileHeld(new DriveToCargoTrajectory(m_driveTrain, m_vision));
+    // leftButtons[0].whileHeld(
+    //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
+    //         .alongWith(new RunIntake(m_intake, m_indexer)));
+    // rightButtons[0].whenReleased(new IntakePiston(m_intake, false));
 
     rightButtons[0].whileHeld(
         new AlignToCargo(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
-    rightButtons[1].whileHeld(
-        new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+    // rightButtons[1].whileHeld(
+    //     new AlignToLaunchpad(m_driveTrain, m_vision, leftJoystick::getY, rightJoystick::getX));
+
+    // rightButtons[1].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
 
     xBoxLeftTrigger =
         new Button(
-            () -> xBoxController.getLeftTriggerAxis() > 0.05); // getTrigger());// getRawAxis(2));
-    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.05);
+            () -> xBoxController.getLeftTriggerAxis() > 0.2); // getTrigger());// getRawAxis(2));
+    xBoxRightTrigger = new Button(() -> xBoxController.getRightTriggerAxis() > 0.2);
 
-    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 900));
+    xBoxButtons[0].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.tarmacShot));
+    xBoxButtons[1].whileHeld(
+        new SetRpmSetpoint(m_flywheel, m_vision, () -> m_flywheel.launchpadShot));
+    xBoxButtons[3].whileHeld(
+        new SetRpmSetpoint(
+            m_flywheel,
+            m_vision,
+            () ->
+                ShotSelecter.interpolateRPM(
+                    m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
+    // xBoxButtons[3].whileHeld(
+    //     new SetRpmSetpoint(
+    //         m_flywheel,
+    //         m_vision,
+    //         () ->
+    //             ShotSelecter.bestShot(
+    //                 m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT))));
     xBoxButtons[7].whenPressed(new ToggleColorSensorOverride(m_indexer));
-    xBoxButtons[1].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 1800));
-    xBoxButtons[3].whileHeld(new SetRpmSetpoint(m_flywheel, m_vision, 2650));
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
@@ -177,8 +230,10 @@ public class RobotContainer {
     // We are NOT using the RunIntake Command. We are running intake through the color default
     // command
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
-    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_indexer, m_flywheel, false));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_indexer, m_flywheel, true));
+    xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
+    xBoxLeftTrigger.whileHeld(new RunIntake(m_intake));
+    xBoxLeftTrigger.whileHeld(new RunOnlyIndexer(m_indexer));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
@@ -194,6 +249,7 @@ public class RobotContainer {
     // TODO Try this if the above does not work
     // leftButtons[0].cancelWhenPressed(m_driveTrain.getCurrentCommand());
     SmartDashboard.putData(new ResetOdometry(m_driveTrain, m_fieldSim, new Pose2d()));
+    SmartDashboard.putData(new SetGoalLEDState(m_vision, false));
   }
 
   public void initializeSubsystems() {
@@ -248,6 +304,10 @@ public class RobotContainer {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
+    // if (m_climber.getHighClimbPistonPosition() == Value.kForward) {
+    //   m_climber.setClimberNeutralMode(NeutralMode.Coast);
+    // }
+    m_turret.setTurretNeutralMode(NeutralMode.Coast);
     m_vision.setVisionPoseEstimation(true);
     xBoxController.setRumble(GenericHID.RumbleType.kLeftRumble, 0);
     xBoxController.setRumble(GenericHID.RumbleType.kRightRumble, 0);
@@ -255,14 +315,20 @@ public class RobotContainer {
 
   public void disabledPeriodic() {
     m_vision.setVisionPoseEstimation(true);
+    // SmartDashboard.putNumber(
+    //     "Closest RPM",
+    //
+    // ShotSelecter.bestShot(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)));
   }
 
   public void teleopInit() {
     m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
+    m_climber.setClimberNeutralMode(NeutralMode.Brake);
     m_climber.setHoldPosition(m_climber.getElevatorClimbPosition());
     if (m_driveTrain.getPostAutoCommand() != null) {
       m_driveTrain.getPostAutoCommand().schedule(true);
     }
+    m_intake.setIntakePiston(false);
     m_vision.setVisionPoseEstimation(true);
     m_flywheel.setRPM(0);
     m_fieldSim.clearAutoTrajectory();

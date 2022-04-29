@@ -54,6 +54,15 @@
           "length": 0.0,
           "width": 0.0
         },
+        "DetectedCargo": {
+          "length": 0.2409999966621399,
+          "width": 0.2409999966621399
+        },
+        "Intake": {
+          "image": "resources/Images/red_cargo.png",
+          "length": 0.10000000149011612,
+          "width": 0.10000000149011612
+        },
         "Intake A": {
           "arrows": false,
           "length": 0.0,

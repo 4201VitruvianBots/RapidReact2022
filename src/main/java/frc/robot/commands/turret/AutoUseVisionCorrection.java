@@ -43,8 +43,9 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_vision.getValidTarget(CAMERA_POSITION.GOAL)) {
-      setpoint = m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.GOAL);
+    if (m_vision.getValidTarget(CAMERA_POSITION.LIMELIGHT)) {
+      setpoint =
+          m_turret.getTurretAngleDegrees() + m_vision.getTargetXAngle(CAMERA_POSITION.LIMELIGHT);
 
       m_turret.setAbsoluteSetpointDegrees(setpoint);
     }
@@ -57,7 +58,7 @@ public class AutoUseVisionCorrection extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.GOAL))
+    return (Math.abs(m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT))
         <= Constants.Flywheel.hubToleranceDegrees);
   }
 }

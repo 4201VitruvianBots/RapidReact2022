@@ -5,7 +5,6 @@
 package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 /** An example command that uses an example subsystem. */
@@ -19,12 +18,11 @@ public class RunIntake extends CommandBase {
    * @param intake The intake used by this command
    * @param indexer The indexer used by this command
    */
-  public RunIntake(Intake intake, Indexer indexer) {
+  public RunIntake(Intake intake) {
     m_intake = intake;
     // m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
-    addRequirements(indexer);
   }
 
   // Called when the command is initially scheduled.
@@ -42,7 +40,8 @@ public class RunIntake extends CommandBase {
   public void execute() {
     // m_indexer.setKickerPercentOutput(-0.25);
     // m_indexer.setIndexerPercentOutput(0.5);
-    m_intake.setIntakePercentOutput(0.4);
+    m_intake.setIntakePercentOutput(0.7);
+    m_intake.setIntakeRollerPercentOutput(0.7);
   }
 
   /**
@@ -51,10 +50,9 @@ public class RunIntake extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     // m_indexer.setKickerPercentOutput(0);
-    // m_indexer.setIndexerPercentOutput(0);
-
-    m_intake.setIntakePercentOutput(0);
     m_intake.setIntakePiston(false);
+    m_intake.setIntakePercentOutput(0);
+    m_intake.setIntakeRollerPercentOutput(0);
     m_intake.setIntakeState(false);
   }
 

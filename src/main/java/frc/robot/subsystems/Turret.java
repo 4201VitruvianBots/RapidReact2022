@@ -207,23 +207,27 @@ public class Turret extends SubsystemBase {
     this.arbitraryFF = arbitraryFF;
   }
 
+  public void setTurretNeutralMode(NeutralMode mode) {
+    turretMotor.setNeutralMode(mode);
+  }
+
   private void updateShuffleboard() {
     if (RobotBase.isReal()) {
       SmartDashboardTab.putNumber("Turret", "Angle", getTurretAngleDegrees());
       SmartDashboardTab.putNumber("Turret", "Setpoint", getTurretSetpointDegrees());
       SmartDashboard.putNumber("Turret Angle", getTurretAngleDegrees());
-      SmartDashboard.putBoolean("Turret Locked", getTurretLocked());
+      // SmartDashboard.putBoolean("Turret Locked", getTurretLocked());
     }
   }
 
   @Override
   public void periodic() {
-    if (!turretHomeSensor.get() && !turretHomeSensorLatch) {
-      turretMotor.setSelectedSensorPosition(0);
-      turretHomeSensorLatch = true;
-    } else if (turretHomeSensor.get() && turretHomeSensorLatch) {
-      turretHomeSensorLatch = false;
-    }
+    // if (!turretHomeSensor.get() && !turretHomeSensorLatch) {
+    //   turretMotor.setSelectedSensorPosition(0);
+    //   turretHomeSensorLatch = true;
+    // } else if (turretHomeSensor.get() && turretHomeSensorLatch) {
+    //   turretHomeSensorLatch = false;
+    // }
 
     updateClosedLoopPosition();
     updateShuffleboard();

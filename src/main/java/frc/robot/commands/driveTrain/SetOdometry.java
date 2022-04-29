@@ -8,7 +8,6 @@
 package frc.robot.commands.driveTrain;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.simulation.FieldSim;
@@ -54,7 +53,7 @@ public class SetOdometry extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_driveTrain.resetOdometry(m_pose2d, Rotation2d.fromDegrees(m_driveTrain.getHeadingDegrees()));
+    m_driveTrain.resetOdometry(m_pose2d, m_pose2d.getRotation());
     // m_driveTrain.setNavXOffset(m_pose2d.getRotation().getDegrees());
     // if (RobotBase.isSimulation()) m_fieldSim.resetRobotPose(m_pose2d);
   }
