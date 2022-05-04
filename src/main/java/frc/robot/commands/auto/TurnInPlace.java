@@ -57,7 +57,7 @@ public class TurnInPlace extends CommandBase {
   public void execute() {
     pid_output = m_controller.calculate(m_driveTrain.getHeadingDegrees());
     pid_output = Math.max(Math.min(pid_output, 0.6), -0.6);
-    m_driveTrain.setMotorArcadeDrive(0, pid_output);
+    m_driveTrain.setMotorArcadeDrive(0, pid_output, true);
     if (Math.abs(m_driveTrain.getHeadingDegrees()) >= m_setpoint && latch) {
       latch = false;
     }

@@ -35,6 +35,7 @@
       "/SmartDashboard/ResetOdometry": "Command",
       "/SmartDashboard/Selected Auto": "String Chooser",
       "/SmartDashboard/Set Neutral": "Command",
+      "/SmartDashboard/SetGoalLEDState": "Command",
       "/SmartDashboard/indexer Subsystem": "Subsystem"
     },
     "windows": {
@@ -204,6 +205,9 @@
   },
   "NetworkTables": {
     "Controls": {
+      "open": true
+    },
+    "DriveTrain": {
       "open": true
     },
     "Drivetrain": {

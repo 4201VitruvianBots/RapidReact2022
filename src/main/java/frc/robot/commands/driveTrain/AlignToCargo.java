@@ -62,7 +62,7 @@ public class AlignToCargo extends CommandBase {
       //            turn += Math.max(Math.min(turnAdjustment, 0.6), -0.6);
     }
 
-    m_driveTrain.setMotorArcadeDrive(throttle, turn);
+    m_driveTrain.setMotorArcadeDrive(throttle, turn, true);
   }
 
   // Called once the command ends or is interrupted.

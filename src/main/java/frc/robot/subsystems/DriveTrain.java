@@ -257,15 +257,6 @@ public class DriveTrain extends SubsystemBase {
     driveMotors.get(MotorPosition.RIGHT_FRONT).setSelectedSensorPosition(0);
   }
 
-  private double skim(double v) {
-    double gain = 0.5;
-    if (v > 1.0)
-      return -((v - 1.0) * gain);
-    else if (v < -1.0)
-      return -((v + 1.0) * gain);
-    return 0;
-  }
-
   /**
    * Sets the drivetrain's motors using Arcade Drive: The forward/backward and rotational output can
    * be set independently.
@@ -277,24 +268,23 @@ public class DriveTrain extends SubsystemBase {
    *     backward)
    * @param turn The rotation of the drivetrain (positive clockwise, negative counterclockwise)
    */
-  public void setMotorArcadeDrive(double throttle, double turn) {
-    leftOutput = throttle + turn;
-    rightOutput = throttle - turn;
+  public void setMotorArcadeDrive(double throttle, double turn, boolean allowTurnInPlace) {
+    if (allowTurnInPlace) {
+      leftOutput = throttle + turn;
+      rightOutput = throttle - turn;
+    } else {
+      leftOutput = throttle + Math.abs(throttle) * turn;
+      rightOutput = throttle - Math.abs(throttle) * turn;
+    }
 
     // Normalization
-    // magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
-    // if (magnitude > 1.0) {
-    //   leftOutput /= magnitude;
-    //   rightOutput /= magnitude;
-    // }
+    magnitude = Math.max(Math.abs(leftOutput), Math.abs(rightOutput));
+    if (magnitude > 1.0) {
+      leftOutput /= magnitude;
+      rightOutput /= magnitude;
+    }
 
-    double m_leftOutput = leftOutput + skim(rightOutput);
-    rightOutput = rightOutput + skim(leftOutput);
-
-    SmartDashboardTab.putNumber("DriveTrain", "Left Arcade Output", m_leftOutput);
-    SmartDashboardTab.putNumber("DriveTrain", "Right Arcade Output", rightOutput);
-
-    setMotorPercentOutput(m_leftOutput, rightOutput);
+    setMotorPercentOutput(leftOutput, rightOutput);
     // setMotorTankDrive(leftOutput, rightOutput);
   }
 

@@ -10,6 +10,7 @@ package frc.robot.commands.driveTrain;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.DriveTrain;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 /** Sets the drivetrain based on joystick inputs for forward and turning */
@@ -18,6 +19,7 @@ public class SetArcadeDrive extends CommandBase {
   private final DriveTrain m_driveTrain;
 
   private final DoubleSupplier m_throttle, m_turn;
+  private final BooleanSupplier m_allowTurnInPlace;
   private double joystickX, joystickY, throttle, turn;
 
   /**
@@ -27,10 +29,15 @@ public class SetArcadeDrive extends CommandBase {
    * @param throttle Percent output to drive forward.
    * @param turn Percent output to turn (positive = turn right, negative = turn left)
    */
-  public SetArcadeDrive(DriveTrain driveTrain, DoubleSupplier throttle, DoubleSupplier turn) {
+  public SetArcadeDrive(
+      DriveTrain driveTrain,
+      DoubleSupplier throttle,
+      DoubleSupplier turn,
+      BooleanSupplier allowTurnInPlace) {
     m_driveTrain = driveTrain;
     m_throttle = throttle;
     m_turn = turn;
+    m_allowTurnInPlace = allowTurnInPlace;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveTrain);
@@ -50,9 +57,9 @@ public class SetArcadeDrive extends CommandBase {
 
     throttle = joystickY;
 
-    turn = -0.60 * Math.abs(throttle) * joystickX;
+    turn = -0.60 * joystickX;
 
-    m_driveTrain.setMotorArcadeDrive(throttle, turn);
+    m_driveTrain.setMotorArcadeDrive(throttle, turn, m_allowTurnInPlace.getAsBoolean());
   }
 
   // Called once the command ends or is interrupted.
