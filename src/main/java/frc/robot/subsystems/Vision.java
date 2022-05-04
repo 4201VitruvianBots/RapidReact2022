@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -397,6 +398,25 @@ public class Vision extends SubsystemBase {
             .plus(getHubPose().getTranslation());
 
     return new Pose2d(robotPose, m_drivetrain.getHeadingRotation2d());
+  }
+
+  public Transform2d getTransformFromTarget(CAMERA_POSITION position) {
+    theta =
+        m_drivetrain
+            .getHeadingRotation2d()
+            .plus(m_turret.getTurretRotation2d())
+            .plus(getTargetXRotation2d(position))
+            .getRadians();
+
+    x = (getGoalTargetHorizontalDistance(position) * Math.cos(theta));
+    y = (getGoalTargetHorizontalDistance(position) * Math.sin(theta));
+
+    robotPose =
+        new Translation2d(x, y)
+            .rotateBy(getHubPose().getRotation())
+            .plus(getHubPose().getTranslation());
+
+    return new Transform2d(robotPose, m_drivetrain.getHeadingRotation2d());
   }
 
   /**

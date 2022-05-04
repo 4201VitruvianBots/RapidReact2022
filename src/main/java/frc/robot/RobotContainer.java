@@ -33,7 +33,6 @@ import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.commands.turret.SetTurretControlMode;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
-import frc.robot.commands.turret.ToggleTurretLock;
 import frc.robot.commands.vision.SetGoalLEDState;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -222,7 +221,8 @@ public class RobotContainer {
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
-    xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
+    // xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
+    xBoxButtons[7].whenPressed(new DriveToVisionTarget(m_driveTrain, m_vision, m_fieldSim));
 
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));

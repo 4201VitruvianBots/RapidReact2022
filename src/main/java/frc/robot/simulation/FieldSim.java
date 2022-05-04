@@ -231,6 +231,10 @@ public class FieldSim {
     return m_field2d.getRobotPose();
   }
 
+  public Field2d getField2d() {
+    return m_field2d;
+  }
+
   /** synchronized prevents calling this method simoultaneously */
   public synchronized void resetRobotPose(Pose2d pose) {
     m_field2d.setRobotPose(pose);
