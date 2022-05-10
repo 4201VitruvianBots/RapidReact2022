@@ -86,14 +86,14 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        new SetTurretAbsoluteSetpointDegrees(turret, 0),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1625),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1600),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision),
                 () -> false),
-            new AutoRunIntakeIndexer(intake, indexer)),
+            new AutoRunIntakeIndexer(intake, indexer),
+            new SetTurretAbsoluteSetpointDegrees(turret, 0)),
         new IntakePiston(intake, false),
 
         // SHOOT 1
@@ -105,14 +105,14 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1725),
-        new SetTurretAbsoluteSetpointDegrees(turret, 15),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
                 new DriveToCargoTrajectory(driveTrain, vision),
                 () -> false),
-            new AutoRunIntake(intake, indexer)),
+            new AutoRunIntake(intake, indexer),
+            new SetTurretAbsoluteSetpointDegrees(turret, 20)),
         new IntakePiston(intake, false),
 
         // SHOOT 2
@@ -123,7 +123,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
             RobotBase::isReal),
         // INTAKE 2
         new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
-        new SetTurretAbsoluteSetpointDegrees(turret, 30),
+        new SetTurretAbsoluteSetpointDegrees(turret, 30).withTimeout(0.25),
         new IntakePiston(intake, true),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(

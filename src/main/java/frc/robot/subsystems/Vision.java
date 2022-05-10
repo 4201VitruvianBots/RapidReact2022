@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoMode.PixelFormat;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.MedianFilter;
@@ -100,6 +101,9 @@ public class Vision extends SubsystemBase {
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
     UsbCamera usbCamera = new UsbCamera("Microsoft LifeCam HD-3000", 0);
+    usbCamera.setFPS(15);
+    // usbCamera.setExposureManual(10);
+    usbCamera.setPixelFormat(PixelFormat.kYUYV);
     usbCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     usbCamera.setResolution(160, 120);
     CameraServer.startAutomaticCapture(usbCamera);

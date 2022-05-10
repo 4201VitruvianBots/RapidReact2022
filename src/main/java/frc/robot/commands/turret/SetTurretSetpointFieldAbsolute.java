@@ -142,7 +142,14 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
         // lastTurretSetpoint = m_turret.getTurretRotation2d();
         // lastRobotHeading = m_driveTrain.getHeadingRotation2d();
       } else {
-        m_turret.setPercentOutput(-m_controller.getRawAxis(0) * 0.2);
+        if ((m_turret.getTurretAngleDegrees() <= Constants.Turret.minAngle
+                && m_controller.getRawAxis(0) > 0)
+            || (m_turret.getTurretAngleDegrees() >= Constants.Turret.maxAngle
+                && m_controller.getRawAxis(0) < 0)) {
+          m_turret.setPercentOutput(0);
+        } else {
+          m_turret.setPercentOutput(-m_controller.getRawAxis(0) * 0.2);
+        }
       }
     }
 

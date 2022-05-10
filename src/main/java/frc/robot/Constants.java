@@ -184,7 +184,7 @@ public final class Constants {
         0.0031698; // old flywheel: 0.0083035; // 0.008;//0.034438; // Jamgo: 0.0083035;
 
     public static final double lqrRPMThreshold = 10.0;
-    public static final double rpmTolerance = 40.0;
+    public static final double rpmTolerance = 60.0;
 
     public static final double gearRatio = 1.0;
   }
@@ -218,7 +218,7 @@ public final class Constants {
     public static final double kV = 0.012184; // 0.16822;
     public static final double kA = 0.00036802; // 0.011642;
 
-    public static final double degreeTolerance = 1.0;
+    public static final double degreeTolerance = 3.0;
     public static final double degreesPerSecondTolerance = 10.0;
 
     public static final double gearRatio = (60.0 / 16.0) * (170.0 / 16.0);
