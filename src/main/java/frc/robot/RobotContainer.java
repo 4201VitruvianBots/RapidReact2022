@@ -250,7 +250,7 @@ public class RobotContainer {
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(
-            m_driveTrain, leftJoystick::getY, rightJoystick::getX, leftButtons[0]::get));
+            m_driveTrain, leftJoystick::getY, rightJoystick::getX, () -> true));
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));

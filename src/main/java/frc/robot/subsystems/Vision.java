@@ -100,13 +100,13 @@ public class Vision extends SubsystemBase {
     }
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
-    UsbCamera usbCamera = new UsbCamera("Microsoft LifeCam HD-3000", 0);
-    usbCamera.setFPS(15);
+    // UsbCamera usbCamera = new UsbCamera("Microsoft LifeCam HD-3000", 0);
+    // usbCamera.setFPS(15);
     // usbCamera.setExposureManual(10);
-    usbCamera.setPixelFormat(PixelFormat.kYUYV);
-    usbCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-    usbCamera.setResolution(160, 120);
-    CameraServer.startAutomaticCapture(usbCamera);
+    // usbCamera.setPixelFormat(PixelFormat.kYUYV);
+    // usbCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    // usbCamera.setResolution(160, 120);
+    // CameraServer.startAutomaticCapture(usbCamera);
 
     PortForwarder.add(5800, Constants.Vision.LIMELIGHT_IP, 5800);
     PortForwarder.add(5801, Constants.Vision.LIMELIGHT_IP, 5801);

@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
   private final double maxVel = 1.1e4;
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
-  public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
+  public TCA9548AcolorSensor colorSensor = null;//new TCA9548AcolorSensor(I2C.Port.kMXP);
 
   private double voltageComp = 12.0;
 
