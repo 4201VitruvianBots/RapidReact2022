@@ -32,7 +32,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    DataLogManager.start();
     LiveWindow.disableAllTelemetry();
 
     //    addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
