@@ -61,19 +61,20 @@ public class DriveToVisionTarget extends CommandBase {
       visionTargetPose =
           m_vision
               .getHubPositionFromRobot()
-              .rotateBy(new Rotation2d(Units.degreesToRadians(m_vision.getTargetYAngle(CAMERA_POSITION.LIMELIGHT))))
-              .plus(new Translation2d(Constants.Vision.LOWER_HUB_RADIUS_METERS + Units.feetToMeters(1), 0))
+              .rotateBy(
+                  new Rotation2d(
+                      Units.degreesToRadians(m_vision.getTargetYAngle(CAMERA_POSITION.LIMELIGHT))))
+              .plus(
+                  new Translation2d(
+                      Constants.Vision.LOWER_HUB_RADIUS_METERS + Units.feetToMeters(1), 0))
               .rotateBy(startPos.getRotation())
               .plus(startPos.getTranslation());
       Rotation2d angletoVisionTarget =
           new Rotation2d(
-               visionTargetPose.getX() - startPos.getX(), visionTargetPose.getY() - startPos.getY());
+              visionTargetPose.getX() - startPos.getX(), visionTargetPose.getY() - startPos.getY());
       endAngle = angletoVisionTarget;
-      endPos =
-          new Pose2d(
-              visionTargetPose,
-              endAngle);
-    } else { 
+      endPos = new Pose2d(visionTargetPose, endAngle);
+    } else {
       finished = true;
       return;
     }
