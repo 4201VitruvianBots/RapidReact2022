@@ -33,6 +33,7 @@ import frc.robot.commands.turret.SetTurretAbsoluteSetpointDegrees;
 import frc.robot.commands.turret.SetTurretControlMode;
 import frc.robot.commands.turret.SetTurretSetpointFieldAbsolute;
 import frc.robot.commands.turret.ToggleTurretControlMode;
+import frc.robot.commands.turret.ToggleTurretLock;
 import frc.robot.commands.vision.SetGoalLEDState;
 import frc.robot.simulation.FieldSim;
 import frc.robot.subsystems.Climber;
@@ -221,8 +222,8 @@ public class RobotContainer {
 
     xBoxButtons[6].whenPressed(new ToggleTurretControlMode(m_turret));
 
-    // xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
-    xBoxButtons[7].whenPressed(new DriveToVisionTarget(m_driveTrain, m_vision, m_fieldSim));
+    xBoxButtons[7].whenPressed(new ToggleTurretLock(m_turret));
+    leftButtons[1].whileHeld(new DriveToVisionTarget(m_driveTrain, m_vision));
 
     xBoxPOVButtons[2].whileHeld(new ReverseIntakeIndexer(m_intake, m_indexer));
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
@@ -292,7 +293,7 @@ public class RobotContainer {
   }
 
   public void disabledInit() {
-    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.COAST);
+    m_driveTrain.setDriveTrainNeutralMode(DriveTrainNeutralMode.BRAKE);
     m_driveTrain.setMotorTankDrive(0, 0);
     m_driveTrain.setPostAutoCommand(null);
     // if (m_climber.getHighClimbPistonPosition() == Value.kForward) {

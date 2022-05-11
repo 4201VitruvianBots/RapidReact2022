@@ -353,6 +353,27 @@ public class Vision extends SubsystemBase {
     return cargoTranslation;
   }
 
+  public Translation2d getHubPositionFromRobot() {
+    double x =
+        getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)
+            * Math.cos(
+                Units.degreesToRadians(
+                    getTargetXAngle(CAMERA_POSITION.LIMELIGHT, 0)
+                        + m_turret.getTurretAngleDegrees()));
+    double y =
+        getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT)
+            * Math.sin(
+                Units.degreesToRadians(
+                    getTargetXAngle(CAMERA_POSITION.LIMELIGHT, 0)
+                        + m_turret.getTurretAngleDegrees()));
+    SmartDashboard.putNumber("Target X", x);
+    SmartDashboard.putNumber("Target Y", y);
+
+    Translation2d cargoTranslation =
+        new Translation2d(x, y).minus(Constants.Vision.LIMELIGHT_OFFSET);
+    return cargoTranslation;
+  }
+
   public Translation2d getCargoPositionFieldAbsolute() {
     return getCargoPositionFieldAbsolute(0);
   }

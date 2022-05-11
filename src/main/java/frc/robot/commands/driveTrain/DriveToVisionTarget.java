@@ -4,141 +4,127 @@
 
 package frc.robot.commands.driveTrain;
 
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.simulation.FieldSim;
+import frc.robot.Constants.Vision.CAMERA_POSITION;
+import frc.robot.commands.auto.VitruvianRamseteCommand;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Vision;
+import frc.vitruvianlib.utils.TrajectoryUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DriveToVisionTarget extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final DriveTrain m_driveTrain;
+
   private final Vision m_vision;
-  private final FieldSim m_fieldSim;
-  private final DifferentialDriveOdometry m_tempOdometry;
 
-  private RamseteController m_pathFollower = new RamseteController();
-  private Trajectory m_path;
-  DifferentialDriveWheelSpeeds m_prevSpeed = new DifferentialDriveWheelSpeeds();
-  private Timer m_timer = new Timer();
-  private double m_prevTime = 0;
+  private TrajectoryConfig m_pathConfig;
+  private Trajectory m_path, projectedPath;
+  private ArrayList<Pose2d> trajectoryStates;
+  private VitruvianRamseteCommand m_command;
 
-  public DriveToVisionTarget(DriveTrain driveTrain, Vision vision, FieldSim fieldSim) {
+  private Pose2d startPos, endPos;
+  private Translation2d visionTargetPose;
+  private Rotation2d endAngle;
+
+  private boolean finished = false;
+
+  /** Creates a new ExampleCommand. */
+  public DriveToVisionTarget(DriveTrain driveTrain, Vision vision) {
     m_driveTrain = driveTrain;
     m_vision = vision;
-    m_fieldSim = fieldSim;
-    m_tempOdometry = new DifferentialDriveOdometry(m_driveTrain.getHeadingRotation2d());
+
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(driveTrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    finished = false;
+
+    startPos = m_driveTrain.getRobotPoseMeters();
+
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT)) {
-      m_tempOdometry.resetPosition(new Pose2d(), new Rotation2d());
-
-      var goalOffset =
-          new Transform2d(new Translation2d(-Units.feetToMeters(8), 0), new Rotation2d());
-      var targetOffset =
-          m_vision.getTransformFromTarget(Constants.Vision.CAMERA_POSITION.LIMELIGHT);
-
-      var endPos = new Pose2d().plus(targetOffset).plus(goalOffset);
-
-      TrajectoryConfig m_pathConfig =
-          new TrajectoryConfig(8, 4)
-              // Add kinematics to ensure max speed is actually obeyed
-              .setKinematics(Constants.DriveTrain.kDriveKinematics);
-
-      m_path =
-          TrajectoryGenerator.generateTrajectory(new Pose2d(), List.of(), endPos, m_pathConfig);
-
-      var projectedPath =
-          m_path.transformBy(
-              new Transform2d(
-                  m_driveTrain.getRobotPoseMeters().getTranslation(),
-                  new Rotation2d(Units.degreesToRadians(m_driveTrain.getHeadingDegrees()))));
-
-      var trajectoryStates = new ArrayList<Pose2d>();
-      trajectoryStates.addAll(
-          projectedPath.getStates().stream()
-              .map(state -> state.poseMeters)
-              .collect(Collectors.toList()));
-
-      m_fieldSim.getField2d().getObject("DriveToTargetTrajectory").setPoses(trajectoryStates);
-
-      m_timer.reset();
-      m_timer.start();
+      visionTargetPose =
+          m_vision
+              .getHubPositionFromRobot()
+              .rotateBy(new Rotation2d(Units.degreesToRadians(m_vision.getTargetYAngle(CAMERA_POSITION.LIMELIGHT))))
+              .plus(new Translation2d(Constants.Vision.LOWER_HUB_RADIUS_METERS + Units.feetToMeters(1), 0))
+              .rotateBy(startPos.getRotation())
+              .plus(startPos.getTranslation());
+      Rotation2d angletoVisionTarget =
+          new Rotation2d(
+               visionTargetPose.getX() - startPos.getX(), visionTargetPose.getY() - startPos.getY());
+      endAngle = angletoVisionTarget;
+      endPos =
+          new Pose2d(
+              visionTargetPose,
+              endAngle);
+    } else { 
+      finished = true;
+      return;
     }
+
+    m_pathConfig =
+        new TrajectoryConfig(Units.feetToMeters(5), Units.feetToMeters(2.5))
+            // Add kinematics to ensure max speed is actually obeyed
+            .setReversed(false)
+            .setKinematics(Constants.DriveTrain.kDriveKinematics)
+            .setEndVelocity(0)
+            .setStartVelocity(0);
+
+    m_path = TrajectoryGenerator.generateTrajectory(startPos, List.of(), endPos, m_pathConfig);
+
+    projectedPath =
+        m_path.transformBy(
+            new Transform2d(
+                m_driveTrain.getRobotPoseMeters().getTranslation(),
+                new Rotation2d(Units.degreesToRadians(m_driveTrain.getHeadingDegrees()))));
+
+    trajectoryStates = new ArrayList<Pose2d>();
+    trajectoryStates.addAll(
+        projectedPath.getStates().stream()
+            .map(state -> state.poseMeters)
+            .collect(Collectors.toList()));
+
+    m_driveTrain.setCurrentTrajectory(m_path);
+
+    m_command = TrajectoryUtils.generateRamseteCommand(m_driveTrain, m_path);
+    m_command.schedule();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double currentTime = m_timer.get();
-
-    double dt = currentTime - m_prevTime;
-    m_prevTime = currentTime;
-
-    if (dt > 0) {
-      try {
-        var currentReference = m_path.sample(currentTime);
-
-        var m_chassisSpeeds =
-            m_pathFollower.calculate(m_tempOdometry.getPoseMeters(), currentReference);
-
-        var targetSpeeds = m_driveTrain.getDriveTrainKinematics().toWheelSpeeds(m_chassisSpeeds);
-
-        double leftTargetSpeed = targetSpeeds.leftMetersPerSecond;
-        double rightTargetSpeed = targetSpeeds.rightMetersPerSecond;
-
-        double leftOutput =
-            m_driveTrain
-                .getLeftPIDController()
-                .calculate(
-                    m_driveTrain.getSpeedsMetersPerSecond().leftMetersPerSecond, leftTargetSpeed);
-        leftOutput +=
-            m_driveTrain
-                .getFeedforward()
-                .calculate(
-                    leftTargetSpeed, (leftTargetSpeed - m_prevSpeed.leftMetersPerSecond) / dt);
-
-        double rightOutput =
-            m_driveTrain
-                .getLeftPIDController()
-                .calculate(
-                    m_driveTrain.getSpeedsMetersPerSecond().rightMetersPerSecond, rightTargetSpeed);
-        rightOutput +=
-            m_driveTrain
-                .getFeedforward()
-                .calculate(
-                    rightTargetSpeed, (rightTargetSpeed - m_prevSpeed.rightMetersPerSecond) / dt);
-
-        m_driveTrain.setVoltageOutput(leftOutput, rightOutput);
-      } catch (Exception e) {
-      }
-    }
+    // if (!finished) m_command.execute();
+    finished = m_command.isFinished();
+    SmartDashboard.putBoolean("Drive To Vision Target command finished", m_command.isFinished());
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_driveTrain.setVoltageOutput(0, 0);
+
+    if (m_command != null) m_command.end(interrupted);
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return finished;
   }
 }
