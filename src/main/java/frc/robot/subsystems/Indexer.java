@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.revrobotics.ColorSensorV3.RawColor;
+
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.utils.PicoColorSensor;
 import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
@@ -29,7 +32,8 @@ public class Indexer extends SubsystemBase {
   private final double maxVel = 1.1e4;
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
-  public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
+  // public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
+  private final PicoColorSensor colorSensor = new PicoColorSensor();
 
   private double voltageComp = 12.0;
 
@@ -170,8 +174,8 @@ public class Indexer extends SubsystemBase {
    * @return color
    */
   public Color getColor(int channel) {
-    if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
-    return colorSensor.getColorSensor().getColor();
+  //   if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
+    return channel == 1 ? colorSensor.getColor1() : colorSensor.getColor0();
   }
 
   /**
@@ -195,8 +199,8 @@ public class Indexer extends SubsystemBase {
       frontColor = getColor(0);
     }
     if (getIndexerRearSensorTripped()) {
-      rearColorType = getCargoColor(2);
-      rearColor = getColor(2);
+      rearColorType = getCargoColor(1);
+      rearColor = getColor(1);
     }
   }
 
@@ -254,18 +258,20 @@ public class Indexer extends SubsystemBase {
   public void periodic() {
     updateSetpoint();
 
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
+    SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
 
-    // SmartDashboardTab.putString("Indexer", "Rear Color", getFrontColorType().toString());
-    // SmartDashboardTab.putNumber("Indexer", "Rear Red", getFrontColor().red);
-    // SmartDashboardTab.putNumber("Indexer", "Rear Green", getFrontColor().green);
-    // SmartDashboardTab.putNumber("Indexer", "Rear Blue", getFrontColor().blue);
-    // SmartDashboardTab.putString("Indexer", "Front Color", getRearColorType().toString());
-    // SmartDashboardTab.putNumber("Indexer", "Front Red", getRearColor().red);
-    // SmartDashboardTab.putNumber("Indexer", "Front Green", getRearColor().green);
-    // SmartDashboardTab.putNumber("Indexer", "Front Blue", getRearColor().blue);
-
+    SmartDashboardTab.putString("Indexer", "Front Color", getFrontColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Front Red", getFrontColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Front Green", getFrontColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Front Blue", getFrontColor().blue);
+    SmartDashboardTab.putString("Indexer", "Rear Color", getRearColorType().toString());
+    SmartDashboardTab.putNumber("Indexer", "Rear Red", getRearColor().red);
+    SmartDashboardTab.putNumber("Indexer", "Rear Green", getRearColor().green);
+    SmartDashboardTab.putNumber("Indexer", "Rear Blue", getRearColor().blue);
+    SmartDashboardTab.putBoolean("Indexer", "Front Color Connected", colorSensor.isSensor0Connected());
+    SmartDashboardTab.putBoolean("Indexer", "Rear Color Connected", colorSensor.isSensor1Connected());
+    
     SmartDashboardTab.putNumber(
         "Indexer",
         "Indexer Speed",

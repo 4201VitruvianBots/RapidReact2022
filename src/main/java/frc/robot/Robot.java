@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
     DataLogManager.start();
     LiveWindow.disableAllTelemetry();
 
-    //    addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
+    addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);
     addPeriodic(() -> NetworkTableInstance.getDefault().flush(), 0.02, 0.01);
     addPeriodic(() -> m_robotContainer.updateSmartDashboard(), 0.02, 0.01);
     addPeriodic(() -> m_robotContainer.updateDriveTrainPeriodic(), 0.02, 0.01);
