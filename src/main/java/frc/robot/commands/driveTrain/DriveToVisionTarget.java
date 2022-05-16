@@ -111,7 +111,9 @@ public class DriveToVisionTarget extends CommandBase {
   @Override
   public void execute() {
     // if (!finished) m_command.execute();
-    finished = m_command.isFinished();
+    finished =
+        m_command.isFinished()
+            || m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT) < 1.45;
     SmartDashboard.putBoolean("Drive To Vision Target command finished", m_command.isFinished());
   }
 
