@@ -18,14 +18,10 @@ public class sotm extends CommandBase {
   private final DriveTrain m_driveTrain;
   private final Vision m_vision;
   private final Flywheel m_flywheel;
+  private final double HorizontalDistanceOffset = 0.0;
 
-  private double hubDistance = 0; // horizontal distance to hub in meters from limelight to target
-  // TODO: impliment the distances from the edge of the target to the center of the inside as well
-  // as the distance from the limelight to the center of the turret as well as the distance of the
-  // turret to the center of the robot in a xy plane
-  private double hubAngle =
-      0; // angle from the heading of the robot to the hub angle in degrees. positive angle is
-  // clockwise
+  private double hubDistance = m_vision.getGoalTargetHorizontalDistance(Constants.Vision.CAMERA_POSITION.LIMELIGHT) + HorizontalDistanceOffset;
+  private double hubAngle = m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT);
   private double robotVelocity = 0; // instantanious velocity of the robot in meters per second
   private double ballTimeInAir = 0; // the time that the ball will spend in the air
   // TODO: solve the paradox of finding out how long the ball will be in the air

@@ -94,7 +94,7 @@ public class SetTurretSetpointFieldAbsolute extends CommandBase {
           // m_vision.setLimelightLEDState(true);
           m_turret.setAbsoluteSetpointDegrees(
               m_turret.getTurretAngleDegrees()
-                  + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
+                  + m_vision.getTargetXAngle(Constants.Vision.CAMERA_POSITION.LIMELIGHT)); //TODO: replace with sotm angle
           lastVisionTimestamp = Timer.getFPGATimestamp();
           // If we are estimating the hub's location using the pose of the hub and the robot
         } /*else if (m_turret.usePoseEstimation()

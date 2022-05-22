@@ -225,7 +225,7 @@ public class RobotContainer {
     //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
     // xBoxRightTrigger.get()));
     m_turret.setDefaultCommand(
-        new sotm(m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
+        new sotm(m_turret, m_driveTrain, m_vision, m_flywheel));
   }
 
   public Indexer getIndexer() {
