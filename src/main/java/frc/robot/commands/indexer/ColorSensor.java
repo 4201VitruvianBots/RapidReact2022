@@ -60,12 +60,12 @@ public class ColorSensor extends CommandBase {
     if(m_triggerPressed.get()) {
       if((m_indexer.getFrontColorType() != m_controls.getAllianceColor()) && 
         (m_indexer.getFrontColorType() != Alliance.Invalid))
-        m_indexer.setIndexerPercentOutput(-0.4);
+        m_indexer.setEjectorPercentOutput(-0.4);
       else 
-        m_indexer.setIndexerPercentOutput(0.4);
+        m_indexer.setEjectorPercentOutput(0.4);
     }
     else {
-      m_indexer.setIndexerPercentOutput(0);
+      m_indexer.setEjectorPercentOutput(0);
     }
 
     // if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {

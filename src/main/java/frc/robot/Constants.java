@@ -73,6 +73,7 @@ public final class Constants {
   }
 
   public static final class Indexer {
+    public static final int ejectorMotor = 34;
     public static final int indexerMotor = 35;
     public static final int kickerMotor = 36;
     public static final double kickerGearRatio = 5.0;

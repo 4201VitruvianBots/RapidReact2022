@@ -39,7 +39,7 @@ public class Indexer extends SubsystemBase {
   private Color rearColor = new Color(0, 0, 0);
 
   // Setup indexer motor controller (SparkMaxs)
-
+  TalonFX ejectorMotor = new TalonFX(Constants.Indexer.ejectorMotor);
   TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
   TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor); // RapidReact
 
@@ -125,6 +125,15 @@ public class Indexer extends SubsystemBase {
     indexerMotor.set(ControlMode.PercentOutput, output); // RapidReact
 
     // indexerMotor.set(output); // Jango
+  }
+
+   /**
+   * Sets the power for the ejectpr motor
+   *
+   * @param output value for the power of the ejector motor
+   */
+  public void setEjectorPercentOutput(double output) {
+    ejectorMotor.set(ControlMode.PercentOutput, output); // RapidReact
   }
 
   /**
