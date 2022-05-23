@@ -343,7 +343,7 @@ public class RobotContainer {
     indexerRPMLog.append(m_indexer.getIndexerOutput());
     flywheelRPMLog.append(m_flywheel.getRPM(0));
     kickerRPMLog.append(m_indexer.getKickerOutput());
-    poseLog.append(m_driveTrain.getRobotPoseMeters().getX() + "," + m_driveTrain.getRobotPoseMeters().getY() + "," + m_driveTrain.getRobotPoseMeters().getRotation().getRadians());
+    poseLog.append(m_driveTrain.getRobotPoseMeters().toString());
   }
 
   public void autonomousInit() {
