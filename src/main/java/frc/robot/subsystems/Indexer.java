@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.revrobotics.ColorSensorV3.RawColor;
-
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -19,13 +17,11 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.utils.PicoColorSensor;
-import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
   private final double kI_Zone = 1;
@@ -174,7 +170,7 @@ public class Indexer extends SubsystemBase {
    * @return color
    */
   public Color getColor(int channel) {
-  //   if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
+    //   if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
     return channel == 1 ? colorSensor.getColor1() : colorSensor.getColor0();
   }
 
@@ -185,7 +181,7 @@ public class Indexer extends SubsystemBase {
    */
   public DriverStation.Alliance getCargoColor(int channel) {
     Color color = getColor(channel);
-    if (color.red > color.blue * 1.5 && color.red > color.green * 0.7) {
+    if (color.red > color.blue * 0.9 && color.red > color.green * 0.7) { //1.5, 0.7
       return DriverStation.Alliance.Red;
     } else if (color.blue > color.red * 1.5 && color.blue > color.green * 0.7) {
       return DriverStation.Alliance.Blue;
@@ -269,9 +265,11 @@ public class Indexer extends SubsystemBase {
     SmartDashboardTab.putNumber("Indexer", "Rear Red", getRearColor().red);
     SmartDashboardTab.putNumber("Indexer", "Rear Green", getRearColor().green);
     SmartDashboardTab.putNumber("Indexer", "Rear Blue", getRearColor().blue);
-    SmartDashboardTab.putBoolean("Indexer", "Front Color Connected", colorSensor.isSensor0Connected());
-    SmartDashboardTab.putBoolean("Indexer", "Rear Color Connected", colorSensor.isSensor1Connected());
-    
+    SmartDashboardTab.putBoolean(
+        "Indexer", "Front Color Connected", colorSensor.isSensor0Connected());
+    SmartDashboardTab.putBoolean(
+        "Indexer", "Rear Color Connected", colorSensor.isSensor1Connected());
+
     SmartDashboardTab.putNumber(
         "Indexer",
         "Indexer Speed",

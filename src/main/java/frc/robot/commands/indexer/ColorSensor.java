@@ -5,6 +5,7 @@
 package frc.robot.commands.indexer;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Controls;
@@ -56,103 +57,114 @@ public class ColorSensor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
-      m_indexer.setIndexerPercentOutput(0.2);
-      m_indexer.setKickerPercentOutput(0.5);
-      m_flywheel.setRPM(600);
-      frontTripped = m_indexer.getIndexerFrontSensorTripped();
-      rearTripped = m_indexer.getIndexerRearSensorTripped();
-      return;
+    if(m_triggerPressed.get()) {
+      if((m_indexer.getFrontColorType() != m_controls.getAllianceColor()) && 
+        (m_indexer.getFrontColorType() != Alliance.Invalid))
+        m_indexer.setIndexerPercentOutput(-0.4);
+      else 
+        m_indexer.setIndexerPercentOutput(0.4);
+    }
+    else {
+      m_indexer.setIndexerPercentOutput(0);
     }
 
-    frontTripped = m_indexer.getIndexerFrontSensorTripped();
-    rearTripped = m_indexer.getIndexerRearSensorTripped();
+    // if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
+    //   m_indexer.setIndexerPercentOutput(0.02);
+    //   m_indexer.setKickerPercentOutput(0.05);
+    //   m_flywheel.setRPM(600);
+    //   frontTripped = m_indexer.getIndexerFrontSensorTripped();
+    //   rearTripped = m_indexer.getIndexerRearSensorTripped();
+    //   return;
+    // }
 
-    /** Uses outtake if cargo color is wrong */
-    if (rearTripped) {
-      if (frontTripped) {
-        // Both rear and front cargo
-        frontCorrectColor =
-            (allianceColor == m_indexer.getFrontColorType()
-                || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
-        rearCorrectColor =
-            (allianceColor == m_indexer.getRearColorType()
-                || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
-        if (!rearCorrectColor) {
-          if (!frontCorrectColor) {
-            // none are right
-            m_indexer.setIndexerPercentOutput(0.2);
-            m_indexer.setKickerPercentOutput(0.5);
-            m_flywheel.setRPM(600);
-          } else {
-            // Front is correct, rear is wrong
-            m_indexer.setIndexerPercentOutput(0.2);
-            m_indexer.setKickerPercentOutput(0.5);
-            m_flywheel.setRPM(600);
-          }
-        } else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
-          } else {
-            m_indexer.setIndexerPercentOutput(0);
-            m_indexer.setKickerPercentOutput(0);
-            m_flywheel.setRPM(0);
-          }
-        }
-      } else {
-        // Only rear cargo
-        rearCorrectColor =
-            (allianceColor == m_indexer.getRearColorType()
-                || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
-        if (!rearCorrectColor) {
-          // Rear cargo is wrong
-          m_indexer.setIndexerPercentOutput(0.2);
-          m_indexer.setKickerPercentOutput(0.5);
-          m_flywheel.setRPM(600);
-        } else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
-          } else {
-            m_indexer.setIndexerPercentOutput(0);
-            m_indexer.setKickerPercentOutput(0);
-            m_flywheel.setRPM(0);
-          }
-        }
-      }
-    } else {
-      if (m_indexer.getIndexerFrontSensorTripped()) {
-        // Only front cargo
-        frontCorrectColor =
-            (allianceColor == m_indexer.getFrontColorType()
-                || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
-        if (!frontCorrectColor) {
-          // Front cargo is wrong
-          m_indexer.setIndexerPercentOutput(0.2);
-          m_indexer.setKickerPercentOutput(0.5);
-          m_flywheel.setRPM(600);
-        } else {
-          if (m_triggerPressed.get()) {
-            m_indexer.setIndexerPercentOutput(0.4);
-            m_indexer.setKickerPercentOutput(0.4);
-          } else {
-            m_indexer.setIndexerPercentOutput(0);
-            m_indexer.setKickerPercentOutput(0);
-            m_flywheel.setRPM(0);
-          }
-        }
-      } else {
-        if (m_triggerPressed.get()) {
-          m_indexer.setIndexerPercentOutput(0.4);
-          m_indexer.setKickerPercentOutput(0.4);
-        } else {
-          m_indexer.setIndexerPercentOutput(0);
-          m_indexer.setKickerPercentOutput(0);
-          m_flywheel.setRPM(0);
-        }
-      }
-    }
+    // frontTripped = m_indexer.getIndexerFrontSensorTripped();
+    // rearTripped = m_indexer.getIndexerRearSensorTripped();
+
+    // /** Uses outtake if cargo color is wrong */
+    // if (rearTripped) {
+    //   if (frontTripped) {
+    //     // Both rear and front cargo
+    //     frontCorrectColor =
+    //         (allianceColor == m_indexer.getFrontColorType()
+    //             || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
+    //     rearCorrectColor =
+    //         (allianceColor == m_indexer.getRearColorType()
+    //             || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
+    //     if (!rearCorrectColor) {
+    //       if (!frontCorrectColor) {
+    //         // none are right
+    //         m_indexer.setIndexerPercentOutput(0.02);
+    //         m_indexer.setKickerPercentOutput(0.05);
+    //         m_flywheel.setRPM(600);
+    //       } else {
+    //         // Front is correct, rear is wrong
+    //         m_indexer.setIndexerPercentOutput(0.02);
+    //         m_indexer.setKickerPercentOutput(0.05);
+    //         m_flywheel.setRPM(600);
+    //       }
+    //     } else {
+    //       if (m_triggerPressed.get()) {
+    //         m_indexer.setIndexerPercentOutput(0.04);
+    //         m_indexer.setKickerPercentOutput(0.04);
+    //       } else {
+    //         m_indexer.setIndexerPercentOutput(0);
+    //         m_indexer.setKickerPercentOutput(0);
+    //         m_flywheel.setRPM(0);
+    //       }
+    //     }
+    //   } else {
+    //     // Only rear cargo
+    //     rearCorrectColor =
+    //         (allianceColor == m_indexer.getRearColorType()
+    //             || m_indexer.getRearColorType() == DriverStation.Alliance.Invalid);
+    //     if (!rearCorrectColor) {
+    //       // Rear cargo is wrong
+    //       m_indexer.setIndexerPercentOutput(0.02);
+    //       m_indexer.setKickerPercentOutput(0.05);
+    //       m_flywheel.setRPM(600);
+    //     } else {
+    //       if (m_triggerPressed.get()) {
+    //         m_indexer.setIndexerPercentOutput(0.04);
+    //         m_indexer.setKickerPercentOutput(0.04);
+    //       } else {
+    //         m_indexer.setIndexerPercentOutput(0);
+    //         m_indexer.setKickerPercentOutput(0);
+    //         m_flywheel.setRPM(0);
+    //       }
+    //     }
+    //   }
+    // } else {
+    //   if (m_indexer.getIndexerFrontSensorTripped()) {
+    //     // Only front cargo
+    //     frontCorrectColor =
+    //         (allianceColor == m_indexer.getFrontColorType()
+    //             || m_indexer.getFrontColorType() == DriverStation.Alliance.Invalid);
+    //     if (!frontCorrectColor) {
+    //       // Front cargo is wrong
+    //       m_indexer.setIndexerPercentOutput(0.02);
+    //       m_indexer.setKickerPercentOutput(0.05);
+    //       m_flywheel.setRPM(600);
+    //     } else {
+    //       if (m_triggerPressed.get()) {
+    //         m_indexer.setIndexerPercentOutput(0.04);
+    //         m_indexer.setKickerPercentOutput(0.04);
+    //       } else {
+    //         m_indexer.setIndexerPercentOutput(0);
+    //         m_indexer.setKickerPercentOutput(0);
+    //         m_flywheel.setRPM(0);
+    //       }
+    //     }
+    //   } else {
+    //     if (m_triggerPressed.get()) {
+    //       m_indexer.setIndexerPercentOutput(0.04);
+    //       m_indexer.setKickerPercentOutput(0.04);
+    //     } else {
+    //       m_indexer.setIndexerPercentOutput(0);
+    //       m_indexer.setKickerPercentOutput(0);
+    //       m_flywheel.setRPM(0);
+    //     }
+    //   }
+    // }
 
     /* Front correct, rear wrong:
         Rev flywheel to low RPM, then increase the speed after we shoot
@@ -177,7 +189,7 @@ public class ColorSensor extends CommandBase {
         2. Should we have an LED state to indicate if there is a cargo of the wrong color?
     */
 
-    SmartDashboardTab.putString("Indexer", "Alliance color", allianceColor.toString());
+    SmartDashboardTab.putString("Indexer", "Alliance color", m_controls.getAllianceColor().toString());
 
     SmartDashboardTab.putBoolean("Indexer", "Front correct", frontCorrectColor);
     SmartDashboardTab.putBoolean("Indexer", "Rear correct", rearCorrectColor);

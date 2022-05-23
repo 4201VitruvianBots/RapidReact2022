@@ -24,6 +24,7 @@ import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.flywheel.ShotSelecter;
+import frc.robot.commands.indexer.ColorSensor;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.RunOnlyIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
@@ -228,7 +229,7 @@ public class RobotContainer {
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake));
     xBoxLeftTrigger.whileHeld(new RunOnlyIndexer(m_indexer));
-    xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
+    // xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
     xBoxButtons[2].whenPressed(new EngageHighClimb(m_climber));
@@ -253,9 +254,9 @@ public class RobotContainer {
     m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
-    // m_indexer.setDefaultCommand(
-    //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
-    // xBoxRightTrigger.get()));
+    m_indexer.setDefaultCommand(
+        new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+    xBoxRightTrigger.get()));
     m_turret.setDefaultCommand(
         new SetTurretSetpointFieldAbsolute(
             m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));

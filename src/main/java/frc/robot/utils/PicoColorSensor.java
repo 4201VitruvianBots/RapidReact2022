@@ -286,11 +286,11 @@ public class PicoColorSensor implements AutoCloseable {
 
   public Color getColor0() {
     RawColor color0 = getRawColor0();
-    return new Color(color0.red/255.0, color0.green/255.0, color0.blue/255.0);
+    return new Color(color0.red / 255.0, color0.green / 255.0, color0.blue / 255.0);
   }
 
   public Color getColor1() {
     RawColor color1 = getRawColor1();
-    return new Color(color1.red/255.0, color1.green/255.0, color1.blue/255.0);
+    return new Color(color1.red / 255.0, color1.green / 255.0, color1.blue / 255.0);
   }
 }
