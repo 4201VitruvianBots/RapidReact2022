@@ -95,7 +95,6 @@ public class DriveTrain extends SubsystemBase {
 
     // navX.reset();
     pigeon.setYaw(0);
-
     odometry =
         new DifferentialDrivePoseEstimator(
             Rotation2d.fromDegrees(getHeadingDegrees()),
@@ -113,6 +112,8 @@ public class DriveTrain extends SubsystemBase {
                 .fill(
                     0.008, 0.008,
                     0.0001)); // Global measurement standard deviations. X, Y, and theta.
+
+    resetOdometry(new Pose2d(0.312182, 1.873365, getHeadingRotation2d()), getHeadingRotation2d());
 
     if (RobotBase.isSimulation()) {
       m_drivetrainSimulator =

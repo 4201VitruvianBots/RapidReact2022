@@ -4,10 +4,6 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.cscore.VideoMode.PixelFormat;
-import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,7 +14,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.util.net.PortForwarder;
 import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -100,21 +95,21 @@ public class Vision extends SubsystemBase {
     }
     limelight = NetworkTableInstance.getDefault().getTable("limelight");
     intake_camera = NetworkTableInstance.getDefault().getTable("OAK-1_Intake");
-    UsbCamera usbCamera = new UsbCamera("Microsoft LifeCam HD-3000", 0);
-    usbCamera.setFPS(15);
-    // usbCamera.setExposureManual(10);
-    usbCamera.setPixelFormat(PixelFormat.kYUYV);
-    usbCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
-    usbCamera.setResolution(160, 120);
-    CameraServer.startAutomaticCapture(usbCamera);
+    // UsbCamera usbCamera = new UsbCamera("Microsoft LifeCam HD-3000", 0);
+    // usbCamera.setFPS(15);
+    // // usbCamera.setExposureManual(10);
+    // usbCamera.setPixelFormat(PixelFormat.kYUYV);
+    // usbCamera.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    // usbCamera.setResolution(160, 120);
+    // CameraServer.startAutomaticCapture(usbCamera);
 
-    PortForwarder.add(5800, Constants.Vision.LIMELIGHT_IP, 5800);
-    PortForwarder.add(5801, Constants.Vision.LIMELIGHT_IP, 5801);
-    PortForwarder.add(5802, Constants.Vision.LIMELIGHT_IP, 5802);
-    PortForwarder.add(5803, Constants.Vision.LIMELIGHT_IP, 5803);
-    PortForwarder.add(5804, Constants.Vision.LIMELIGHT_IP, 5804);
-    PortForwarder.add(5805, Constants.Vision.LIMELIGHT_IP, 5805);
-    PortForwarder.add(5803, Constants.Vision.VISION_SERVER_IP, 5802);
+    // PortForwarder.add(5800, Constants.Vision.LIMELIGHT_IP, 5800);
+    // PortForwarder.add(5801, Constants.Vision.LIMELIGHT_IP, 5801);
+    // PortForwarder.add(5802, Constants.Vision.LIMELIGHT_IP, 5802);
+    // PortForwarder.add(5803, Constants.Vision.LIMELIGHT_IP, 5803);
+    // PortForwarder.add(5804, Constants.Vision.LIMELIGHT_IP, 5804);
+    // PortForwarder.add(5805, Constants.Vision.LIMELIGHT_IP, 5805);
+    // PortForwarder.add(5803, Constants.Vision.VISION_SERVER_IP, 5802);
   }
 
   /**
@@ -373,7 +368,7 @@ public class Vision extends SubsystemBase {
    */
   public Pose2d getHubPose() {
     hubPose = Constants.Vision.HUB_POSE;
-    rotation = new Rotation2d();
+    rotation = Rotation2d.fromDegrees(180);
     //        new Rotation2d(m_controls.getAllianceColorBoolean() ? Units.degreesToRadians(180) :
     // 0);
     return new Pose2d(hubPose.getTranslation(), rotation);
@@ -509,11 +504,16 @@ public class Vision extends SubsystemBase {
           lastOakPoseTimestamp = Timer.getFPGATimestamp();
         } else if (getValidTarget(CAMERA_POSITION.LIMELIGHT)
             && (Timer.getFPGATimestamp() - lastOakPoseTimestamp) > 0.5) {
+          // Translation2d robotTranslation2d = m_drivetrain.getRobotPoseMeters().getTranslation();
+          // Translation2d visionTranslation2d=
+          // getPoseFromHub(CAMERA_POSITION.LIMELIGHT).getTranslation();
+          // if(visionTranslation2d.getDistance(robotTranslation2d) < 1){
           m_drivetrain
               .getOdometry()
               .addVisionMeasurement(
                   getPoseFromHub(CAMERA_POSITION.LIMELIGHT),
                   Timer.getFPGATimestamp() - (getLimelightLatency() + 0.011));
+          // }
         }
       } catch (Exception e) {
         System.out.println("Error: updateVisionPose() could not update pose");

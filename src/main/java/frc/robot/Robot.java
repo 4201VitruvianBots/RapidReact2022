@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
     addPeriodic(() -> m_robotContainer.updateSmartDashboard(), 0.02, 0.01);
     addPeriodic(() -> m_robotContainer.updateDriveTrainPeriodic(), 0.02, 0.01);
     addPeriodic(() -> m_robotContainer.updateFieldSim(), 0.04, 0.01);
-    // addPeriodic(() -> m_robotContainer.updateVisionPeriodic(), 0.1, 0.015);
+    addPeriodic(() -> m_robotContainer.updateVisionPeriodic(), 0.1, 0.015);
   }
 
   /**

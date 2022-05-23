@@ -289,7 +289,7 @@ public class FieldSim {
     m_field2d.getObject("Turret").setPose(m_turret.getPose());
     m_field2d
         .getObject("Vision")
-        .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.GOAL));
+        .setPose(m_vision.getPoseFromHub(Constants.Vision.CAMERA_POSITION.LIMELIGHT));
 
     if (m_vision.getValidTarget(Constants.Vision.CAMERA_POSITION.INTAKE))
       m_field2d
