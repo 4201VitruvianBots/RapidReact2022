@@ -14,6 +14,7 @@ import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
+import frc.robot.commands.flywheel.UseInterpolatorRPM;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntakeInstant;
 import frc.robot.commands.intake.IntakePiston;
@@ -75,6 +76,7 @@ public class TwoBallAuto extends SequentialCommandGroup {
      * forward to line up with blue ball on other side of the line (NOT running intake, indexer,
      * shooter or vision) End path
      */
+    new UseInterpolatorRPM(flywheel, vision).schedule();
     addCommands(
         new SetSimTrajectory(fieldSim, trajectory1),
         new SetOdometry(driveTrain, fieldSim, trajectory1.getInitialPose()),
@@ -82,7 +84,8 @@ public class TwoBallAuto extends SequentialCommandGroup {
         new IntakePiston(intake, true),
         new SetTurretAbsoluteSetpointDegrees(turret, 0),
         new WaitCommand(0.5),
-        new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
+        // new SetAndHoldRpmSetpoint(flywheel, vision, 1650),
+        new UseInterpolatorRPM(flywheel, vision),
         new AutoRunIntakeInstant(intake, indexer, true),
         new InterruptingCommand(
             command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
