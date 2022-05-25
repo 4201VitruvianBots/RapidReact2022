@@ -11,13 +11,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Controls;
 import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Indexer;
-import frc.robot.subsystems.Intake;
 import java.util.function.Supplier;
 
 public class ColorSensor extends CommandBase {
 
   private final Indexer m_indexer;
-  private final Intake m_intake;
   private final Controls m_controls;
   private final Flywheel m_flywheel;
   private final Supplier<Boolean> m_triggerPressed;
@@ -34,18 +32,15 @@ public class ColorSensor extends CommandBase {
   public ColorSensor(
       Indexer indexer,
       Controls controls,
-      Intake intake,
       Flywheel flywheel,
       Supplier<Boolean> triggerPressed) {
     m_indexer = indexer;
     m_controls = controls;
-    m_intake = intake;
     m_flywheel = flywheel;
     m_triggerPressed = triggerPressed;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(indexer);
-    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
@@ -58,15 +53,39 @@ public class ColorSensor extends CommandBase {
   @Override
   public void execute() {
     if(m_triggerPressed.get()) {
-      if((m_indexer.getFrontColorType() != m_controls.getAllianceColor()) && 
-        (m_indexer.getFrontColorType() != Alliance.Invalid))
-        m_indexer.setEjectorPercentOutput(-0.4);
-      else 
-        m_indexer.setEjectorPercentOutput(0.4);
+      if (m_indexer.getIndexerRearSensorTripped()) {
+        if((m_indexer.getRearColorType() != m_controls.getAllianceColor()) && 
+        (m_indexer.getRearColorType() != Alliance.Invalid))  
+        {
+        // m_indexer.setEjectorPercentOutput(-0.4);
+        m_indexer.setIndexerPercentOutput(0.6);
+        m_indexer.setKickerPercentOutput(0.6);
+          m_flywheel.setRPM(1000);
+
+    } else {
+      if (m_flywheel.canShoot()) {
+        m_indexer.setIndexerPercentOutput(0.6);
+        m_indexer.setKickerPercentOutput(0.6);
+      } else {
+        m_indexer.setIndexerPercentOutput(0);
+        m_indexer.setKickerPercentOutput(0);
+      }
+        m_flywheel.setInterpolatedRPM();
+        // m_indexer.setEjectorPercentOutput(0.4);
+      }
+  } else {
+    m_flywheel.setRPM(0);
+    m_indexer.setIndexerPercentOutput(0.6);
+    m_indexer.setKickerPercentOutput(0.6);
+  }
+} else {
+      m_flywheel.setRPM(0);
+      m_indexer.setIndexerPercentOutput(0);
+      m_indexer.setKickerPercentOutput(0);
+      
+      // m_indexer.setEjectorPercentOutput(0);
     }
-    else {
-      m_indexer.setEjectorPercentOutput(0);
-    }
+  
 
     // if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
     //   m_indexer.setIndexerPercentOutput(0.02);
@@ -198,7 +217,6 @@ public class ColorSensor extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_intake.setIntakePercentOutput(0);
     m_indexer.setIndexerPercentOutput(0);
     m_indexer.setKickerPercentOutput(0);
     m_flywheel.setRPM(0);

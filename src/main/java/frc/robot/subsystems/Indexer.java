@@ -192,7 +192,7 @@ public class Indexer extends SubsystemBase {
     Color color = getColor(channel);
     if (color.red > color.blue * 0.9 && color.red > color.green * 0.7) { //1.5, 0.7
       return DriverStation.Alliance.Red;
-    } else if (color.blue > color.red * 1.5 && color.blue > color.green * 0.7) {
+    } else if (color.blue > color.red * 0.7 && color.blue > color.green * 0.7) { //1.5
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }

@@ -229,6 +229,7 @@ public class RobotContainer {
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake));
     xBoxLeftTrigger.whileHeld(new RunOnlyIndexer(m_indexer));
+    xBoxRightTrigger.whileHeld(new ColorSensor(m_indexer, m_controls, m_flywheel, () -> xBoxRightTrigger.get()));
     // xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
@@ -255,7 +256,7 @@ public class RobotContainer {
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     m_indexer.setDefaultCommand(
-        new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+        new ColorSensor(m_indexer, m_controls, m_flywheel, () ->
     xBoxRightTrigger.get()));
     m_turret.setDefaultCommand(
         new SetTurretSetpointFieldAbsolute(
