@@ -11,8 +11,11 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
+
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.simulation.SimConstants.BallColor;
 
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
@@ -132,6 +135,17 @@ public class LED extends SubsystemBase {
       m_candle.setLEDs(red, green, blue, 0, 0, 1024); // setting all LEDs to color
     } else {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
+    }
+  }
+
+  public void changeBallColor(BallColor color){
+    switch(color){
+      case BLUE:
+        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid); //sets color to blue
+        break; 
+      case RED: 
+        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);//sets color to red
+        break; 
     }
   }
 
