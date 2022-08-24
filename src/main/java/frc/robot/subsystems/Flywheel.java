@@ -23,10 +23,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Conversions;
 import frc.robot.Constants.Vision.CAMERA_POSITION;
+import frc.robot.Conversions;
 import frc.robot.commands.flywheel.ShotSelecter;
-
 import java.io.File;
 
 /** Creates a new Flywheel. */
@@ -115,7 +114,9 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setInterpolatedRPM() {
-    this.flywheelSetpointRPM = ShotSelecter.interpolateRPM(m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
+    this.flywheelSetpointRPM =
+        ShotSelecter.interpolateRPM(
+            m_vision.getGoalTargetHorizontalDistance(CAMERA_POSITION.LIMELIGHT));
   }
 
   /** @param setpoint set to setpoint */

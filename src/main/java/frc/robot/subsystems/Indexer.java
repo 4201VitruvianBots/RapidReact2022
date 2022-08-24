@@ -29,7 +29,7 @@ public class Indexer extends SubsystemBase {
   private final double maxAccel = 1e6;
   private final double gearRatio = 1.0 / 27.0;
   // public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
-  private final PicoColorSensor colorSensor = new PicoColorSensor();
+  private static final PicoColorSensor colorSensor = new PicoColorSensor();
 
   private double voltageComp = 12.0;
 
@@ -127,7 +127,7 @@ public class Indexer extends SubsystemBase {
     // indexerMotor.set(output); // Jango
   }
 
-   /**
+  /**
    * Sets the power for the ejectpr motor
    *
    * @param output value for the power of the ejector motor
@@ -190,9 +190,9 @@ public class Indexer extends SubsystemBase {
    */
   public DriverStation.Alliance getCargoColor(int channel) {
     Color color = getColor(channel);
-    if (color.red > color.blue * 0.9 && color.red > color.green * 0.7) { //1.5, 0.7
+    if (color.red > color.blue * 0.9 && color.red > color.green * 0.7) { // 1.5, 0.7
       return DriverStation.Alliance.Red;
-    } else if (color.blue > color.red * 0.7 && color.blue > color.green * 0.7) { //1.5
+    } else if (color.blue > color.red * 0.7 && color.blue > color.green * 0.7) { // 1.5
       return DriverStation.Alliance.Blue;
     } else return DriverStation.Alliance.Invalid;
   }

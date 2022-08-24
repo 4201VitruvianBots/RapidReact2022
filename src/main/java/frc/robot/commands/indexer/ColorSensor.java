@@ -30,10 +30,7 @@ public class ColorSensor extends CommandBase {
 
   /** Creates a new ColorSensor. */
   public ColorSensor(
-      Indexer indexer,
-      Controls controls,
-      Flywheel flywheel,
-      Supplier<Boolean> triggerPressed) {
+      Indexer indexer, Controls controls, Flywheel flywheel, Supplier<Boolean> triggerPressed) {
     m_indexer = indexer;
     m_controls = controls;
     m_flywheel = flywheel;
@@ -52,40 +49,38 @@ public class ColorSensor extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_triggerPressed.get()) {
+    if (m_triggerPressed.get()) {
       if (m_indexer.getIndexerRearSensorTripped()) {
-        if((m_indexer.getRearColorType() != m_controls.getAllianceColor()) && 
-        (m_indexer.getRearColorType() != Alliance.Invalid))  
-        {
-        // m_indexer.setEjectorPercentOutput(-0.4);
-        m_indexer.setIndexerPercentOutput(0.6);
-        m_indexer.setKickerPercentOutput(0.6);
+        if ((m_indexer.getRearColorType() != m_controls.getAllianceColor())
+            && (m_indexer.getRearColorType() != Alliance.Invalid)) {
+          // m_indexer.setEjectorPercentOutput(-0.4);
+          m_indexer.setIndexerPercentOutput(0.6);
+          m_indexer.setKickerPercentOutput(0.6);
           m_flywheel.setRPM(1000);
 
-    } else {
-      if (m_flywheel.canShoot()) {
+        } else {
+          if (m_flywheel.canShoot()) {
+            m_indexer.setIndexerPercentOutput(0.6);
+            m_indexer.setKickerPercentOutput(0.6);
+          } else {
+            m_indexer.setIndexerPercentOutput(0);
+            m_indexer.setKickerPercentOutput(0);
+          }
+          m_flywheel.setInterpolatedRPM();
+          // m_indexer.setEjectorPercentOutput(0.4);
+        }
+      } else {
+        m_flywheel.setRPM(0);
         m_indexer.setIndexerPercentOutput(0.6);
         m_indexer.setKickerPercentOutput(0.6);
-      } else {
-        m_indexer.setIndexerPercentOutput(0);
-        m_indexer.setKickerPercentOutput(0);
       }
-        m_flywheel.setInterpolatedRPM();
-        // m_indexer.setEjectorPercentOutput(0.4);
-      }
-  } else {
-    m_flywheel.setRPM(0);
-    m_indexer.setIndexerPercentOutput(0.6);
-    m_indexer.setKickerPercentOutput(0.6);
-  }
-} else {
+    } else {
       m_flywheel.setRPM(0);
       m_indexer.setIndexerPercentOutput(0);
       m_indexer.setKickerPercentOutput(0);
-      
+
       // m_indexer.setEjectorPercentOutput(0);
     }
-  
 
     // if (!frontCorrectColor && rearTripped && !m_indexer.getIndexerRearSensorTripped()) {
     //   m_indexer.setIndexerPercentOutput(0.02);
@@ -208,7 +203,8 @@ public class ColorSensor extends CommandBase {
         2. Should we have an LED state to indicate if there is a cargo of the wrong color?
     */
 
-    SmartDashboardTab.putString("Indexer", "Alliance color", m_controls.getAllianceColor().toString());
+    SmartDashboardTab.putString(
+        "Indexer", "Alliance color", m_controls.getAllianceColor().toString());
 
     SmartDashboardTab.putBoolean("Indexer", "Front correct", frontCorrectColor);
     SmartDashboardTab.putBoolean("Indexer", "Rear correct", rearCorrectColor);

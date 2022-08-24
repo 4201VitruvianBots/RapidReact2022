@@ -11,11 +11,10 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-
-import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.simulation.SimConstants.BallColor;
 
 /** create a new LED subsystem */
 public class LED extends SubsystemBase {
@@ -23,14 +22,13 @@ public class LED extends SubsystemBase {
   int red = 0;
   int green = 0;
   int blue = 0;
-  private robotState currentRobotState;
+  private robotState currentRobotState = robotState.Disabled;
   private Animation m_toAnimate = null;
 
   private final int ledCount = 296;
 
   public LED() {
     // Setup LED strip
-    setPattern(8, 95, 0, 255, 1, AnimationTypes.Solid);
     CANdleConfiguration configAll = new CANdleConfiguration();
     configAll.statusLedOffWhenActive = true;
     configAll.disableWhenLOS = false;
@@ -120,6 +118,12 @@ public class LED extends SubsystemBase {
         case CanShoot: // Solid Blue
           setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
           break;
+        case GoodCargo:
+          setPattern(40, 200, 100, 0, 0, AnimationTypes.Solid);
+          break;
+        case BadCargo:
+          setPattern(200, 200, 0, 0, 0, AnimationTypes.Solid);
+          break;
         default: // Strobing Purple
           setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
           break;
@@ -136,16 +140,18 @@ public class LED extends SubsystemBase {
     } else {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
+
+    SmartDashboardTab.putString("Indexer", "RobotState", currentRobotState.toString());
   }
 
-  public void changeBallColor(BallColor color){
-    switch(color){
-      case BLUE:
-        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid); //sets color to blue
-        break; 
-      case RED: 
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid);//sets color to red
-        break; 
+  public void changeBallColor(DriverStation.Alliance color) {
+    switch (color) {
+      case Blue:
+        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid); // sets color to blue
+        break;
+      case Red:
+        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid); // sets color to red
+        break;
     }
   }
 
@@ -169,6 +175,8 @@ public class LED extends SubsystemBase {
     Disabled,
     Enabled,
     Intaking,
-    CanShoot
+    CanShoot,
+    GoodCargo,
+    BadCargo
   }
 }
