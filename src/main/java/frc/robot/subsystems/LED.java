@@ -126,16 +126,17 @@ public class LED extends SubsystemBase {
         case OpponentBall: // Returns Wrong Color
           switch (m_controls.getAllianceColor()) {
             case Blue:
-              setPattern(255, 192, 203, 0, 0, AnimationTypes.Strobe); // Strobing Pink
+              setPattern(255, 192, 203, 0, 0, AnimationTypes.Solid); // Solid Pink
               break;
             case Red:
-              setPattern(0, 128, 128, 0, 0, AnimationTypes.Strobe); // Strobing Teal
+              setPattern(0, 128, 128, 0, 0, AnimationTypes.Solid); // Solid Teal
               break;
             case Invalid:
             default:
               setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe); // Strobing Purple
               break;
           }
+          break;
         default: // Strobing Purple
           setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
           break;
