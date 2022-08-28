@@ -28,6 +28,7 @@ import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
   private final NetworkTable limelight;
+  private final Controls m_controls;
 
   private final double kI_Zone = 1;
   private final double maxVel = 1.1e4;
@@ -85,7 +86,7 @@ public class Indexer extends SubsystemBase {
       new LinearSystemLoop<>(m_KickerPlant, m_controller, m_observer, 12.0, 0.020);
 
   /** Creates a new Indexer. */
-  public Indexer() {
+  public Indexer(Controls controls) {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
     indexerMotor.setInverted(false);
@@ -103,7 +104,8 @@ public class Indexer extends SubsystemBase {
     kickerMotor.setStatusFramePeriod(2, 100);
 
     // SmartDashboard.putData("indexer Subsystem", this);
-    limelight = NetworkTableInstance.getDefault().getTable("indexer_limelight");
+    m_controls = controls;
+    limelight = NetworkTableInstance.getDefault().getTable(Constants.Indexer.colorDetectionLimelightNTName);
 
     m_controller.latencyCompensate(m_KickerPlant, 0.02, 0.01);
   }
@@ -179,8 +181,20 @@ public class Indexer extends SubsystemBase {
     return colorSensor.getColorSensor().getColor();
   }
 
-  public boolean limelightHasOpponentBall() {
+  public boolean hasOpponentBall() {
     return limelight.getEntry("tv").getDouble(0) == 1;
+  }
+
+  public void setLimelightAlliance(DriverStation.Alliance alliance) {
+    switch (alliance) {
+      case Red:
+        limelight.getEntry("pipeline").setDouble(Constants.Indexer.blueCargoDetectionLimelightPipeline);
+      case Blue:
+        limelight.getEntry("pipeline").setDouble(Constants.Indexer.redCargoDetectionLimelightPipeline);
+      case Invalid:
+      default:
+        // TODO should there be any special handling here?
+    }
   }
 
   /**
@@ -261,6 +275,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    setLimelightAlliance(m_controls.getAllianceColor());
     updateSetpoint();
 
     // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
