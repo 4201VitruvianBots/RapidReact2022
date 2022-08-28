@@ -3,7 +3,7 @@ area_min:3.023738432100001
 area_similarity:0
 aspect_max:3.794947199999998
 aspect_min:0.3001249999999999
-black_level:5
+black_level:8
 blue_balance:2500
 calibration_type:0
 contour_grouping:0
@@ -29,8 +29,8 @@ dual_close_sort_origin:0
 erosion_steps:0
 exposure:1200
 force_convex:1
-hue_max:122
-hue_min:82
+hue_max:150
+hue_min:24
 image_flip:1
 image_source:0
 img_to_show:0
@@ -43,11 +43,11 @@ pipeline_led_enabled:0
 pipeline_led_power:100
 pipeline_res:0
 pipeline_type:0
-red_balance:1379
+red_balance:847
 roi_x:0.000000
 roi_y:0.000000
 sat_max:255
-sat_min:123
+sat_min:39
 send_corners:0
 send_raw_contours:0
 solve3d:0
