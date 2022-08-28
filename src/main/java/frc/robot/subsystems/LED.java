@@ -11,6 +11,8 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,9 +25,11 @@ public class LED extends SubsystemBase {
   private robotState currentRobotState;
   private Animation m_toAnimate = null;
 
+  private final Controls m_controls;
+
   private final int ledCount = 296;
 
-  public LED() {
+  public LED(Controls controls) {
     // Setup LED strip
     setPattern(8, 95, 0, 255, 1, AnimationTypes.Solid);
     CANdleConfiguration configAll = new CANdleConfiguration();
@@ -35,6 +39,8 @@ public class LED extends SubsystemBase {
     configAll.brightnessScalar = 1; // 1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
+    
+    m_controls = controls;
   }
 
   /**
@@ -102,7 +108,7 @@ public class LED extends SubsystemBase {
   public void expressState(robotState state) {
     if (state != currentRobotState) {
       switch (state) {
-        case Intaking: // Strobing Yellow
+        case Intaking: // Solid Yellow
           setPattern(255, 128, 0, 0, 0, AnimationTypes.Solid);
           break;
         case Enabled: // Solid Green
@@ -117,6 +123,19 @@ public class LED extends SubsystemBase {
         case CanShoot: // Solid Blue
           setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
           break;
+        case OpponentBall: // Returns Wrong Color
+          switch (m_controls.getAllianceColor()) {
+            case Blue:
+              setPattern(255, 192, 203, 0, 0, AnimationTypes.Strobe); // Strobing Pink
+              break;
+            case Red:
+              setPattern(0, 128, 128, 0, 0, AnimationTypes.Strobe); // Strobing Teal
+              break;
+            case Invalid:
+            default:
+              setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe); // Strobing Purple
+              break;
+          }
         default: // Strobing Purple
           setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
           break;
@@ -155,6 +174,7 @@ public class LED extends SubsystemBase {
     Disabled,
     Enabled,
     Intaking,
-    CanShoot
+    CanShoot,
+    OpponentBall
   }
 }

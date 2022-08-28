@@ -15,23 +15,26 @@ public class GetSubsystemStates extends CommandBase {
   private final Flywheel m_flywheel;
   private final Intake m_intake;
   private final Climber m_climber;
+  private final Indexer m_indexer;
   private boolean disabled;
   private boolean enabled;
   private boolean intaking;
   private boolean canShoot;
   private boolean climbing;
+  private boolean opponentBall;
 
   /** Sets the LED based on the subsystems' statuses */
-  public GetSubsystemStates(LED led, Intake intake, Flywheel flywheel, Climber climber) {
+  public GetSubsystemStates(LED led, Intake intake, Flywheel flywheel, Climber climber, Indexer indexer) {
     m_led = led;
     m_climber = climber;
     m_intake = intake;
     m_flywheel = flywheel;
+    m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(led);
   }
 
-  // Called when the command is initially scheduled.
+// Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_led.expressState(LED.robotState.Enabled);
@@ -46,6 +49,7 @@ public class GetSubsystemStates extends CommandBase {
     intaking = m_intake.getIntakeState();
     canShoot = m_flywheel.canShoot();
     climbing = m_climber.getElevatorClimbState();
+    opponentBall = m_indexer.hasOpponentBall(); 
 
     // set in order of priority to be expressed from the least priority to the
     // highest priority
@@ -57,6 +61,8 @@ public class GetSubsystemStates extends CommandBase {
       m_led.expressState(LED.robotState.CanShoot);
     } else if (intaking) {
       m_led.expressState(LED.robotState.Intaking);
+    } else if (opponentBall) {
+      m_led.expressState(LED.robotState.OpponentBall);
     } else if (enabled) {
       m_led.expressState(LED.robotState.Enabled);
     }
