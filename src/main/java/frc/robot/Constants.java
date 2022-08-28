@@ -89,7 +89,7 @@ public final class Constants {
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
     // TODO Change these constants when the new limelight is added
-    public static final String colorDetectionLimelightNTName = "indexer_limelight";
+    public static final String colorDetectionLimelightHostname = "limelight-indexer";
     public static final int blueCargoDetectionLimelightPipeline = 1; // change to 0
     public static final int redCargoDetectionLimelightPipeline = 2; // change to 1
 
