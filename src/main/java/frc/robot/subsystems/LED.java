@@ -11,8 +11,7 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-
-import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -22,7 +21,7 @@ public class LED extends SubsystemBase {
   int red = 0;
   int green = 0;
   int blue = 0;
-  private robotState currentRobotState;
+  private robotState currentRobotState = robotState.Disabled;
   private Animation m_toAnimate = null;
 
   private final Controls m_controls;
@@ -39,7 +38,7 @@ public class LED extends SubsystemBase {
     configAll.brightnessScalar = 1; // 1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
-    
+
     m_controls = controls;
   }
 
@@ -126,10 +125,10 @@ public class LED extends SubsystemBase {
         case OpponentBall: // Returns Wrong Color
           switch (m_controls.getAllianceColor()) {
             case Blue:
-              setPattern(255, 192, 203, 0, 0, AnimationTypes.Solid); // Solid Pink
+              setPattern(255, 0, 170, 0, 0, AnimationTypes.Solid); // Solid Pink
               break;
             case Red:
-              setPattern(0, 128, 128, 0, 0, AnimationTypes.Solid); // Solid Teal
+              setPattern(0, 255, 255, 0, 0, AnimationTypes.Solid); // Solid Teal
               break;
             case Invalid:
             default:
@@ -153,6 +152,7 @@ public class LED extends SubsystemBase {
     } else {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
+    SmartDashboardTab.putString("Controls", "LED Mode", currentRobotState.toString());
   }
 
   /** Different LED animation types */
