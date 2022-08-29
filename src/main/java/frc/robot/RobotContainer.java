@@ -166,11 +166,13 @@ public class RobotContainer {
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
 
-    DataLogManager.start(); // DATALOGGING
-    indexerRPMLog = new DoubleLogEntry(m_logger, "/indexerRPM");
-    flywheelRPMLog = new DoubleLogEntry(m_logger, "/flywheelRPM");
-    kickerRPMLog = new DoubleLogEntry(m_logger, "/kickerRPM");
-    poseLog = new StringLogEntry(m_logger, "/pose");
+    DataLogManager.start();
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog = new DoubleLogEntry(m_logger, "/indexerRPM");
+      flywheelRPMLog = new DoubleLogEntry(m_logger, "/flywheelRPM");
+      kickerRPMLog = new DoubleLogEntry(m_logger, "/kickerRPM");
+      poseLog = new StringLogEntry(m_logger, "/pose");
+    }
     // SmartDashboard.putData(
     //     "Auto Trajectory",
     //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
@@ -340,10 +342,12 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     m_vision.setVisionPoseEstimation(true);
-    indexerRPMLog.append(m_indexer.getIndexerOutput());
-    flywheelRPMLog.append(m_flywheel.getRPM(0));
-    kickerRPMLog.append(m_indexer.getKickerOutput());
-    poseLog.append(m_driveTrain.getRobotPoseMeters().toString());
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog.append(m_indexer.getIndexerOutput());
+      flywheelRPMLog.append(m_flywheel.getRPM(0));
+      kickerRPMLog.append(m_indexer.getKickerOutput());
+      poseLog.append(m_driveTrain.getRobotPoseMeters().toString());
+    }
   }
 
   public void autonomousInit() {
