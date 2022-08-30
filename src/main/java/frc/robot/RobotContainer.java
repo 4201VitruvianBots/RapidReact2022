@@ -64,8 +64,8 @@ public class RobotContainer {
   private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret, m_logger);
   private final Flywheel m_flywheel = new Flywheel(m_vision, m_turret);
   private final Intake m_intake = new Intake();
-  private final Indexer m_indexer = new Indexer();
-  private final LED m_led = new LED();
+  private final Indexer m_indexer = new Indexer(m_controls);
+  private final LED m_led = new LED(m_controls);
   private final Climber m_climber = new Climber();
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_vision, m_intake);
@@ -265,7 +265,7 @@ public class RobotContainer {
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber));
+    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber, m_indexer));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
     // m_indexer.setDefaultCommand(

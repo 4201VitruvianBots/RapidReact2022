@@ -15,6 +15,8 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
@@ -25,6 +27,9 @@ import frc.robot.Constants;
 import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
+  private final NetworkTable limelight;
+  private final Controls m_controls;
+
   private final double kI_Zone = 1;
   private final double maxVel = 1.1e4;
   private final double maxAccel = 1e6;
@@ -81,7 +86,7 @@ public class Indexer extends SubsystemBase {
       new LinearSystemLoop<>(m_KickerPlant, m_controller, m_observer, 12.0, 0.020);
 
   /** Creates a new Indexer. */
-  public Indexer() {
+  public Indexer(Controls controls) {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
     indexerMotor.setInverted(false);
@@ -99,6 +104,8 @@ public class Indexer extends SubsystemBase {
     kickerMotor.setStatusFramePeriod(2, 100);
 
     // SmartDashboard.putData("indexer Subsystem", this);
+    m_controls = controls;
+    limelight = NetworkTableInstance.getDefault().getTable(Constants.Indexer.colorDetectionLimelightHostname);
 
     m_controller.latencyCompensate(m_KickerPlant, 0.02, 0.01);
   }
@@ -172,6 +179,25 @@ public class Indexer extends SubsystemBase {
   public Color getColor(int channel) {
     if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
     return colorSensor.getColorSensor().getColor();
+  }
+
+  public boolean hasOpponentBall() {
+    return limelight.getEntry("tv").getDouble(0) == 1;
+  }
+
+  public void setLimelightAlliance(DriverStation.Alliance alliance) {
+    // Set limelight to detect opponent balls
+    switch (alliance) {
+      case Red:
+        limelight.getEntry("pipeline").setDouble(Constants.Indexer.blueCargoDetectionLimelightPipeline);
+        break;
+      case Blue:
+        limelight.getEntry("pipeline").setDouble(Constants.Indexer.redCargoDetectionLimelightPipeline);
+        break;
+      case Invalid:
+      default:
+        // TODO should there be any special handling here?
+    }
   }
 
   /**
@@ -252,6 +278,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
+    setLimelightAlliance(m_controls.getAllianceColor());
     updateSetpoint();
 
     // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
