@@ -7,6 +7,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -53,7 +55,7 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DataLog m_logger = DataLogManager.getLog();
+  private final DataLog m_logger = DataLogManager.getLog(); // DATALOGGING
 
   // The robot's subsystems and commands are defined here...
   private final Controls m_controls = new Controls();
@@ -68,6 +70,11 @@ public class RobotContainer {
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_vision, m_intake);
 
+  DoubleLogEntry indexerRPMLog;
+  DoubleLogEntry flywheelRPMLog;
+  DoubleLogEntry kickerRPMLog;
+  StringLogEntry poseLog;
+
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
   static XboxController xBoxController = new XboxController(Constants.USB.xBoxController);
@@ -79,7 +86,7 @@ public class RobotContainer {
   public Button xBoxLeftTrigger, xBoxRightTrigger;
   // public static boolean allianceColorBlue;
   // public static boolean allianceColorRed;
-  public static enum CommandSelector {
+  public enum CommandSelector {
     BLUE_ALLIANCE, // 01
     RED_ALLIANCE
   }
@@ -158,6 +165,14 @@ public class RobotContainer {
         new OneBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
+
+    DataLogManager.start();
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog = new DoubleLogEntry(m_logger, "/indexerRPM");
+      flywheelRPMLog = new DoubleLogEntry(m_logger, "/flywheelRPM");
+      kickerRPMLog = new DoubleLogEntry(m_logger, "/kickerRPM");
+      poseLog = new StringLogEntry(m_logger, "/pose");
+    }
     // SmartDashboard.putData(
     //     "Auto Trajectory",
     //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
@@ -327,6 +342,12 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     m_vision.setVisionPoseEstimation(true);
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog.append(m_indexer.getIndexerOutput());
+      flywheelRPMLog.append(m_flywheel.getRPM(0));
+      kickerRPMLog.append(m_indexer.getKickerOutput());
+      poseLog.append(m_driveTrain.getRobotPoseMeters().toString());
+    }
   }
 
   public void autonomousInit() {
