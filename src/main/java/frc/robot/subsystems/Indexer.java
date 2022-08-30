@@ -105,7 +105,9 @@ public class Indexer extends SubsystemBase {
 
     // SmartDashboard.putData("indexer Subsystem", this);
     m_controls = controls;
-    limelight = NetworkTableInstance.getDefault().getTable(Constants.Indexer.colorDetectionLimelightHostname);
+    limelight =
+        NetworkTableInstance.getDefault()
+            .getTable(Constants.Indexer.colorDetectionLimelightHostname);
 
     m_controller.latencyCompensate(m_KickerPlant, 0.02, 0.01);
   }
@@ -189,10 +191,14 @@ public class Indexer extends SubsystemBase {
     // Set limelight to detect opponent balls
     switch (alliance) {
       case Red:
-        limelight.getEntry("pipeline").setDouble(Constants.Indexer.blueCargoDetectionLimelightPipeline);
+        limelight
+            .getEntry("pipeline")
+            .setDouble(Constants.Indexer.blueCargoDetectionLimelightPipeline);
         break;
       case Blue:
-        limelight.getEntry("pipeline").setDouble(Constants.Indexer.redCargoDetectionLimelightPipeline);
+        limelight
+            .getEntry("pipeline")
+            .setDouble(Constants.Indexer.redCargoDetectionLimelightPipeline);
         break;
       case Invalid:
       default:
