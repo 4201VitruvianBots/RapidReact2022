@@ -6,6 +6,7 @@ package frc.robot.commands.led;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.*;
+import frc.robot.Constants.LED.RobotState;
 
 /** Sets the LED based on the subsystems' statuses */
 public class GetSubsystemStates extends CommandBase {
@@ -38,7 +39,7 @@ public class GetSubsystemStates extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_led.expressState(LED.robotState.Enabled);
+    m_led.expressState(RobotState.Enabled);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -55,17 +56,17 @@ public class GetSubsystemStates extends CommandBase {
     // set in order of priority to be expressed from the least priority to the
     // highest priority
     if (disabled) {
-      m_led.expressState(LED.robotState.Disabled);
+      m_led.expressState(RobotState.Disabled);
     } else if (climbing) {
-      m_led.expressState(LED.robotState.Climbing);
+      m_led.expressState(RobotState.Climbing);
     } else if (canShoot) {
-      m_led.expressState(LED.robotState.CanShoot);
+      m_led.expressState(RobotState.CanShoot);
     } else if (intaking) {
-      m_led.expressState(LED.robotState.Intaking);
+      m_led.expressState(RobotState.Intaking);
     } else if (opponentBall) {
-      m_led.expressState(LED.robotState.OpponentBall);
+      m_led.expressState(RobotState.OpponentBall);
     } else if (enabled) {
-      m_led.expressState(LED.robotState.Enabled);
+      m_led.expressState(RobotState.Enabled);
     }
   }
 

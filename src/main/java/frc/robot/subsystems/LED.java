@@ -14,21 +14,23 @@ import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.LED.RobotState;
+import frc.robot.Constants.LED.AnimationTypes;
 
-/** create a new LED subsystem */
 public class LED extends SubsystemBase {
   private final CANdle m_candle = new CANdle(Constants.LED.CANdleID);
   int red = 0;
   int green = 0;
   int blue = 0;
-  private robotState currentRobotState = robotState.Disabled;
+  private RobotState currentRobotState = RobotState.Disabled;
   private Animation m_toAnimate = null;
 
   private final Controls m_controls;
 
-  private final int ledCount = 296;
+  private final int ledCount;
 
   public LED(Controls controls) {
+    ledCount = Constants.LED.ledCount;
     // Setup LED strip
     setPattern(8, 95, 0, 255, 1, AnimationTypes.Solid);
     CANdleConfiguration configAll = new CANdleConfiguration();
@@ -104,7 +106,7 @@ public class LED extends SubsystemBase {
    *
    * @param state the dominant robot state that the LEDs will express
    */
-  public void expressState(robotState state) {
+  public void expressState(RobotState state) {
     if (state != currentRobotState) {
       switch (state) {
         case Intaking: // Solid Yellow
@@ -153,29 +155,5 @@ public class LED extends SubsystemBase {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
     SmartDashboardTab.putString("Controls", "LED Mode", currentRobotState.toString());
-  }
-
-  /** Different LED animation types */
-  public enum AnimationTypes {
-    ColorFlow,
-    Fire,
-    Larson,
-    Rainbow,
-    RgbFade,
-    SingleFade,
-    Strobe,
-    Twinkle,
-    TwinkleOff,
-    Solid
-  }
-
-  /** Different robot states */
-  public enum robotState {
-    Climbing,
-    Disabled,
-    Enabled,
-    Intaking,
-    CanShoot,
-    OpponentBall
   }
 }

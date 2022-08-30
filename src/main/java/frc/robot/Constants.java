@@ -163,8 +163,33 @@ public final class Constants {
             kaVoltSecondsSquaredPerRadian);
   }
 
-  public final class LED {
+  public static final class LED {
     public static final int CANdleID = 0;
+    public static final int ledCount = 296;
+
+    /** Different LED animation types */
+    public enum AnimationTypes {
+      ColorFlow,
+      Fire,
+      Larson,
+      Rainbow,
+      RgbFade,
+      SingleFade,
+      Strobe,
+      Twinkle,
+      TwinkleOff,
+      Solid
+    }
+
+    /** Different robot states */
+    public enum RobotState {
+      Climbing,
+      Disabled,
+      Enabled,
+      Intaking,
+      CanShoot,
+      OpponentBall
+    }
   }
 
   public final class Flywheel {
