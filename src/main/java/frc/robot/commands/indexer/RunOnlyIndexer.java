@@ -25,8 +25,7 @@ public class RunOnlyIndexer extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_indexer.getIndexerRearSensorTripped()) m_indexer.setIndexerPercentOutput(0.65);
-    else m_indexer.setIndexerPercentOutput(0);
+    m_indexer.setIndexerPercentOutput(0.65);
   }
 
   // Called once the command ends or is interrupted.

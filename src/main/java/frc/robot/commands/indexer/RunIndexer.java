@@ -5,21 +5,17 @@
 package frc.robot.commands.indexer;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Flywheel;
+import frc.robot.Constants.Flywheel;
 import frc.robot.subsystems.Indexer;
 import frc.robot.subsystems.Intake;
 
 public class RunIndexer extends CommandBase {
-  private final Intake m_intake;
   private final Indexer m_indexer;
-  private final Flywheel m_flywheel;
   private final boolean m_runKicker;
 
   /** Creates a new RunIndexer. */
   public RunIndexer(Intake intake, Indexer indexer, Flywheel flywheel, boolean runKicker) {
-    m_intake = intake;
     m_indexer = indexer;
-    m_flywheel = flywheel;
     m_runKicker = runKicker;
 
     // Use addRequirements() here to declare subsystem dependencies.
@@ -35,7 +31,6 @@ public class RunIndexer extends CommandBase {
   @Override
   public void execute() {
     if (m_runKicker) m_indexer.setKickerPercentOutput(0.8);
-    else m_intake.setIntakeRollerPercentOutput(0.7);
 
     m_indexer.setIndexerPercentOutput(0.65);
   }
@@ -45,7 +40,6 @@ public class RunIndexer extends CommandBase {
   public void end(boolean interrupted) {
     m_indexer.setIndexerPercentOutput(0);
     if (m_runKicker) m_indexer.setKickerPercentOutput(0);
-    else m_intake.setIntakeRollerPercentOutput(0);
   }
 
   // Returns true when the command should end.

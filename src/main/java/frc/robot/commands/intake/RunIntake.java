@@ -12,15 +12,9 @@ public class RunIntake extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Intake m_intake;
 
-  // private final Indexer m_indexer;
-
-  /**
-   * @param intake The intake used by this command
-   * @param indexer The indexer used by this command
-   */
+  /** @param intake The intake used by this command */
   public RunIntake(Intake intake) {
     m_intake = intake;
-    // m_indexer = indexer;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
   }
@@ -38,10 +32,7 @@ public class RunIntake extends CommandBase {
    */
   @Override
   public void execute() {
-    // m_indexer.setKickerPercentOutput(-0.25);
-    // m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(0.7);
-    m_intake.setIntakeRollerPercentOutput(0.7);
   }
 
   /**
@@ -49,10 +40,8 @@ public class RunIntake extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    // m_indexer.setKickerPercentOutput(0);
     m_intake.setIntakePiston(false);
     m_intake.setIntakePercentOutput(0);
-    m_intake.setIntakeRollerPercentOutput(0);
     m_intake.setIntakeState(false);
   }
 

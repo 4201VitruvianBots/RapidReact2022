@@ -15,46 +15,16 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.system.LinearSystem;
 import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.vitruvianlib.utils.TCA9548AcolorSensor;
 
 public class Indexer extends SubsystemBase {
-  private final NetworkTable limelight;
-  private final Controls m_controls;
-
-  private final double kI_Zone = 1;
-  private final double maxVel = 1.1e4;
-  private final double maxAccel = 1e6;
-  private final double gearRatio = 1.0 / 27.0;
-  public TCA9548AcolorSensor colorSensor = new TCA9548AcolorSensor(I2C.Port.kMXP);
-
   private double voltageComp = 12.0;
 
-  private DriverStation.Alliance frontColorType = DriverStation.Alliance.Invalid;
-  private DriverStation.Alliance rearColorType = DriverStation.Alliance.Invalid;
-  private Color frontColor = new Color(0, 0, 0);
-  private Color rearColor = new Color(0, 0, 0);
-
-  // Setup indexer motor controller (SparkMaxs)
-
-  TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor); // RapidReact
-  TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor); // RapidReact
-
-  // CANSparkMax indexerMotor =
-  //     new CANSparkMax(Constants.Indexer.indexerMotor, MotorType.kBrushless); // Jango
-  // VictorSPX kickerMotor = new VictorSPX(Constants.Indexer.kickerMotor); // Jango
-
-  // Indexer sensors setup
-  DigitalInput rearBeamBreak = new DigitalInput(Constants.Indexer.indexerRearSensor);
-  DigitalInput frontBeamBreak = new DigitalInput(Constants.Indexer.indexerFrontSensor);
+  // Setup indexer motor controller
+  TalonFX indexerMotor = new TalonFX(Constants.Indexer.indexerMotor);
+  TalonFX kickerMotor = new TalonFX(Constants.Indexer.kickerMotor);
 
   private double kickerSetpoint;
 
@@ -86,7 +56,7 @@ public class Indexer extends SubsystemBase {
       new LinearSystemLoop<>(m_KickerPlant, m_controller, m_observer, 12.0, 0.020);
 
   /** Creates a new Indexer. */
-  public Indexer(Controls controls) {
+  public Indexer() {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
     indexerMotor.setInverted(false);
@@ -104,10 +74,6 @@ public class Indexer extends SubsystemBase {
     kickerMotor.setStatusFramePeriod(2, 100);
 
     // SmartDashboard.putData("indexer Subsystem", this);
-    m_controls = controls;
-    limelight =
-        NetworkTableInstance.getDefault()
-            .getTable(Constants.Indexer.colorDetectionLimelightHostname);
 
     m_controller.latencyCompensate(m_KickerPlant, 0.02, 0.01);
   }
@@ -131,27 +97,7 @@ public class Indexer extends SubsystemBase {
    * @param output value for the power of the indexer motor
    */
   public void setIndexerPercentOutput(double output) {
-    indexerMotor.set(ControlMode.PercentOutput, output); // RapidReact
-
-    // indexerMotor.set(output); // Jango
-  }
-
-  /**
-   * front sensor tripped status
-   *
-   * @return boolean
-   */
-  public boolean getIndexerFrontSensorTripped() {
-    return !frontBeamBreak.get();
-  }
-
-  /**
-   * Gets the percent output of the indexer motor.
-   *
-   * @return the percent output of the indexer motor.
-   */
-  public double getIndexerOutput() {
-    return indexerMotor.getMotorOutputPercent();
+    indexerMotor.set(ControlMode.PercentOutput, output);
   }
 
   /**
@@ -161,111 +107,6 @@ public class Indexer extends SubsystemBase {
    */
   public double getKickerOutput() {
     return kickerMotor.getMotorOutputPercent();
-  }
-
-  /**
-   * rear sensor tripped status
-   *
-   * @return boolean
-   */
-  public boolean getIndexerRearSensorTripped() {
-    return !rearBeamBreak.get();
-  }
-
-  /**
-   * color value from mux channel
-   *
-   * @param channel
-   * @return color
-   */
-  public Color getColor(int channel) {
-    if (colorSensor.getMuxChannel() != channel) colorSensor.selectMuxChannel(channel);
-    return colorSensor.getColorSensor().getColor();
-  }
-
-  public boolean hasOpponentBall() {
-    return limelight.getEntry("tv").getDouble(0) == 1;
-  }
-
-  public void setLimelightAlliance(DriverStation.Alliance alliance) {
-    // Set limelight to detect opponent balls
-    switch (alliance) {
-      case Red:
-        limelight
-            .getEntry("pipeline")
-            .setDouble(Constants.Indexer.blueCargoDetectionLimelightPipeline);
-        break;
-      case Blue:
-        limelight
-            .getEntry("pipeline")
-            .setDouble(Constants.Indexer.redCargoDetectionLimelightPipeline);
-        break;
-      case Invalid:
-      default:
-        // TODO should there be any special handling here?
-    }
-  }
-
-  /**
-   * Returns int based on color detection
-   *
-   * @return Color of cargo
-   */
-  public DriverStation.Alliance getCargoColor(int channel) {
-    Color color = getColor(channel);
-    if (color.red > color.blue * 1.5 && color.red > color.green * 0.7) {
-      return DriverStation.Alliance.Red;
-    } else if (color.blue > color.red * 1.5 && color.blue > color.green * 0.7) {
-      return DriverStation.Alliance.Blue;
-    } else return DriverStation.Alliance.Invalid;
-  }
-
-  /** Calls cargo color from tripped sensor */
-  public void pollColorSensors() {
-    if (getIndexerFrontSensorTripped()) {
-      frontColorType = getCargoColor(0);
-      frontColor = getColor(0);
-    }
-    if (getIndexerRearSensorTripped()) {
-      rearColorType = getCargoColor(2);
-      rearColor = getColor(2);
-    }
-  }
-
-  /**
-   * color from front sensor
-   *
-   * @return color
-   */
-  public DriverStation.Alliance getFrontColorType() {
-    return frontColorType;
-  }
-
-  /**
-   * color from rear sensor
-   *
-   * @return color
-   */
-  public DriverStation.Alliance getRearColorType() {
-    return rearColorType;
-  }
-
-  /**
-   * rgb from front sensor
-   *
-   * @return rgb value
-   */
-  public Color getFrontColor() {
-    return frontColor;
-  }
-
-  /**
-   * rgb from rear sensor
-   *
-   * @return rgb value
-   */
-  public Color getRearColor() {
-    return rearColor;
   }
 
   private void updateSetpoint() {
@@ -284,21 +125,7 @@ public class Indexer extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setLimelightAlliance(m_controls.getAllianceColor());
     updateSetpoint();
-
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakFront", getIndexerFrontSensorTripped());
-    // SmartDashboardTab.putBoolean("Indexer", "BeamBreakRear", getIndexerRearSensorTripped());
-
-    // SmartDashboardTab.putString("Indexer", "Rear Color", getFrontColorType().toString());
-    // SmartDashboardTab.putNumber("Indexer", "Rear Red", getFrontColor().red);
-    // SmartDashboardTab.putNumber("Indexer", "Rear Green", getFrontColor().green);
-    // SmartDashboardTab.putNumber("Indexer", "Rear Blue", getFrontColor().blue);
-    // SmartDashboardTab.putString("Indexer", "Front Color", getRearColorType().toString());
-    // SmartDashboardTab.putNumber("Indexer", "Front Red", getRearColor().red);
-    // SmartDashboardTab.putNumber("Indexer", "Front Green", getRearColor().green);
-    // SmartDashboardTab.putNumber("Indexer", "Front Blue", getRearColor().blue);
-
     SmartDashboardTab.putNumber(
         "Indexer",
         "Indexer Speed",
@@ -312,8 +139,6 @@ public class Indexer extends SubsystemBase {
         "Indexer",
         "Kicker Speed",
         kickerMotor.getSelectedSensorVelocity()
-            // * (600.0 / Constants.Flywheel.encoderUnitsPerRotation)
-            // / Constants.Indexer.kickerGearRatio);
             * (10.0
                 * 2.0
                 * Math.PI

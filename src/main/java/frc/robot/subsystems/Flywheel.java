@@ -20,12 +20,10 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Conversions;
 import java.io.File;
-import java.util.function.DoubleSupplier;
 
 /** Creates a new Flywheel. */
 public class Flywheel extends SubsystemBase {
@@ -38,7 +36,7 @@ public class Flywheel extends SubsystemBase {
   private final Vision m_vision;
   private final Timer timeout = new Timer();
   public double rpmOutput;
-  private DoubleSupplier m_setpointSupplier = () -> 0;
+  private double flywheelSetpointRPM;
   private boolean canShoot;
   private double idealRPM;
   private boolean timerStart = false;
@@ -53,7 +51,7 @@ public class Flywheel extends SubsystemBase {
   private double kI = 0.0000;
   private double errorSum = 0;
   private double errorRange = 100;
-  public double tarmacShot = 1600;
+  public double tarmacShot = 1650;
   public double launchpadShot = 1780;
   public double launchpadShot2 = 1875;
 
@@ -109,16 +107,12 @@ public class Flywheel extends SubsystemBase {
   }
   /** @param setpoint set to setpoint */
   public void setRPM(double flywheelSetpointRPM) {
-    this.m_setpointSupplier = () -> flywheelSetpointRPM;
-  }
-
-  public void setRPM(DoubleSupplier flywheelSetpointRPM) {
-    this.m_setpointSupplier = flywheelSetpointRPM;
+    this.flywheelSetpointRPM = flywheelSetpointRPM;
   }
 
   /** @param setpoint set to setpoint */
   public double getSetpointRPM() {
-    return m_setpointSupplier.getAsDouble();
+    return flywheelSetpointRPM;
   }
 
   public void updateCanShoot() {
@@ -160,8 +154,7 @@ public class Flywheel extends SubsystemBase {
   /** flywheelSetpoint if setpoint else setPower to 0 */
   private void updateRPMSetpoint() {
     if (getSetpointRPM() > 0) {
-      double setpoint = m_setpointSupplier.getAsDouble();
-      m_loop.setNextR(VecBuilder.fill(Conversions.RpmToRadPerSec(setpoint)));
+      m_loop.setNextR(VecBuilder.fill(Conversions.RpmToRadPerSec(flywheelSetpointRPM)));
 
       m_loop.correct(VecBuilder.fill(Conversions.RpmToRadPerSec(getRPM(0))));
 
@@ -223,13 +216,13 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setIdealRPM() {
-    this.m_setpointSupplier = () -> idealRPM;
+    flywheelSetpointRPM = idealRPM;
   }
 
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
     // SmartDashboard.putNumber("RPMSetpoint (Raw)", flywheelSetpointRPM);
-    SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint (Adjusted)", getSetpointRPM() - 120);
+    // SmartDashboard.putNumber("RPMSetpoint (Adjusted)", flywheelSetpointRPM - 120);
     SmartDashboard.putBoolean("RPM check", canShoot);
     // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
     // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);

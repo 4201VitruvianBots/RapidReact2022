@@ -11,22 +11,19 @@ import frc.robot.subsystems.Indexer;
 public class AutoRunIndexer extends CommandBase {
 
   private final Indexer m_indexer;
-  private final Flywheel m_flywheel;
   private final boolean m_reverseIndexer;
   private final double m_kickerOutput;
   /** Creates a new RunIndexer. */
   public AutoRunIndexer(Indexer indexer, Flywheel flywheel) {
-    this(indexer, flywheel, 0.85);
+    this(indexer, 0.85);
   }
 
-  public AutoRunIndexer(Indexer indexer, Flywheel flywheel, double kickerOutput) {
-    this(indexer, flywheel, kickerOutput, false);
+  public AutoRunIndexer(Indexer indexer, double kickerOutput) {
+    this(indexer, kickerOutput, false);
   }
 
-  public AutoRunIndexer(
-      Indexer indexer, Flywheel flywheel, double kickerOutput, boolean reverseIndexer) {
+  public AutoRunIndexer(Indexer indexer, double kickerOutput, boolean reverseIndexer) {
     m_indexer = indexer;
-    m_flywheel = flywheel;
     m_kickerOutput = kickerOutput;
     m_reverseIndexer = reverseIndexer;
 

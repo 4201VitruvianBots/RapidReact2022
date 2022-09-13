@@ -19,9 +19,7 @@ public class Intake extends SubsystemBase {
 
   // Intake motor setup
 
-  private TalonFX[] intakeMotors = {
-    new TalonFX(Constants.Intake.intakeMotor), new TalonFX(Constants.Intake.intakeRollerMotor)
-  };
+  private TalonFX intakeMotor = new TalonFX(Constants.Intake.intakeMotor);
 
   // Intake piston setup
   DoubleSolenoid intakePiston =
@@ -33,18 +31,13 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
     // Motor configuration
+    intakeMotor.configFactoryDefault();
+    intakeMotor.setNeutralMode(NeutralMode.Coast);
+    intakeMotor.configOpenloopRamp(0.5);
+    intakeMotor.setStatusFramePeriod(1, 100);
+    intakeMotor.setStatusFramePeriod(2, 100);
 
-    for (TalonFX intakeMotor : intakeMotors) {
-      intakeMotor.configFactoryDefault();
-      intakeMotor.setNeutralMode(NeutralMode.Coast);
-      intakeMotor.configOpenloopRamp(0.5);
-      intakeMotor.setStatusFramePeriod(1, 100);
-      intakeMotor.setStatusFramePeriod(2, 100);
-    }
-    intakeMotors[0].setInverted(false);
-    intakeMotors[1].setInverted(true);
-
-    // SmartDashboard.putData("Intake Subsystem", this);
+    intakeMotor.setInverted(false);
   }
 
   /** @return Gets a boolean for the intake's actuation */
@@ -69,11 +62,7 @@ public class Intake extends SubsystemBase {
 
   /** sets the amount of power going to the intake */
   public void setIntakePercentOutput(double value) {
-    intakeMotors[0].set(ControlMode.PercentOutput, value);
-  }
-
-  public void setIntakeRollerPercentOutput(double value) {
-    intakeMotors[1].set(ControlMode.PercentOutput, value);
+    intakeMotor.set(ControlMode.PercentOutput, value);
   }
 
   /** updates intake data on to the dashboard */
@@ -83,7 +72,7 @@ public class Intake extends SubsystemBase {
     SmartDashboardTab.putNumber(
         "Intake",
         "Intake motor speed",
-        intakeMotors[0].getSelectedSensorVelocity()
+        intakeMotor.getSelectedSensorVelocity()
             * (10.0
                 * 2.0
                 * Math.PI

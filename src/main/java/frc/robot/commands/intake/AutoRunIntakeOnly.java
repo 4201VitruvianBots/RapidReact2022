@@ -32,7 +32,6 @@ public class AutoRunIntakeOnly extends CommandBase {
   @Override
   public void execute() {
     m_intake.setIntakePercentOutput(0.9);
-    m_intake.setIntakeRollerPercentOutput(0.7);
   }
 
   /**
@@ -42,7 +41,6 @@ public class AutoRunIntakeOnly extends CommandBase {
   public void end(boolean interrupted) {
     m_intake.setIntakePercentOutput(0);
     m_intake.setIntakeState(false);
-    m_intake.setIntakeRollerPercentOutput(0);
   }
 
   // Returns true when the command should end.

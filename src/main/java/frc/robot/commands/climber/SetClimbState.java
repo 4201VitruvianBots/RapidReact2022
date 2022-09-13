@@ -9,12 +9,14 @@ package frc.robot.commands.climber;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Intake;
 
 /** Raises/lowers the climber based on joystick input */
 public class SetClimbState extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private Climber m_climber;
 
+  private Intake m_intake;
   private boolean m_state;
 
   /**
@@ -23,9 +25,10 @@ public class SetClimbState extends CommandBase {
    * @param climber The climber used by this command.
    * @param state The climb state to use
    */
-  public SetClimbState(Climber climber, boolean state) {
+  public SetClimbState(Climber climber, boolean state, Intake intake) {
     m_climber = climber;
     m_state = state;
+    m_intake = intake;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(climber);
@@ -38,7 +41,11 @@ public class SetClimbState extends CommandBase {
   }
 
   @Override
-  public void execute() {}
+  public void execute() {
+    if (m_climber.getElevatorClimbState() == true) {
+      m_intake.setIntakePiston(true);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override

@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -33,13 +32,6 @@ public class Climber extends SubsystemBase {
   private boolean Overridelatched = false;
   private double climberPosition = 0;
 
-  DoubleSolenoid highClimbPiston =
-      new DoubleSolenoid(
-          Constants.Pneumatics.pcmOne,
-          Constants.Pneumatics.pcmType,
-          Constants.Pneumatics.climbPistonForward,
-          Constants.Pneumatics.climbPistonReverse);
-
   private final double kF = 0;
   private final double kP = 0.2;
 
@@ -60,8 +52,8 @@ public class Climber extends SubsystemBase {
     }
     elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
 
-    elevatorClimbMotors[0].setInverted(false);
-    elevatorClimbMotors[1].setInverted(false);
+    elevatorClimbMotors[0].setInverted(true);
+    elevatorClimbMotors[1].setInverted(true);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
 
@@ -70,6 +62,11 @@ public class Climber extends SubsystemBase {
 
     elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
     elevatorClimbMotors[1].setStatusFramePeriod(1, 255);
+  }
+
+  public void setClimberNeutralMode(NeutralMode mode) {
+    elevatorClimbMotors[0].setNeutralMode(NeutralMode.Brake);
+    elevatorClimbMotors[1].setNeutralMode(mode);
   }
 
   public boolean getElevatorClimbState() {
@@ -109,10 +106,6 @@ public class Climber extends SubsystemBase {
     }
   }
 
-  public void setHighClimbPiston(DoubleSolenoid.Value kValue) {
-    highClimbPiston.set(kValue);
-  }
-
   public void holdClimber() {
     elevatorClimbMotors[0].set(ControlMode.Position, holdPosition);
   }
@@ -135,28 +128,19 @@ public class Climber extends SubsystemBase {
    *
    * @return the climber position (in raw sensor units)
    */
-  public DoubleSolenoid.Value getHighClimbPistonPosition() {
-    return highClimbPiston.get();
-  }
-
   private void updateClimberLimits() {
-    // if (!Overridelatched) {
-    //   if (!climberLowerLimitOverride.get()) {
-    //     elevatorClimbMotors[0].setSelectedSensorPosition(0);
-    //     Overridelatched = true;
-    //   } /*else if (!climberUpperLimitOverride.get()) {
-    //       elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
-    //       Overridelatched = true;
-    //     }*/
-    // } else if (Overridelatched && climberLowerLimitOverride.get()) {
-    //   // && climberUpperLimitOverride.get()) {
-    //   Overridelatched = false;
-    // }
-  }
-
-  public void setClimberNeutralMode(NeutralMode mode) {
-    elevatorClimbMotors[0].setNeutralMode(NeutralMode.Brake);
-    elevatorClimbMotors[1].setNeutralMode(mode);
+    if (!Overridelatched) {
+      if (!climberLowerLimitOverride.get()) {
+        elevatorClimbMotors[0].setSelectedSensorPosition(0);
+        Overridelatched = true;
+      } /*else if (!climberUpperLimitOverride.get()) {
+          elevatorClimbMotors[0].setSelectedSensorPosition(Constants.Climber.climberUpperLimit);
+          Overridelatched = true;
+        }*/
+    } else if (Overridelatched && climberLowerLimitOverride.get()) {
+      // && climberUpperLimitOverride.get()) {
+      Overridelatched = false;
+    }
   }
 
   private void updateSmartDashboard() {

@@ -46,9 +46,7 @@ public class ReverseIntakeIndexer extends CommandBase {
    */
   @Override
   public void execute() {
-    //  m_indexer.setIndexerPercentOutput(0.5);
     m_intake.setIntakePercentOutput(m_intakeSpeed);
-    m_intake.setIntakeRollerPercentOutput(m_intakeSpeed);
     m_indexer.setIndexerPercentOutput(-0.65);
     m_indexer.setKickerPercentOutput(-0.35);
   }
@@ -58,9 +56,7 @@ public class ReverseIntakeIndexer extends CommandBase {
    */
   @Override
   public void end(boolean interrupted) {
-    //  m_indexer.setIndexerPercentOutput(0);
     m_intake.setIntakePercentOutput(0);
-    m_intake.setIntakeRollerPercentOutput(0);
     m_indexer.setIndexerPercentOutput(0);
     m_indexer.setKickerPercentOutput(0);
     m_intake.setIntakePiston(false);

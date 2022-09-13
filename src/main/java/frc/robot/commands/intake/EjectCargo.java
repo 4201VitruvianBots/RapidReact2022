@@ -15,7 +15,6 @@ public class EjectCargo extends CommandBase {
   private final Indexer m_indexer;
 
   public EjectCargo(Intake intake, Indexer indexer) {
-    // Use addRequirements() here to declare subsystem dependencies.    m_intake = intake;
     m_indexer = indexer;
     m_intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
