@@ -136,7 +136,7 @@ public class LED extends SubsystemBase {
   public void periodic() {
     // null indicates that the animation is "Solid"
     if (m_toAnimate == null) {
-      m_candle.setLEDs(red, green, blue, 0, 0, 1024); // setting all LEDs to color
+      m_candle.setLEDs(red, green, blue, 0, 16, 1024); // setting all LEDs to color
     } else {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
