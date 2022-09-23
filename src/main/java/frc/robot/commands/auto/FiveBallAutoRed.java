@@ -13,7 +13,6 @@ import frc.robot.commands.driveTrain.CargoTrajectoryRameseteCommand;
 import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
-import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
 import frc.robot.commands.flywheel.UseInterpolatorRPM;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
