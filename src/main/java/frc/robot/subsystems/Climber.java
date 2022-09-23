@@ -60,8 +60,8 @@ public class Climber extends SubsystemBase {
     }
     elevatorClimbMotors[1].set(TalonFXControlMode.Follower, elevatorClimbMotors[0].getDeviceID());
 
-    elevatorClimbMotors[0].setInverted(true);
-    elevatorClimbMotors[1].setInverted(true);
+    elevatorClimbMotors[0].setInverted(false);
+    elevatorClimbMotors[1].setInverted(false);
     elevatorClimbMotors[0].config_kF(0, kF);
     elevatorClimbMotors[0].config_kP(0, kP);
 

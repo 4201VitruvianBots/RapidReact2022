@@ -14,7 +14,6 @@ import frc.robot.commands.driveTrain.DriveToCargoTrajectory;
 import frc.robot.commands.driveTrain.SetDriveTrainNeutralMode;
 import frc.robot.commands.driveTrain.SetOdometry;
 import frc.robot.commands.flywheel.SetAndHoldRpmSetpoint;
-import frc.robot.commands.flywheel.UseInterpolatorRPM;
 import frc.robot.commands.indexer.AutoRunIndexer;
 import frc.robot.commands.intake.AutoRunIntake;
 import frc.robot.commands.intake.AutoRunIntakeIndexer;
@@ -87,8 +86,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        // new SetAndHoldRpmSetpoint(flywheel, vision, 1600),
-        new UseInterpolatorRPM(flywheel, vision),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1600),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command1.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -107,7 +105,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
 
         // INTAKE 1
         new IntakePiston(intake, true),
-        // new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
         new ParallelDeadlineGroup(
             new InterruptingCommand(
                 command2.andThen(() -> driveTrain.setMotorTankDrive(0, 0)),
@@ -124,7 +122,7 @@ public class FiveBallAutoRed extends SequentialCommandGroup {
             new SimulationShoot(fieldSim, true).withTimeout(0.9),
             RobotBase::isReal),
         // INTAKE 2
-        // new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
+        new SetAndHoldRpmSetpoint(flywheel, vision, 1700),
         new SetTurretAbsoluteSetpointDegrees(turret, 30).withTimeout(0.25),
         new IntakePiston(intake, true),
         new AutoRunIntakeInstant(intake, indexer, true),

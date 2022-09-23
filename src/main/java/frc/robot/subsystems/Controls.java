@@ -16,7 +16,11 @@ public class Controls extends SubsystemBase {
   public Controls() {
     initSmartDashboard();
   }
-
+  /**
+   * Returns the robot's current alliance color
+   *
+   * @return Returns the current alliance color.
+   */
   public void updateAllianceColor() {
     if (overrideFmsAlliance) {
       alliance = overrideFmsAllianceColor;
@@ -30,11 +34,6 @@ public class Controls extends SubsystemBase {
     }
   }
 
-  /**
-   * Returns the robot's current alliance color
-   *
-   * @return Returns the current alliance color.
-   */
   public DriverStation.Alliance getAllianceColor() {
     return alliance;
   }
