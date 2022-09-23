@@ -89,6 +89,11 @@ public final class Constants {
 
     public static final double falconMaxSpeedRadPerSecond = Conversions.RpmToRadPerSec(6380);
 
+    // TODO Change these constants when the new limelight is added
+    public static final String colorDetectionLimelightHostname = "limelight-indexer";
+    public static final int blueCargoDetectionLimelightPipeline = 1; // change to 0
+    public static final int redCargoDetectionLimelightPipeline = 2; // change to 1
+
     public static enum CARGO_COLOR {
       RED,
       BLUE,
@@ -287,6 +292,8 @@ public final class Constants {
     public static String VISION_SERVER_IP = "10.42.1.12";
     public static String LIMELIGHT_IP = "10.42.1.11";
   }
+
+  public static final boolean dataLoggingEnabled = false;
 
   // 1 = closed-loop control (using sensor feedback) and 0 = open-loop control (no sensor feedback)
   public enum CONTROL_MODE {

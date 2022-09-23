@@ -5,7 +5,6 @@
 package frc.robot;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,7 +31,6 @@ public class Robot extends TimedRobot {
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    DataLogManager.start();
     LiveWindow.disableAllTelemetry();
 
     addPeriodic(() -> m_robotContainer.getIndexer().pollColorSensors(), 0.02, 0.01);

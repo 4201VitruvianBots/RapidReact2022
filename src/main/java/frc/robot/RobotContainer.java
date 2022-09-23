@@ -7,6 +7,8 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,7 +26,6 @@ import frc.robot.commands.climber.SetClimberOutput;
 import frc.robot.commands.driveTrain.*;
 import frc.robot.commands.flywheel.SetRpmSetpoint;
 import frc.robot.commands.flywheel.ShotSelecter;
-import frc.robot.commands.indexer.ColorSensor;
 import frc.robot.commands.indexer.RunIndexer;
 import frc.robot.commands.indexer.RunOnlyIndexer;
 import frc.robot.commands.intake.ReverseIntakeIndexer;
@@ -54,7 +55,7 @@ import frc.robot.subsystems.Vision;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  private final DataLog m_logger = DataLogManager.getLog();
+  private final DataLog m_logger = DataLogManager.getLog(); // DATALOGGING
 
   // The robot's subsystems and commands are defined here...
   private final Controls m_controls = new Controls();
@@ -63,11 +64,16 @@ public class RobotContainer {
   private final Vision m_vision = new Vision(m_controls, m_driveTrain, m_turret, m_logger);
   private final Flywheel m_flywheel = new Flywheel(m_vision, m_turret);
   private final Intake m_intake = new Intake();
-  private final Indexer m_indexer = new Indexer();
-  private final LED m_led = new LED();
+  private final Indexer m_indexer = new Indexer(m_controls);
+  private final LED m_led = new LED(m_controls);
   private final Climber m_climber = new Climber();
 
   private final FieldSim m_fieldSim = new FieldSim(m_driveTrain, m_turret, m_vision, m_intake);
+
+  DoubleLogEntry indexerRPMLog;
+  DoubleLogEntry flywheelRPMLog;
+  DoubleLogEntry kickerRPMLog;
+  StringLogEntry poseLog;
 
   static Joystick leftJoystick = new Joystick(Constants.USB.leftJoystick);
   static Joystick rightJoystick = new Joystick(Constants.USB.rightJoystick);
@@ -80,7 +86,7 @@ public class RobotContainer {
   public Button xBoxLeftTrigger, xBoxRightTrigger;
   // public static boolean allianceColorBlue;
   // public static boolean allianceColorRed;
-  public static enum CommandSelector {
+  public enum CommandSelector {
     BLUE_ALLIANCE, // 01
     RED_ALLIANCE
   }
@@ -159,6 +165,14 @@ public class RobotContainer {
         new OneBallAutoDefense(
             m_driveTrain, m_fieldSim, m_intake, m_indexer, m_flywheel, m_turret, m_vision));
     SmartDashboard.putData("Selected Auto", m_autoChooser);
+
+    DataLogManager.start();
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog = new DoubleLogEntry(m_logger, "/indexerRPM");
+      flywheelRPMLog = new DoubleLogEntry(m_logger, "/flywheelRPM");
+      kickerRPMLog = new DoubleLogEntry(m_logger, "/kickerRPM");
+      poseLog = new StringLogEntry(m_logger, "/pose");
+    }
     // SmartDashboard.putData(
     //     "Auto Trajectory",
     //     new CargoTrajectoryRameseteCommand(m_driveTrain, m_vision)
@@ -229,8 +243,7 @@ public class RobotContainer {
     xBoxPOVButtons[0].whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, false));
     xBoxLeftTrigger.whileHeld(new RunIntake(m_intake));
     xBoxLeftTrigger.whileHeld(new RunOnlyIndexer(m_indexer));
-    xBoxRightTrigger.whileHeld(
-        new ColorSensor(m_indexer, m_controls, m_flywheel, () -> xBoxRightTrigger.get()));
+    xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new RunIndexer(m_intake, m_indexer, m_flywheel, true));
     // xBoxRightTrigger.whileHeld(new LogShootingInfo(m_flywheel, m_indexer));
 
@@ -253,11 +266,13 @@ public class RobotContainer {
   public void initializeSubsystems() {
     m_driveTrain.setDefaultCommand(
         new SetArcadeDrive(m_driveTrain, leftJoystick::getY, rightJoystick::getX));
-    m_led.setDefaultCommand(new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber, m_indexer, m_controls));
+    m_led.setDefaultCommand(
+        new GetSubsystemStates(m_led, m_intake, m_flywheel, m_climber, m_indexer));
     m_climber.setDefaultCommand(
         new SetClimberOutput(m_climber, () -> xBoxController.getRawAxis(5)));
-    m_indexer.setDefaultCommand(
-        new ColorSensor(m_indexer, m_controls, m_flywheel, () -> xBoxRightTrigger.get()));
+    // m_indexer.setDefaultCommand(
+    //     new ColorSensor(m_indexer, m_controls, m_intake, m_flywheel, () ->
+    // xBoxRightTrigger.get()));
     m_turret.setDefaultCommand(
         new SetTurretSetpointFieldAbsolute(
             m_turret, m_driveTrain, m_vision, m_flywheel, m_climber, xBoxController));
@@ -329,6 +344,12 @@ public class RobotContainer {
 
   public void teleopPeriodic() {
     m_vision.setVisionPoseEstimation(true);
+    if (Constants.dataLoggingEnabled) {
+      indexerRPMLog.append(m_indexer.getIndexerOutput());
+      flywheelRPMLog.append(m_flywheel.getRPM(0));
+      kickerRPMLog.append(m_indexer.getKickerOutput());
+      poseLog.append(m_driveTrain.getRobotPoseMeters().toString());
+    }
   }
 
   public void autonomousInit() {

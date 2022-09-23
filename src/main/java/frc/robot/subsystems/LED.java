@@ -11,7 +11,6 @@ import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
 import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -25,9 +24,11 @@ public class LED extends SubsystemBase {
   private robotState currentRobotState = robotState.Disabled;
   private Animation m_toAnimate = null;
 
+  private final Controls m_controls;
+
   private final int ledCount = 296;
 
-  public LED() {
+  public LED(Controls controls) {
     // Setup LED strip
     CANdleConfiguration configAll = new CANdleConfiguration();
     configAll.statusLedOffWhenActive = true;
@@ -36,6 +37,8 @@ public class LED extends SubsystemBase {
     configAll.brightnessScalar = 1; // 1 is highest safe value
     configAll.vBatOutputMode = VBatOutputMode.Modulated;
     m_candle.configAllSettings(configAll, 100);
+
+    m_controls = controls;
   }
 
   /**
@@ -103,7 +106,7 @@ public class LED extends SubsystemBase {
   public void expressState(robotState state) {
     if (state != currentRobotState) {
       switch (state) {
-        case Intaking: // Strobing Yellow
+        case Intaking: // Solid Yellow
           setPattern(255, 128, 0, 0, 0, AnimationTypes.Solid);
           break;
         case Enabled: // Solid Green
@@ -118,11 +121,19 @@ public class LED extends SubsystemBase {
         case CanShoot: // Solid Blue
           setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid);
           break;
-        case GoodCargo:
-          setPattern(40, 200, 100, 0, 0, AnimationTypes.Solid);
-          break;
-        case BadCargo:
-          setPattern(200, 200, 0, 0, 0, AnimationTypes.Solid);
+        case OpponentBall: // Returns Wrong Color
+          switch (m_controls.getAllianceColor()) {
+            case Blue:
+              setPattern(255, 0, 170, 0, 0, AnimationTypes.Solid); // Solid Pink
+              break;
+            case Red:
+              setPattern(0, 255, 255, 0, 0, AnimationTypes.Solid); // Solid Teal
+              break;
+            case Invalid:
+            default:
+              setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe); // Strobing Purple
+              break;
+          }
           break;
         default: // Strobing Purple
           setPattern(255, 0, 255, 0, 1, AnimationTypes.Strobe);
@@ -141,19 +152,8 @@ public class LED extends SubsystemBase {
     } else {
       m_candle.animate(m_toAnimate); // setting the candle animation to m_animation if not null
     }
+    SmartDashboardTab.putString("Controls", "LED Mode", currentRobotState.toString());
 
-    SmartDashboardTab.putString("Indexer", "RobotState", currentRobotState.toString());
-  }
-
-  public void changeBallColor(DriverStation.Alliance color) {
-    switch (color) {
-      case Blue:
-        setPattern(66, 95, 255, 0, 0, AnimationTypes.Solid); // sets color to blue
-        break;
-      case Red:
-        setPattern(255, 0, 0, 0, 0, AnimationTypes.Solid); // sets color to red
-        break;
-    }
   }
 
   /** Different LED animation types */
@@ -177,7 +177,6 @@ public class LED extends SubsystemBase {
     Enabled,
     Intaking,
     CanShoot,
-    GoodCargo,
-    BadCargo
+    OpponentBall
   }
 }

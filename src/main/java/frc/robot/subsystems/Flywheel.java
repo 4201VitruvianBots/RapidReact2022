@@ -27,6 +27,7 @@ import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.Conversions;
 import frc.robot.commands.flywheel.ShotSelecter;
 import java.io.File;
+import java.util.function.DoubleSupplier;
 
 /** Creates a new Flywheel. */
 public class Flywheel extends SubsystemBase {
@@ -39,7 +40,7 @@ public class Flywheel extends SubsystemBase {
   private final Vision m_vision;
   private final Timer timeout = new Timer();
   public double rpmOutput;
-  private double flywheelSetpointRPM;
+  private DoubleSupplier m_setpointSupplier = () -> 0;
   private boolean canShoot;
   private double idealRPM;
   private boolean timerStart = false;
@@ -110,7 +111,11 @@ public class Flywheel extends SubsystemBase {
   }
   /** @param setpoint set to setpoint */
   public void setRPM(double flywheelSetpointRPM) {
-    this.flywheelSetpointRPM = flywheelSetpointRPM;
+    this.m_setpointSupplier = () -> flywheelSetpointRPM;
+  }
+
+  public void setRPM(DoubleSupplier flywheelSetpointRPM) {
+    this.m_setpointSupplier = flywheelSetpointRPM;
   }
 
   public void setInterpolatedRPM() {
@@ -121,7 +126,7 @@ public class Flywheel extends SubsystemBase {
 
   /** @param setpoint set to setpoint */
   public double getSetpointRPM() {
-    return flywheelSetpointRPM;
+    return m_setpointSupplier.getAsDouble();
   }
 
   public void updateCanShoot() {
@@ -163,7 +168,8 @@ public class Flywheel extends SubsystemBase {
   /** flywheelSetpoint if setpoint else setPower to 0 */
   private void updateRPMSetpoint() {
     if (getSetpointRPM() > 0) {
-      m_loop.setNextR(VecBuilder.fill(Conversions.RpmToRadPerSec(flywheelSetpointRPM)));
+      double setpoint = m_setpointSupplier.getAsDouble();
+      m_loop.setNextR(VecBuilder.fill(Conversions.RpmToRadPerSec(setpoint)));
 
       m_loop.correct(VecBuilder.fill(Conversions.RpmToRadPerSec(getRPM(0))));
 
@@ -225,13 +231,13 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setIdealRPM() {
-    flywheelSetpointRPM = idealRPM;
+    this.m_setpointSupplier = () -> idealRPM;
   }
 
   private void updateShuffleboard() {
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
     // SmartDashboard.putNumber("RPMSetpoint (Raw)", flywheelSetpointRPM);
-    SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint (Adjusted)", flywheelSetpointRPM - 120);
+    SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint (Adjusted)", getSetpointRPM() - 120);
     SmartDashboard.putBoolean("RPM check", canShoot);
     // tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot);
     // launchpadShot = SmartDashboardTab.getNumber("Flywheel", "launchpadShot", launchpadShot);
