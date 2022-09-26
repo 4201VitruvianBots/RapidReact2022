@@ -91,6 +91,8 @@ public class Flywheel extends SubsystemBase {
       new LinearSystemLoop<>(m_flywheelPlant, m_controller, m_observer, 10.0, 0.020);
 
   public Flywheel(Vision vision, Turret turret) {
+
+    SmartDashboardTab.putNumber("Flywheel", "TarmacShot", tarmacShot);
     m_vision = vision;
     m_turret = turret;
     // Setup shooter motors (Falcons)
@@ -239,6 +241,8 @@ public class Flywheel extends SubsystemBase {
   }
 
   private void updateShuffleboard() {
+    tarmacShot = SmartDashboardTab.getNumber("Flywheel", "TarmacShot", tarmacShot );
+    
     SmartDashboard.putNumber("RPMPrimary", getRPM(0));
     // SmartDashboard.putNumber("RPMSetpoint (Raw)", flywheelSetpointRPM);
     SmartDashboardTab.putNumber("Flywheel", "RPMSetpoint (Adjusted)", getSetpointRPM() - 120);
