@@ -7,8 +7,6 @@
 
 package frc.robot.commands.flywheel;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboardTab;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.Vision.CAMERA_POSITION;
 import frc.robot.subsystems.Flywheel;

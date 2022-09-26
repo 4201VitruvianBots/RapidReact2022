@@ -11,7 +11,6 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.sensors.SensorVelocityMeasPeriod;
-
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.LinearQuadraticRegulator;
@@ -42,6 +41,7 @@ public class Flywheel extends SubsystemBase {
   private final Vision m_vision;
   private final Timer timeout = new Timer();
   public double rpmOutput;
+  private double flywheelSetpointRPM;
   private DoubleSupplier m_setpointSupplier = () -> 0;
   private boolean canShoot;
   private double idealRPM;
@@ -100,7 +100,7 @@ public class Flywheel extends SubsystemBase {
       flywheelMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 30, 0, 0));
       flywheelMotor.configVoltageCompSaturation(10);
       flywheelMotor.enableVoltageCompensation(true);
-      flywheelMotor.configVelocityMeasurementWindow(2); 
+      flywheelMotor.configVelocityMeasurementWindow(2);
       flywheelMotor.configVelocityMeasurementPeriod(SensorVelocityMeasPeriod.Period_2Ms);
     }
     flywheelMotors[0].setInverted(false);
