@@ -90,7 +90,7 @@ public class Indexer extends SubsystemBase {
     // Motor and PID controller setup
     indexerMotor.configFactoryDefault();
     indexerMotor.setInverted(false);
-
+    indexerMotor.setNeutralMode(NeutralMode.Brake);
     indexerMotor.setStatusFramePeriod(1, 100);
     indexerMotor.setStatusFramePeriod(2, 100);
     kickerMotor.configFactoryDefault();
